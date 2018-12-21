@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Carrie Tribble and Mike May" />
+
+<meta name="date" content="2018-12-21" />
+
+<title>RevGadgets Developers’ Guide</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">RevGadgets Developers’ Guide</h1>
+<h4 class="author"><em>Carrie Tribble and Mike May</em></h4>
+<h4 class="date"><em>2018-12-21</em></h4>
+
+
+
+<div id="intro" class="section level2">
+<h2>Intro</h2>
+<p>The purpose of this vignette is to establish common practices for functions that will be included in RevGadgets. These practices include documenting, writing, and testing of functions.</p>
+<p>We will use the following example function to illustrate these best practices:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#' Read trees</span>
+<span class="co">#'</span>
+<span class="co">#' Reads in a tree file containing one or multiple trees</span>
+<span class="co">#'</span>
+<span class="co">#' Reads in a tree file in either nexus or newick format, and containing a single tree</span>
+<span class="co">#' or multiple trees (as in the results of a Bayesian analysis).</span>
+<span class="co">#'</span>
+<span class="co">#' @param path (single character string; no default) File path to tree.</span>
+<span class="co">#' @param format (single character string; nexus) Format of tree file: nexus or newick</span>
+<span class="co">#'</span>
+<span class="co">#' @return List of trees of type phylo</span>
+<span class="co">#'</span>
+<span class="co">#' @examples</span>
+<span class="co">#' single_tree &lt;- readTrees(path = &quot;data/mammals_thinned.tree&quot;, format = &quot;nexus&quot;)</span>
+<span class="co">#' multi_trees &lt;- readTrees(path = &quot;data/trees_posterior_1.trees&quot;, format = &quot;newick&quot;)</span>
+
+readTrees &lt;-<span class="st"> </span><span class="cf">function</span>(path, format){
+
+  <span class="co"># enforce argument matching</span>
+
+  <span class="cf">if</span> (<span class="kw">is.character</span>(path) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="kw">stop</span>(<span class="st">&quot;path must be a single character string&quot;</span>)
+  <span class="cf">if</span> (<span class="kw">file.exists</span>(path) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="kw">stop</span>(<span class="st">&quot;file does not exist&quot;</span>)
+  format &lt;-<span class="st"> </span><span class="kw">match.arg</span>(format, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="st">&quot;nexus&quot;</span>, <span class="st">&quot;newick&quot;</span>))
+
+  <span class="co"># read in tree(s) of type nexus or newick</span>
+
+  <span class="cf">if</span> (format <span class="op">==</span><span class="st"> &quot;nexus&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">read.nexus</span>(<span class="dt">file =</span> path)
+  } <span class="cf">else</span> <span class="cf">if</span> (format <span class="op">==</span><span class="st"> &quot;newick&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">read.tree</span>(<span class="dt">file =</span> path)
+  }
+
+  <span class="co"># convert to type multiPhylo for consistency</span>
+
+  <span class="cf">if</span> (<span class="kw">class</span>(tree) <span class="op">==</span><span class="st"> &quot;phylo&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">c.phylo</span>(tree)
+  } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">class</span>(tree) <span class="op">!=</span><span class="st"> &quot;multiPhylo&quot;</span>) {
+    <span class="kw">stop</span> (<span class="st">&quot;tree(s) not of type phylo or multiPhylo&quot;</span>)
+  }
+
+  <span class="kw">return</span>(tree)
+
+}</code></pre></div>
+</div>
+<div id="general" class="section level2">
+<h2>General</h2>
+<p>Each function should be defined in an R script with the name of the function as the file name. For example the readTrees() function is defined in a source file called: readTrees.R.</p>
+</div>
+<div id="package-dependencies" class="section level2">
+<h2>Package Dependencies</h2>
+<p>Your functions may depend on objects or functions from other pacakges, such as ape, ggtree, etc. Please do not load in packages within functions. All packages that RevGadgets functions depend on should be included in the Description file of the package, following Depends:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Encoding<span class="op">:</span><span class="st"> </span>UTF<span class="op">-</span><span class="dv">8</span>
+LazyData<span class="op">:</span><span class="st"> </span>true
+RoxygenNote<span class="op">:</span><span class="st"> </span><span class="fl">6.1</span>.<span class="dv">0</span>
+Depends<span class="op">:</span><span class="st"> </span>ape, phytools, ggtree
+Suggests<span class="op">:</span><span class="st"> </span>testthat,
+    knitr,
+    rmarkdown</code></pre></div>
+<p>By including dependency packages here, this ensures that the dependencies will be loaded when RevGadgets is loaded, and will be installed when RevGadgets are installed.</p>
+</div>
+<div id="document-function" class="section level2">
+<h2>Document Function</h2>
+<p>We will use the package roxygen2 to document functions. Function documention should occur at the very beginning of the source file. In readTrees.R, this documentions appears as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#' Read trees</span>
+<span class="co">#'</span>
+<span class="co">#' Reads in a tree file containing one or multiple trees</span>
+<span class="co">#'</span>
+<span class="co">#' Reads in a tree file in either nexus or newick format, and containing a single tree</span>
+<span class="co">#' or multiple trees (as in the results of a Bayesian analysis).</span>
+<span class="co">#'</span>
+<span class="co">#' @param path (single character string; no default) File path to tree.</span>
+<span class="co">#' @param format (single character string; nexus) Format of tree file: nexus or newick</span>
+<span class="co">#'</span>
+<span class="co">#' @return List of trees of type phylo</span>
+<span class="co">#'</span>
+<span class="co">#' @examples</span>
+<span class="co">#' single_tree &lt;- readTrees(path = &quot;data/mammals_thinned.tree&quot;, format = &quot;nexus&quot;)</span>
+<span class="co">#' multi_trees &lt;- readTrees(path = &quot;data/trees_posterior_1.trees&quot;, format = &quot;newick&quot;)</span></code></pre></div>
+<p>Roxygen2 documentions begins with #’ to distinguish it from other comments in the file. The first sentence becomes the function title and should be formatted as a sentence. The second paragraph is the description of the function and should briefly describe the purpose of the function. The third and any additional paragraphs correpsond to the Details section of the function documention, and should provide a more comprehensive description of the function.</p>
+<p>The tag <strong><span class="citation">@param</span></strong> should be used to specify all parameters of the function, including information about the necesary format, default value (if exists), and a description of its purpose and/or possible values. For example, we have defined the path parameter as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#' @param path (single character string; no default) File path to tree.</span></code></pre></div>
+<p>Here, the <strong><span class="citation">@param</span></strong> tag indicates that we are describing a parameter, path corresponds to the exact parameter name, (single character string; no default) refers to the format of the parameter input and the (lack of) a default value, and “File path to tree” describes the parameter in text.</p>
+<p>The tag <strong><span class="citation">@return</span></strong> describes the object that the function returns, in this case an object of type phylo, and is included under the Value section of the documentation file.</p>
+<p>Finally the tag <strong><span class="citation">@examples</span></strong> provides the user with examples of the function in use. Often, it is most useful to provide multiple examples that encompass the variety of parameters and uses.</p>
+<p>For more information on proper documentation of functions, refer to the roxygen2 pacakge information.</p>
+</div>
+<div id="write-function" class="section level2">
+<h2>Write Function</h2>
+<p>The following code defines our example function, which allows the user to read in tree files in various formats.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">readTrees &lt;-<span class="st"> </span><span class="cf">function</span>(path, format){
+
+  <span class="co"># enforce argument matching</span>
+
+  <span class="cf">if</span> (<span class="kw">is.character</span>(path) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="kw">stop</span>(<span class="st">&quot;path must be a single character string&quot;</span>)
+  <span class="cf">if</span> (<span class="kw">file.exists</span>(path) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="kw">stop</span>(<span class="st">&quot;file does not exist&quot;</span>)
+  format &lt;-<span class="st"> </span><span class="kw">match.arg</span>(format, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="st">&quot;nexus&quot;</span>, <span class="st">&quot;newick&quot;</span>))
+
+  <span class="co"># read in tree(s) of type nexus or newick</span>
+
+  <span class="cf">if</span> (format <span class="op">==</span><span class="st"> &quot;nexus&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">read.nexus</span>(<span class="dt">file =</span> path)
+  } <span class="cf">else</span> <span class="cf">if</span> (format <span class="op">==</span><span class="st"> &quot;newick&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">read.tree</span>(<span class="dt">file =</span> path)
+  }
+
+  <span class="co"># convert to type multiPhylo for consistency</span>
+
+  <span class="cf">if</span> (<span class="kw">class</span>(tree) <span class="op">==</span><span class="st"> &quot;phylo&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">c.phylo</span>(tree)
+  } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">class</span>(tree) <span class="op">!=</span><span class="st"> &quot;multiPhylo&quot;</span>) {
+    <span class="kw">stop</span> (<span class="st">&quot;tree(s) not of type phylo or multiPhylo&quot;</span>)
+  }
+
+  <span class="kw">return</span>(tree)
+
+}</code></pre></div>
+<p>The first step in writing a function is naming the function and establishing the parameters of the function. This is done on the first line; in our example, the function is named readTrees and contains parameters path and format. The use of function() tells R that we are defining a function with a name indicated by the assignment arrow, and to expect all parameter names within the parentheses. The opening curly bracket indicates that the function will be defined in the rows below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">readTrees &lt;-<span class="st"> </span><span class="cf">function</span>(path, format){</code></pre></div>
+<p>We ask that you follow the style guides of RevBayes: functions should be in camel case (i.e. readTrees()) and parameter names should be in snake case (i.e. root_age).</p>
+<p>The tasks that the function will perform are defined within curly brackets following the function() element. Functions should include informative error messages that will catch common user mistakes, especially for correct formating of parameter values. In our example, the first task of the function is to check that the user has indicated logical parameter values. For example, we check that the path parameter is indicated by a character string, and that such a path exists on the user’s computer. We also check that the user has indicated either nexus or newick as the format for their tree file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="cf">if</span> (<span class="kw">is.character</span>(path) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="kw">stop</span>(<span class="st">&quot;path must be a single character string&quot;</span>)
+  <span class="cf">if</span> (<span class="kw">file.exists</span>(path) <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="kw">stop</span>(<span class="st">&quot;file does not exist&quot;</span>)
+  format &lt;-<span class="st"> </span><span class="kw">match.arg</span>(format, <span class="dt">choices =</span> <span class="kw">c</span>(<span class="st">&quot;nexus&quot;</span>, <span class="st">&quot;newick&quot;</span>))</code></pre></div>
+<p>The stop command is used to provide informative error messages if these checks are false. match.arg() ensures that the paramter value is one of only a few designed options. If the user inputs a value that is not included in the choices for match.arg(), the function will stop and inform the user that values must be either of the options (“nexus” or “newick” in this example).</p>
+<p>Next, the function performs its task, in our case reading in tree files and storing the data as tree. We have designed the function to read in either nexus or newick files, and use an if statement to indicate which action to perform depending on the user’s input for the value of the format parameter. Note that our function relies on functions that have been defined in the package ape. Please see the dependencies section below, and note that you should not call package dependencies from within the function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># read in tree(s) of type nexus or newick</span>
+
+  <span class="cf">if</span> (format <span class="op">==</span><span class="st"> &quot;nexus&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">read.nexus</span>(<span class="dt">file =</span> path)
+  } <span class="cf">else</span> <span class="cf">if</span> (format <span class="op">==</span><span class="st"> &quot;newick&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">read.tree</span>(<span class="dt">file =</span> path)
+  }</code></pre></div>
+<p>After reading in the tree(s) from either newick or nexus files, the function stores them as a multiphylo object for consistency, regardless of how many trees are contained in the object. This ensures that regardless of the input, the output of our function is always the same, so that other functions which depend on readTrees() always expect the same formatted output.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># convert to type multiPhylo for consistency</span>
+
+  <span class="cf">if</span> (<span class="kw">class</span>(tree) <span class="op">==</span><span class="st"> &quot;phylo&quot;</span>) {
+    tree &lt;-<span class="st"> </span><span class="kw">c.phylo</span>(tree)
+  } <span class="cf">else</span> <span class="cf">if</span> (<span class="kw">class</span>(tree) <span class="op">!=</span><span class="st"> &quot;multiPhylo&quot;</span>) {
+    <span class="kw">stop</span> (<span class="st">&quot;tree(s) not of type phylo or multiPhylo&quot;</span>)
+  }</code></pre></div>
+<p>We have also added another check at this point in the function - if some other unknown error occurs, the function will stop and tell the user.</p>
+<p>Finally, we return the multiphylo object using the return() function. Only objects included within the return function will be returned by the function; other intermediary objects will be discarded when the function completes running. The final curly bracket ends the function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  <span class="kw">return</span>(tree)
+
+<span class="er">}</span></code></pre></div>
+</div>
+<div id="test-function" class="section level2">
+<h2>Test Function</h2>
+<p>Finally, we ask that you additionally include a separate file that can be used to test the function using testthat. For the readTrees() function, we have created a testing file called test_readTrees.R, the contents of which are shown below:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">context</span>(<span class="st">&quot;tests the readTrees function&quot;</span>)
+
+<span class="kw">test_that</span>(<span class="st">&quot;reads single tree&quot;</span>, {
+  tree_single &lt;-<span class="st"> </span><span class="kw">readTrees</span>(<span class="dt">path =</span> <span class="st">&quot;../../data/mammals_thinned.tree&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;nexus&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_single), <span class="dv">1</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">class</span>(tree_single), <span class="st">&quot;multiPhylo&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_single[[<span class="dv">1</span>]]<span class="op">$</span>tip.label), <span class="dv">342</span>)
+})
+
+<span class="kw">test_that</span>(<span class="st">&quot;reads multi tree&quot;</span>, {
+  tree_multi &lt;-<span class="st"> </span><span class="kw">readTrees</span>(<span class="dt">path =</span> <span class="st">&quot;../../data/trees_posterior_1.trees&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;newick&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_multi), <span class="dv">86</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">class</span>(tree_multi), <span class="st">&quot;multiPhylo&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_multi[[<span class="dv">1</span>]]<span class="op">$</span>tip.label), <span class="dv">49</span>)
+})</code></pre></div>
+<p>Each function should have an associated testing script that tests various functionalities. As the creater of the function, it is up to you to choose which types of tests will be most informative in catching potential errors. We recommend erring on the side of including tests that seem redundent or unnecessary, because changes in dependency packages, or other unexpected events, can cause errors that you may not expect.</p>
+<p>The test_that() function defines a test that checks that the outcome of your function matches what you expect. In this example, we define two tests, one for reading in a single tree from a nexus file, and one for reading in a tree file with multiple trees from a newick file.</p>
+<p>The first test, called ‘reads single tree,’ reads in the single tree file (nexus) and then checks three aspects of the function:</p>
+<ol style="list-style-type: decimal">
+<li>The resulting tree file contains 1 tree</li>
+<li>The class of the resulting object is of type multiPhylo</li>
+<li>There are the expected number of tips in the phylogeny (342)</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">test_that</span>(<span class="st">&quot;reads single tree&quot;</span>, {
+  tree_single &lt;-<span class="st"> </span><span class="kw">readTrees</span>(<span class="dt">path =</span> <span class="st">&quot;../../data/mammals_thinned.tree&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;nexus&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_single), <span class="dv">1</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">class</span>(tree_single), <span class="st">&quot;multiPhylo&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_single[[<span class="dv">1</span>]]<span class="op">$</span>tip.label), <span class="dv">342</span>)
+})</code></pre></div>
+<p>The second test, called ‘reads multi tree,’ reads in a multi tree file (newick) and then checks the number of trees, class of resulting object, and the number of tips in the phylogeny as above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">test_that</span>(<span class="st">&quot;reads multi tree&quot;</span>, {
+  tree_multi &lt;-<span class="st"> </span><span class="kw">readTrees</span>(<span class="dt">path =</span> <span class="st">&quot;../../data/trees_posterior_1.trees&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;newick&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_multi), <span class="dv">86</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">class</span>(tree_multi), <span class="st">&quot;multiPhylo&quot;</span>)
+  <span class="kw">expect_equal</span>(<span class="kw">length</span>(tree_multi[[<span class="dv">1</span>]]<span class="op">$</span>tip.label), <span class="dv">49</span>)
+})</code></pre></div>
+<p>In this particular case, our tests rely on reading it sample datasets. These data are saved in the data folder of the RevGadgets directory. If your tests rely on reading in a dataset, the file should be saved in this directory.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

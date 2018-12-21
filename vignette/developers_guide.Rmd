@@ -1,0 +1,269 @@
+---
+title: "RevGadgets Developers' Guide"
+author: "Carrie Tribble and Mike May"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+## Intro 
+
+The purpose of this vignette is to establish common practices for functions that will be included in RevGadgets. These practices include documenting, writing, and testing of functions. 
+
+We will use the following example function to illustrate these best practices: 
+```{r, eval = FALSE}
+#' Read trees
+#'
+#' Reads in a tree file containing one or multiple trees
+#'
+#' Reads in a tree file in either nexus or newick format, and containing a single tree
+#' or multiple trees (as in the results of a Bayesian analysis).
+#'
+#' @param path (single character string; no default) File path to tree.
+#' @param format (single character string; nexus) Format of tree file: nexus or newick
+#'
+#' @return List of trees of type phylo
+#'
+#' @examples
+#' single_tree <- readTrees(path = "data/mammals_thinned.tree", format = "nexus")
+#' multi_trees <- readTrees(path = "data/trees_posterior_1.trees", format = "newick")
+
+readTrees <- function(path, format){
+
+  # enforce argument matching
+
+  if (is.character(path) == FALSE) stop("path must be a single character string")
+  if (file.exists(path) == FALSE) stop("file does not exist")
+  format <- match.arg(format, choices = c("nexus", "newick"))
+
+  # read in tree(s) of type nexus or newick
+
+  if (format == "nexus") {
+    tree <- read.nexus(file = path)
+  } else if (format == "newick") {
+    tree <- read.tree(file = path)
+  }
+
+  # convert to type multiPhylo for consistency
+
+  if (class(tree) == "phylo") {
+    tree <- c.phylo(tree)
+  } else if (class(tree) != "multiPhylo") {
+    stop ("tree(s) not of type phylo or multiPhylo")
+  }
+
+  return(tree)
+
+}
+```
+
+## General
+
+Each function should be defined in an R script with the name of the function as the file name. For example the readTrees() function is defined in a source file called: readTrees.R.
+
+## Package Dependencies
+
+Your functions may depend on objects or functions from other pacakges, such as ape, ggtree, etc. Please do not load in packages within functions. All packages that RevGadgets functions depend on should be included in the Description file of the package, following Depends: 
+
+```{r, eval = FALSE}
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
+Depends: ape, phytools, ggtree
+Suggests: testthat,
+    knitr,
+    rmarkdown
+```
+
+By including dependency packages here, this ensures that the dependencies will be loaded when RevGadgets is loaded, and will be installed when RevGadgets are installed. 
+
+## Document Function
+
+We will use the package roxygen2 to document functions. Function documention should occur at the very beginning of the source file. In readTrees.R, this documentions appears as: 
+```{r, eval = FALSE}
+#' Read trees
+#'
+#' Reads in a tree file containing one or multiple trees
+#'
+#' Reads in a tree file in either nexus or newick format, and containing a single tree
+#' or multiple trees (as in the results of a Bayesian analysis).
+#'
+#' @param path (single character string; no default) File path to tree.
+#' @param format (single character string; nexus) Format of tree file: nexus or newick
+#'
+#' @return List of trees of type phylo
+#'
+#' @examples
+#' single_tree <- readTrees(path = "data/mammals_thinned.tree", format = "nexus")
+#' multi_trees <- readTrees(path = "data/trees_posterior_1.trees", format = "newick")
+```
+
+Roxygen2 documentions begins with #' to distinguish it from other comments in the file. The first sentence becomes the function title and should be formatted as a sentence. The second paragraph is the description of the function and should briefly describe the purpose of the function. The third and any additional paragraphs correpsond to the Details section of the function documention, and should provide a more comprehensive description of the function. 
+
+The tag **@param** should be used to specify all parameters of the function, including information about the necesary format, default value (if exists), and a description of its purpose and/or possible values. For example, we have defined the path parameter as:
+```{r, eval = FALSE}
+#' @param path (single character string; no default) File path to tree.
+```
+
+Here, the **@param** tag indicates that we are describing a parameter, path corresponds to the exact parameter name, (single character string; no default) refers to the format of the parameter input and the (lack of) a default value, and "File path to tree" describes the parameter in text. 
+
+The tag **@return** describes the object that the function returns, in this case an object of type phylo, and is included under the Value section of the documentation file. 
+
+Finally the tag **@examples** provides the user with examples of the function in use. Often, it is most useful to provide multiple examples that encompass the variety of parameters and uses. 
+
+For more information on proper documentation of functions, refer to the roxygen2 pacakge information.
+
+## Write Function
+
+The following code defines our example function, which allows the user to read in tree files in various formats.
+
+```{r, eval = FALSE}
+readTrees <- function(path, format){
+
+  # enforce argument matching
+
+  if (is.character(path) == FALSE) stop("path must be a single character string")
+  if (file.exists(path) == FALSE) stop("file does not exist")
+  format <- match.arg(format, choices = c("nexus", "newick"))
+
+  # read in tree(s) of type nexus or newick
+
+  if (format == "nexus") {
+    tree <- read.nexus(file = path)
+  } else if (format == "newick") {
+    tree <- read.tree(file = path)
+  }
+
+  # convert to type multiPhylo for consistency
+
+  if (class(tree) == "phylo") {
+    tree <- c.phylo(tree)
+  } else if (class(tree) != "multiPhylo") {
+    stop ("tree(s) not of type phylo or multiPhylo")
+  }
+
+  return(tree)
+
+}
+```
+
+The first step in writing a function is naming the function and establishing the parameters of the function. This is done on the first line; in our example, the function is named readTrees and contains parameters path and format. The use of function() tells R that we are defining a function with a name indicated by the assignment arrow, and to expect all parameter names within the parentheses. The opening curly bracket indicates that the function will be defined in the rows below. 
+
+```{r, eval = FALSE}
+readTrees <- function(path, format){
+```
+
+We ask that you follow the style guides of RevBayes: functions should be in camel case (i.e. readTrees()) and parameter names should be in snake case (i.e. root_age). 
+
+The tasks that the function will perform are defined within curly brackets following the function() element. Functions should include informative error messages that will catch common user mistakes, especially for correct formating of parameter values. In our example, the first task of the function is to check that the user has indicated logical parameter values. For example, we check that the path parameter is indicated by a character string, and that such a path exists on the user's computer. We also check that the user has indicated either nexus or newick as the format for their tree file. 
+
+```{r, eval = FALSE}
+  if (is.character(path) == FALSE) stop("path must be a single character string")
+  if (file.exists(path) == FALSE) stop("file does not exist")
+  format <- match.arg(format, choices = c("nexus", "newick"))
+```
+
+The stop command is used to provide informative error messages if these checks are false. match.arg() ensures that the paramter value is one of only a few designed options. If the user inputs a value that is not included in the choices for match.arg(), the function will stop and inform the user that values must be either of the options ("nexus" or "newick" in this example).
+
+Next, the function performs its task, in our case reading in tree files and storing the data as tree. We have designed the function to read in either nexus or newick files, and use an if statement to indicate which action to perform depending on the user's input for the value of the format parameter. Note that our function relies on functions that have been defined in the package ape. Please see the dependencies section below, and note that you should not call package dependencies from within the function.
+
+```{r, eval = FALSE}
+# read in tree(s) of type nexus or newick
+
+  if (format == "nexus") {
+    tree <- read.nexus(file = path)
+  } else if (format == "newick") {
+    tree <- read.tree(file = path)
+  }
+
+```
+
+After reading in the tree(s) from either newick or nexus files, the function stores them as a multiphylo object for consistency, regardless of how many trees are contained in the object. This ensures that regardless of the input, the output of our function is always the same, so that other functions which depend on readTrees() always expect the same formatted output. 
+
+```{r, eval = FALSE}
+# convert to type multiPhylo for consistency
+
+  if (class(tree) == "phylo") {
+    tree <- c.phylo(tree)
+  } else if (class(tree) != "multiPhylo") {
+    stop ("tree(s) not of type phylo or multiPhylo")
+  }
+
+```
+
+We have also added another check at this point in the function - if some other unknown error occurs, the function will stop and tell the user. 
+
+Finally, we return the multiphylo object using the return() function. Only objects included within the return function will be returned by the function; other intermediary objects will be discarded when the function completes running. The final curly bracket ends the function. 
+
+```{r, eval = FALSE}
+  return(tree)
+
+}
+```
+
+
+## Test Function
+
+Finally, we ask that you additionally include a separate file that can be used to test the function using testthat. For the readTrees() function, we have created a testing file called test_readTrees.R, the contents of which are shown below:
+
+```{r, eval = FALSE}
+context("tests the readTrees function")
+
+test_that("reads single tree", {
+  tree_single <- readTrees(path = "../../data/mammals_thinned.tree", format = "nexus")
+  expect_equal(length(tree_single), 1)
+  expect_equal(class(tree_single), "multiPhylo")
+  expect_equal(length(tree_single[[1]]$tip.label), 342)
+})
+
+test_that("reads multi tree", {
+  tree_multi <- readTrees(path = "../../data/trees_posterior_1.trees", format = "newick")
+  expect_equal(length(tree_multi), 86)
+  expect_equal(class(tree_multi), "multiPhylo")
+  expect_equal(length(tree_multi[[1]]$tip.label), 49)
+})
+
+```
+
+Each function should have an associated testing script that tests various functionalities. As the creater of the function, it is up to you to choose which types of tests will be most informative in catching potential errors. We recommend erring on the side of including tests that seem redundent or unnecessary, because changes in dependency packages, or other unexpected events, can cause errors that you may not expect. 
+
+The test_that() function defines a test that checks that the outcome of your function matches what you expect. In this example, we define two tests, one for reading in a single tree from a nexus file, and one for reading in a tree file with multiple trees from a newick file.
+
+The first test, called 'reads single tree,' reads in the single tree file (nexus) and then checks three aspects of the function: 
+
+1) The resulting tree file contains 1 tree
+2) The class of the resulting object is of type multiPhylo 
+3) There are the expected number of tips in the phylogeny (342)
+
+```{r, eval = FALSE}
+test_that("reads single tree", {
+  tree_single <- readTrees(path = "../../data/mammals_thinned.tree", format = "nexus")
+  expect_equal(length(tree_single), 1)
+  expect_equal(class(tree_single), "multiPhylo")
+  expect_equal(length(tree_single[[1]]$tip.label), 342)
+})
+```
+
+The second test, called 'reads multi tree,' reads in a multi tree file (newick) and then checks the number of trees, class of resulting object, and the number of tips in the phylogeny as above. 
+
+```{r, eval = FALSE}
+test_that("reads multi tree", {
+  tree_multi <- readTrees(path = "../../data/trees_posterior_1.trees", format = "newick")
+  expect_equal(length(tree_multi), 86)
+  expect_equal(class(tree_multi), "multiPhylo")
+  expect_equal(length(tree_multi[[1]]$tip.label), 49)
+})
+```
+
+In this particular case, our tests rely on reading it sample datasets. These data are saved in the data folder of the RevGadgets directory. If your tests rely on reading in a dataset, the file should be saved in this directory. 
