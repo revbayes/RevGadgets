@@ -70,11 +70,11 @@ readTrees <- function(path, format){
 
 ## General
 
-Each function should be defined in an R script with the name of the function as the file name. For example the readTrees() function is defined in a source file called: readTrees.R.
+Each function should be defined in an R script with the name of the function as the file name. For example the readTrees() function is defined in a source file called: readTrees.R. These files should be stored in the RevGadgets > R subdirectory. 
 
 ## Package Dependencies
 
-Your functions may depend on objects or functions from other pacakges, such as ape, ggtree, etc. Please do not load in packages within functions. All packages that RevGadgets functions depend on should be included in the Description file of the package, following Depends: 
+Your functions may depend on objects or functions from other pacakges, such as ape, ggtree, etc. Please do not load in packages within functions. All packages that RevGadgets functions depend on should be included in the Depends line of the Description file, located in the base directory.
 
 ```{r, eval = FALSE}
 Encoding: UTF-8
