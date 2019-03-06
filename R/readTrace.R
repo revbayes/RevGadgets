@@ -83,6 +83,8 @@ readTrace <- function(path, format = "simple",
       out <- read.table(file = path[i], header = TRUE,
                         sep = delim, check.names = check.names, ...)
 
+      if (burnin >= nrow(out)) stop("Burnin larger than provided trace file")
+
       if (burnin >= 1) {
         output[[i]] <- out[(burnin+1):nrow(out), ]
       } else if (burnin < 1 & burnin > 0) {
@@ -91,13 +93,13 @@ readTrace <- function(path, format = "simple",
       } else if (burnin == 0) {
         output[[i]] <- out
       } else {
-        stop("what have you done?")
+        stop("What have you done?")
         }
     }
   } else if (format == "complex") {
-    stop("complex trace type currently not supported")
+    stop("Complex trace type currently not supported")
   } else {
-    stop("format not of type simple or complex")
+    stop("Format is not of type simple or complex")
     }
 
   return(output)

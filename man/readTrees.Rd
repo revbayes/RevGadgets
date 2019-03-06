@@ -22,6 +22,6 @@ Reads in a tree file in either nexus or newick format, and containing a single t
 or multiple trees (as in the results of a Bayesian analysis).
 }
 \examples{
-single_tree <- readTrees(path = "data/mammals_thinned.tree", format = "nexus")
-multi_trees <- readTrees(path = "data/trees_posterior_1.trees", format = "newick")
+single_tree <- readTrees(path = "data/sub_models/primates_cytb_covariotide_MAP.tre", format = "nexus")
+multi_trees <- readTrees(path = "data/sub_models/primates_cytb_covariotide.trees", format = "newick")
 }

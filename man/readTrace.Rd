@@ -24,10 +24,10 @@ value provided is greater than 1).}
 if read.table() should check column names and replace syntactically invalid
 characters.}
 
-\item{...}{(various) Additional arguments passed to read.table()}
+\item{...}{(various) Additional arguments passed to read.table().}
 }
 \value{
-List of dataframes (of length 1 if only 1 log file provided)
+List of dataframes (of length 1 if only 1 log file provided).
 }
 \description{
 Reads in MCMC log files
@@ -35,6 +35,9 @@ Reads in MCMC log files
 \details{
 Reads in one or multiple MCMC log files from the same analysis
 and discards a user-specified burn-in, compatible with multiple monitor types.
+If the trace contains vectors of vectors and the user does not specify
+format = "complex", readTrace() will read in those columns as factors
+rather than as numeric vectors.
 }
 \examples{
 

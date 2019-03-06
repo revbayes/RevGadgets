@@ -8,11 +8,11 @@
 #' @param path (single character string; no default) File path to tree.
 #' @param format (single character string; nexus) Format of tree file: nexus or newick
 #'
-#' @return List of trees of type phylo
+#' @return Object of type multiPhylo, with length one if only one tree provided
 #'
 #' @examples
-#' single_tree <- readTrees(path = "data/mammals_thinned.tree", format = "nexus")
-#' multi_trees <- readTrees(path = "data/trees_posterior_1.trees", format = "newick")
+#' single_tree <- readTrees(path = "data/sub_models/primates_cytb_covariotide_MAP.tre", format = "nexus")
+#' multi_trees <- readTrees(path = "data/sub_models/primates_cytb_covariotide.trees", format = "newick")
 
 readTrees <- function(path, format){
 
