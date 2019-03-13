@@ -12,7 +12,7 @@ readTrees(path, format)
 \item{format}{(single character string; nexus) Format of tree file: nexus or newick}
 }
 \value{
-List of trees of type phylo
+Object of type multiPhylo, with length one if only one tree provided
 }
 \description{
 Reads in a tree file containing one or multiple trees

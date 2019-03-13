@@ -164,7 +164,9 @@ The first step in writing a function is naming the function and establishing the
 readTrees <- function(path, format){
 ```
 
-We ask that you follow the style guides of RevBayes: functions should be in camel case (i.e. readTrees()) and parameter names should be in snake case (i.e. root_age). 
+We ask that you follow the style guides of RevBayes: functions should be in camel case (i.e. readTrees()) and parameter names should be in snake case (i.e. root_age). An exception may be
+made if the parameter will simply be passed to another function (i.e. check.names in the readTrace()
+function is passed to the read.table() function, and the read.table() parameter name is preserved).
 
 The tasks that the function will perform are defined within curly brackets following the function() element. Functions should include informative error messages that will catch common user mistakes, especially for correct formating of parameter values. In our example, the first task of the function is to check that the user has indicated logical parameter values. For example, we check that the path parameter is indicated by a character string, and that such a path exists on the user's computer. We also check that the user has indicated either nexus or newick as the format for their tree file. 
 

@@ -24,8 +24,8 @@
 #' @return List of dataframes (of length 1 if only 1 log file provided).
 #'
 #' @examples
-#'
-#'
+#' one_trace <- readTrace(path = "data/sub_models/primates_cytb_covariotide.log")
+#' multi_trace <- readTrace(path = c("data/sub_models/primates_cytb_covariotide_run_1.log","data/sub_models/primates_cytb_covariotide_run_1.log"))
 
 readTrace <- function(path, format = "simple",
                       delim="\t", burnin = 0, check.names = FALSE, ...){
@@ -52,7 +52,7 @@ readTrace <- function(path, format = "simple",
 
   if (is.character(delim) == FALSE) stop("delim must be a single character string")
 
-  if (is.numeric(burnin) == FALSE) stop("burnin must be a single character string")
+  if (is.numeric(burnin) == FALSE) stop("burnin must be a single numeric value")
   if (burnin < 0) stop("burnin must be a positive value")
 
   num_paths <- length(path)
