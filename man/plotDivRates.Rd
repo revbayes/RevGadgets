@@ -44,11 +44,10 @@ If colors are not provided (parameter col), the plot defaults to preset colors.
 \examples{
 # first run processDivRates()
 primates <- processDivRates(speciation_time_log = "data/epi_bd/primates_EBD_speciation_times.log",
-                           speciation_rate_log = "data/epi_bd/primates_EBD_speciation_rates.log",
-                           extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
-                           extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rate.log",
-                           burnin = 0.25)
-pdf("primates_example.pdf")
+                            speciation_rate_log = "data/epi_bd/primates_EBD_speciation_rates.log",
+                            extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
+                            extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rates.log",
+                            burnin = 0.25)
+# then plot results:
 plotDivRates(output = primates)
-dev.off()
 }
