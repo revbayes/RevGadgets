@@ -33,3 +33,11 @@ object that can be read by plotDivRates() to vizualize the results. For now,
 only one log file per parameter type is accepted (i.e. log files from multipe runs
 must be combined before reading into the function).
 }
+\examples{
+
+primates <- processDivRates(speciation_time_log = "data/epi_bd/primates_EBD_speciation_times.log",
+                           speciation_rate_log = "data/epi_bd/primates_EBD_speciation_rates.log",
+                           extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
+                           extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rates.log",
+                           burnin = 0.25)
+}
