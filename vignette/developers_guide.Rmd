@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 The purpose of this vignette is to establish common practices for functions that will be included in RevGadgets. These practices include documenting, writing, and testing of functions. 
 
-We will use the following example functions to illustrate these best practices: 
+We will use the following two example functions to illustrate these best practices: 
 
 ### Example 1: processDivRates() 
 This function processes the output of the episodic birth-death process tutorial from RevBayes, making the data available for subsequent plotting. It relies on the function readTrace(). If you are curious about that function, please see the corresponding documentation in the R package. 
