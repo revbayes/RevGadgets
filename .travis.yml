@@ -1,12 +1,4 @@
 language: r
-sudo: false
-cache: packages
 
-r_packages:
- - ape
- - phytools
- - knitr
- - rmarkdown
- 
 r_github_packages:
  - GuangchuangYu/ggtree
