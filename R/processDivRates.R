@@ -17,6 +17,9 @@
 #'@param speciation_rate_log (vector of character strings or single character string; "") Path to speciation rates log file(s)
 #'@param extinction_time_log (vector of character strings or single character string; "") Path to extinction times log file(s)
 #'@param extinction_rate_log (vector of character strings or single character string; "") Path to extinction rates log file(s)
+#'@param burnin (single numeric value; default = 0) Fraction of generations to
+#' discard (if value provided is between 0 and 1) or number of generations (if
+#' value provided is greater than 1). Passed to readTrace().
 #'
 #'@return List object with processed rate and time parameters.
 #'
