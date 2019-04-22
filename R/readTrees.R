@@ -14,7 +14,7 @@
 #' single_tree <- readTrees(path = "data/sub_models/primates_cytb_covariotide_MAP.tre", format = "nexus")
 #' multi_trees <- readTrees(path = "data/sub_models/primates_cytb_covariotide.trees", format = "newick")
 
-readTrees <- function(path, format){
+readTrees <- function(path, format = "nexus"){
 
   # enforce argument matching
 
@@ -22,9 +22,7 @@ readTrees <- function(path, format){
   if (file.exists(path) == FALSE) stop("file does not exist")
   format <- match.arg(format, choices = c("nexus", "newick"))
 
-  # read in tree(s) of type nexus or newick
-
-  if (format == "nexus") {
+    if (format == "nexus") {
     tree <- read.nexus(file = path)
   } else if (format == "newick") {
     tree <- read.tree(file = path)
@@ -33,7 +31,7 @@ readTrees <- function(path, format){
   # convert to type multiPhylo for consistency
 
   if (class(tree) == "phylo") {
-    tree <- c.phylo(tree)
+    tree <- ape::c(tree)
   } else if (class(tree) != "multiPhylo") {
     stop ("tree(s) not of type phylo or multiPhylo")
   }

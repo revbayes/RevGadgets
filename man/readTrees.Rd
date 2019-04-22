@@ -4,7 +4,7 @@
 \alias{readTrees}
 \title{Read trees}
 \usage{
-readTrees(path, format)
+readTrees(path, format = "nexus")
 }
 \arguments{
 \item{path}{(single character string; no default) File path to tree.}
