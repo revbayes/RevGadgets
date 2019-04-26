@@ -47,11 +47,12 @@
 #' trees \emph{Bioinformatics}, \bold{26 (10)}, 1372-1373.
 #'
 #' @export
+#' @importFrom graphics axis par plot.new plot.window strwidth text
 #'
 #' @examples
 #' # generate random trees & data
 #' trees = lapply(1:5, function(x) ape::rcoal(5))
-#' data = lapply(1:5, function(x) runif(9, 1, 10))
+#' data = lapply(1:5, function(x) stats::runif(9, 1, 10))
 #' 
 #' # densiTree plot
 #' densiTreeWithBranchData(trees = trees, data = data, width = 2)
@@ -86,13 +87,13 @@ densiTreeWithBranchData = function(tree_file = NULL, trees = NULL, data = NULL, 
       dplyr::select(x@data, data_name)
     })
     for (i in seq_along(treedata)) {
-      treedata[[i]] = new("treedata", phylo = treedata[[i]]@phylo, data = data[[i]])
+      treedata[[i]] = methods::new("treedata", phylo = treedata[[i]]@phylo, data = data[[i]])
     }
   }
   else {
     data = lapply(data, function(d) dplyr::tbl_df(as.data.frame(d)))
     treedata = lapply(seq_along(trees), function(idx) {
-      new("treedata", phylo = trees[[idx]], data = data[[idx]])
+      methods::new("treedata", phylo = trees[[idx]], data = data[[idx]])
     })
   }
   
@@ -130,7 +131,7 @@ densiTreeWithBranchData = function(tree_file = NULL, trees = NULL, data = NULL, 
   
   nTip <- as.integer(length(consensus$tip.label))
   consensus <- sort_tips_phylo(consensus)
-  consensus <- reorder(consensus, "postorder")
+  consensus <- ape::reorder.phylo(consensus, "postorder")
   
   maxBT <- max(get_MRCA_heights(trees))
   if (scaleX) maxBT <- 1.0
@@ -174,7 +175,7 @@ densiTreeWithBranchData = function(tree_file = NULL, trees = NULL, data = NULL, 
   names(tiporder) <- consensus$tip.label
   
   if (jitter$amount > 0) {
-    if (jitter$random) jit <- runif(length(trees), -jitter$amount, jitter$amount)
+    if (jitter$random) jit <- stats::runif(length(trees), -jitter$amount, jitter$amount)
     else jit <- seq(-jitter$amount, jitter$amount, length = length(trees))
   }
   
@@ -202,12 +203,12 @@ densiTreeWithBranchData = function(tree_file = NULL, trees = NULL, data = NULL, 
       if (jitter$amount > 0) xx <- xx + jit[treeindex]
     }
     e1 <- phylo$edge[, 1]
-    if (type == "cladogram") ape::cladogram.plot(phylo$edge, xx, yy, edge.color = adjustcolor(edge_col, alpha.f = alpha), 
+    if (type == "cladogram") ape::cladogram.plot(phylo$edge, xx, yy, edge.color = grDevices::adjustcolor(edge_col, alpha.f = alpha), 
                                                  edge.width = width, edge.lty = lty)
     if (type == "phylogram") {
       Ntip <- min(e1) - 1L
       Nnode <- phylo$Nnode
-      ape::phylogram.plot(phylo$edge, Ntip, Nnode, xx, yy, horizontal, edge.color = adjustcolor(edge_col, alpha.f = alpha), 
+      ape::phylogram.plot(phylo$edge, Ntip, Nnode, xx, yy, horizontal, edge.color = grDevices::adjustcolor(edge_col, alpha.f = alpha), 
                           edge.width = width, edge.lty = lty)
     }
   }
@@ -232,7 +233,7 @@ sort_tips <- function(x) {
 
 # idem but with phylo
 sort_tips_phylo <- function(x) {
-  x <- reorder(x)
+  x <- ape::reorder.phylo(x)
   nTip <- as.integer(length(x$tip.label))
   e2 <- x$edge[, 2]
   x$tip.label <- x$tip.label[e2[e2 <= nTip]]
@@ -301,7 +302,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
   phy = tdObject@phylo
   ntips = length(phy$tip.label)
   phy$node.label = (ntips+1):(ntips+phy$Nnode)
-  phy <- reorder(phy, order)
+  phy <- ape::reorder.phylo(phy, order)
   index <- match(tdObject@phylo$tip.label, phy$tip.label)
   index.node = match((ntips+1):(ntips+phy$Nnode), phy$node.label)
   
