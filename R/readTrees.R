@@ -13,6 +13,8 @@
 #' @examples
 #' single_tree <- readTrees(path = "data/sub_models/primates_cytb_covariotide_MAP.tre", format = "nexus")
 #' multi_trees <- readTrees(path = "data/sub_models/primates_cytb_covariotide.trees", format = "newick")
+#' 
+#' @export
 
 readTrees <- function(path, format = "nexus"){
 

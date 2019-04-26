@@ -12,6 +12,8 @@
 #' @examples
 #' tree_single <- readAnnTrees(path = "data/comp_method_disc/ase_freeK.tree")
 #' tree_multi <- readAnnTrees(path = "data/nexus_multi_ann.nex")
+#' 
+#' @export
 
 
 readAnnTrees <- function(path){

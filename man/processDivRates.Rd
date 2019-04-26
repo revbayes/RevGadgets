@@ -40,4 +40,5 @@ primates <- processDivRates(speciation_time_log = "data/epi_bd/primates_EBD_spec
                            extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
                            extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rates.log",
                            burnin = 0.25)
+                           
 }

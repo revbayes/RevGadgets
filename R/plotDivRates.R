@@ -30,6 +30,8 @@
 #'                             burnin = 0.25)
 #' # then plot results:
 #' plotDivRates(output = primates)
+#' 
+#' @export
 
 
 plotDivRates <- function(output,

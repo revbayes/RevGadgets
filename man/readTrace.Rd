@@ -42,4 +42,5 @@ rather than as numeric vectors.
 \examples{
 one_trace <- readTrace(path = "data/sub_models/primates_cytb_covariotide.log")
 multi_trace <- readTrace(path = c("data/sub_models/primates_cytb_covariotide_run_1.log","data/sub_models/primates_cytb_covariotide_run_1.log"))
+
 }

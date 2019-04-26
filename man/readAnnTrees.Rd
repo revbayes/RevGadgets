@@ -16,10 +16,11 @@ List of treedata objects ("beastList"), of length one if only one tree provided
 Reads in a tree files containing annotated trees
 }
 \details{
-Reads in a tree file in nexus containing a single or multiple
+Reads in a tree file in nexus format containing a single or multiple
 annotated trees. Relies on TreeIO.
 }
 \examples{
 tree_single <- readAnnTrees(path = "data/comp_method_disc/ase_freeK.tree")
 tree_multi <- readAnnTrees(path = "data/nexus_multi_ann.nex")
+
 }

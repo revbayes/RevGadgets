@@ -50,4 +50,5 @@ primates <- processDivRates(speciation_time_log = "data/epi_bd/primates_EBD_spec
                             burnin = 0.25)
 # then plot results:
 plotDivRates(output = primates)
+
 }

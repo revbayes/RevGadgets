@@ -26,6 +26,8 @@
 #' @examples
 #' one_trace <- readTrace(path = "data/sub_models/primates_cytb_covariotide.log")
 #' multi_trace <- readTrace(path = c("data/sub_models/primates_cytb_covariotide_run_1.log","data/sub_models/primates_cytb_covariotide_run_1.log"))
+#' 
+#' @export
 
 readTrace <- function(path, format = "simple",
                       delim="\t", burnin = 0, check.names = FALSE, ...){

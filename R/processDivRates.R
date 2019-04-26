@@ -27,6 +27,8 @@
 #'                            extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
 #'                            extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rates.log",
 #'                            burnin = 0.25)
+#'                            
+#' @export
 
 processDivRates <- function(speciation_time_log = "",
                             speciation_rate_log = "",
@@ -35,7 +37,6 @@ processDivRates <- function(speciation_time_log = "",
                             burnin = 0.25) {
 
   # enforce argument matching
-
   if (is.character(speciation_time_log) == FALSE) stop("speciation_time_log must be a single character string")
   if (is.character(speciation_rate_log) == FALSE) stop("speciation_rate_log must be a single character string")
   if (is.character(extinction_time_log) == FALSE) stop("extinction_time_log must be a single character string")
