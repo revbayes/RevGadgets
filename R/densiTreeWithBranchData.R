@@ -48,6 +48,7 @@
 #'
 #' @export
 #' @importFrom graphics axis par plot.new plot.window strwidth text
+#' @importClassesFrom tidytree treedata
 #'
 #' @examples
 #' # generate random trees & data
@@ -73,7 +74,7 @@ densiTreeWithBranchData = function(tree_file = NULL, trees = NULL, data = NULL, 
     stop("Please input either trees and data or a tree_file in Nexus format.")
   
   if(is.null(trees) || is.null(data)) {
-    if(!file.exists(tree_file)) stop("Tree file not found")
+    if(!file.exists(tree_file)) stop(paste("Tree file", tree_file, "not found"))
     
     treedata = readAnnTrees(tree_file)
     trees = lapply(treedata, function(x) x@phylo)
