@@ -15,6 +15,10 @@ processDivRates(speciation_time_log = "", speciation_rate_log = "",
 \item{extinction_time_log}{(vector of character strings or single character string; "") Path to extinction times log file(s)}
 
 \item{extinction_rate_log}{(vector of character strings or single character string; "") Path to extinction rates log file(s)}
+
+\item{burnin}{(single numeric value; default = 0) Fraction of generations to
+discard (if value provided is between 0 and 1) or number of generations (if
+value provided is greater than 1). Passed to readTrace().}
 }
 \value{
 List object with processed rate and time parameters.
@@ -35,9 +39,19 @@ must be combined before reading into the function).
 }
 \examples{
 
-primates <- processDivRates(speciation_time_log = "data/epi_bd/primates_EBD_speciation_times.log",
-                           speciation_rate_log = "data/epi_bd/primates_EBD_speciation_rates.log",
-                           extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
-                           extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rates.log",
-                           burnin = 0.25)
+
+\dontrun{
+
+speciation_time_file <- system.file("extdata","epi_bd/primates_EBD_speciation_times.log", package="RevGadgets")
+speciation_rate_file <- system.file("extdata","epi_bd/primates_EBD_speciation_rates.log", package="RevGadgets")
+extinction_time_file <- system.file("extdata","epi_bd/primates_EBD_extinction_times.log", package="RevGadgets")
+extinction_rate_file <- system.file("extdata","epi_bd/primates_EBD_extinction_rates.log", package="RevGadgets")
+
+primates <- processDivRates(speciation_time_log = speciation_time_file,
+                            speciation_rate_log = speciation_rate_file,
+                            extinction_time_log = extinction_time_file,
+                            extinction_rate_log = extinction_rate_file,
+                            burnin = 0.25)
+}
+
 }
