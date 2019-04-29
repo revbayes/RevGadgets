@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# mac files
+.DS_Store
+._*
