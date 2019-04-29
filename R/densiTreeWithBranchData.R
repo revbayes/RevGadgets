@@ -4,8 +4,7 @@
 #' The plot is similar to those produced by DensiTree, i.e all the trees are overlapped with each other. 
 #' The data is expected to be given per node, and will be associated with the branch above its corresponding node. Its values are plotted as a color gradient.
 #' 
-#' If no consensus tree is provided, a consensus tree will be computed and if the input trees have different labels a mrp.supertree is used as a backbone.
-#' This should avoid too many unnecessary crossings of edges.
+#' If no consensus tree is provided, a consensus tree will be computed. This should avoid too many unnecessary crossings of edges.
 #' Trees should be rooted, other wise the output may not be visually pleasing.
 #' The \code{jitter} parameter controls whether to shift trees so that they are not exactly on top of each other.
 #' If \code{amount = 0}, no jitter is applied. If \code{random = TRUE}, the applied jitter is calculated as \code{runif(n, -amount, amount)}, 

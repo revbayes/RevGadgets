@@ -39,7 +39,7 @@ This function processes the output of the episodic birth-death process tutorial 
 #' (i.e. interval_times[1]) corresponds to the first time interval after the present,
 #' moving backwards in time. processDivRates() relies on readTrace and produces a list
 #' object that can be read by plotDivRates() to vizualize the results. For now,
-#' only one log file per parameter type is accepted (i.e. log files from multipe runs
+#' only one log file per parameter type is accepted (i.e. log files from multiple runs
 #' must be combined before reading into the function).
 #'
 #'@param speciation_time_log (vector of character strings or single character string; "") Path to speciation times log file(s)
@@ -341,7 +341,7 @@ Each function should be defined in an R script with the name of the function as 
 
 ## Package Dependencies
 
-Your functions may depend on objects or functions from other pacakges, such as ape, ggtree, etc. Please do not load in packages within functions. All packages that RevGadgets functions depend on should be included in the Depends line of the Description file, located in the base directory.
+Your functions may depend on objects or functions from other packages, such as ape, ggtree, etc. Please do not load in packages within functions. All packages that RevGadgets functions depend on should be included in the Depends line of the Description file, located in the base directory.
 
 ```{r, eval = FALSE}
 Encoding: UTF-8
@@ -357,7 +357,7 @@ By including dependency packages here, this ensures that the dependencies will b
 
 ## Document Function
 
-We will use the package roxygen2 to document functions. Function documention should occur at the very beginning of the source file. In plotDivRates.R, this documentions appears as: 
+We will use the package roxygen2 to document functions. Function documentation should occur at the very beginning of the source file. In plotDivRates.R, this documentation appears as: 
 ```{r, eval = FALSE}
 #' Plot Diversification Rates
 #'
@@ -393,9 +393,9 @@ We will use the package roxygen2 to document functions. Function documention sho
 #' plotDivRates(output = primates)
 ```
 
-Roxygen2 documentions begins with #' to distinguish it from other comments in the file. The first sentence becomes the function title and should be formatted as a sentence. The second paragraph is the description of the function and should briefly describe the purpose of the function. The third and any additional paragraphs correpsond to the Details section of the function documention, and should provide a more comprehensive description of the function. 
+Roxygen2 documentation begins with #' to distinguish it from other comments in the file. The first sentence becomes the function title and should be formatted as a sentence. The second paragraph is the description of the function and should briefly describe the purpose of the function. The third and any additional paragraphs correspond to the Details section of the function documentation, and should provide a more comprehensive description of the function. 
 
-The tag **@param** should be used to specify all parameters of the function, including information about the necesary format, default value (if exists), and a description of its purpose and/or possible values. For example, we have defined the path parameter as:
+The tag **@param** should be used to specify all parameters of the function, including information about the necessary format, default value (if exists), and a description of its purpose and/or possible values. For example, we have defined the path parameter as:
 ```{r, eval = FALSE}
 #'@param output (list; no default) The processed output for plotting (output of processDivRates()).
 ```
@@ -406,7 +406,7 @@ The tag **@return** describes the object that the function returns (in this case
 
 Finally the tag **@examples** provides the user with examples of the function in use. Often, it is most useful to provide multiple examples that encompass the variety of parameters and uses. 
 
-For more information on proper documentation of functions, refer to the roxygen2 pacakge information.
+For more information on proper documentation of functions, refer to the roxygen2 package information.
 
 ## Write Function
 
@@ -607,7 +607,7 @@ The tasks that the function will perform are defined within curly brackets follo
 
 ```
 
-The stop command is used to provide informative error messages if these checks are false. match.arg() ensures that the paramter value is one of only a few designed options. If the user inputs a value that is not included in the choices for match.arg(), the function will stop and inform the user that values must be either of the options ("n" or "s" for xaxt and yaxt in this example). This works well  for single values, but if the user may supply any number of potential options in a vector, we check that the supplied values fall within our predetermined possible values (in fig_type, for example, only four options are currently permitted). 
+The stop command is used to provide informative error messages if these checks are false. match.arg() ensures that the parameter value is one of only a few designed options. If the user inputs a value that is not included in the choices for match.arg(), the function will stop and inform the user that values must be either of the options ("n" or "s" for xaxt and yaxt in this example). This works well  for single values, but if the user may supply any number of potential options in a vector, we check that the supplied values fall within our predetermined possible values (in fig_type, for example, only four options are currently permitted). 
 
 Next, the function performs its task, in our case producing plots from processed log files. We have designed the function to accept user provided colors as hex codes, but if the user does  not specify colors for the plots, we assign them at the beginning. Next, we compute our axes for the plots based on the processed rates and assign labels to the x axes. Finally, we loop through each desired plot type, calculating means and quantiles from the posteriors and plotting the results.
 
@@ -724,7 +724,7 @@ test_that("processes birth-death scripts", {
 
 ```
 
-Each function should have an associated testing script that tests various functionalities. As the creater of the function, it is up to you to choose which types of tests will be most informative in catching potential errors. We recommend erring on the side of including tests that seem redundent or unnecessary, because changes in dependency packages, or other unexpected events, can cause errors that you may not expect. We also recommend that if you ever find a bug in your code, you design a test to catch the bug if it were to ever happen again. 
+Each function should have an associated testing script that tests various functionalities. As the creator of the function, it is up to you to choose which types of tests will be most informative in catching potential errors. We recommend erring on the side of including tests that seem redundant or unnecessary, because changes in dependency packages, or other unexpected events, can cause errors that you may not expect. We also recommend that if you ever find a bug in your code, you design a test to catch the bug if it were to ever happen again. 
 
 The test_that() function defines a test that checks that the outcome of your function matches what you expect. In this example, we define one test for reading in a set of four log files.
 
