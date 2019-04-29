@@ -25,9 +25,9 @@ readTrees <- function(path, format = "nexus"){
   format <- match.arg(format, choices = c("nexus", "newick"))
 
     if (format == "nexus") {
-    tree <- read.nexus(file = path)
+    tree <- ape::read.nexus(file = path)
   } else if (format == "newick") {
-    tree <- read.tree(file = path)
+    tree <- ape::read.tree(file = path)
   }
 
   # convert to type multiPhylo for consistency

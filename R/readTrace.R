@@ -28,6 +28,7 @@
 #' multi_trace <- readTrace(path = c("data/sub_models/primates_cytb_covariotide_run_1.log","data/sub_models/primates_cytb_covariotide_run_1.log"))
 #' 
 #' @export
+#' @importFrom utils read.table
 
 readTrace <- function(path, format = "simple",
                       delim="\t", burnin = 0, check.names = FALSE, ...){

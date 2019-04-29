@@ -25,7 +25,7 @@ readAnnTrees <- function(path){
 
   # read in tree(s) using TreeIO
 
-  t <- read.beast(file = path)
+  t <- treeio::read.beast(file = path)
 
   if (class(t) == "treedata") {
     t <- list(t)

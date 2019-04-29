@@ -32,6 +32,8 @@
 #' plotDivRates(output = primates)
 #' 
 #' @export
+#' @importFrom graphics plot polygon
+#' @importFrom stats quantile
 
 
 plotDivRates <- function(output,
