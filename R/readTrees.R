@@ -13,10 +13,12 @@
 #' @examples
 #'
 #' \dontrun{
-#' file <- system.file("extdata","sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
+#' file <- system.file("extdata",
+#'     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
 #' single_tree <- readTrees(path = file, format = "nexus")
 #'
-#' file <- system.file("extdata","sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
+#' file <- system.file("extdata",
+#'     "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
 #' multi_trees <- readTrees(path = file, format = "newick")
 #' }
 
