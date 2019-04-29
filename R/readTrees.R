@@ -33,15 +33,15 @@ readTrees <- function(path, format){
   # read in tree(s) of type nexus or newick
 
   if (format == "nexus") {
-    tree <- read.nexus(file = path)
+    tree <- ape::read.nexus(file = path)
   } else if (format == "newick") {
-    tree <- read.tree(file = path)
+    tree <- ape::read.tree(file = path)
   }
 
   # convert to type multiPhylo for consistency
 
   if (class(tree) == "phylo") {
-    tree <- c.phylo(tree)
+    tree <- ape::c.phylo(tree)
   } else if (class(tree) != "multiPhylo") {
     stop ("tree(s) not of type phylo or multiPhylo")
   }
