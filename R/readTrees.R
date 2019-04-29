@@ -41,7 +41,7 @@ readTrees <- function(path, format){
   # convert to type multiPhylo for consistency
 
   if (class(tree) == "phylo") {
-    tree <- c.phylo(tree)
+    tree <- c(tree)
   } else if (class(tree) != "multiPhylo") {
     stop ("tree(s) not of type phylo or multiPhylo")
   }
