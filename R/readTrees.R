@@ -11,8 +11,16 @@
 #' @return Object of type multiPhylo, with length one if only one tree provided
 #'
 #' @examples
-#' single_tree <- readTrees(path = "data/sub_models/primates_cytb_covariotide_MAP.tre", format = "nexus")
-#' multi_trees <- readTrees(path = "data/sub_models/primates_cytb_covariotide.trees", format = "newick")
+#'
+#' \dontrun{
+#' file <- system.file("extdata",
+#'     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
+#' single_tree <- readTrees(path = file, format = "nexus")
+#'
+#' file <- system.file("extdata",
+#'     "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
+#' multi_trees <- readTrees(path = file, format = "newick")
+#' }
 
 readTrees <- function(path, format){
 
@@ -25,15 +33,15 @@ readTrees <- function(path, format){
   # read in tree(s) of type nexus or newick
 
   if (format == "nexus") {
-    tree <- read.nexus(file = path)
+    tree <- ape::read.nexus(file = path)
   } else if (format == "newick") {
-    tree <- read.tree(file = path)
+    tree <- ape::read.tree(file = path)
   }
 
   # convert to type multiPhylo for consistency
 
   if (class(tree) == "phylo") {
-    tree <- c.phylo(tree)
+    tree <- c(tree)
   } else if (class(tree) != "multiPhylo") {
     stop ("tree(s) not of type phylo or multiPhylo")
   }

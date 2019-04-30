@@ -42,12 +42,24 @@ object. For now, valid figure types include: "speciation rate",
 If colors are not provided (parameter col), the plot defaults to preset colors.
 }
 \examples{
+
+\dontrun{
 # first run processDivRates()
-primates <- processDivRates(speciation_time_log = "data/epi_bd/primates_EBD_speciation_times.log",
-                            speciation_rate_log = "data/epi_bd/primates_EBD_speciation_rates.log",
-                            extinction_time_log = "data/epi_bd/primates_EBD_extinction_times.log",
-                            extinction_rate_log = "data/epi_bd/primates_EBD_extinction_rates.log",
+speciation_time_file <- system.file("extdata",
+    "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
+speciation_rate_file <- system.file("extdata",
+    "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")
+extinction_time_file <- system.file("extdata",
+    "epi_bd/primates_EBD_extinction_times.p", package="RevGadgets")
+extinction_rate_file <- system.file("extdata",
+    "epi_bd/primates_EBD_extinction_rates.p", package="RevGadgets")
+
+primates <- processDivRates(speciation_time_log = speciation_time_file,
+                            speciation_rate_log = speciation_rate_file,
+                            extinction_time_log = extinction_time_file,
+                            extinction_rate_log = extinction_rate_file,
                             burnin = 0.25)
 # then plot results:
 plotDivRates(output = primates)
+}
 }
