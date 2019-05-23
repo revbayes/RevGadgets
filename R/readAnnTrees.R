@@ -10,10 +10,18 @@
 #' @return List of treedata objects ("beastList"), of length one if only one tree provided
 #'
 #' @examples
-#' tree_single <- readAnnTrees(path = "data/comp_method_disc/ase_freeK.tree")
-#' tree_multi <- readAnnTrees(path = "data/nexus_multi_ann.nex")
-#' 
+#'
+#' \dontrun{
+#' tree_single_file <- system.file("extdata",
+#'     "comp_method_disc/ase_freeK.tree", package="RevGadgets")
+#' tree_single <- readAnnTrees(path = tree_single_file)
+#'
+#' tree_multi_file <- system.file("extdata",
+#'     "nexus_multi_ann.nex", package="RevGadgets")
+#' tree_multi <- readAnnTrees(path = tree_multi_file)
+#'
 #' @export
+#' @importFrom treeio read.beast
 
 
 readAnnTrees <- function(path){
