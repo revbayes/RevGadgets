@@ -22,11 +22,6 @@ Reads in a tree file in either nexus or newick format, and containing a single t
 or multiple trees (as in the results of a Bayesian analysis).
 }
 \examples{
-<<<<<<< HEAD
-single_tree <- readTrees(path = "data/sub_models/primates_cytb_covariotide_MAP.tre", format = "nexus")
-multi_trees <- readTrees(path = "data/sub_models/primates_cytb_covariotide.trees", format = "newick")
-
-=======
 
 \dontrun{
 file <- system.file("extdata",
@@ -37,5 +32,5 @@ file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
 multi_trees <- readTrees(path = file, format = "newick")
 }
->>>>>>> travis
+
 }

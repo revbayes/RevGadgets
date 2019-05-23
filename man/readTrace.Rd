@@ -40,11 +40,6 @@ format = "complex", readTrace() will read in those columns as factors
 rather than as numeric vectors.
 }
 \examples{
-<<<<<<< HEAD
-one_trace <- readTrace(path = "data/sub_models/primates_cytb_covariotide.log")
-multi_trace <- readTrace(path = c("data/sub_models/primates_cytb_covariotide_run_1.log","data/sub_models/primates_cytb_covariotide_run_1.log"))
-
-=======
 
 \dontrun{
 file <- system.file("extdata",
@@ -52,5 +47,4 @@ file <- system.file("extdata",
 one_trace <- readTrace(path = file)
 multi_trace <- readTrace(path = c(file, file))
 }
->>>>>>> travis
 }

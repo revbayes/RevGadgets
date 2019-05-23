@@ -61,6 +61,6 @@ primates <- processDivRates(speciation_time_log = speciation_time_file,
                             burnin = 0.25)
 # then plot results:
 plotDivRates(output = primates)
-
 }
+
 }
