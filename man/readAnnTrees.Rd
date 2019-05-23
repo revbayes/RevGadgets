@@ -19,8 +19,3 @@ Reads in a tree files containing annotated trees
 Reads in a tree file in nexus format containing a single or multiple
 annotated trees. Relies on TreeIO.
 }
-\examples{
-tree_single <- readAnnTrees(path = "data/comp_method_disc/ase_freeK.tree")
-tree_multi <- readAnnTrees(path = "data/nexus_multi_ann.nex")
-
-}
