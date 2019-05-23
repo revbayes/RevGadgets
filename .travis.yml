@@ -1,0 +1,19 @@
+language: r
+r: devel
+cache: packages
+warnings_are_errors: false
+
+r_build_args: --no-build-vignettes --no-manual
+r_check_args: --no-build-vignettes --no_manual --timings
+
+
+r_github_packages:
+ - GuangchuangYu/ggtree
+
+addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:opencpu/imagemagick'
+    packages:
+      - libmagick++-dev
