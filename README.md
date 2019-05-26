@@ -1,6 +1,6 @@
 # RevGadgets 
 ### GitHub and RStudio 
-This repository contains all files associated with the RevGadgets R package. To start adding functionality to this package, fork this repository. We recommend that you use RStudio for package development. If you don't already have RStudio, you can download the latest version [here](https://www.rstudio.com/products/rstudio/download/). 
+This repository contains all files associated with the RevGadgets R package. To start adding functionality to this package, please work with the development branch. We recommend that you use RStudio for package development. If you don't already have RStudio, you can download the latest version [here](https://www.rstudio.com/products/rstudio/download/). 
 
 Once you have RStudio installed, you can link your forked GitHub repository with RStudio. To do this, open RStudio and select File > New Project. Select Version Control and then Git. Paste in the URL to your forked repository and fill out the other required fields. This will automatically clone the repository to the directory you indicated while setting up the project. 
 
@@ -9,4 +9,4 @@ Once this has been set up, you'll see 4 sections in the RStudio application. Wit
 
 To start developing, create files for your functions as per the developer's guide, which can be found in RevGadgets > vignettes > developers_guide.Rmd. You can test out the package by building it, either through the Build window in RStudio or through shift-command-B (on a Mac). You can check your test files either through the RStudio Build window options or through shift-command-T (on a Mac). 
 
-Happy developing! 
+Happy developing! Feel free to contact Carrie Tribble (cmt2@berkeley.edu) with any questions.
