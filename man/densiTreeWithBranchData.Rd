@@ -20,7 +20,7 @@ Either \code{tree_file} or both \code{trees} and \code{data} have to be specifie
 \item{trees}{multiPhylo object or list of trees in phylo format. All trees should have the same tip labels (the order can change).
 Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.}
 
-\item{data}{data to be plotted on the tree - expected to be a list of vectors in the same order as the trees, 
+\item{data}{data to be plotted on the tree - expected to be a list of vectors in the same order as the trees,
 each vector in the order of the tips and nodes of the corresponding tree}
 
 \item{data_name}{Only used when reading from \code{tree_file}. Name of the data to be plotted, if multiple are present.}
@@ -61,21 +61,21 @@ each vector in the order of the tips and nodes of the corresponding tree}
 
 \item{bias}{bias applied to the color gradient. See \code{\link[grDevices]{colorRampPalette}} for more details.}
 
-\item{data_intervals}{value intervals used for the color gradient. Can be given as a vector of interval boundaries or min and max values. 
+\item{data_intervals}{value intervals used for the color gradient. Can be given as a vector of interval boundaries or min and max values.
 If NULL will be set based on the data.}
 
 \item{\dots}{further arguments to be passed to plot.}
 }
 \description{
 This function plots a distribution of trees (e.g obtained from an MCMC inference) with branch-specific rates or other data.
-The plot is similar to those produced by DensiTree, i.e all the trees are overlapped with each other. 
+The plot is similar to those produced by DensiTree, i.e all the trees are overlapped with each other.
 The data is expected to be given per node, and will be associated with the branch above its corresponding node. Its values are plotted as a color gradient.
 }
 \details{
 If no consensus tree is provided, a consensus tree will be computed. This should avoid too many unnecessary crossings of edges.
 Trees should be rooted, other wise the output may not be visually pleasing.
 The \code{jitter} parameter controls whether to shift trees so that they are not exactly on top of each other.
-If \code{amount = 0}, no jitter is applied. If \code{random = TRUE}, the applied jitter is calculated as \code{runif(n, -amount, amount)}, 
+If \code{amount = 0}, no jitter is applied. If \code{random = TRUE}, the applied jitter is calculated as \code{runif(n, -amount, amount)},
 otherwise \code{seq(-amount, amount, length=n)}, where \code{n} is the number of trees.
 }
 \examples{
@@ -88,6 +88,7 @@ densiTreeWithBranchData(trees = trees, data = data, width = 2)
 
 # densiTree plot with different colors
 densiTreeWithBranchData(trees = trees, data = data, color_gradient = c("green", "blue"), width = 2)
+
 }
 \references{
 This code is adapted from the \code{\link[phangorn]{densiTree}} function by Klaus Schliep \email{klaus.schliep@gmail.com}.
