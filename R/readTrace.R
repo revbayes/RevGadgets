@@ -13,7 +13,7 @@
 #' MCMC trace, complex indicates cases where trace contains vectors of vectors/
 #' matrices - mnStochasticVariable monitor will sometimes be of this type.
 #' @param delim (single character string; default = "\\t") Delimiter of file.
-#' @param burnin (single numeric value; default = 0) Fraction of generations to
+#' @param burnin (single numeric value; default = 0.1) Fraction of generations to
 #' discard (if value provided is between 0 and 1) or number of generations (if
 #' value provided is greater than 1).
 #' @param check.names (logical; default = FALSE) Passed to read.table(); indicates
@@ -35,7 +35,7 @@
 #' @importFrom utils read.table
 
 readTrace <- function(path, format = "simple",
-                      delim="\t", burnin = 0, check.names = FALSE, ...){
+                      delim="\t", burnin = 0.1, check.names = FALSE, ...){
 
   # enforce argument matching
 
@@ -101,7 +101,7 @@ readTrace <- function(path, format = "simple",
         output[[i]] <- out
       } else {
         stop("What have you done?")
-        }
+      }
     }
   } else if (format == "complex") {
     stop("Complex trace type currently not supported")

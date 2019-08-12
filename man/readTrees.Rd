@@ -4,15 +4,22 @@
 \alias{readTrees}
 \title{Read trees}
 \usage{
-readTrees(path, format = "nexus")
+readTrees(paths, tree_name = "psi", burnin = 0.1, verbose = TRUE,
+  ...)
 }
 \arguments{
-\item{path}{(single character string; no default) File path to tree.}
+\item{paths}{(vector of character strings; no default) File path(s) to tree(s).}
 
-\item{format}{(single character string; nexus) Format of tree file: nexus or newick}
+\item{tree_name}{(character string; default psi) Name of the tree variable.}
+
+\item{burnin}{(single numeric value; default = 0.1) Fraction of generations to
+discard (if value provided is between 0 and 1) or number of generations (if
+value provided is greater than 1).}
+
+\item{verbose}{(logical; default true) Display a status bar?}
 }
 \value{
-Object of type multiPhylo, with length one if only one tree provided
+A list (across runs) of lists (across samples) of treedata objects.
 }
 \description{
 Reads in a tree file containing one or multiple trees
@@ -24,13 +31,6 @@ or multiple trees (as in the results of a Bayesian analysis).
 \examples{
 
 \dontrun{
-file <- system.file("extdata",
-    "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
-single_tree <- readTrees(path = file, format = "nexus")
-
-file <- system.file("extdata",
-    "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
-multi_trees <- readTrees(path = file, format = "newick")
 }
 
 }
