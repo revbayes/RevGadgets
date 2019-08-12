@@ -76,8 +76,8 @@ densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL,
   if(is.null(trees) || is.null(data)) {
     if(!file.exists(tree_file)) stop(paste("Tree file", tree_file, "not found"))
 
-    treedata <- readAnnTrees(tree_file)
-    trees <- lapply(treedata, function(x) x@phylo)
+    treedata <- readTrees(tree_file)[[1]]
+    trees <- lapply(treedata,function(x) x@phylo)
     class(trees) <- c(class(trees), "multiPhylo")
     data <- lapply(treedata, function(x) {
       if(is.null(data_name)) {
