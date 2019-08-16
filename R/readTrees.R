@@ -21,7 +21,7 @@
 #'
 #' @export
 
-readTrees <- function(paths, tree_name =  "psi", burnin = 0.1, verbose =  TRUE, ...) {
+readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...) {
 
   # enforce argument matching
   character_paths_are_strings <- is.character(paths)
@@ -42,7 +42,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0.1, verbose =  TRUE, 
 
   all_nexus <- sapply(paths, isNexusFile)
   if ( all(all_nexus == TRUE) ) {
-    trees <- lapply(paths, readNexusTrees, ...)
+    trees <- lapply(paths, readNexusTrees, burnin = burnin, verbose = verbose, ...)
   } else if ( all(all_nexus == FALSE) ) {
     n_paths  <- length(paths)
     trees    <- vector("list", n_paths)
@@ -51,10 +51,8 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0.1, verbose =  TRUE, 
       trees[[i]] <- readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose, ...)
     }
   } else {
-    stop("Write a good error message here.")
+    stop("All files should be of the same format.")
   }
-
-  recover()
 
   return(trees)
 

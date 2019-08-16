@@ -10,20 +10,46 @@ parseTreeString <- function(string) {
   return(obj)
 }
 
-readNexusTrees <- function(path, ...) {
+readNexusTrees <- function(path, burnin, verbose, ...) {
 
   # read the lines
   lines <- readLines(path)
 
   # the line with a tree
-  tree_line <- lines[grep("begin trees;", lines, ignore.case=TRUE) + 1]
+  tree_strings <- lines[grep("tree ", lines, ignore.case=FALSE)]
 
-  # return the tree string
-  return(list(parseTreeString(tree_line)))
+  # discard burnin (if provided)
+  if (burnin >= 1) {
+    tree_strings <- tree_strings[(burnin+1):length(tree_strings)]
+  } else if (burnin < 1 & burnin > 0) {
+    discard <- ceiling(burnin*length(tree_strings))
+    tree_strings <- tree_strings[(discard+1):length(tree_strings)]
+  } else if (burnin == 0) {
+    tree_strings <- tree_strings
+  } else {
+    stop("What have you done?")
+  }
+
+  # get the trees
+  n_trees <- length(tree_strings)
+  if ( verbose == TRUE ) {
+    bar <- txtProgressBar(style=3, width=40)
+  }
+  trees <- vector("list", n_trees)
+  for(i in 1:n_trees) {
+    trees[[i]] <- parseTreeString( tree_strings[i] )
+    if ( verbose == TRUE ) { setTxtProgressBar(bar, i / n_trees)  }
+  }
+  if ( verbose == TRUE ) {
+    cat("\n")
+  }
+
+  # return the trees
+  return(trees)
 
 }
 
-readTreeLogs <- function(path, tree_name, burnin, verbose=TRUE, ...) {
+readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
 
   # read the samples
   samples <- read.table(path, header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
@@ -56,7 +82,7 @@ readTreeLogs <- function(path, tree_name, burnin, verbose=TRUE, ...) {
   trees <- vector("list", n_trees)
   for(i in 1:n_trees) {
     trees[[i]] <- parseTreeString( tree_strings[i] )
-    setTxtProgressBar(bar, i / n_trees)
+    if ( verbose == TRUE ) { setTxtProgressBar(bar, i / n_trees)  }
   }
   if ( verbose == TRUE ) {
     cat("\n")

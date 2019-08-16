@@ -1,18 +1,18 @@
 context("tests the readTrees function")
 
-test_that("reads single tree", {
+test_that("reads single nexus tree", {
   file <- system.file("extdata", "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
-  tree_single <- readTrees(path = file, format = "nexus")
+  tree_single <- readTrees(paths = file)
   expect_equal(length(tree_single), 1)
-  expect_equal(class(tree_single), "multiPhylo")
-  expect_equal(length(tree_single[[1]]$tip.label), 23)
+  expect_equal(class(tree_single), "list")
+  expect_equal(length(tree_single[[1]][[1]]@phylo$tip.label), 23)
 })
 
-test_that("reads multi tree", {
+test_that("reads tree trace", {
   file <- system.file("extdata", "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
-  tree_multi <- readTrees(path = file, format = "newick")
-  expect_equal(length(tree_multi), 4002)
-  expect_equal(class(tree_multi), "multiPhylo")
-  expect_equal(length(tree_multi[[1]]$tip.label), 23)
+  tree_multi <- readTrees(path = file)
+  expect_equal(length(tree_multi[[1]]), 4002)
+  expect_equal(class(tree_multi[[1]]), "list")
+  expect_equal(length(tree_multi[[1]][[1]]@phylo$tip.label), 23)
 })
 
