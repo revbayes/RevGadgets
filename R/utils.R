@@ -32,7 +32,18 @@ findTreeLines <- function(lines) {
   tree_block <- lines[start_tree_block : end_tree_block]
 
   # pull out trees
-  tree_strings <- tree_block[grep("tree ", tree_block, ignore.case=TRUE)]
+
+  # find all starting lines by searching for "tree"
+  trees_start <- grep("tree ", tree_block, ignore.case=TRUE)
+  # find all ending lines by searching for ";" except for the last line of the tree block
+  semicols <- grep("\\;", tree_block)
+  semicols <- semicols[ semicols >= trees_start[1] ]
+  trees_end <- semicols[ 1 : (length(semicols) - 1) ]
+  # if tree are each on one line, return tree strings, else concatenate multiple lines
+  if (all(trees_start  == trees_end)) {
+    tree_strings <- tree_block[grep("tree ", tree_block, ignore.case=TRUE)]
+  } else {stop("RevGadgets currently doesn't support line breaks in trees in nexus files")}
+  #  search  for  semicolon to signal end of line
 
   # return tree strings
   return(tree_strings)
