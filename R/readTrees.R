@@ -17,9 +17,13 @@
 #' @examples
 #'
 #' \dontrun{
+#'
+#'
+#'
 #'}
 #'
 #' @export
+#' @importFrom utils read.table
 
 readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...) {
 
@@ -56,22 +60,4 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...
 
   return(trees)
 
-#  # read in tree(s) of type nexus or newick
-#
-#  if (format == "nexus") {
-#    tree <- ape::read.nexus(file = path)
-#  } else if (format == "newick") {
-#    tree <- ape::read.tree(file = path)
-#  }
-#
-#  # convert to type multiPhylo for consistency
-#
-#  if (class(tree) == "phylo") {
-#    tree <- c(tree)
-#  } else if (class(tree) != "multiPhylo") {
-#    stop ("tree(s) not of type phylo or multiPhylo")
-#  }
-#
-#  return(tree)
-#
 }

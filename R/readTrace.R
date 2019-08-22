@@ -8,7 +8,7 @@
 #' format = "complex", readTrace() will read in those columns as factors
 #' rather than as numeric vectors.
 #'
-#' @param path (vector of character strings; no default) File path(s) to trace file.
+#' @param paths (vector of character strings; no default) File path(s) to trace file.
 #' @param format (single character string; default = simple) Indicates type of
 #' MCMC trace, complex indicates cases where trace contains vectors of vectors/
 #' matrices - mnStochasticVariable monitor will sometimes be of this type.
@@ -28,30 +28,30 @@
 #' \dontrun{
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
-#' one_trace <- readTrace(path = file)
-#' multi_trace <- readTrace(path = c(file, file))
+#' one_trace <- readTrace(paths = file)
+#' multi_trace <- readTrace(paths = c(file, file))
 #' }
 #' @export
 #' @importFrom utils read.table
 
-readTrace <- function(path, format = "simple",
+readTrace <- function(paths, format = "simple",
                       delim="\t", burnin = 0.1, check.names = FALSE, ...){
 
   # enforce argument matching
 
-  character_paths_are_strings <- is.character(path)
+  character_paths_are_strings <- is.character(paths)
   if ( any(character_paths_are_strings == FALSE) == TRUE ) {
     # print out the ones that are not character strings
     cat( "Some paths are not character strings:",
-         paste0("\t",path[character_paths_are_strings == FALSE]), sep="\n")
+         paste0("\t",paths[character_paths_are_strings == FALSE]), sep="\n")
     stop()
   }
 
-  do_files_exist <- file.exists(path)
+  do_files_exist <- file.exists(paths)
   if ( any(do_files_exist == FALSE) == TRUE ) {
     # print out paths to files that don't exist
     cat( "Some files do not exist:",
-         paste0("\t",path[do_files_exist == FALSE]), sep="\n")
+         paste0("\t",paths[do_files_exist == FALSE]), sep="\n")
     stop()
   }
 
@@ -62,13 +62,13 @@ readTrace <- function(path, format = "simple",
   if (is.numeric(burnin) == FALSE) stop("burnin must be a single numeric value")
   if (burnin < 0) stop("burnin must be a positive value")
 
-  num_paths <- length(path)
+  num_paths <- length(paths)
 
   # check that the file headings match for all traces
 
   header <- vector("list", num_paths)
   for (i in 1:num_paths) {
-    header[[i]] <- colnames(read.table(file = path[i], header = TRUE, sep = delim, check.names = check.names, nrows=0))
+    header[[i]] <- colnames(read.table(file = paths[i], header = TRUE, sep = delim, check.names = check.names, nrows=0))
   }
 
   all_headers <- unique(unlist(header))
@@ -87,7 +87,7 @@ readTrace <- function(path, format = "simple",
 
       cat(paste0("Reading in log file ",i),"\n",sep="")
 
-      out <- read.table(file = path[i], header = TRUE,
+      out <- read.table(file = paths[i], header = TRUE,
                         sep = delim, check.names = check.names, ...)
 
       if (burnin >= nrow(out)) stop("Burnin larger than provided trace file")

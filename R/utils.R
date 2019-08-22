@@ -1,4 +1,5 @@
 # Non-exported utility functions for RevGadgets
+
 buildTranslateDictionary <- function(lines) {
 
   start_tree_block <- grep("begin trees;", lines, ignore.case = TRUE)
@@ -39,6 +40,7 @@ findTreeLines <- function(lines) {
   semicols <- grep("\\;", tree_block)
   semicols <- semicols[ semicols >= trees_start[1] ]
   trees_end <- semicols[ 1 : (length(semicols) - 1) ]
+  print(trees_end)
   # if tree are each on one line, return tree strings, else concatenate multiple lines
   if (all(trees_start  == trees_end)) {
     tree_strings <- tree_block[grep("tree ", tree_block, ignore.case=TRUE)]
@@ -50,6 +52,7 @@ findTreeLines <- function(lines) {
 
 }
 
+#' @importFrom utils read.table
 isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
 parseTreeString <- function(string) {
@@ -154,3 +157,4 @@ readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
   return(trees)
 
 }
+

@@ -30,6 +30,9 @@ or multiple trees (as in the results of a Bayesian analysis).
 \examples{
 
 \dontrun{
+
+
+
 }
 
 }

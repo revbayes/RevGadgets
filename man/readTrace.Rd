@@ -4,11 +4,11 @@
 \alias{readTrace}
 \title{Read trace}
 \usage{
-readTrace(path, format = "simple", delim = "\\t", burnin = 0.1,
+readTrace(paths, format = "simple", delim = "\\t", burnin = 0.1,
   check.names = FALSE, ...)
 }
 \arguments{
-\item{path}{(vector of character strings; no default) File path(s) to trace file.}
+\item{paths}{(vector of character strings; no default) File path(s) to trace file.}
 
 \item{format}{(single character string; default = simple) Indicates type of
 MCMC trace, complex indicates cases where trace contains vectors of vectors/
@@ -44,7 +44,7 @@ rather than as numeric vectors.
 \dontrun{
 file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
-one_trace <- readTrace(path = file)
-multi_trace <- readTrace(path = c(file, file))
+one_trace <- readTrace(paths = file)
+multi_trace <- readTrace(paths = c(file, file))
 }
 }
