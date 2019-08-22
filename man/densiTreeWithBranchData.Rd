@@ -4,18 +4,20 @@
 \alias{densiTreeWithBranchData}
 \title{DensiTree-style plot with branch-specific data}
 \usage{
-densiTreeWithBranchData(tree_file = NULL, trees = NULL, data = NULL,
-  data_name = NULL, type = "cladogram", consensus = NULL,
-  direction = "rightwards", scaleX = FALSE, width = 1, lty = 1,
-  cex = 0.8, font = 3, tip.color = 1, adj = 0, srt = 0,
-  keep_underscores = FALSE, label_offset = 0.01, scale_bar = TRUE,
-  jitter = list(amount = 0, random = TRUE), color_gradient = c("red",
-  "yellow", "green"), alpha = NULL, bias = 1, data_intervals = NULL,
-  ...)
+densiTreeWithBranchData(tree_files = NULL, burnin = 0.1,
+  trees = NULL, data = NULL, data_name = NULL, type = "cladogram",
+  consensus = NULL, direction = "rightwards", scaleX = FALSE,
+  width = 1, lty = 1, cex = 0.8, font = 3, tip.color = 1,
+  adj = 0, srt = 0, keep_underscores = FALSE, label_offset = 0.01,
+  scale_bar = TRUE, jitter = list(amount = 0, random = TRUE),
+  color_gradient = c("red", "yellow", "green"), alpha = NULL,
+  bias = 1, data_intervals = NULL, ...)
 }
 \arguments{
-\item{tree_file}{tree file in NEXUS format with data attached to the branches/nodes of the tree. All trees should have the same tip labels (the order can change).
-Either \code{tree_file} or both \code{trees} and \code{data} have to be specified.}
+\item{tree_files}{vector of tree files in NEXUS format with data attached to the branches/nodes of the tree. All trees should have the same tip labels (the order can change).
+Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.}
+
+\item{burnin}{fraction of samples to discard from the tree files as burn-in. Default 0.1.}
 
 \item{trees}{multiPhylo object or list of trees in phylo format. All trees should have the same tip labels (the order can change).
 Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.}
@@ -23,7 +25,7 @@ Either \code{tree_files} or both \code{trees} and \code{data} have to be specifi
 \item{data}{data to be plotted on the tree - expected to be a list of vectors in the same order as the trees,
 each vector in the order of the tips and nodes of the corresponding tree}
 
-\item{data_name}{Only used when reading from \code{tree_file}. Name of the data to be plotted, if multiple are present.}
+\item{data_name}{Only used when reading from \code{tree_files}. Name of the data to be plotted, if multiple are present.}
 
 \item{type}{character string specifying the type of phylogeny. Options are "cladogram" (default) or "phylogram".}
 

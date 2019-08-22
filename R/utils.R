@@ -154,3 +154,107 @@ readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
   return(trees)
 
 }
+
+
+### Functions required by densiTreeWithBranchData
+# attribute colors to a vector based the value in a range
+color_gradient <- function(x, intervals = seq(0,11,0.1), colors = c("red","yellow","green"), bias = 1) {
+  colfun <- grDevices::colorRampPalette(colors, bias = bias)
+  return(  colfun(length(intervals)) [ findInterval(x, intervals, all.inside = TRUE) ] )
+}
+
+# function to sort a treedata
+sort_tips <- function(x) {
+  x <- reorder_treedata(x)
+  nTip <- as.integer(length(x@phylo$tip.label))
+  e2 <- x@phylo$edge[, 2]
+  x@data <- x@data[c(e2[e2 <= nTip], (nTip+1):(nTip + x@phylo$Nnode)),]
+  x@phylo$tip.label <- x@phylo$tip.label[e2[e2 <= nTip]]
+  x@phylo$edge[e2 <= nTip, 2] <- as.integer(1L:nTip)
+  x
+}
+
+# idem but with phylo
+sort_tips_phylo <- function(x) {
+  x <- ape::reorder.phylo(x)
+  nTip <- as.integer(length(x$tip.label))
+  e2 <- x$edge[, 2]
+  x$tip.label <- x$tip.label[e2[e2 <= nTip]]
+  x$edge[e2 <= nTip, 2] <- as.integer(1L:nTip)
+  x
+}
+
+# get MRCA height from tree(s)
+get_MRCA_heights <- function(x) {
+  fun <- function(t) max(ape::node.depth.edgelength(t))
+  height <- NULL
+  if (inherits(x, "phylo")) height <- fun(x)
+  if (inherits(x, "multiPhylo")) {
+    if (!is.null(attr(x, "TipLabel"))) {
+      x <- ape::.uncompressTipLabel(x)
+      x <- unclass(x)
+      height <- vapply(x, fun, 0)
+    }
+    else {
+      x <- unclass(x)
+      height <- vapply(x, fun, 0)
+    }
+  }
+  else {
+    height <- vapply(x, fun, 0)
+  }
+  height
+}
+
+# add tip labels to a tree plot - copied from phangorn
+add_tiplabels <- function(xy, tip.label, direction, adj, font, srt = 0, cex = 1,
+                          col = 1, label_offset = 0) {
+  direction <- match.arg(direction, c("rightwards", "leftwards",  "upwards",
+                                      "downwards"))
+  horizontal <- direction %in% c("rightwards", "leftwards")
+  nTips <- length(tip.label)
+  xx <- rep(1, nrow(xy))
+  yy <- xy[, 2 ]
+  if (direction == "leftwards" | direction == "downwards") xx <- xx * 0
+  if (!horizontal) {
+    #    tmp <- yy
+    yy <- xx
+    xx <- xy[, 1]
+  }
+  MAXSTRING <- max(strwidth(tip.label, cex = cex))
+  loy <- 0
+  if (direction == "rightwards") lox <- label_offset + MAXSTRING * 1.05 * adj
+  if (direction == "leftwards")
+    lox <- -label_offset - MAXSTRING * 1.05 * (1 - adj)
+  if (!horizontal) {
+    psr <- par("usr")
+    MAXSTRING <- MAXSTRING * 1.09 * (psr[4] - psr[3]) / (psr[2] - psr[1])
+    loy <- label_offset + MAXSTRING * 1.05 * adj
+    lox <- 0
+    srt <- 90 + srt
+    if (direction == "downwards") {
+      loy <- -loy
+      srt <- 180 + srt
+    }
+  }
+  text(xx[1:nTips] + lox, yy[1:nTips] + loy, tip.label, adj = adj,
+       font = font, srt = srt, cex = cex, col = col)
+}
+
+# adapted from treeplyr (package no longer available on CRAN)
+reorder_treedata <- function(tdObject, order = "postorder") {
+  dat.attr <- attributes(tdObject@data)
+  phy <- tdObject@phylo
+  ntips <- length(phy$tip.label)
+  phy$node.label <- (ntips+1):(ntips+phy$Nnode)
+  phy <- ape::reorder.phylo(phy, order)
+  index <- match(tdObject@phylo$tip.label, phy$tip.label)
+  index.node <- match((ntips+1):(ntips+phy$Nnode), phy$node.label)
+  
+  tdObject@data <- tdObject@data[c(index,index.node),]
+  attributes(tdObject@data) <-dat.attr
+  attributes(tdObject)$tip.label <- phy$tip.label
+  tdObject@phylo <- phy
+  
+  tdObject
+}

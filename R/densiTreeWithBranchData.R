@@ -10,13 +10,14 @@
 #' If \code{amount = 0}, no jitter is applied. If \code{random = TRUE}, the applied jitter is calculated as \code{runif(n, -amount, amount)},
 #' otherwise \code{seq(-amount, amount, length=n)}, where \code{n} is the number of trees.
 #'
-#' @param tree_file tree file in NEXUS format with data attached to the branches/nodes of the tree. All trees should have the same tip labels (the order can change).
-#'                  Either \code{tree_file} or both \code{trees} and \code{data} have to be specified.
+#' @param tree_files vector of tree files in NEXUS format with data attached to the branches/nodes of the tree. All trees should have the same tip labels (the order can change).
+#'                  Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.
+#' @param burnin fraction of samples to discard from the tree files as burn-in. Default 0.1.
 #' @param trees multiPhylo object or list of trees in phylo format. All trees should have the same tip labels (the order can change).
 #'              Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.
 #' @param data data to be plotted on the tree - expected to be a list of vectors in the same order as the trees,
 #'             each vector in the order of the tips and nodes of the corresponding tree
-#' @param data_name Only used when reading from \code{tree_file}. Name of the data to be plotted, if multiple are present.
+#' @param data_name Only used when reading from \code{tree_files}. Name of the data to be plotted, if multiple are present.
 #' @param type character string specifying the type of phylogeny. Options are "cladogram" (default) or "phylogram".
 #' @param consensus A tree or character vector which is used to define the order of the tip labels. If NULL will be calculated from the trees.
 #' @param direction a character string specifying the direction of the tree. Options are "rightwards" (default), "leftwards", "upwards" and "downwards".
@@ -61,7 +62,7 @@
 #' @importClassesFrom tidytree treedata
 
 
-densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL, data_name = NULL,
+densiTreeWithBranchData <- function(tree_files = NULL, burnin = 0.1, trees = NULL, data = NULL, data_name = NULL,
                                     type = "cladogram", consensus = NULL, direction = "rightwards",
                                     scaleX = FALSE, width = 1, lty = 1, cex = .8,
                                     font = 3, tip.color = 1, adj = 0, srt = 0,
@@ -70,13 +71,12 @@ densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL,
                                     color_gradient = c("red","yellow","green"), alpha = NULL,
                                     bias = 1, data_intervals = NULL, ...) {
 
-  if((is.null(trees) || is.null(data)) && is.null(tree_file))
-    stop("Please input either trees and data or a tree_file in Nexus format.")
+  if((is.null(trees) || is.null(data)) && is.null(tree_files))
+    stop("Please input either trees and data or vector of tree files in Nexus format.")
 
   if(is.null(trees) || is.null(data)) {
-    if(!file.exists(tree_file)) stop(paste("Tree file", tree_file, "not found"))
-
-    treedata <- readTrees(tree_file, burnin = 0, verbose = FALSE)[[1]]
+    treedata <- readTrees(tree_files, burnin = burnin, verbose = FALSE)
+    treedata <- unlist(treedata, recursive = FALSE)
     trees <- lapply(treedata,function(x) x@phylo)
     class(trees) <- c(class(trees), "multiPhylo")
     data <- lapply(treedata, function(x) {
@@ -213,104 +213,4 @@ densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL,
                           edge.width = width, edge.lty = lty)
     }
   }
-}
-
-# attribute colors to a vector based the value in a range
-color_gradient <- function(x, intervals = seq(0,11,0.1), colors = c("red","yellow","green"), bias = 1) {
-  colfun <- grDevices::colorRampPalette(colors, bias = bias)
-  return(  colfun(length(intervals)) [ findInterval(x, intervals, all.inside = TRUE) ] )
-}
-
-# function to sort a treedata
-sort_tips <- function(x) {
-  x <- reorder_treedata(x)
-  nTip <- as.integer(length(x@phylo$tip.label))
-  e2 <- x@phylo$edge[, 2]
-  x@data <- x@data[c(e2[e2 <= nTip], (nTip+1):(nTip + x@phylo$Nnode)),]
-  x@phylo$tip.label <- x@phylo$tip.label[e2[e2 <= nTip]]
-  x@phylo$edge[e2 <= nTip, 2] <- as.integer(1L:nTip)
-  x
-}
-
-# idem but with phylo
-sort_tips_phylo <- function(x) {
-  x <- ape::reorder.phylo(x)
-  nTip <- as.integer(length(x$tip.label))
-  e2 <- x$edge[, 2]
-  x$tip.label <- x$tip.label[e2[e2 <= nTip]]
-  x$edge[e2 <= nTip, 2] <- as.integer(1L:nTip)
-  x
-}
-
-get_MRCA_heights <- function(x) {
-  fun <- function(t) max(ape::node.depth.edgelength(t))
-  height <- NULL
-  if (inherits(x, "phylo")) height <- fun(x)
-  if (inherits(x, "multiPhylo")) {
-    if (!is.null(attr(x, "TipLabel"))) {
-      x <- ape::.uncompressTipLabel(x)
-      x <- unclass(x)
-      height <- vapply(x, fun, 0)
-    }
-    else {
-      x <- unclass(x)
-      height <- vapply(x, fun, 0)
-    }
-  }
-  else {
-    height <- vapply(x, fun, 0)
-  }
-  height
-}
-
-add_tiplabels <- function(xy, tip.label, direction, adj, font, srt = 0, cex = 1,
-                          col = 1, label_offset = 0) {
-  direction <- match.arg(direction, c("rightwards", "leftwards",  "upwards",
-                                      "downwards"))
-  horizontal <- direction %in% c("rightwards", "leftwards")
-  nTips <- length(tip.label)
-  xx <- rep(1, nrow(xy))
-  yy <- xy[, 2 ]
-  if (direction == "leftwards" | direction == "downwards") xx <- xx * 0
-  if (!horizontal) {
-    #    tmp <- yy
-    yy <- xx
-    xx <- xy[, 1]
-  }
-  MAXSTRING <- max(strwidth(tip.label, cex = cex))
-  loy <- 0
-  if (direction == "rightwards") lox <- label_offset + MAXSTRING * 1.05 * adj
-  if (direction == "leftwards")
-    lox <- -label_offset - MAXSTRING * 1.05 * (1 - adj)
-  if (!horizontal) {
-    psr <- par("usr")
-    MAXSTRING <- MAXSTRING * 1.09 * (psr[4] - psr[3]) / (psr[2] - psr[1])
-    loy <- label_offset + MAXSTRING * 1.05 * adj
-    lox <- 0
-    srt <- 90 + srt
-    if (direction == "downwards") {
-      loy <- -loy
-      srt <- 180 + srt
-    }
-  }
-  text(xx[1:nTips] + lox, yy[1:nTips] + loy, tip.label, adj = adj,
-       font = font, srt = srt, cex = cex, col = col)
-}
-
-# adapted from treeplyr (package no longer available on CRAN)
-reorder_treedata <- function(tdObject, order = "postorder") {
-  dat.attr <- attributes(tdObject@data)
-  phy <- tdObject@phylo
-  ntips <- length(phy$tip.label)
-  phy$node.label <- (ntips+1):(ntips+phy$Nnode)
-  phy <- ape::reorder.phylo(phy, order)
-  index <- match(tdObject@phylo$tip.label, phy$tip.label)
-  index.node <- match((ntips+1):(ntips+phy$Nnode), phy$node.label)
-
-  tdObject@data <- tdObject@data[c(index,index.node),]
-  attributes(tdObject@data) <-dat.attr
-  attributes(tdObject)$tip.label <- phy$tip.label
-  tdObject@phylo <- phy
-
-  tdObject
 }

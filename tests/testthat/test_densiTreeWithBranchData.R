@@ -9,7 +9,7 @@ test_that("plot doesn't error out", {
   expect_silent(densiTreeWithBranchData(trees = trees, data = data))
   expect_silent(densiTreeWithBranchData(trees = trees, data = data, data_intervals = c(0,11)))
   expect_silent(densiTreeWithBranchData(trees = trees, data = data, data_intervals = 0:5))
-  expect_silent(densiTreeWithBranchData(tree_file = tree_file, data_name = "lambda"))
+  expect_silent(densiTreeWithBranchData(tree_files = tree_file, burnin = 0, data_name = "lambda"))
 })
 
 test_that("invalid inputs are rejected", {
@@ -20,5 +20,5 @@ test_that("invalid inputs are rejected", {
 
   expect_error(densiTreeWithBranchData(trees = trees))
   expect_error(densiTreeWithBranchData(data = data))
-  expect_error(densiTreeWithBranchData(tree_file = tree_file, data_name = "psi"))
+  expect_error(densiTreeWithBranchData(tree_files = tree_file, burnin = 0, data_name = "psi"))
 })
