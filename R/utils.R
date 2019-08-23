@@ -40,7 +40,6 @@ findTreeLines <- function(lines) {
   semicols <- grep("\\;", tree_block)
   semicols <- semicols[ semicols >= trees_start[1] ]
   trees_end <- semicols[ 1 : (length(semicols) - 1) ]
-  print(trees_end)
   # if tree are each on one line, return tree strings, else concatenate multiple lines
   if (all(trees_start  == trees_end)) {
     tree_strings <- tree_block[grep("tree ", tree_block, ignore.case=TRUE)]
