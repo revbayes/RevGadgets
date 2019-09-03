@@ -18,12 +18,15 @@
 #'
 #' \dontrun{
 #'
+#' file <- system.file("extdata",
+#'     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
+#' tree_single <- readTrees(paths = file)
+#'
 #'
 #'
 #'}
 #'
 #' @export
-#' @importFrom utils read.table
 
 readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...) {
 

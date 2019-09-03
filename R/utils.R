@@ -51,7 +51,6 @@ findTreeLines <- function(lines) {
 
 }
 
-#' @importFrom utils read.table
 isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
 parseTreeString <- function(string) {
@@ -116,7 +115,7 @@ readNexusTrees <- function(path, burnin, verbose, ...) {
 readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
 
   # read the samples
-  samples <- read.table(path, header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
+  samples <- utils::read.table(path, header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
 
   # check that there is a column with the given name
   if (tree_name %in% colnames(samples) == FALSE ) {

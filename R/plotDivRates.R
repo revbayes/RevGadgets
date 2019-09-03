@@ -44,8 +44,6 @@
 #' }
 #'
 #' @export
-#' @importFrom graphics plot polygon
-#' @importFrom stats quantile
 
 plotDivRates <- function(output,
                          fig_types = c("speciation rate",

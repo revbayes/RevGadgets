@@ -16,10 +16,10 @@
 #' @param burnin (single numeric value; default = 0.1) Fraction of generations to
 #' discard (if value provided is between 0 and 1) or number of generations (if
 #' value provided is greater than 1).
-#' @param check.names (logical; default = FALSE) Passed to read.table(); indicates
-#' if read.table() should check column names and replace syntactically invalid
+#' @param check.names (logical; default = FALSE) Passed to utils::read.table(); indicates
+#' if utils::read.table() should check column names and replace syntactically invalid
 #' characters.
-#' @param ... (various) Additional arguments passed to read.table().
+#' @param ... (various) Additional arguments passed to utils::read.table().
 #'
 #' @return List of dataframes (of length 1 if only 1 log file provided).
 #'
@@ -32,7 +32,6 @@
 #' multi_trace <- readTrace(paths = c(file, file))
 #' }
 #' @export
-#' @importFrom utils read.table
 
 readTrace <- function(paths, format = "simple",
                       delim="\t", burnin = 0.1, check.names = FALSE, ...){
@@ -68,7 +67,7 @@ readTrace <- function(paths, format = "simple",
 
   header <- vector("list", num_paths)
   for (i in 1:num_paths) {
-    header[[i]] <- colnames(read.table(file = paths[i], header = TRUE, sep = delim, check.names = check.names, nrows=0))
+    header[[i]] <- colnames(utils::read.table(file = paths[i], header = TRUE, sep = delim, check.names = check.names, nrows=0))
   }
 
   all_headers <- unique(unlist(header))
@@ -87,7 +86,7 @@ readTrace <- function(paths, format = "simple",
 
       cat(paste0("Reading in log file ",i),"\n",sep="")
 
-      out <- read.table(file = paths[i], header = TRUE,
+      out <- utils::read.table(file = paths[i], header = TRUE,
                         sep = delim, check.names = check.names, ...)
 
       if (burnin >= nrow(out)) stop("Burnin larger than provided trace file")

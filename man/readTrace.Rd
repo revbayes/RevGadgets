@@ -20,11 +20,11 @@ matrices - mnStochasticVariable monitor will sometimes be of this type.}
 discard (if value provided is between 0 and 1) or number of generations (if
 value provided is greater than 1).}
 
-\item{check.names}{(logical; default = FALSE) Passed to read.table(); indicates
-if read.table() should check column names and replace syntactically invalid
+\item{check.names}{(logical; default = FALSE) Passed to utils::read.table(); indicates
+if utils::read.table() should check column names and replace syntactically invalid
 characters.}
 
-\item{...}{(various) Additional arguments passed to read.table().}
+\item{...}{(various) Additional arguments passed to utils::read.table().}
 }
 \value{
 List of dataframes (of length 1 if only 1 log file provided).
