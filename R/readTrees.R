@@ -16,15 +16,11 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #'
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
 #' tree_single <- readTrees(paths = file)
 #'
-#'
-#'
-#'}
 #'
 #' @export
 

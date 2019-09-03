@@ -29,14 +29,10 @@ or multiple trees (as in the results of a Bayesian analysis).
 }
 \examples{
 
-\dontrun{
 
 file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
 tree_single <- readTrees(paths = file)
 
-
-
-}
 
 }
