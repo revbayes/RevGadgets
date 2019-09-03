@@ -57,6 +57,7 @@
 #' densiTreeWithBranchData(trees = trees, data = data, color_gradient = c("green", "blue"), width = 2)
 #'
 #' @export
+#' @importClassesFrom tidytree treedata
 
 
 densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL, data_name = NULL,
@@ -86,13 +87,13 @@ densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL,
       dplyr::select(x@data, data_name)
     })
     for (i in seq_along(treedata)) {
-      treedata[[i]] <- methods::new("tidytree::treedata", phylo = treedata[[i]]@phylo, data = data[[i]])
+      treedata[[i]] <- methods::new("treedata", phylo = treedata[[i]]@phylo, data = data[[i]])
     }
   }
   else {
     data <- lapply(data, function(d) dplyr::tbl_df(as.data.frame(d)))
     treedata <- lapply(seq_along(trees), function(idx) {
-      methods::new("tidytree::treedata", phylo = trees[[idx]], data = data[[idx]])
+      methods::new("treedata", phylo = trees[[idx]], data = data[[idx]])
     })
   }
 
