@@ -27,6 +27,10 @@
 readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...) {
 
   # enforce argument matching
+  if (is.character(tree_name) == FALSE) stop("tree_name should be a single character")
+  if (is.numeric(burnin) == FALSE) stop("burnin should be a number")
+  if (is.logical(verbose) == FALSE) stop("verbose should be TRUE or FALSE")
+
   character_paths_are_strings <- is.character(paths)
   if ( any(character_paths_are_strings == FALSE) == TRUE ) {
     # print out the ones that are not character strings
