@@ -124,11 +124,11 @@ plotAncStatesDiscrete = function(t,
 
     } else if (summary_statistic == "mean") {
 
-      p <- plotMean(p, t, include_start_states, alpha, show_state_legend, show_posterior_legend)
+      p <- plotMean(p, t, include_start_states, node_label_nudge_x, node_label_size, color_low, color_mid, color_high, alpha, show_state_legend, show_posterior_legend)
 
     } else if (summary_statistic == "PieState"){
 
-      p <- plotPieState(p, t, include_start_states, show_state_legend, use_state_colors, state_colors, state_labels, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x)
+      p <- plotPieState(p, t, include_start_states, show_state_legend, use_state_colors, state_colors, state_labels, alpha, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x)
 
     } else if (summary_statistic == "PieRange") {
 
@@ -148,7 +148,7 @@ plotAncStatesDiscrete = function(t,
     p = p + ggtitle(title)
 
     # set visible area
-    p = p + coord_cartesian(xlim = xlim_visible, ylim=ylim_visible, expand=TRUE)
+    #p = p + coord_cartesian(xlim = xlim_visible, ylim=ylim_visible, expand=TRUE)
 
     return(p)
 }
@@ -362,7 +362,7 @@ plotMAP <- function(p, t, include_start_states, node_label_nudge_x, node_label_s
 }
 
 
-plotMean <- function(p, t, include_start_states, alpha, show_state_legend, show_posterior_legend){
+plotMean <- function(p, t, include_start_states, node_label_nudge_x, node_label_size, color_low, color_mid, color_high, alpha, show_state_legend, show_posterior_legend){
   if (include_start_states) {
     print("Start states not implemented for mean ancestral states.")
     return()
@@ -402,7 +402,7 @@ plotMean <- function(p, t, include_start_states, alpha, show_state_legend, show_
   return(p)
 }
 
-plotPieState <- function(p, t, include_start_states, show_state_legend, use_state_colors, state_colors, state_labels, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x){
+plotPieState <- function(p, t, include_start_states, show_state_legend, use_state_colors, state_colors, state_labels, alpha, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x){
 
   if (include_start_states) {
     print("Start states not yet implemented for PieState ancestral states.")
