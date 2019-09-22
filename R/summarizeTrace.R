@@ -4,7 +4,7 @@
 #'
 #' Summarizes a trace file for continuous or discrete characters by
 #' computing the mean and 95% credible interval for quantitative
-#' character and the probability for each state of discrete characters.
+#' character and the 95% credible set for discrete characters.
 #'
 #' @param trace (list of data frames; no default) Name of a list of data frames,
 #' such as produced by readTrace(). If the readTrace() output

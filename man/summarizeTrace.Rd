@@ -26,7 +26,7 @@ Summarizes trace file(s) that have been read into memory
 \details{
 Summarizes a trace file for continuous or discrete characters by
 computing the mean and 95% credible interval for quantitative
-character and the probability for each state of discrete characters.
+character and the 95% credible set for discrete characters.
 }
 \examples{
 
