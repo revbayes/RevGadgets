@@ -55,7 +55,6 @@ summarizeTrace <- function(trace, vars) {
   if (is.list(trace) == FALSE) stop("trace should be a list of data frames")
   if (is.data.frame(trace[[1]]) == FALSE) stop("trace should be a list of data frames")
   if (is.character(vars) == FALSE) stop("vars should be a character vector")
-  if (is.logical(combine) == FALSE) stop("combine should be either TRUE or FALSE")
 
   # ensure variable names present in data frame
   if (any(vars %in% colnames(trace[[1]]) == FALSE) == TRUE) {
