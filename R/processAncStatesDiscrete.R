@@ -1,9 +1,19 @@
 #' Process ancestral states (discrete)
 #'
 #' [ function tags to be written ]
-#' 
+#'
 #' @export
-#' 
+#'
+
+# TO DO
+# - add comments/tags to new files
+# - create test script with cladogenetic events
+# - break main plotting function into specialized backend functions based on `summary_statistic`
+# - merge how anc_state and start_state/end_state are processed
+# - develop list of plotting aesthetics to support
+# - eliminate user arguments when possible (particularly those relating to plot/marker dimensions/sizes)
+# - expand support for plotting arbitrary # of anc state categories
+
 
 
 # libraries
@@ -15,7 +25,7 @@ processAncStatesDiscrete = function(tree_file,
                                     tip_label_italics=FALSE) {
     # read in tree
     t = read.beast(tree_file)
-    
+
     # process state labels
     include_start_states = F
     if ("anc_state_1" %in% names(t@data)) {
@@ -31,14 +41,14 @@ processAncStatesDiscrete = function(tree_file,
 
     # add range for pp factors
     t = set_pp_factor_range(t, include_start_states)
-    
+
     # remove underscores from tip labels
     attributes(t)$phylo$tip.label = gsub("_", " ", attributes(t)$phylo$tip.label)
-    
+
     if (tip_label_italics) {
         attributes(t)$phylo$tip.label = paste("italic('", attributes(t)$phylo$tip.label, "')", sep="")
-    }   
-    
+    }
+
     # return processed TreeIO object
     return(t)
 }
@@ -148,17 +158,17 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
     if (is.null(state_labels)) {
         return(t)
     }
-        
+
     # what is the ancestral state name tag?
     if (include_start_states) {
         state_pos_str_base = c("start_state_", "end_state_")
     } else {
         state_pos_str_base = c("anc_state_")
     }
-    
+
     # create list of ancestral state name tags
     state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
-    
+
     # overwrite state labels
     for (m in state_pos_str_to_update)
     {
@@ -172,7 +182,7 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
         x_state[x_state_invalid] = NA
         attributes(t)$data[[m]] = x_state
     }
-    
+
     return(t)
 }
 
@@ -186,10 +196,10 @@ set_pp_factor_range = function(t, include_start_states, n_states=1)
     } else {
         state_pos_str_base = c("anc_state_")
     }
-    
+
     # create list of ancestral state name tags
     state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,"_pp",sep="")}))
-    
+
     # overwrite state labels
     for (m in state_pos_str_to_update)
     {
@@ -209,9 +219,9 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
     n_states = length(state_labels)
     n_tips = length(attributes(t)$phylo$tip.label)
     n_node = 2 * n_tips - 1
-    
+
     dat = list()
-    
+
     if (include_start_states) {
         state_tags = c("start","end")
     } else {
@@ -221,7 +231,7 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
     for (s in state_tags) {
         dat[[s]] = data.frame( matrix(0, nrow=n_node, ncol=n_states) )
         #dat[[s]] = cbind(node=1:n_node, dat[[s]])
-        
+
         for (i in 1:3)
         {
             m = paste(s,"_state_",i,sep="")
@@ -229,11 +239,11 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
             n_tmp = as.numeric(as.vector(attributes(t)$data$node)) # node index
             x_tmp = as.vector(attributes(t)$data[[m]])
             pp_tmp = as.numeric(as.vector(attributes(t)$data[[pp_str]]))
-            
+
             for (j in 1:length(x_tmp))
             {
                 if (!is.na(x_tmp[j])) {
-                    
+
                     if (pp_tmp[j] > p_threshold) {
                         k = which(x_tmp[j]==state_labels)
                         dat[[s]][n_tmp[j], k] = pp_tmp[j]
@@ -244,7 +254,7 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
 
         # format column names
         colnames(dat[[s]])=as.vector(unlist(state_labels))
-        
+
         # add probs for >3rd state under ... label
         rem_prob = c()
         for (i in 1:nrow(dat[[s]])) {
@@ -257,7 +267,7 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
         dat[[s]]$node = 1:n_node
         #print(dat[[s]][250:260,])
     }
-    
+
     return(dat)
 }
 
@@ -265,7 +275,7 @@ collect_probable_states = function(p, p_threshold=0.005)
 {
     labels = c("end_state", "start_state")
     index = c(1,2,3)
-    
+
     codes = c()
     labels_pp = c()
     for (l in labels) {
