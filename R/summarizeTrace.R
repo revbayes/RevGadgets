@@ -6,81 +6,103 @@
 #' computing the mean and 95% credible interval for quantitative
 #' character and the probability for each state of discrete characters.
 #'
-#' @param trace (data frame; no default) Name of a single data frame,
-#' such as one data frame produced by readTrace(). If the readTrace() output
-#' contains multiple traces (such as from multiple runs), you should
-#' combine them into one data frame prior to summarizing or summarize each
-#' trace separately.
-#' @param quant_char (character vector; default = "") Vector of the names of
-#' quantitative characters to summarize.
-#' @param disc_char (character vector; default = "") Vector of the names  of
-#' discrete characters to summarize.
+#' @param trace (list of data frames; no default) Name of a list of data frames,
+#' such as produced by readTrace(). If the readTrace() output
+#' contains multiple traces (such as from multiple runs), summarizeTrace() will provide
+#' summaries for each trace individually, as well as the combined trace.
+#'
+#' @param vars (character or character vector; no default) The name of the variable(s)
+#' to be summarized.
 #'
 #'
-#'
-#' @return List of data frames of length two. The first element
-#' contains the summaries of quantitative variables (if no quantitative
-#' variables included, element is empty). The second element contains
-#' the summaries of discrete variables (again, empty if none provided).
+#' @return summarizeTrace() returns a list of the length of provided variables. For quantitative
+#' variables, it returns the mean and 95% credible interval. For discrete variables, it returns
+#' the 95% credible set of states and their associated probabilities.
 #'
 #' @examples
 #'
 #' \dontrun{
+#' # continuous character only example, one run
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
 #' one_trace <- readTrace(path = file)
+#' trace_sum <- summarizeTrace(trace = one_trace,
+#'                             vars = c("Likelihood",
+#'                                      "lambda",
+#'                                    "TL"))
 #'
-#' # continuous character example
-#' trace_sum <- summarizeTrace(trace = one_trace[[1]]
-#'                             quant_char = c("er[1]","er[2]",
-#'                                            "er[3]","er[4]",
-#'                                            "er[5]","er[6]"))
+#' # discrete character example, multiple runs
+#' file1 <- system.file("extdata",
+#'     "comp_method_disc/mkstates_run_1.txt", package="RevGadgets")
+#' file2 <- system.file("extdata",
+#'     "comp_method_disc/mkstates_run_2.txt", package="RevGadgets")
+#'
+#' multi_trace <- readTrace(path = c(file1, file2))
+#' trace_sum_multi <- summarizeTrace(trace = multi_trace,
+#'                                   vars = c("end_680",
+#'                                            "end_681",
+#'                                            "end_682",
+#'                                            "end_683"))
+
+#'
 #' }
 #'
 #' @export
 
-summarizeTrace <- function(trace, quant_char = "", disc_char = "") {
+summarizeTrace <- function(trace, vars) {
 
   # enforce argument matching
-  if (is.data.frame(trace) == FALSE) stop("trace should be a data frame")
-  if (is.character(quant_char) == FALSE) stop("quant_char should be a character vector")
-  if (is.character(disc_char) == FALSE) stop("disc_char should be a character vector")
+  if (is.list(trace) == FALSE) stop("trace should be a list of data frames")
+  if (is.data.frame(trace[[1]]) == FALSE) stop("trace should be a list of data frames")
+  if (is.character(vars) == FALSE) stop("vars should be a character vector")
+  if (is.logical(combine) == FALSE) stop("combine should be either TRUE or FALSE")
 
   # ensure variable names present in data frame
-  if (sum(quant_char != "") > 0) {
-  if (any(quant_char %in% colnames(trace) == FALSE) == TRUE) {
-    cat("The following quantitative characters you provided are not present in trace file:",
-        paste0("\t", quant_char[!quant_char %in% colnames(trace)]), sep = "\n")
+  if (any(vars %in% colnames(trace[[1]]) == FALSE) == TRUE) {
+    cat("The following variables you provided are not present in trace file:",
+        paste0("\t", vars[!vars %in% colnames(trace[[1]])]), sep = "\n")
     stop("oops!")
   }
-  }
-  if (sum(disc_char != "") > 0) {
-    if (any(disc_char %in% colnames(trace) == FALSE) == TRUE) {
-      cat("The following discrete characters you provided are not present in trace file:",
-          paste0("\t", disc_char[!disc_char %in% colnames(trace)]), sep = "\n")
-      stop("oops!")
-    }
-  }
+
+  # subset to desired characters
   output <- list()
-  # process quantitative characters
-  if (sum(quant_char != "") > 0){
-      df_sub <- trace[,quant_char]
-      means <- colMeans(df_sub)
-      quantiles <- apply(df_sub, 2, quantile, prob = c(0.025,0.975))
-      res_quant<- rbind(means,quantiles)
-      output[[1]] <- res_quant
-  } else if (sum(quant_char != "") == 0) { output[[1]] <- NA }
 
-  # process discrete characters
-  if (sum(disc_char != "") > 0){
-    ngen <- nrow(trace)
-    df_sub <- trace[,disc_char]
-    for (i in 1:ncol(df_sub)) {
-      t <- table(df_sub[,i])/ngen
+  # pass through vars and summarize each
+  for (i in 1:length(vars)) {
+    output[[i]] <-list()
+    for (j in 1:length(trace)) {
+    col <- trace[[j]][,vars[i]]
+    if (class(col) == "numeric"){
+      output[[i]][[j]] <- data.frame(mean = mean(col),
+                                quantile_2.5 = quantile(col, prob = c(0.025,0.975))[1],
+                                quantile_97.5 = quantile(col, prob = c(0.025,0.975))[2])
+      names(output[[i]])[j] <- paste0("trace_", j)
+    } else if (class(col) == "integer" | class(col) == "character" ){
+      state_probs <- sort(table(col)/length(col), decreasing = TRUE)
+      cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
+      output[[i]][[j]] <- cred_set
+      names(output[[i]])[j] <- paste0("trace_", j)
+
     }
-
-  } else if (sum(disc_char != "") == 0) { output[[2]] <- NA }
-
-  names(output) <- c("quantitative", "discrete")
+    }
+    #for multiple traces, combine and then summarize
+    if (length(trace) > 1) {
+      combined_trace <- do.call("rbind", trace)
+      col <- combined_trace[,vars[i]]
+      num_traces <- length(trace)
+      if (class(col) == "numeric"){
+        output[[i]][[num_traces + 1]] <- data.frame(mean = mean(col),
+                                       quantile_2.5 = quantile(col, prob = c(0.025,0.975))[1],
+                                       quantile_97.5 = quantile(col, prob = c(0.025,0.975))[2])
+        names(output[[i]])[num_traces + 1] <- "Combined"
+      } else if (class(col) == "integer" | class(col) == "character" ){
+        state_probs <- sort(table(col)/length(col), decreasing = TRUE)
+        cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
+        output[[i]][[num_traces + 1]] <- cred_set
+        names(output[[i]])[num_traces + 1] <- "Combined"
+      }
+      }
+  }
+  names(output) <- vars
   return(output)
 }

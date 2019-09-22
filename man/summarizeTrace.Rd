@@ -4,26 +4,21 @@
 \alias{summarizeTrace}
 \title{Summarize trace}
 \usage{
-summarizeTrace(trace, quant_char = "", disc_char = "")
+summarizeTrace(trace, vars)
 }
 \arguments{
-\item{trace}{(data frame; no default) Name of a single data frame,
-such as one data frame produced by readTrace(). If the readTrace() output
-contains multiple traces (such as from multiple runs), you should
-combine them into one data frame prior to summarizing or summarize each
-trace separately.}
+\item{trace}{(list of data frames; no default) Name of a list of data frames,
+such as produced by readTrace(). If the readTrace() output
+contains multiple traces (such as from multiple runs), summarizeTrace() will provide
+summaries for each trace individually, as well as the combined trace.}
 
-\item{quant_char}{(character vector; default = "") Vector of the names of
-quantitative characters to summarize.}
-
-\item{disc_char}{(character vector; default = "") Vector of the names  of
-discrete characters to summarize.}
+\item{vars}{(character or character vector; no default) The name of the variable(s)
+to be summarized.}
 }
 \value{
-List of data frames of length two. The first element
-contains the summaries of quantitative variables (if no quantitative
-variables included, element is empty). The second element contains
-the summaries of discrete variables (again, empty if none provided).
+summarizeTrace() returns a list of the length of provided variables. For quantitative
+variables, it returns the mean and 95% credible interval. For discrete variables, it returns
+the 95% credible set of states and their associated probabilities.
 }
 \description{
 Summarizes trace file(s) that have been read into memory
@@ -36,15 +31,28 @@ character and the probability for each state of discrete characters.
 \examples{
 
 \dontrun{
+# continuous character only example, one run
 file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
 one_trace <- readTrace(path = file)
+trace_sum <- summarizeTrace(trace = one_trace,
+                            vars = c("Likelihood",
+                                     "lambda",
+                                   "TL"))
 
-# continuous character example
-trace_sum <- summarizeTrace(trace = one_trace[[1]]
-                            quant_char = c("er[1]","er[2]",
-                                           "er[3]","er[4]",
-                                           "er[5]","er[6]"))
+# discrete character example, multiple runs
+file1 <- system.file("extdata",
+    "comp_method_disc/mkstates_run_1.txt", package="RevGadgets")
+file2 <- system.file("extdata",
+    "comp_method_disc/mkstates_run_2.txt", package="RevGadgets")
+
+multi_trace <- readTrace(path = c(file1, file2))
+trace_sum_multi <- summarizeTrace(trace = multi_trace,
+                                  vars = c("end_680",
+                                           "end_681",
+                                           "end_682",
+                                           "end_683"))
+
 }
 
 }
