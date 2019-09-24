@@ -3,6 +3,7 @@
 export()
 export(densiTreeWithBranchData)
 export(plotDivRates)
+export(plotTrace)
 export(processDivRates)
 export(readTrace)
 export(readTrees)

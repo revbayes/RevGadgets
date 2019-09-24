@@ -10,7 +10,7 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: ape, phytools, ggtree, treeio, dplyr, tidytree, methods
+Imports: ape, phytools, ggtree, treeio, dplyr, tidytree, methods, ggplot2, reshape
 Suggests: testthat,
     knitr,
     rmarkdown
