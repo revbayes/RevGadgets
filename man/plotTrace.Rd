@@ -4,7 +4,7 @@
 \alias{plotTrace}
 \title{Plot trace}
 \usage{
-plotTrace(trace, vars, colors = "Set1", plot_together = TRUE)
+plotTrace(trace, vars, plot_together = TRUE)
 }
 \arguments{
 \item{trace}{(list of data frames; no default) Name of a list of data frames,
@@ -14,10 +14,6 @@ summaries for each trace individually, as well as the combined trace.}
 
 \item{vars}{(character or character vector; no default) The name of the variable(s)
 to be summarized.}
-
-\item{colors}{(character vector; "Set1") Vector of colors for plotting, containing
-the name of a Brewer palette, hex codes, or R-approved color names. Default behavior
-is to plot using Color Brewer's Set1 palette.}
 
 \item{plot_together}{(logical; TRUE) Plot all variables together?}
 }
@@ -45,10 +41,8 @@ figures. In these cases, we recommend combine = FALSE.
 file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
 one_trace <- readTrace(path = file)
-trace_sum <- summarizeTrace(trace = one_trace,
-                            vars = c("Likelihood",
-                                     "lambda",
-                                   "TL"))
+plots <- plotTrace(trace = one_trace,
+                    vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 
 # discrete character example, multiple runs
 file1 <- system.file("extdata",
