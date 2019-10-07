@@ -4,7 +4,7 @@
 \alias{plotTrace}
 \title{Plot trace}
 \usage{
-plotTrace(trace, vars, plot_together = TRUE)
+plotTrace(trace, vars = NULL, match = NULL)
 }
 \arguments{
 \item{trace}{(list of data frames; no default) Name of a list of data frames,
@@ -12,15 +12,19 @@ such as produced by readTrace(). If the readTrace() output
 contains multiple traces (such as from multiple runs), summarizeTrace() will provide
 summaries for each trace individually, as well as the combined trace.}
 
-\item{vars}{(character or character vector; no default) The name of the variable(s)
+\item{vars}{(character or character vector; NULL) The specific name(s) of the variable(s)
 to be summarized.}
 
-\item{plot_together}{(logical; TRUE) Plot all variables together?}
+\item{match}{(character; NULL) A string to match to a group of parameters. For example,
+match = "er" will plot the variables "er[1]", "er[2]", "er[3]", etc.. match
+will only work if your search string is followed by brackets in one or more of
+ the column names of the provided trace file. match = "er" will only return the
+ exchangeability parameters, but will not plot "Posterior".}
 }
 \value{
-summarizeTrace() returns a list of the length of provided variables. For quantitative
-variables, it returns the mean and 95% credible interval. For discrete variables, it returns
-the 95% credible set of states and their associated probabilities.
+plotTrace() returns a list of the length of provided trace object, plus one
+combined trace. Each element of the list contains a ggplot object with plots of
+the provided parameters. These plots may be modified in typical ggplot fashion.
 }
 \description{
 Plots the posterior distributions of variables from trace file.
@@ -37,25 +41,19 @@ figures. In these cases, we recommend combine = FALSE.
 \examples{
 
 \dontrun{
-# continuous character only example, one run
+
 file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
 one_trace <- readTrace(path = file)
 plots <- plotTrace(trace = one_trace,
                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
+plots[[1]]
+# add custom colors
+plots[[1]] + scale_fill_manual(values = c("green","red","blue","orange"))
 
-# discrete character example, multiple runs
-file1 <- system.file("extdata",
-    "comp_method_disc/mkstates_run_1.txt", package="RevGadgets")
-file2 <- system.file("extdata",
-    "comp_method_disc/mkstates_run_2.txt", package="RevGadgets")
+# make the same plot, using match
 
-multi_trace <- readTrace(path = c(file1, file2))
-trace_sum_multi <- summarizeTrace(trace = multi_trace,
-                                  vars = c("end_680",
-                                           "end_681",
-                                           "end_682",
-                                           "end_683"))
+plots <- plotTrace(trace = one_trace, match = "pi")
 
 }
 
