@@ -58,5 +58,5 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...
   }
 
   return(trees)
-
 }
+

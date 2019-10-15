@@ -3,7 +3,7 @@
 .RData
 .Ruserdata
 .DS_Store
-
 # mac files
 .DS_Store
 ._*
+NAMESPACE
