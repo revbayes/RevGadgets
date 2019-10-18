@@ -154,16 +154,25 @@ getParent <- function(tr, node) {
 assign_state_labels = function(t, state_labels, include_start_states, n_states=3)
 {
 
-    # exit if no state labels provided
-    if (is.null(state_labels)) {
-        return(t)
-    }
-
-    # what is the ancestral state name tag?
+  # what is the ancestral state name tag?
     if (include_start_states) {
         state_pos_str_base = c("start_state_", "end_state_")
     } else {
         state_pos_str_base = c("anc_state_")
+    }
+  
+  # exit if no state labels provided
+    if ( is.null(state_labels) ) {
+      warning("State labels not provided by user. Will be generated automatically.")
+      states <- unique(unlist(attributes(t)$data[grepl(paste0("state_","[0-9]$"),names(attributes(t)$data))]))
+      states <- states[!states == "NA"]
+      states <- states[order(states)]
+      state_labels <- list()
+      for(i in 1:length(states) ) {
+        state_labels[as.character(states[i])] = LETTERS[i]
+      }
+      state_labels["..."] <- "..."
+      #return(t)
     }
 
     # create list of ancestral state name tags
@@ -182,7 +191,9 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
         x_state[x_state_invalid] = NA
         attributes(t)$data[[m]] = x_state
     }
-
+    
+    # Just add the state_ labels here
+    attributes(t)$state_labels <- state_labels
     return(t)
 }
 
@@ -215,7 +226,9 @@ set_pp_factor_range = function(t, include_start_states, n_states=1)
 # be appropriate for use with the pie/bar inset function in ggtree.
 
 build_state_probs = function(t, state_labels, include_start_states, p_threshold = 0.01) {
-
+    # Generates a table that stores the states for every node in a given phylogeny
+    # States that have a posterior probability below a certain threshold at a given node, will be binned into a `...` bin
+    
     n_states = length(state_labels)
     n_tips = length(attributes(t)$phylo$tip.label)
     n_node = 2 * n_tips - 1
