@@ -21,8 +21,7 @@ require(ggtree)
 
 # main processing function
 processAncStatesDiscrete = function(tree_file,
-                                    state_labels=NULL,
-                                    tip_label_italics=FALSE) {
+                                    state_labels=NULL) {
     # read in tree
     t = read.beast(tree_file)
 
@@ -41,13 +40,6 @@ processAncStatesDiscrete = function(tree_file,
 
     # add range for pp factors
     t = set_pp_factor_range(t, include_start_states)
-
-    # remove underscores from tip labels
-    attributes(t)$phylo$tip.label = gsub("_", " ", attributes(t)$phylo$tip.label)
-
-    if (tip_label_italics) {
-        attributes(t)$phylo$tip.label = paste("italic('", attributes(t)$phylo$tip.label, "')", sep="")
-    }
 
     # return processed TreeIO object
     return(t)
@@ -192,8 +184,9 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
         attributes(t)$data[[m]] = x_state
     }
     
-    # Just add the state_ labels here
+    # Just add the state_labels here
     attributes(t)$state_labels <- state_labels
+    print(state_labels)
     return(t)
 }
 

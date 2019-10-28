@@ -34,6 +34,7 @@
 #' @tip_label_size (numeric; 4) Font size of tip labels
 #' @tip_label_offset (numeric; 5) Horizontal offset of tip labels from end of tips
 #' @tip_label_italics (logical; FALSE) Whether or not tip labels should be italicized
+#' @tip_label_no_underscore (logical; TRUE) Whether or not to replace underscores with spaces in tip labels
 #' @tip_node_size (numeric; 2) Size of tip points; parsed to geom_tippoint()
 #' @tip_node_shape (numeric; 15) Shape of tip points; parsed to geom_tippoint()
 #' @node_label_size (numeric; 4) Font size of node labels
@@ -78,6 +79,7 @@ plotAncStatesDiscrete = function(t,
                                  tip_label_size=4,
                                  tip_label_offset=5,
                                  tip_label_italics=FALSE,
+                                 tip_label_no_underscore=TRUE,
                                  tip_node_size=2,
                                  tip_node_shape=15,
                                  node_label_size=4,
@@ -98,7 +100,6 @@ plotAncStatesDiscrete = function(t,
                                  show_state_legend=TRUE,
                                  show_posterior_legend=TRUE,
                                  show_tree_scale=TRUE,
-                                 state_labels=NULL,
                                  state_colors=NULL,
                                  title="",
                                  fig_height=7,
@@ -137,61 +138,58 @@ plotAncStatesDiscrete = function(t,
   tree = attributes(t)$phylo
   n_node = ggtree:::getNodeNum(tree)
 
-  # General plotting of tree with tip labels ===========
+  # General plotting of tree with tip labels
   p = ggtree(t, layout=tree_layout, ladderize=TRUE)
+  
+  # format tip labels
+  if (tip_label_no_underscore) {
+    attributes(t)$phylo$tip.label = gsub("_", " ", attributes(t)$phylo$tip.label)
+  }
+  if (tip_label_italics) {
+    attributes(t)$phylo$tip.label = paste("italic('", attributes(t)$phylo$tip.label, "')", sep="")
+  }
+  p = p + geom_tiplab(size=tip_label_size, offset=tip_label_offset, parse=tip_label_italics)
 
-  # MJL: need to re-enable tip_label_italics if desired
-  # p = p + geom_tiplab(size=tip_label_size, offset=tip_label_offset, parse=tip_label_italics)
-  p = p + geom_tiplab(size=tip_label_size, offset=tip_label_offset)
-
+  # plots the MAP estimate for chromosome counts
   if (summary_statistic == "MAPChromosome") {
-
     p <- plotMAPchromosome(p, t, include_start_states, shoulder_label_nudge_x, shoulder_label_size, node_label_nudge_x, node_label_size, alpha, show_state_legend, show_posterior_legend)
-
   } 
   
+  # plots the MAP estimate for species ranges
   else if (summary_statistic == "MAPRange") {
     p <- plotMAPrange(p, t, include_start_states, tip_node_size, alpha, show_state_legend, show_posterior_legend)
-
   }
   
+  # plots the MAP estimate for standard discrete states
   else if (summary_statistic == "MAP") {
     p <- plotMAP(p, t,include_start_states, node_label_nudge_x, node_label_size, node_size_range, alpha, show_state_legend, show_posterior_legend)
-
   }
   
+  # plots the mean ancestral state values
   else if (summary_statistic == "mean") {
-
     p <- plotMean(p, t, include_start_states, node_label_nudge_x, node_label_size, color_low, color_mid, color_high, alpha, show_state_legend, show_posterior_legend)
-
   }
   
+  # plots the probabilities for standard discrete states
   else if (summary_statistic == "PieState"){
-
     p <- plotPieState(p, t, include_start_states, show_state_legend, state_colors, state_labels, alpha, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x)
-
   }
   
+  # plots the probabilities for species ranges
   else if (summary_statistic == "PieRange") {
-
     p <- plotPieRange(p, t, show_state_legend, state_colors, state_labels, tip_pie_diameter, node_pie_diameter, pie_nudge_x, pie_nudge_y, include_start_states)
   }
 
-  # if (use_state_colors) {
-  #   #print(state_colors)
-  #   #print(state_labels)
-  #   p = p + scale_color_manual(values=state_colors, breaks=as.vector(state_labels))
-  # }
-
+  # rescales node markers
   p = p + scale_radius(range = node_size_range)
+  
+  # positions legend
   p = p + theme(legend.position="left")
 
   # show title
   p = p + ggtitle(title)
 
-  # set visible area
-  #p = p + coord_cartesian(xlim = xlim_visible, ylim=ylim_visible, expand=TRUE)
-
+  # returns plotting object
   return(p)
 }
 
@@ -533,22 +531,6 @@ plotPieRange <- function(p, t, show_state_legend, state_colors, state_labels, ti
     p = p + scale_color_manual(values=state_colors, breaks=state_labels,  name="Range", limits = used_states)
   # }
   p = p + theme(legend.position="left")
-
-  # # MJL: to remove later
-  # break_legend = F
-  # if (break_legend) {
-  #     p$data$x = p$data$x + (15 - max(p$data$x))
-  #     x_breaks = 0:15
-  #     x_labels = rep("", 16)
-  #     x_labels[ c(0,5,10,15)+1 ] = c(0,5,10,15)
-  #     p = p + scale_x_continuous(breaks = x_breaks, labels = rev(x_labels), sec.axis = sec_axis(~ ., breaks = 15-c(6.15, 4.15, 2.55, 1.2), labels=c("+K","+O","+M","+H") ))
-  #     p = p + theme_tree2()
-  #     p = p + coord_cartesian(xlim = c(0,20), expand=TRUE)
-  #     p = p + labs(x="Age (Ma)")
-  #     p = add_island_times(p)
-  #     p = p + theme(legend.position="left", axis.line = element_line(colour = "black"))
-  #     p = p + guides(colour = guide_legend(override.aes = list(size=5), nrow=6))
-  # }
 
   # get anc state matrices (for pie/bar charts)
   #print(t)
