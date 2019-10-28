@@ -7,3 +7,6 @@
 # mac files
 .DS_Store
 ._*
+
+# plot file
+tests/testthat/Rplots.pdf
