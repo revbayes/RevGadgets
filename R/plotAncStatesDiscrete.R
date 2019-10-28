@@ -539,6 +539,7 @@ plotPieRange <- function(p, t, show_state_legend, state_colors, state_labels, ti
   dat_state_start = state_probs$start
 
   # make pie objects
+  tree = attributes(t)$phylo
   n_tips = length(tree$tip.label)
   n_nodes = 2 * n_tips - 1
   node_idx = (n_tips+1):n_nodes
