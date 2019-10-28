@@ -1,61 +1,61 @@
 #' Plot discrete ancestral states on tree
-#' 
-#' @brief Function to plot ancestral states and the associated uncertainty
-#'        for continuous and discrete characters. Based on ggtree plotting
-#'        functionality
-#'        
-#'        For discrete characters 'summary_statistic="MAP"' should be used,
-#'        and for continuous characters 'summary_statistic="mean"'. If the
-#'        tree and tip labels do not fit in the screen, adjust the visible
-#'        area using the 'xlim_visible' argument.
-#'        
-#'        If 'summary_statistic="MAP"', the maximum a posteriori ancestral
-#'        state will be plotted on each node. The color corresponds to the
-#'        character state, and the size of the circle represents the posterior
-#'        probability of that state. Cladogenetic models that estimate
-#'        ancestral states for both the beginning and end of each branch
-#'        are plotted by setting "include_start_states=TRUE".
-#'        
-#'        Maximum a posteriori ancestral chromosome numbers can be plotted
-#'        with 'summary_statistic="MAPChromosome"'. For chromosomes the
-#'        color represents the posterior probability and the size of the
-#'        circle represents the chromosome number.
-#'        
-#'        For 'summary_statistic="mean"' the color represents the size of
-#'        the 95% confidence interval, and the size of the cirlce represents
-#'        represents the mean character state.
+#'
+#' Function to plot ancestral states and the associated uncertainty
+#' for continuous and discrete characters. Based on ggtree plotting
+#' functionality
+#'
+#' For discrete characters 'summary_statistic="MAP"' should be used,
+#' and for continuous characters 'summary_statistic="mean"'. If the
+#' tree and tip labels do not fit in the screen, adjust the visible
+#' area using the 'xlim_visible' argument.
+#'
+#' If 'summary_statistic="MAP"', the maximum a posteriori ancestral
+#' state will be plotted on each node. The color corresponds to the
+#' character state, and the size of the circle represents the posterior
+#' probability of that state. Cladogenetic models that estimate
+#' ancestral states for both the beginning and end of each branch
+#' are plotted by setting "include_start_states=TRUE".
+#'
+#' Maximum a posteriori ancestral chromosome numbers can be plotted
+#' with 'summary_statistic="MAPChromosome"'. For chromosomes the
+#' color represents the posterior probability and the size of the
+#' circle represents the chromosome number.
+#'
+#' For 'summary_statistic="mean"' the color represents the size of
+#' the 95% confidence interval, and the size of the cirlce represents
+#' represents the mean character state.
 #'
 #' @param t (treedata; no default) The processed output from processAncStatesDiscrete
-#' @param summary_statistic (character; no default) The 
-#' @tree_layout (character; "rectangular) How tree is represented (see ggtree doc). 
-#' @include_start_states (logical; FALSE) Whether start states for each anagenetic branch is to be plotted on the shoulders. Only applicable for cladogenetic models where state changes may occur at nodes
-#' @xlim_visible (numeric; NULL) Plotting limits of the x-axis in cartesian space. If specified, needs to be a vector of length 2.
-#' @ylim_visible (numeric; NULL) Plotting limits of the y-axis in cartesian space. If specified, needs to be a vector of length 2.
-#' @tip_label_size (numeric; 4) Font size of tip labels
-#' @tip_label_offset (numeric; 5) Horizontal offset of tip labels from end of tips
-#' @tip_label_italics (logical; FALSE) Whether or not tip labels should be italicized
-#' @tip_node_size (numeric; 2) Size of tip points; parsed to geom_tippoint()
-#' @tip_node_shape (numeric; 15) Shape of tip points; parsed to geom_tippoint()
-#' @node_label_size (numeric; 4) Font size of node labels
-#' @node_pp_label_size (numeric; 0) Font size of node labels for posterior probabilities
-#' @node_label_nudge_x (numeric; 0.1) Degree of horizontal offset of node labels.
-#' @node_pp_label_nudge_x (numeric; 0.1) Degree of horizontal offet of node posterior probability labels
-#' @shoulder_label_size (numeric; 3) Font size of labels at node shoulders
-#' @shoulder_label_nudge_x (numeric; 3) Degree of horizontal offset of labels at node shoulders
-#' @node_pie_diameter (numeric; 1.10) Size of pies at nodes (shoulders pies are 0.9x in size)
-#' @tip_pie_diameter (numeric; 1.08) Size of pie at tips
-#' @pie_nudge_x (numeric; 0.0) Degree of horizontal offset of pie charts
-#' @pie_nudge_y (numeric; 0.0) Degree of vertical offset of pie charts
-#' @alpha (numeric; 0.5) Degree of transparency in pies and points
-#' @node_size_range (numeric; c(6,15)) Size range of points (used in plotMAP)
-#' @color_low (character;"#D55E00") 
-#' @color_mid (character; "#F0E442")
-#' @color_high (character; "#009E73")
-#' @show_state_legend (logical, TRUE),
-#' @show_posterior_legend (logical, TRUE)
-#' @show_tree_scale (logical, TRUE)
-#' @title (character, NULL) Title of plot
-#' @state_colors (character, NULL) Vector of colours to be used for states. Must be of equal length to the number of states.
+#' @param summary_statistic (character; no default) The
+#' @param tree_layout (character; "rectangular) How tree is represented (see ggtree doc).
+#' @param include_start_states (logical; FALSE) Whether start states for each anagenetic branch is to be plotted on the shoulders. Only applicable for cladogenetic models where state changes may occur at nodes
+#' @param xlim_visible (numeric; NULL) Plotting limits of the x-axis in cartesian space. If specified, needs to be a vector of length 2.
+#' @param ylim_visible (numeric; NULL) Plotting limits of the y-axis in cartesian space. If specified, needs to be a vector of length 2.
+#' @param tip_label_size (numeric; 4) Font size of tip labels
+#' @param tip_label_offset (numeric; 5) Horizontal offset of tip labels from end of tips
+#' @param tip_label_italics (logical; FALSE) Whether or not tip labels should be italicized
+#' @param tip_node_size (numeric; 2) Size of tip points; parsed to geom_tippoint()
+#' @param tip_node_shape (numeric; 15) Shape of tip points; parsed to geom_tippoint()
+#' @param node_label_size (numeric; 4) Font size of node labels
+#' @param node_pp_label_size (numeric; 0) Font size of node labels for posterior probabilities
+#' @param node_label_nudge_x (numeric; 0.1) Degree of horizontal offset of node labels.
+#' @param node_pp_label_nudge_x (numeric; 0.1) Degree of horizontal offet of node posterior probability labels
+#' @param shoulder_label_size (numeric; 3) Font size of labels at node shoulders
+#' @param shoulder_label_nudge_x (numeric; 3) Degree of horizontal offset of labels at node shoulders
+#' @param node_pie_diameter (numeric; 1.10) Size of pies at nodes (shoulders pies are 0.9x in size)
+#' @param tip_pie_diameter (numeric; 1.08) Size of pie at tips
+#' @param pie_nudge_x (numeric; 0.0) Degree of horizontal offset of pie charts
+#' @param pie_nudge_y (numeric; 0.0) Degree of vertical offset of pie charts
+#' @param alpha (numeric; 0.5) Degree of transparency in pies and points
+#' @param node_size_range (numeric; c(6,15)) Size range of points (used in plotMAP)
+#' @param color_low (character;"#D55E00")
+#' @param color_mid (character; "#F0E442")
+#' @param color_high (character; "#009E73")
+#' @param show_state_legend (logical, TRUE),
+#' @param show_posterior_legend (logical, TRUE)
+#' @param show_tree_scale (logical, TRUE)
+#' @param title (character, NULL) Title of plot
+#' @param state_colors (character, NULL) Vector of colours to be used for states. Must be of equal length to the number of states.
 #' @param ...
 #'
 #' @examples
@@ -105,7 +105,7 @@ plotAncStatesDiscrete = function(t,
                                  fig_width=7,
                                  ...) {
 
-  # Argument checking  
+  # Argument checking
   if ( !(summary_statistic %in% c("MAP", "mean", "MAPChromosome", "MAPRange", "PieRange", "PieState")) ) {
     stop("Invalid summary statistic specified.")
   }
@@ -122,17 +122,17 @@ plotAncStatesDiscrete = function(t,
       stop("PieState summary statistic chosen, but input data does not contain ancestral states.")
     }
   }
-  
+
   # State labels (should have been either provided to or generated by processAncStatesDiscrete)
   state_labels <- attributes(t)$state_labels
-  
+
   # State colours
   if( is.null(state_colors) ) {
     print("State colors not provided by user. Defaults will be used")
     state_colors <- RColorBrewer::brewer.pal(n = length(state_labels), name = "Set3")
     names(state_colors) <- state_labels
   }
-  
+
   # get number of nodes
   tree = attributes(t)$phylo
   n_node = ggtree:::getNodeNum(tree)
@@ -148,30 +148,30 @@ plotAncStatesDiscrete = function(t,
 
     p <- plotMAPchromosome(p, t, include_start_states, shoulder_label_nudge_x, shoulder_label_size, node_label_nudge_x, node_label_size, alpha, show_state_legend, show_posterior_legend)
 
-  } 
-  
+  }
+
   else if (summary_statistic == "MAPRange") {
     p <- plotMAPrange(p, t, include_start_states, tip_node_size, alpha, show_state_legend, show_posterior_legend)
 
   }
-  
+
   else if (summary_statistic == "MAP") {
     p <- plotMAP(p, t,include_start_states, node_label_nudge_x, node_label_size, node_size_range, alpha, show_state_legend, show_posterior_legend)
 
   }
-  
+
   else if (summary_statistic == "mean") {
 
     p <- plotMean(p, t, include_start_states, node_label_nudge_x, node_label_size, color_low, color_mid, color_high, alpha, show_state_legend, show_posterior_legend)
 
   }
-  
+
   else if (summary_statistic == "PieState"){
 
     p <- plotPieState(p, t, include_start_states, show_state_legend, state_colors, state_labels, alpha, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x)
 
   }
-  
+
   else if (summary_statistic == "PieRange") {
 
     p <- plotPieRange(p, t, show_state_legend, state_colors, state_labels, tip_pie_diameter, node_pie_diameter, pie_nudge_x, pie_nudge_y, include_start_states)
@@ -527,7 +527,7 @@ plotPieRange <- function(p, t, show_state_legend, state_colors, state_labels, ti
   }
   p = p + guides(size=FALSE)
   p = p + guides(colour = guide_legend(override.aes = list(size=5)))
-  
+
   # if (use_state_colors) {
     used_states = collect_probable_states(p)
     p = p + scale_color_manual(values=state_colors, breaks=state_labels,  name="Range", limits = used_states)
