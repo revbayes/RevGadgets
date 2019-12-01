@@ -23,7 +23,7 @@ require(ggtree)
 processAncStatesDiscrete = function(tree_file,
                                     state_labels=NULL) {
     # read in tree
-    t = read.beast(tree_file)
+    t = treeio::read.beast(tree_file)
 
     # process column names
     include_start_states = F
