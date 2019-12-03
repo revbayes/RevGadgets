@@ -12,7 +12,7 @@
 
 <meta name="author" content="Carrie Tribble and Mike May" />
 
-<meta name="date" content="2019-12-02" />
+<meta name="date" content="2019-12-03" />
 
 <title>RevGadgets Developers’ Guide</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">RevGadgets Developers’ Guide</h1>
 <h4 class="author"><em>Carrie Tribble and Mike May</em></h4>
-<h4 class="date"><em>2019-12-02</em></h4>
+<h4 class="date"><em>2019-12-03</em></h4>
 
 
 
@@ -421,7 +421,7 @@ plotDivRates &lt;-<span class="st"> </span><span class="cf">function</span>(outp
 </div>
 <div id="general" class="section level2">
 <h2>General</h2>
-<p>Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets &gt; R subdirectory. Functions that are called internally but are not exported should be put in the utils.R script and kept in alphabetical order. There’s no need to test or document these internal functions.</p>
+<p>Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets &gt; R subdirectory. Functions that are called internally but are not exported should be named with a period proceeding the function name (for example: .colFun()), put in the utils.R script and kept in alphabetical order. There’s no need to test or document these internal functions.</p>
 </div>
 <div id="package-dependencies" class="section level2">
 <h2>Package Dependencies</h2>
