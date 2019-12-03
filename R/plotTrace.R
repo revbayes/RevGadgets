@@ -83,7 +83,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         t <- reshape::melt(t)
         plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value, fill = variable)) +
                       ggplot2::geom_density(alpha = 0.5) +
-                      ggplot2::scale_fill_manual(values = colFun(length(vars))) +
+                      ggplot2::scale_fill_manual(values = .colFun(length(vars))) +
                       ggthemes::theme_few() +
                       ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
                       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -103,7 +103,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         t <- reshape::melt(t)
         plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value, fill = variable)) +
           ggplot2::geom_density(alpha = 0.5) +
-          ggplot2::scale_fill_manual(values = colFun(length(vars))) +
+          ggplot2::scale_fill_manual(values = .colFun(length(vars))) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = "Combined Trace:") +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))

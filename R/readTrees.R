@@ -47,15 +47,15 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...
     stop()
   }
 
-  all_nexus <- sapply(paths, isNexusFile)
+  all_nexus <- sapply(paths, .isNexusFile)
   if ( all(all_nexus == TRUE) ) {
-    trees <- lapply(paths, readNexusTrees, burnin = burnin, verbose = verbose, ...)
+    trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose, ...)
   } else if ( all(all_nexus == FALSE) ) {
     n_paths  <- length(paths)
     trees    <- vector("list", n_paths)
     for(i in 1:n_paths) {
       cat("Reading trees in file: ", paths[i], "\n", sep="")
-      trees[[i]] <- readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose, ...)
+      trees[[i]] <- .readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose, ...)
     }
   } else {
     stop("All files should be of the same format.")

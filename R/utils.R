@@ -1,6 +1,6 @@
 # Non-exported utility functions for RevGadgets
 
-buildTranslateDictionary <- function(lines) {
+.buildTranslateDictionary <- function(lines) {
 
   start_tree_block <- grep("begin trees;", lines, ignore.case = TRUE)
   end_tree_block <- grep("end;", lines[start_tree_block:length(lines)], ignore.case = TRUE)[1] + start_tree_block - 1
@@ -25,7 +25,7 @@ buildTranslateDictionary <- function(lines) {
   return(dictionary)
 }
 
-colFun <- function(n) {
+.colFun <- function(n) {
   if (n == 1) {return("#005ac8")}
   if (n == 2) {return(c("#005ac8","#fa7850"))}
   if (n == 3) {return(c("#14d2dc","#005ac8","#fa7850"))}
@@ -54,7 +54,7 @@ colFun <- function(n) {
   if (n >= 13 ) {stop("more than 12 colors is not supported")}
 }
 
-findTreeLines <- function(lines) {
+.findTreeLines <- function(lines) {
 
   # pull out tree block only
   start_tree_block <- grep("begin trees;", lines, ignore.case = TRUE)
@@ -80,9 +80,9 @@ findTreeLines <- function(lines) {
 
 }
 
-isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
+.isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
-parseTreeString <- function(string) {
+.parseTreeString <- function(string) {
   text <- sub("[^(]*", "", string)
   stats <- treeio:::read.stats_beast_internal( "", text )
   tree <- ape::read.tree(text = text)
@@ -90,13 +90,13 @@ parseTreeString <- function(string) {
   return(obj)
 }
 
-readNexusTrees <- function(path, burnin, verbose, ...) {
+.readNexusTrees <- function(path, burnin, verbose, ...) {
 
   # read the lines
   lines <- readLines(path)
 
   # the line with a tree
-  tree_strings <- findTreeLines(lines)
+  tree_strings <- .findTreeLines(lines)
 
   # discard burnin (if provided)
   if (burnin >= 1) {
@@ -117,7 +117,7 @@ readNexusTrees <- function(path, burnin, verbose, ...) {
   }
   trees <- vector("list", n_trees)
   for(i in 1:n_trees) {
-    trees[[i]] <- parseTreeString( tree_strings[i] )
+    trees[[i]] <- .parseTreeString( tree_strings[i] )
     if ( verbose == TRUE ) { setTxtProgressBar(bar, i / n_trees)  }
   }
   if ( verbose == TRUE ) {
@@ -126,7 +126,7 @@ readNexusTrees <- function(path, burnin, verbose, ...) {
 
   # translate using dictionary if translate block present in file
   if (length(grep("translate", lines, ignore.case = TRUE)) >= 1) {
-    dictionary <- buildTranslateDictionary(lines = lines)
+    dictionary <- .buildTranslateDictionary(lines = lines)
     for (i in 1:n_trees) {
       n_tips <- length(trees[[i]]@phylo$tip.label)
       for (j in 1:n_tips) {
@@ -141,7 +141,7 @@ readNexusTrees <- function(path, burnin, verbose, ...) {
 
 }
 
-readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
+.readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
 
   # read the samples
   samples <- utils::read.table(path, header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
@@ -173,7 +173,7 @@ readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
   }
   trees <- vector("list", n_trees)
   for(i in 1:n_trees) {
-    trees[[i]] <- parseTreeString( tree_strings[i] )
+    trees[[i]] <- .parseTreeString( tree_strings[i] )
     if ( verbose == TRUE ) { setTxtProgressBar(bar, i / n_trees)  }
   }
   if ( verbose == TRUE ) {
