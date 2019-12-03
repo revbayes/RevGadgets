@@ -90,6 +90,17 @@ parseTreeString <- function(string) {
   return(obj)
 }
 
+# Right tail probability of the horseshoe
+# Integrates the density function via grid
+pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
+  quants <- seq(1e-10,1-1e-10,length.out=grid.size)
+  # Transform so we can look up quantiles under regular cauchy distribution
+  quants <- 1.0 - (1.0 - quants)/2.0
+  probs <- 1/length(quants) # we're using quantiles, each gamma is equally likely
+  sigmas <- qcauchy(quants,0,gamma)
+  sum(pnorm(x,0,sigmas,lower.tail=FALSE) * probs)
+}
+
 readNexusTrees <- function(path, burnin, verbose, ...) {
 
   # read the lines
