@@ -250,11 +250,11 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
             x_tmp = as.vector(attributes(t)$data[[m]])
             pp_tmp = as.numeric(as.vector(attributes(t)$data[[pp_str]]))
 
-            print(i)
-            print(m)
-            print(n_tmp)
-            print(x_tmp)
-            print(pp_tmp)
+            # print(i)
+            # print(m)
+            # print(n_tmp)
+            # print(x_tmp)
+            # print(pp_tmp)
             for (j in 1:length(x_tmp))
             {
                 if (!is.na(x_tmp[j])) {
