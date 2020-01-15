@@ -3,12 +3,12 @@
 #' Plots the posterior distributions of variables from trace file.
 #'
 #' Plots the posterior distributions of continuous variables from one or
-#' multiple traces (as in, from multiple runs). If multiple traces are provided,
+#' multiple traces (as in, from multiple runs). Shaded regions under the curve
+#' represent the 95\% credible interval.  If multiple traces are provided,
 #' plotTrace() will plot each run independently as well as plot the combined output.
-#' When multiple variables are listed, the default behavior is to overlay
-#' the variables, unless the user specifies combine = FALSE. Note that for variables
-#' with very different distributions, overlaying the plots may result in illegible
-#' figures. In these cases, we recommend combine = FALSE.
+#' Note that for variables ith very different distributions, overlaying the
+#' plots may result in illegible figures. In these cases, we recommend plotting
+#' each parameter separately.
 #'
 #'
 #'
@@ -36,7 +36,7 @@
 #'
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
-#' one_trace <- readTrace(path = file)
+#' one_trace <- readTrace(paths = file)
 #' plots <- plotTrace(trace = one_trace,
 #'                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 #' plots[[1]]
@@ -79,21 +79,75 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
     plots <- list()
     for(i in 1:length(trace)){
       if (length(vars) > 1) {
+
+        # reshape data for plotting
         t <- trace[[i]][,vars]
         t <- reshape::melt(t)
-        plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value, fill = variable)) +
-                      ggplot2::geom_density(alpha = 0.5) +
-                      ggplot2::scale_fill_manual(values = colFun(length(vars))) +
-                      ggthemes::theme_few() +
-                      ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
-                      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+        dfs <- list()
+        for (k in 1:length(vars)) {
+          den<- density(trace[[i]][,vars[k]])
+          dfs[[k]] <- data.frame(variable=vars[k], x = den$x, y = den$y)
+        }
+        tt <- do.call("rbind", dfs)
+        # calculate quantiles for all variables
+        q_lows <- numeric()
+        q_highs <- numeric()
+        for (k in 1:length(vars)) {q_lows[k] <- quantile(t[t$variable == vars[k],"value"],0.025)}
+        for (k in 1:length(vars)) {q_highs[k] <- quantile(t[t$variable == vars[k],"value"],0.975)}
+
+        # plot densities, filling in the 95% credible interval
+        plots[[i]] <- ggplot2::ggplot(t) +
+          ggplot2::stat_density(ggplot2::aes(x = value,
+                                             color = variable),
+                                geom="line", position="dodge")
+        for (k in 1:length(vars)) {
+          plots[[i]] <- plots[[i]] +
+            ggplot2::geom_ribbon(data = subset(tt, variable == vars[k] & x > q_lows[k] & x < q_highs[k]),
+                                        ggplot2::aes(x=x,ymax=y,ymin=0),
+                                        fill = colFun(length(vars))[k], alpha=0.5)
+        }
+
+        plots[[i]] <- plots[[i]] +
+          ggplot2::scale_color_manual(values = colFun(length(vars))) +
+          ggthemes::theme_few() +
+          ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
+        # old version with no differential fill for credible interval
+        #plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value,
+        #                                                     fill = variable,
+        #                                                     color = variable)) +
+        #              ggplot2::geom_density(alpha = 0.5) +
+        #              ggplot2::scale_fill_manual(values = colFun(length(vars))) +
+        #              ggplot2::scale_color_manual(values = colFun(length(vars))) +
+        #              ggthemes::theme_few() +
+        #              ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
+        #              ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
+
       } else if (length(vars) == 1) {
         t <- data.frame(value = trace[[i]][,vars])
-        plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-          ggplot2::geom_density(fill = "#e41a1c") +
+        q_low <- quantile(t$value, 0.025)
+        q_high <- quantile(t$value, 0.975)
+        tt <- data.frame(x = density(t$value)$x, y = density(t$value)$y)
+
+        # plot density, filling in the 95% credible interval
+        plots[[i]] <- ggplot2::ggplot(t) +
+          ggplot2::stat_density(ggplot2::aes(x = value),
+                                color = colFun(1),geom="line", position="dodge") +
+          ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
+                               ggplot2::aes(x=x,ymax=y,ymin=0),
+                               fill = colFun(1)) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars)) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
+        # old version with no differential fill for credible interval
+        #plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
+        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
+        #  ggthemes::theme_few() +
+        #  ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars)) +
+        #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
       }
     }
     # add combined trace plots if multiple traces provided
@@ -101,19 +155,71 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
       if (length(vars) > 1) {
         t <- do.call("rbind", trace)[,vars]
         t <- reshape::melt(t)
-        plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value, fill = variable)) +
-          ggplot2::geom_density(alpha = 0.5) +
-          ggplot2::scale_fill_manual(values = colFun(length(vars))) +
+        dfs <- list()
+        for (k in 1:length(vars)) {
+          den<- density(trace[[i]][,vars[k]])
+          dfs[[k]] <- data.frame(variable=vars[k], x = den$x, y = den$y)
+        }
+        tt <- do.call("rbind", dfs)
+        # calculate quantiles for all variables
+        q_lows <- numeric()
+        q_highs <- numeric()
+        for (k in 1:length(vars)) {q_lows[k] <- quantile(t[t$variable == vars[k],"value"],0.025)}
+        for (k in 1:length(vars)) {q_highs[k] <- quantile(t[t$variable == vars[k],"value"],0.975)}
+
+        # plot densities, filling in the 95% credible interval
+        plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
+          ggplot2::stat_density(ggplot2::aes(x = value,
+                                             color = variable),
+                                geom="line", position="dodge")
+        for (k in 1:length(vars)) {
+          plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
+            ggplot2::geom_ribbon(data = subset(tt, variable == vars[k] & x > q_lows[k] & x < q_highs[k]),
+                                 ggplot2::aes(x=x,ymax=y,ymin=0),
+                                 fill = colFun(length(vars))[k], alpha=0.5)
+        }
+
+        plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
+          ggplot2::scale_color_manual(values = colFun(length(vars))) +
           ggthemes::theme_few() +
-          ggplot2::ggtitle(label = "Combined Trace:") +
+          ggplot2::ggtitle(label = "Combined Trace:")  +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
+        # old version with no differential fill for credible interval
+        #plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value,
+        #                                                                     fill = variable,
+        #                                                                     color = variable)) +
+        #  ggplot2::geom_density(alpha = 0.5) +
+        #  ggplot2::scale_fill_manual(values = colFun(length(vars))) +
+        #  ggplot2::scale_color_manual(values = colFun(length(vars))) +
+        #  ggthemes::theme_few() +
+        #  ggplot2::ggtitle(label = "Combined Trace:") +
+        #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
       } else if (length(vars) == 1) {
         t <- data.frame(value =  do.call("rbind", trace)[,vars])
-        plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-          ggplot2::geom_density(fill = "#e41a1c") +
+        #t <- data.frame(value = trace[[i]][,vars])
+        q_low <- quantile(t$value, 0.025)
+        q_high <- quantile(t$value, 0.975)
+        tt <- data.frame(x = density(t$value)$x, y = density(t$value)$y)
+
+        # plot density, filling in the 95% credible interval
+        plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
+          ggplot2::stat_density(ggplot2::aes(x = value),
+                                color = colFun(1),geom="line", position="dodge") +
+          ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
+                               ggplot2::aes(x=x,ymax=y,ymin=0),
+                               fill = colFun(1)) +
           ggthemes::theme_few() +
-          ggplot2::ggtitle(label = paste("Combined Trace:", vars)) +
+          ggplot2::ggtitle(label = paste("Combined Trace:")) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
+
+        # old version with no differential fill for credible interval
+        #plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
+        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
+        #  ggthemes::theme_few() +
+        #  ggplot2::ggtitle(label = paste("Combined Trace:", vars)) +
+        #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
       }
     }
