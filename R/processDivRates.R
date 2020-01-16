@@ -17,6 +17,9 @@
 #'@param speciation_rate_log (vector of character strings or single character string; "") Path to speciation rates log file(s)
 #'@param extinction_time_log (vector of character strings or single character string; "") Path to extinction times log file(s)
 #'@param extinction_rate_log (vector of character strings or single character string; "") Path to extinction rates log file(s)
+#'@param fossilization_time_log (vector of character strings or single character string; "") Path to fossilization times log file(s)
+#'@param fossilization_rate_log (vector of character strings or single character string; "") Path to fossilization rates log file(s)
+
 #'@param burnin (single numeric value; default = 0) Fraction of generations to
 #' discard (if value provided is between 0 and 1) or number of generations (if
 #' value provided is greater than 1). Passed to readTrace().
@@ -49,13 +52,23 @@ processDivRates <- function(speciation_time_log = "",
                             speciation_rate_log = "",
                             extinction_time_log = "",
                             extinction_rate_log = "",
+                            fossilization_time_log = "",
+                            fossilization_rate_log = "",
                             burnin = 0.25) {
 
   # enforce argument matching
-  if (is.character(speciation_time_log) == FALSE) stop("speciation_time_log must be a single character string")
-  if (is.character(speciation_rate_log) == FALSE) stop("speciation_rate_log must be a single character string")
-  if (is.character(extinction_time_log) == FALSE) stop("extinction_time_log must be a single character string")
-  if (is.character(extinction_rate_log) == FALSE) stop("extinction_rate_log must be a single character string")
+  if (is.character(speciation_time_log) == FALSE) stop("speciation_time_log must be a character string or vector of strings")
+  if (is.character(speciation_rate_log) == FALSE) stop("speciation_rate_log must be a character string or vector of strings")
+  if (is.character(extinction_time_log) == FALSE) stop("extinction_time_log must be a character string or vector of strings")
+  if (is.character(extinction_rate_log) == FALSE) stop("extinction_rate_log must be a character string or vector of strings")
+  if (is.character(fossilization_time_log) == FALSE) stop("fossilization_time_log must be a character string vector of strings")
+  if (is.character(fossilization_rate_log) == FALSE) stop("fossilization_rate_log must be a character string vector of strings")
+
+    # check that both fozzilization files are either provided or not provided
+  if (fossilization_time_log != "" &
+      fossilization_rate_log == "") stop("both please provide both fossilization rates and times, or neither")
+  if (fossilization_time_log == "" &
+      fossilization_rate_log != "") stop("both please provide both fossilization rates and times, or neither")
 
   # check if speciation times log file(s) exist
   do_speciation_time_log_exist <- file.exists(speciation_time_log)
@@ -93,6 +106,28 @@ processDivRates <- function(speciation_time_log = "",
     stop()
   }
 
+  # check if fossilization times log file(s) exist if provided
+  if (fossilization_time_log != "") {
+   do_fossilization_time_log_exist <- file.exists(fossilization_time_log)
+   if ( any(do_fossilization_time_log_exist == FALSE) == TRUE ) {
+     # print out paths to files that don't exist
+     cat( "Some fossilization_time_log files do not exist:",
+          paste0("\t",fossilization_time_log[do_fossilization_time_log_exist == FALSE]), sep="\n")
+     stop()
+   }
+  }
+
+  # check if fossilization rates log file(s) exist if provided
+  if (fossilization_rate_log != "") {
+   do_fossilization_rate_log_exist <- file.exists(fossilization_rate_log)
+   if ( any(do_fossilization_rate_log_exist == FALSE) == TRUE ) {
+     # print out paths to files that don't exist
+     cat( "Some fossilization_rate_log files do not exist:",
+          paste0("\t",fossilization_rate_log[do_fossilization_rate_log_exist == FALSE]), sep="\n")
+     stop()
+   }
+  }
+
   # read in log files as lists of data.frames with readTrace()
   speciation_time <- readTrace(path = speciation_time_log,
                                 burnin = burnin)
@@ -102,12 +137,29 @@ processDivRates <- function(speciation_time_log = "",
                                 burnin = burnin)
   extinction_rate <- readTrace(path = extinction_rate_log,
                                 burnin = burnin)
+  if (fossilization_time_log != "") {
+    fossilization_time <- readTrace(path = fossilization_time_log,
+                                 burnin = burnin)
+    fossilization_rate <- readTrace(path = fossilization_rate_log,
+                                 burnin = burnin)
+  } else {
+    fossilization_time <- NULL
+    fossilization_rate <- NULL}
 
   # check if all parameter types have the same number of log files
+  if (is.null(fossilization_time)) {
   trace_lengths_same <- identical(length(speciation_time),
                                   length(speciation_rate),
                                   length(extinction_time),
                                   length(extinction_rate))
+  } else {
+    trace_lengths_same <- identical(length(speciation_time),
+                                    length(speciation_rate),
+                                    length(extinction_time),
+                                    length(extinction_rate),
+                                    length(fossilization_time),
+                                    length(fossilization_rate))
+  }
 
   if (trace_lengths_same == FALSE) {
     stop("You must provide the same number of log files for each parameter type.")}
@@ -124,9 +176,15 @@ processDivRates <- function(speciation_time_log = "",
       extinction_time <- extinction_time[[1]]
       extinction_rate <- extinction_rate[[1]]
 
+      if (!is.null(fossilization_time)) {
+        fossilization_time <- fossilization_time[[1]]
+        fossilization_rate <- fossilization_rate[[1]]
+      }
+
       # add in dummy distribution of 0 for time in the present
       speciation_time$`interval_times[0]` <- rep(0, nrow(speciation_time))
       extinction_time$`interval_times[0]` <- rep(0, nrow(extinction_time))
+      if (!is.null(fossilization_time)) {fossilization_time$`interval_times[0]` <- rep(0, nrow(fossilization_time))}
 
       # Calculate the net-diversification and relative-extinction rates
       net_diversification_rate <- as.matrix(speciation_rate[,5:ncol(speciation_rate)]) -
@@ -150,8 +208,10 @@ processDivRates <- function(speciation_time_log = "",
                     "extinction rate" = extinction_rate,
                     "net-diversification rate" = net_diversification_rate,
                     "relative-extinction rate" = relative_extinction_rate,
+                    "fossilization rate" = fossilization_rate,
                     "speciation time" = speciation_time,
-                    "extinction time" = extinction_time)
+                    "extinction time" = extinction_time,
+                    "fossilization time" = fossilization_time)
         return(res)
     }
   }

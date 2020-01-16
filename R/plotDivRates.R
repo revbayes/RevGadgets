@@ -2,15 +2,16 @@
 #'
 #' Plots the output of a episodic diversification rate analysis
 #'
-#' Plots the output of diversification rate analyses. Takes as input the
+#' Plots the output of episodic diversification rate analyses. Takes as input the
 #' output of processDivRates() and plotting parameters. Does not return an
 #' object. For now, valid figure types include: "speciation rate",
-#' "extinction rate","net-diversification rate", and "relative-extinction rate".
+#' "extinction rate","net-diversification rate", "relative-extinction rate",
+#' and "fossilization rate".
 #' If colors are not provided (parameter col), the plot defaults to preset colors.
 #'
 #'
-#' @param output (list; no default) The processed output for plotting (output of processDivRates()).
-#' @param fig_types (character vector, c("speciation rate", "extinction rate", "net-diversification rate", "relative-extinction rate")) Which aspects of the model to visualize. See details for a complete description.
+#' @param rates (list; no default) The processed output for plotting (output of processDivRates()).
+#' @param fig_types (character vector, c("speciation rate", "extinction rate", "net-diversification rate", "relative-extinction rate")) Which aspects of the model to visualize. "fossilization rate" may also be included but is not plotted by default. See details for a complete description.
 #' @param xlab (character; "million years ago") The label of the x-axis.
 #' @param col (character; NULL) Colors used for printing in hex code. Must be of same length as fig_types.
 #' @param col_alpha (character; "50") Alpha channel parameter for credible intervals plotting. May range from 00 (completely transparent) to FF (completely opaque).
@@ -40,12 +41,12 @@
 #'                             extinction_rate_log = extinction_rate_file,
 #'                             burnin = 0.25)
 #' # then plot results:
-#' plotDivRates(output = primates)
+#' plotDivRates(rates = primates)
 #' }
 #'
 #' @export
 
-plotDivRates <- function(output,
+plotDivRates <- function(rates,
                          fig_types = c("speciation rate",
                                        "extinction rate",
                                        "net-diversification rate",
@@ -58,7 +59,7 @@ plotDivRates <- function(output,
                          yaxt = "s",
                          ...){
   # Enforce argument matching
-  if (is.list(output) == FALSE) stop("output must be list of processed rates")
+  if (is.list(rates) == FALSE) stop("rates must be list of processed rates")
   if (is.character(fig_types) == FALSE) stop("fig_types must be a character string or vector of strings")
   if (is.character(xlab) == FALSE) stop("xlab must be a single character string")
 
@@ -91,7 +92,8 @@ plotDivRates <- function(output,
   valid_fig_types <- c("speciation rate",
                        "extinction rate",
                        "net-diversification rate",
-                       "relative-extinction rate")
+                       "relative-extinction rate",
+                       "fossilization rate")
 
   invalid_fig_types <- fig_types[!fig_types %in% valid_fig_types]
 
@@ -103,25 +105,19 @@ plotDivRates <- function(output,
 
   # Make color vector
   if ( is.null(col) ) {
-    col <- c("speciation rate"="#984EA3",
-             "speciation shift times"="#984EA3",
-             "speciation Bayes factors"="#984EA3",
-             "extinction rate"="#E41A1C",
-             "extinction shift times"="#E41A1C",
-             "extinction Bayes factors"="#E41A1C",
-             "fossilization rate"="#ffa31a",
-             "fossilization shift times"="#ffa31a",
-             "fossilization Bayes factors"="#ffa31a",
-             "net-diversification rate"="#377EB8",
-             "relative-extinction rate"="#FF7F00",
-             "mass extinction times"="#4DAF4A",
-             "mass extinction Bayes factors"="#4DAF4A")
+
+    col <- colFun(5)
+    names(col) <- c("speciation rate",
+                    "extinction rate",
+                    "net-diversification rate",
+                    "relative-extinction rate",
+                    "fossilization rate")
   } else {
     names(col) <- fig_types
   }
 
   # Compute the axes
-  intervals <- output$`speciation time`[1,grep("interval", colnames(output$`speciation time`))]
+  intervals <- rates$`speciation time`[1,grep("interval", colnames(rates$`speciation time`))]
   tree_age <- max(intervals)
   num_intervals <- length(intervals) - 1
   plot_at <- 0:num_intervals
@@ -129,41 +125,40 @@ plotDivRates <- function(output,
   labels <- pretty( c(0,tree_age) ) + offset
   labels_at <- num_intervals - ( pretty(c(0,tree_age)) / interval_size )
   ages <- seq( 0,tree_age, length.out = num_intervals + 1 )
-
   for( type in fig_types ) {
 
-      this_output <- output[[type]][ ,grep("[0-9]", colnames(output[[type]])) ]
-      mean_this_output <- colMeans(this_output)
-      quantiles_this_output <- apply(this_output, 2, quantile, prob = c(0.025,0.975))
+      these_rates <- rates[[type]][ ,grep("[0-9]", colnames(rates[[type]])) ]
+      mean_these_rates <- colMeans(these_rates)
+      quantiles_these_rates <- apply(these_rates, 2, quantile, prob = c(0.025,0.975))
 
       # find the limits of the y-axis
       # we always want the speciation and extinction rates to be on the same scale
       if ( type %in% c("speciation rate","extinction rate")) {
 
         quantiles_speciation <-
-          apply(output[["speciation rate"]][ ,grep("[0-9]", colnames(output[["speciation rate"]])) ],
+          apply(rates[["speciation rate"]][ ,grep("[0-9]", colnames(rates[["speciation rate"]])) ],
                 2, quantile, prob=c(0.025,0.975))
         quantiles_extinction <-
-          apply(output[["extinction rate"]][ ,grep("[0-9]", colnames(output[["extinction rate"]])) ],
+          apply(rates[["extinction rate"]][ ,grep("[0-9]", colnames(rates[["extinction rate"]])) ],
                 2, quantile, prob=c(0.025,0.975))
         ylim <- c( min(0, quantiles_speciation, quantiles_extinction),
                    max(quantiles_speciation, quantiles_extinction) )
 
       } else {
-        ylim <- c( min(0, quantiles_this_output),
-                   max(quantiles_this_output) )
+        ylim <- c( min(0, quantiles_these_rates),
+                   max(quantiles_these_rates) )
       }
 
       #### plot
-        plot( x = plot_at, y = c( rev(mean_this_output)),
+        plot( x = plot_at, y = c( rev(mean_these_rates)),
               type = "l", ylim = ylim, xaxt = xaxt, col = col[type],
               ylab = "rate", main = type, xlab = xlab,...)
-        polygon( x = c( 0:ncol(quantiles_this_output),
-                        ncol(quantiles_this_output):0 ),
-                 y = c( rev(c(quantiles_this_output[1,1],
-                          quantiles_this_output[1,])),
-                        c(quantiles_this_output[2,1],
-                              quantiles_this_output[2,])),
+        polygon( x = c( 0:ncol(quantiles_these_rates),
+                        ncol(quantiles_these_rates):0 ),
+                 y = c( rev(c(quantiles_these_rates[1,1],
+                          quantiles_these_rates[1,])),
+                        c(quantiles_these_rates[2,1],
+                              quantiles_these_rates[2,])),
                  border = NA, col = paste(col[type], col_alpha, sep="") )
         axis(1, at = labels_at, labels = labels)
       }
