@@ -84,6 +84,8 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
     }
     vars_quant <- vars[classes == "numeric"]
     vars_qual <- vars[classes != "numeric"]
+    if (length(vars_quant) > 12) {stop("Please supply fewer than 12 quantitative variables")}
+    if (length(vars_qual) > 12) {stop("Please supply fewer than 12 qualitative variables")}
 
     # make the quantitative plots
     if (length(vars_quant > 0)) {
@@ -163,13 +165,14 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
     if (length(trace) > 1){
       if (length(vars_quant) > 1) {
         t <- do.call("rbind", trace)[,vars_quant]
-        t <- reshape::melt(t)
         dfs <- list()
         for (k in 1:length(vars_quant)) {
-          den<- density(trace[[i]][,vars_quant[k]])
+          den<- density(t[,vars_quant[k]])
           dfs[[k]] <- data.frame(variable=vars_quant[k], x = den$x, y = den$y)
         }
         tt <- do.call("rbind", dfs)
+        t <- reshape::melt(t)
+
         # calculate quantiles for all variables
         q_lows <- numeric()
         q_highs <- numeric()
@@ -255,13 +258,20 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           colnames(state_probs) <- c("state","probability","variable", "cred_set")
           state_probs$col <- state_probs$variable
           state_probs$col[!state_probs$cred_set] <- "zzzzzzz"  #cheat so it's always last and will match up with the white hex code
+          state_probs$state <- as.integer(state_probs$state)
+          #reorder
+          state_probs$variable <- factor(state_probs$variable,
+                                         levels = unique(state_probs$variable))
+          state_probs$col <- factor(state_probs$col,
+                                         levels = c(levels(state_probs$variable), "zzzzzzz"))
+
 
           # plot the variables
           plots[[nplots + i]] <-
             ggplot2::ggplot(state_probs,
                             ggplot2::aes(color = variable, fill = col,
                                          y = probability, x = state)) +
-            ggplot2::geom_bar(position = "dodge",
+            ggplot2::geom_bar(position = position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
             ggplot2::scale_color_manual(values = colFun(length(vars_qual))) +
@@ -272,24 +282,23 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         }
 
         if (length(vars_qual) == 1) {
-
           #subset trace by qual variable
           t <- trace[[i]][,vars_qual]
 
           #calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
-          cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
+          data_sig <- data.frame(table(state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]))
           data_full <- data.frame(state_probs)
           colnames(data_full) <- c("state", "probability")
-          data_sig <- data.frame(cred_set)
-          colnames(data_sig) <- c("state", "probability")
+          colnames(data_sig) <- c("probability", "state")
+          data_sig$probability <- as.numeric(levels(data_sig$probability)[data_sig$probability])
 
           #plot
           plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
                                 ggplot2::geom_bar(stat = "identity", color = colFun(1), fill = "white") +
                                 ggplot2::geom_bar(data = data_sig, stat = "identity",
-                                                  aes(x = state, y = probability),
-                                         color = colFun(1), fill = colFun(1)) +
+                                                  ggplot2::aes(x = state, y = probability),
+                                        color = colFun(1), fill = colFun(1)) +
                                 ggthemes::theme_few() +
                                 ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_qual)) +
                                 ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -326,12 +335,12 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::ggplot(state_probs,
                             ggplot2::aes(color = variable, fill = col,
                                          y = probability, x = state)) +
-            ggplot2::geom_bar(position = "dodge",
+            ggplot2::geom_bar(position = position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
             ggplot2::scale_color_manual(values = colFun(length(vars_qual))) +
             ggplot2::scale_fill_manual(values = c(colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
-            ggplot2::guides(color = guide_legend(override.aes=list(fill=colFun(length(vars_qual))))) +
+            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=colFun(length(vars_qual))))) +
             ggplot2::ggtitle(label = paste0("Combined Trace")) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
@@ -343,11 +352,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
           #calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
-          cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
+          data_sig <- data.frame(table(state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]))
           data_full <- data.frame(state_probs)
           colnames(data_full) <- c("state", "probability")
-          data_sig <- data.frame(cred_set)
-          colnames(data_sig) <- c("state", "probability")
+          colnames(data_sig) <- c("probability", "state")
+          data_sig$probability <- as.numeric(levels(data_sig$probability)[data_sig$probability])
 
           #plot
           plots[[nplots + 1]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
