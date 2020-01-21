@@ -91,7 +91,6 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
     if (length(vars_quant > 0)) {
     for(i in 1:length(trace)){
       if (length(vars_quant) > 1) {
-
         # reshape data for plotting
         t <- trace[[i]][,vars_quant]
         t <- reshape::melt(t)
@@ -110,7 +109,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         # plot densities, filling in the 95% credible interval
         plots[[i]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value, color = variable),
-                                geom="line")
+                                geom="line", position = "identity")
         for (k in 1:length(vars_quant)) {
           plots[[i]] <- plots[[i]] +
             ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
@@ -145,6 +144,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         # plot density, filling in the 95% credible interval
         plots[[i]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value),
+                                position = "identity",
                                 color = colFun(1),geom="line") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
@@ -183,6 +183,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value,
                                              color = variable),
+                                position = "identity",
                                 geom="line")
         for (k in 1:length(vars_quant)) {
           plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
@@ -218,7 +219,8 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         # plot density, filling in the 95% credible interval
         plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value),
-                                color = colFun(1),geom="line") +
+                                color = colFun(1),geom="line",
+                                position = "identity") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
                                fill = colFun(1)) +
@@ -265,6 +267,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           state_probs$col <- factor(state_probs$col,
                                          levels = c(levels(state_probs$variable), "zzzzzzz"))
 
+          #fill in 0 probabilities such that all variables have data for all states
+          state_probs <- tidyr::complete(data = state_probs, state, variable,
+                                  fill = list(probability = 0,
+                                              cred_set = FALSE,
+                                              col = "zzzzzzz"))
 
           # plot the variables
           plots[[nplots + i]] <-
@@ -330,6 +337,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           state_probs$col <- state_probs$variable
           state_probs$col[!state_probs$cred_set] <- "zzzzzzz"  #cheat so it's always last and will match up with the white hex code
 
+          #fill in 0 probabilities such that all variables have data for all states
+          state_probs <- tidyr::complete(data = state_probs, state, variable,
+                                         fill = list(probability = 0,
+                                                     cred_set = FALSE,
+                                                     col = "zzzzzzz"))
           # plot the variables
           plots[[nplots + 1]] <-
             ggplot2::ggplot(state_probs,
