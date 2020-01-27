@@ -141,7 +141,7 @@ plotAncStatesDiscrete = function(t,
   n_node = ggtree:::getNodeNum(tree)
 
   # General plotting of tree with tip labels ===========
-  p = ggtree(t, layout=tree_layout, ladderize=TRUE)
+  p = ggtree::ggtree(t, layout=tree_layout, ladderize=TRUE)
 
   # MJL: need to re-enable tip_label_italics if desired
   # p = p + geom_tiplab(size=tip_label_size, offset=tip_label_offset, parse=tip_label_italics)

@@ -4,7 +4,7 @@ test_that("plots chromosome ancestral states", {
 
   # get files
   tree_file = system.file("extdata", "chromo/chromosomes_ancestral_states.tree", package="RevGadgets")
-  plot_file <- system.file("extdata", "chromo/chromosomes_ancestral_state_plot.rds", package="RevGadgets")
+  plot_file = system.file("extdata", "chromo/chromosomes_ancestral_state_plot.rds", package="RevGadgets")
 
   # make a new plot
   require(treeio)
