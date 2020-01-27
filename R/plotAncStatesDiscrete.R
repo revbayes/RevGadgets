@@ -144,8 +144,8 @@ plotAncStatesDiscrete = function(t,
   p = ggtree::ggtree(t, layout=tree_layout, ladderize=TRUE)
 
   # MJL: need to re-enable tip_label_italics if desired
-  # p = p + geom_tiplab(size=tip_label_size, offset=tip_label_offset, parse=tip_label_italics)
-  p = p + geom_tiplab(size=tip_label_size, offset=tip_label_offset)
+  # p = p + ggtree::geom_tiplab(size=tip_label_size, offset=tip_label_offset, parse=tip_label_italics)
+  p = p + ggtree::geom_tiplab(size=tip_label_size, offset=tip_label_offset)
 
   if (summary_statistic == "MAPChromosome") {
 
@@ -183,17 +183,17 @@ plotAncStatesDiscrete = function(t,
   # if (use_state_colors) {
   #   #print(state_colors)
   #   #print(state_labels)
-  #   p = p + scale_color_manual(values=state_colors, breaks=as.vector(state_labels))
+  #   p = p + ggplot2::scale_color_manual(values=state_colors, breaks=as.vector(state_labels))
   # }
 
-  p = p + scale_radius(range = node_size_range)
-  p = p + theme(legend.position="left")
+  p = p + ggplot2::scale_radius(range = node_size_range)
+  p = p + ggplot2::theme(legend.position="left")
 
   # show title
-  p = p + ggtitle(title)
+  p = p + ggplot2::ggtitle(title)
 
   # set visible area
-  #p = p + coord_cartesian(xlim = xlim_visible, ylim=ylim_visible, expand=TRUE)
+  #p = p + ggplot2::coord_cartesian(xlim = xlim_visible, ylim=ylim_visible, expand=TRUE)
 
   return(p)
 }
@@ -332,36 +332,36 @@ plotMAPchromosome <- function(p, t, include_start_states, shoulder_label_nudge_x
     p = p %<+% shoulder_data
 
     # plot the states on the "shoulders"
-    p = p + geom_text(aes(label=start_state_1, x=x_anc, y=y), hjust="right", nudge_x=shoulder_label_nudge_x, size=shoulder_label_size, na.rm=TRUE)
+    p = p + ggtree::geom_text(aes(label=start_state_1, x=x_anc, y=y), hjust="right", nudge_x=shoulder_label_nudge_x, size=shoulder_label_size, na.rm=TRUE)
 
     # add ancestral states as node labels
-    p = p + geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
+    p = p + ggtree::geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
 
     # show ancestral states as size / posteriors as color
-    p = p + geom_nodepoint(aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
+    p = p + ggtree::geom_nodepoint(aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
 
   } else {
 
     # add ancestral states as node labels
-    p = p + geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
+    p = p + ggtree::geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
 
     # show ancestral states as size / posteriors as color
-    p = p + geom_nodepoint(aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
+    p = p + ggtree::geom_nodepoint(aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
 
   }
 
   min_low = 0.0
   max_up = 1.0
-  p = p + scale_colour_gradient2(low=color_low, mid=color_mid, high=color_high, limits=c(min_low, max_up), midpoint=0.5)
+  p = p + ggplot2::scale_colour_gradient2(low=color_low, mid=color_mid, high=color_high, limits=c(min_low, max_up), midpoint=0.5)
   if (show_state_legend) {
-    p = p + guides(size=guide_legend("Chromosome Number"))
+    p = p + ggplot2::guides(size=ggplot2::guide_legend("Chromosome Number"))
   } else {
-    p = p + guides(size=FALSE)
+    p = p + ggplot2::guides(size=FALSE)
   }
   if (show_posterior_legend) {
-    p = p + guides(colour=guide_legend("Posterior Probability", override.aes = list(size=8)))
+    p = p + ggplot2::guides(colour=ggplot2::guide_legend("Posterior Probability", override.aes = list(size=8)))
   } else {
-    p = p + guides(colour=FALSE)
+    p = p + ggplot2::guides(colour=FALSE)
   }
 }
 
