@@ -8,15 +8,15 @@ test_that("plots chromosome ancestral states", {
 
   # make a new plot
   require(treeio)
-  t = read.beast(tree_file)
-  p = plotAncStatesDiscrete(t, 
-                            summary_statistic="MAPChromosome", 
-                            include_start_states=TRUE, 
-                            tip_label_offset=0.4, 
+  t = treeio::read.beast(tree_file)
+  p = plotAncStatesDiscrete(t,
+                            summary_statistic="MAPChromosome",
+                            include_start_states=TRUE,
+                            tip_label_offset=0.4,
                             node_label_size=2,
                             shoulder_label_size=2,
                             tip_label_size=3)
-  p = p + coord_cartesian(xlim = c(0, 16.5))
+  p = p + ggplot2::coord_cartesian(xlim = c(0, 16.5))
 
   # read original plot object
   original_p = readRDS(plot_file)

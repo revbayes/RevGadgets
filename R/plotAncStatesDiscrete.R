@@ -329,25 +329,25 @@ plotMAPchromosome <- function(p, t, include_start_states, shoulder_label_nudge_x
       }
     }
     shoulder_data = data.frame(node=node_index, x_anc=x_anc, y=y)
-    `%<+%` <- ggtree::`%<+%`
+    `%<+%` = ggtree::`%<+%`
     p = p %<+% shoulder_data
 
     # plot the states on the "shoulders"
-    p = p + ggtree::geom_text(aes(label=start_state_1, x=x_anc, y=y), hjust="right", nudge_x=shoulder_label_nudge_x, size=shoulder_label_size, na.rm=TRUE)
+    p = p + ggtree::geom_text(ggtree::aes(label=start_state_1, x=x_anc, y=y), hjust="right", nudge_x=shoulder_label_nudge_x, size=shoulder_label_size, na.rm=TRUE)
 
     # add ancestral states as node labels
-    p = p + ggtree::geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
+    p = p + ggtree::geom_text(ggtree::aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
 
     # show ancestral states as size / posteriors as color
-    p = p + ggtree::geom_nodepoint(aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
+    p = p + ggtree::geom_nodepoint(ggtree::aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
 
   } else {
 
     # add ancestral states as node labels
-    p = p + ggtree::geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
+    p = p + ggtree::geom_text(ggtree::aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
 
     # show ancestral states as size / posteriors as color
-    p = p + ggtree::geom_nodepoint(aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
+    p = p + ggtree::geom_nodepoint(ggtree::aes(colour=as.numeric(end_state_1_pp), size=as.numeric(end_state_1)), alpha=alpha)
 
   }
 
@@ -377,7 +377,7 @@ plotMAPrange <- function(p, t, include_start_states, tip_node_size, alpha, show_
   }
 
   # add ancestral states as node labels
-  #p = p + geom_text(aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
+  #p = p + ggtree::geom_text(ggtree::aes(label=end_state_1), hjust="left", nudge_x=node_label_nudge_x, size=node_label_size)
 
   # set the root's start state to NA
   attributes(t)$data$start_state_1[n_node] = NA
@@ -396,7 +396,7 @@ plotMAPrange <- function(p, t, include_start_states, tip_node_size, alpha, show_
     }
   }
   shoulder_data = data.frame(node=node_index, x_anc=x_anc, y=y)
-  `%<+%` <- ggtree::`%<+%`
+  `%<+%` = ggtree::`%<+%`
   p = p %<+% shoulder_data
 
   # plot the states on the "shoulders"
@@ -437,7 +437,7 @@ plotMAP <- function(p, t, include_start_states, node_label_nudge_x, node_label_s
     anc_data = data.frame(node=names(attributes(t)$data$end_state_1),
                           anc_state_1=levels(attributes(t)$data$end_state_1)[attributes(t)$data$end_state_1],
                           anc_state_1_pp=as.numeric(levels(attributes(t)$data$end_state_1_pp))[attributes(t)$data$end_state_1_pp])
-    `%<+%` <- ggtree::`%<+%`
+    `%<+%` = ggtree::`%<+%`
     p = p %<+% anc_data
   }
 
@@ -496,7 +496,7 @@ plotMean <- function(p, t, include_start_states, node_label_nudge_x, node_label_
   uppers = as.numeric(levels(attributes(t)$data$upper_0.95_CI))[attributes(t)$data$upper_0.95_CI]
   diffs = uppers - lowers
   diffs_df = data.frame(node=names(attributes(t)$data$lower_0.95_CI), diff_vals=diffs)
-  `%<+%` <- ggtree::`%<+%`
+  `%<+%` = ggtree::`%<+%`
   p = p %<+% diffs_df
 
   min_low = min(diffs, na.rm=TRUE)
@@ -534,7 +534,7 @@ plotPieState <- function(p, t, include_start_states, show_state_legend, state_co
     anc_data = data.frame(node=names(attributes(t)$data$end_state_1),
                           anc_state_1=levels(attributes(t)$data$end_state_1)[attributes(t)$data$end_state_1],
                           anc_state_1_pp=as.numeric(levels(attributes(t)$data$end_state_1_pp))[attributes(t)$data$end_state_1_pp])
-    `%<+%` <- ggtree::`%<+%`
+    `%<+%` = ggtree::`%<+%`
     p = p %<+% anc_data
   }
   
