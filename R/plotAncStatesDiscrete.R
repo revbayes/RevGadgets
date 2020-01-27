@@ -329,6 +329,7 @@ plotMAPchromosome <- function(p, t, include_start_states, shoulder_label_nudge_x
       }
     }
     shoulder_data = data.frame(node=node_index, x_anc=x_anc, y=y)
+    `%<+%` <- ggtree::`%<+%`
     p = p %<+% shoulder_data
 
     # plot the states on the "shoulders"
@@ -395,6 +396,7 @@ plotMAPrange <- function(p, t, include_start_states, tip_node_size, alpha, show_
     }
   }
   shoulder_data = data.frame(node=node_index, x_anc=x_anc, y=y)
+  `%<+%` <- ggtree::`%<+%`
   p = p %<+% shoulder_data
 
   # plot the states on the "shoulders"
@@ -435,6 +437,7 @@ plotMAP <- function(p, t, include_start_states, node_label_nudge_x, node_label_s
     anc_data = data.frame(node=names(attributes(t)$data$end_state_1),
                           anc_state_1=levels(attributes(t)$data$end_state_1)[attributes(t)$data$end_state_1],
                           anc_state_1_pp=as.numeric(levels(attributes(t)$data$end_state_1_pp))[attributes(t)$data$end_state_1_pp])
+    `%<+%` <- ggtree::`%<+%`
     p = p %<+% anc_data
   }
 
@@ -493,6 +496,7 @@ plotMean <- function(p, t, include_start_states, node_label_nudge_x, node_label_
   uppers = as.numeric(levels(attributes(t)$data$upper_0.95_CI))[attributes(t)$data$upper_0.95_CI]
   diffs = uppers - lowers
   diffs_df = data.frame(node=names(attributes(t)$data$lower_0.95_CI), diff_vals=diffs)
+  `%<+%` <- ggtree::`%<+%`
   p = p %<+% diffs_df
 
   min_low = min(diffs, na.rm=TRUE)
@@ -530,6 +534,7 @@ plotPieState <- function(p, t, include_start_states, show_state_legend, state_co
     anc_data = data.frame(node=names(attributes(t)$data$end_state_1),
                           anc_state_1=levels(attributes(t)$data$end_state_1)[attributes(t)$data$end_state_1],
                           anc_state_1_pp=as.numeric(levels(attributes(t)$data$end_state_1_pp))[attributes(t)$data$end_state_1_pp])
+    `%<+%` <- ggtree::`%<+%`
     p = p %<+% anc_data
   }
   
