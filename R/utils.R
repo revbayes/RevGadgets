@@ -90,6 +90,33 @@ parseTreeString <- function(string) {
   return(obj)
 }
 
+.add_epoch_times <- function( p, max_age, dy_bars, dy_text ) {
+
+  max_x = max(p$data$x)
+  max_y = max(p$data$y)
+  epoch_names = c("Late\nCretaceous","Paleogene","Early\nEocene",
+                  "Mid/Late\nEocene","Oligocene","Early\nMiocene",
+                  "Mid/Late\nMiocene","Recent")
+
+
+  x_pos = max_x-c(max_age, 65, 56, 48, 33.9, 23, 16, 5.3, 0)
+  y_pos = rep(max_y, length(x_pos))
+  x_pos_mid = ( x_pos[1:(length(x_pos)-1)] + x_pos[2:length(x_pos)] ) / 2
+
+  for (k in 2:(length(x_pos))) {
+    box_col = "gray92"
+    if (k %% 2 == 0) box_col = "white"
+    box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=dy_bars, ymax=y_pos[k], fill=box_col )
+    p = gginnards::append_layers(p, box, position = "bottom")
+  }
+  for (k in 1:length(epoch_names)) {
+    p = p + ggplot2::annotate( geom="text", label=epoch_names[k], x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+  }
+  return(p)
+
+}
+
+
 # Right tail probability of the horseshoe
 # Integrates the density function via grid
 pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
