@@ -12,6 +12,14 @@
 #' only one summary tree from one trace file. If it contains multiple trees or multiple
 #' traces, only the first will be used.
 #'
+#' @param chrono (logical; FALSE) Plot as a chronogram with node age bars and time-labeled
+#' x-axis?
+#'
+#' @param node_labels (logical; TRUE) Plot posterior probabilities as colored cirlces at
+#' nodes?
+#'
+#' @param tip_labels (logical: TRUE) Plot tip labels?
+#'
 #' @param fossils (character vector; NULL) Optional vector of the tips that are fossils,
 #' to be sure that these tips are highlighted in red.
 #'
@@ -21,8 +29,12 @@
 #'
 #' @export
 
-plotTree <- function(tree, fossils = NULL) {
+plotTree <- function(tree, chrono = FALSE, node_labels = TRUE,
+                     tip_labels = TRUE, fossils = NULL) {
+  recover()
+  # grab single tree from input
   phy <- tree[[1]][[1]]
+
   # format posterior data
   phy@data$posterior[ phy@data$posterior == 1 ] <- NA
 
@@ -36,7 +48,8 @@ plotTree <- function(tree, fossils = NULL) {
   # this offset as h + [2-h, 7-h]. ggtree seems to "rotate" this
   # causing the HPD to appear as [-1, 4]. Figtree displays this correctly.
   #
-  # See this excellent trick by Tauana: https://groups.google.com/forum/#!msg/bioc-ggtree/wuAlY9phL9Q/L7efezPgDAAJ
+  # See this excellent trick by Tauana:
+  # https://groups.google.com/forum/#!msg/bioc-ggtree/wuAlY9phL9Q/L7efezPgDAAJ
   # Adapted this code to also plot fossil tip uncertainty in red
 
   phy@data$age_0.95_HPD <- lapply(phy@data$age_0.95_HPD, function(z) {
