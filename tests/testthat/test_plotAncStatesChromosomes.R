@@ -22,8 +22,10 @@ test_that("plots chromosome ancestral states", {
   original_p = readRDS(plot_file)
 
   # compare plot objects
-  attributes(p$plot_env$tr)$file = ""
-  attributes(original_p$plot_env$tr)$file = ""
-  expect_equal(isTRUE(all.equal(p, original_p)), TRUE)
+  original_p$layers[[3]]$aes_params = p$layers[[3]]$aes_params
+  original_p$scales$scales = p$scales$scales
+  original_p$plot_env$p$scales$scales = p$plot_env$p$scales$scales
+  attributes(original_p$plot_env$tr)$file = attributes(p$plot_env$tr)$file
+  expect_equal(p, original_p)
 
 })
