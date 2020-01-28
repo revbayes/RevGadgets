@@ -371,7 +371,7 @@ plotDivRates <- function(output,
 
 ## General
 
-Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets > R subdirectory. Functions that are called internally but are not exported should be put in the utils.R script and kept in alphabetical order. There's no need to test  or document these internal functions. 
+Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets > R subdirectory. Functions that are called internally but are not exported should be named with a period proceeding the function name (for example: .colFun()), put in the utils.R script and kept in alphabetical order. There's no need to test  or document these internal functions. 
 
 ## Package Dependencies
 
@@ -797,6 +797,30 @@ This test reads in the log files and then checks three aspects of the function:
 
 In many cases, our tests will rely on reading in sample datasets. The outputs of many RevBayes tutorials are saved in the inst/extdata folder of the RevGadgets directory. Please use these standard files for testing and examples. Note that log files in these example datasets are referred to with .p to faciliate unit testing with Travis. Similarly, we refer to files using the system.file() function to ensure that paths are consistent regardless of user installation. 
 
+### Testing plotting functions
+
+We recommend that plotting functions are tested by comparing a saved version of the gg object to the newly produced gg object. Once the function is producing a plot that you are content with, save the plot object as a .Rdata file in inst/extdata/graphs. This file can then be loaded in during testing and compared with a newly-produced plot object. For example, the follow test compares a saved version and new version of the plotTrace() plot. 
+
+```{r, eval = FALSE}
+
+test_that("plot pi traces", {
+  # load in the trace file
+  file_1 <- system.file("extdata",
+                      "sub_models/primates_cytb_covariotide.p",
+                      package="RevGadgets")
+  one_trace <- readTrace(path = file_1)
+  # produce the plot pi parameters object
+  plots_new <- plotTrace(trace = one_trace,
+                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
+  # load the saved plot for comparison
+  file_2 <- system.file("extdata",
+                        "graphs/plotTrace_pi.Rdata",
+                        package="RevGadgets")
+  load(file_2) # loads an object called 'plots'
+  expect_equal(plots[[1]], plots_new[[1]])
+  })
+
+```
 ## Unit Testing and GitHub
 
 Please be sure to do all development using the Development branch of RevGadgets. We will occasionally merge the Development and Master branches for new releases. When you push to GitHub, Travis will automatically run a series of tests on the updated package. This include running our designed tests using testthat, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.

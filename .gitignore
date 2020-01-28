@@ -6,4 +6,6 @@
 # mac files
 .DS_Store
 ._*
-NAMESPACE
+
+# plot file
+tests/testthat/Rplots.pdf

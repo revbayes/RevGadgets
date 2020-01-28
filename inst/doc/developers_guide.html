@@ -12,7 +12,7 @@
 
 <meta name="author" content="Carrie Tribble and Mike May" />
 
-<meta name="date" content="2019-08-19" />
+<meta name="date" content="2019-12-03" />
 
 <title>RevGadgets Developers’ Guide</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">RevGadgets Developers’ Guide</h1>
 <h4 class="author"><em>Carrie Tribble and Mike May</em></h4>
-<h4 class="date"><em>2019-08-19</em></h4>
+<h4 class="date"><em>2019-12-03</em></h4>
 
 
 
@@ -421,7 +421,7 @@ plotDivRates &lt;-<span class="st"> </span><span class="cf">function</span>(outp
 </div>
 <div id="general" class="section level2">
 <h2>General</h2>
-<p>Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets &gt; R subdirectory. Functions that are called internally but are not exported should be put in the utils.R script and kept in alphabetical order. There’s no need to test or document these internal functions.</p>
+<p>Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets &gt; R subdirectory. Functions that are called internally but are not exported should be named with a period proceeding the function name (for example: .colFun()), put in the utils.R script and kept in alphabetical order. There’s no need to test or document these internal functions.</p>
 </div>
 <div id="package-dependencies" class="section level2">
 <h2>Package Dependencies</h2>
@@ -799,6 +799,27 @@ plotDivRates &lt;-<span class="st"> </span><span class="cf">function</span>(outp
 <li>There are the expected number of rows (generations) in the processed data frames</li>
 </ol>
 <p>In many cases, our tests will rely on reading in sample datasets. The outputs of many RevBayes tutorials are saved in the inst/extdata folder of the RevGadgets directory. Please use these standard files for testing and examples. Note that log files in these example datasets are referred to with .p to faciliate unit testing with Travis. Similarly, we refer to files using the system.file() function to ensure that paths are consistent regardless of user installation.</p>
+<div id="testing-plotting-functions" class="section level3">
+<h3>Testing plotting functions</h3>
+<p>We recommend that plotting functions are tested by comparing a saved version of the gg object to the newly produced gg object. Once the function is producing a plot that you are content with, save the plot object as a .Rdata file in inst/extdata/graphs. This file can then be loaded in during testing and compared with a newly-produced plot object. For example, the follow test compares a saved version and new version of the plotTrace() plot.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw">test_that</span>(<span class="st">&quot;plot pi traces&quot;</span>, {
+  <span class="co"># load in the trace file</span>
+  file_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,
+                      <span class="st">&quot;sub_models/primates_cytb_covariotide.p&quot;</span>,
+                      <span class="dt">package=</span><span class="st">&quot;RevGadgets&quot;</span>)
+  one_trace &lt;-<span class="st"> </span><span class="kw">readTrace</span>(<span class="dt">path =</span> file_<span class="dv">1</span>)
+  <span class="co"># produce the plot pi parameters object</span>
+  plots_new &lt;-<span class="st"> </span><span class="kw">plotTrace</span>(<span class="dt">trace =</span> one_trace,
+                     <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&quot;pi[1]&quot;</span>,<span class="st">&quot;pi[2]&quot;</span>,<span class="st">&quot;pi[3]&quot;</span>,<span class="st">&quot;pi[4]&quot;</span>))
+  <span class="co"># load the saved plot for comparison</span>
+  file_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>,
+                        <span class="st">&quot;graphs/plotTrace_pi.Rdata&quot;</span>,
+                        <span class="dt">package=</span><span class="st">&quot;RevGadgets&quot;</span>)
+  <span class="kw">load</span>(file_<span class="dv">2</span>) <span class="co"># loads an object called 'plots'</span>
+  <span class="kw">expect_equal</span>(plots[[<span class="dv">1</span>]], plots_new[[<span class="dv">1</span>]])
+  })</code></pre></div>
+</div>
 </div>
 <div id="unit-testing-and-github" class="section level2">
 <h2>Unit Testing and GitHub</h2>
