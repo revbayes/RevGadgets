@@ -114,11 +114,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           plots[[i]] <- plots[[i]] +
             ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                         ggplot2::aes(x=x,ymax=y,ymin=0),
-                                        fill = colFun(length(vars_quant))[k], alpha=0.5)
+                                        fill = .colFun(length(vars_quant))[k], alpha=0.5)
         }
 
         plots[[i]] <- plots[[i]] +
-          ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
+          ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -128,8 +128,8 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         #                                                     fill = variable,
         #                                                     color = variable)) +
         #              ggplot2::geom_density(alpha = 0.5) +
-        #              ggplot2::scale_fill_manual(values = colFun(length(vars_quant))) +
-        #              ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
+        #              ggplot2::scale_fill_manual(values = .colFun(length(vars_quant))) +
+        #              ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
         #              ggthemes::theme_few() +
         #              ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
         #              ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -145,17 +145,17 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         plots[[i]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value),
                                 position = "identity",
-                                color = colFun(1),geom="line") +
+                                color = .colFun(1),geom="line") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
-                               fill = colFun(1)) +
+                               fill = .colFun(1)) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_quant)) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
         # old version with no differential fill for credible interval
         #plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
+        #  ggplot2::geom_density(fill = .colFun(1), color = .colFun(1)) +
         #  ggthemes::theme_few() +
         #  ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_quant)) +
         #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -189,11 +189,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
             ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                  ggplot2::aes(x=x,ymax=y,ymin=0),
-                                 fill = colFun(length(vars_quant))[k], alpha=0.5)
+                                 fill = .colFun(length(vars_quant))[k], alpha=0.5)
         }
 
         plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
-          ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
+          ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = "Combined Trace:")  +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -203,8 +203,8 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         #                                                                     fill = variable,
         #                                                                     color = variable)) +
         #  ggplot2::geom_density(alpha = 0.5) +
-        #  ggplot2::scale_fill_manual(values = colFun(length(vars_quant))) +
-        #  ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
+        #  ggplot2::scale_fill_manual(values = .colFun(length(vars_quant))) +
+        #  ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
         #  ggthemes::theme_few() +
         #  ggplot2::ggtitle(label = "Combined Trace:") +
         #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -219,11 +219,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         # plot density, filling in the 95% credible interval
         plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value),
-                                color = colFun(1),geom="line",
+                                color = .colFun(1),geom="line",
                                 position = "identity") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
-                               fill = colFun(1)) +
+                               fill = .colFun(1)) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste("Combined Trace")) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -231,7 +231,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
         # old version with no differential fill for credible interval
         #plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
+        #  ggplot2::geom_density(fill = .colFun(1), color = .colFun(1)) +
         #  ggthemes::theme_few() +
         #  ggplot2::ggtitle(label = paste("Combined Trace:", vars_quant)) +
         #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -281,9 +281,9 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::geom_bar(position = position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
-            ggplot2::scale_color_manual(values = colFun(length(vars_qual))) +
-            ggplot2::scale_fill_manual(values = c(colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
-            ggplot2::guides(color = guide_legend(override.aes=list(fill=colFun(length(vars_qual))))) +
+            ggplot2::scale_color_manual(values = .colFun(length(vars_qual))) +
+            ggplot2::scale_fill_manual(values = c(.colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
+            ggplot2::guides(color = guide_legend(override.aes=list(fill=.colFun(length(vars_qual))))) +
             ggplot2::ggtitle(label = paste0("Trace ", i)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
         }
@@ -302,10 +302,10 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
           #plot
           plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
-                                ggplot2::geom_bar(stat = "identity", color = colFun(1), fill = "white") +
+                                ggplot2::geom_bar(stat = "identity", color = .colFun(1), fill = "white") +
                                 ggplot2::geom_bar(data = data_sig, stat = "identity",
                                                   ggplot2::aes(x = state, y = probability),
-                                        color = colFun(1), fill = colFun(1)) +
+                                        color = .colFun(1), fill = .colFun(1)) +
                                 ggthemes::theme_few() +
                                 ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_qual)) +
                                 ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -350,9 +350,9 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::geom_bar(position = position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
-            ggplot2::scale_color_manual(values = colFun(length(vars_qual))) +
-            ggplot2::scale_fill_manual(values = c(colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
-            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=colFun(length(vars_qual))))) +
+            ggplot2::scale_color_manual(values = .colFun(length(vars_qual))) +
+            ggplot2::scale_fill_manual(values = c(.colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
+            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=.colFun(length(vars_qual))))) +
             ggplot2::ggtitle(label = paste0("Combined Trace")) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
@@ -372,10 +372,10 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
           #plot
           plots[[nplots + 1]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
-            ggplot2::geom_bar(stat = "identity", color = colFun(1), fill = "white") +
+            ggplot2::geom_bar(stat = "identity", color = .colFun(1), fill = "white") +
             ggplot2::geom_bar(data = data_sig, stat = "identity",
                               aes(x = state, y = probability),
-                              color = colFun(1), fill = colFun(1)) +
+                              color = .colFun(1), fill = .colFun(1)) +
             ggthemes::theme_few() +
             ggplot2::ggtitle(label = paste0("Combined Trace: ",vars_qual)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))

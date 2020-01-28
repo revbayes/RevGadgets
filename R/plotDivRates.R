@@ -106,7 +106,7 @@ plotDivRates <- function(rates,
   # Make color vector
   if ( is.null(col) ) {
 
-    col <- colFun(5)
+    col <- .colFun(5)
     names(col) <- c("speciation rate",
                     "extinction rate",
                     "net-diversification rate",

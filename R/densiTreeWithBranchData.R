@@ -108,8 +108,8 @@ densiTreeWithBranchData <- function(tree_file = NULL, trees = NULL, data = NULL,
   }
   else {
     # obtain max and min of data range
-    min.data <- min(sapply(data, function(x) min(x)))
-    max.data <- max(sapply(data, function(x) max(x)))
+    min.data <- min(sapply(data, function(x) min(as.numeric(x[[1]]))))
+    max.data <- max(sapply(data, function(x) max(as.numeric(x[[1]]))))
     data_intervals <- seq(min.data, max.data, 0.1*(max.data - min.data))
   }
 

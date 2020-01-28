@@ -254,13 +254,13 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
     names(res) <- nn
 
     for (i in seq_along(name)) {
-      # res[i] <- if(treeio:::is_numeric(val[i])) as.numeric(val[i]) else val[i]
+      # res[i] <- if(treeio:::is.numeric(val[i])) as.numeric(val[i]) else val[i]
       res[i] <- if(is.numeric(val[i])) as.numeric(val[i]) else val[i]
     }
     if (flag) {
       j <- i
       for (i in seq_along(SETS)) {
-        if(is_numeric(SETS[[i]])) {
+        if(is.numeric(SETS[[i]])) {
           res[i+j] <- list(as.numeric(SETS[[i]]))
         } else {
           res[i+j] <- SETS[i]
@@ -276,7 +276,6 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   # nn <- lapply(stats2, names) %>% unlist %>%
   #   unique %>% sort
 
-
   stats2 <- lapply(stats2, function(x) {
     y <- x[nn]
     names(y) <- nn
@@ -285,7 +284,7 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   })
 
   stats3 <- do.call(rbind, stats2)
-  stats3 <- as_tibble(stats3)
+  stats3 <- tibble::as_tibble(stats3)
 
   ## no need to extract sd from prob+-sd
   ## as the sd is stored in prob_stddev
