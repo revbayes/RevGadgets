@@ -4,8 +4,15 @@
 \alias{processDivRates}
 \title{Process Diversification Rates}
 \usage{
-processDivRates(speciation_time_log = "", speciation_rate_log = "",
-  extinction_time_log = "", extinction_rate_log = "", burnin = 0.25)
+processDivRates(
+  speciation_time_log = "",
+  speciation_rate_log = "",
+  extinction_time_log = "",
+  extinction_rate_log = "",
+  fossilization_time_log = "",
+  fossilization_rate_log = "",
+  burnin = 0.25
+)
 }
 \arguments{
 \item{speciation_time_log}{(vector of character strings or single character string; "") Path to speciation times log file(s)}
@@ -15,6 +22,10 @@ processDivRates(speciation_time_log = "", speciation_rate_log = "",
 \item{extinction_time_log}{(vector of character strings or single character string; "") Path to extinction times log file(s)}
 
 \item{extinction_rate_log}{(vector of character strings or single character string; "") Path to extinction rates log file(s)}
+
+\item{fossilization_time_log}{(vector of character strings or single character string; "") Path to fossilization times log file(s)}
+
+\item{fossilization_rate_log}{(vector of character strings or single character string; "") Path to fossilization rates log file(s)}
 
 \item{burnin}{(single numeric value; default = 0) Fraction of generations to
 discard (if value provided is between 0 and 1) or number of generations (if
