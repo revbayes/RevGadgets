@@ -31,12 +31,12 @@ Plots the posterior distributions of variables from trace file.
 }
 \details{
 Plots the posterior distributions of continuous variables from one or
-multiple traces (as in, from multiple runs). If multiple traces are provided,
+multiple traces (as in, from multiple runs). Shaded regions under the curve
+represent the 95\% credible interval.  If multiple traces are provided,
 plotTrace() will plot each run independently as well as plot the combined output.
-When multiple variables are listed, the default behavior is to overlay
-the variables, unless the user specifies combine = FALSE. Note that for variables
-with very different distributions, overlaying the plots may result in illegible
-figures. In these cases, we recommend combine = FALSE.
+Note that for variables ith very different distributions, overlaying the
+plots may result in illegible figures. In these cases, we recommend plotting
+each parameter separately.
 }
 \examples{
 
@@ -44,7 +44,7 @@ figures. In these cases, we recommend combine = FALSE.
 
 file <- system.file("extdata",
     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
-one_trace <- readTrace(path = file)
+one_trace <- readTrace(paths = file)
 plots <- plotTrace(trace = one_trace,
                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 plots[[1]]

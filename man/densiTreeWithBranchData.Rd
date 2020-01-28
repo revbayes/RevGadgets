@@ -4,14 +4,32 @@
 \alias{densiTreeWithBranchData}
 \title{DensiTree-style plot with branch-specific data}
 \usage{
-densiTreeWithBranchData(tree_file = NULL, trees = NULL, data = NULL,
-  data_name = NULL, type = "cladogram", consensus = NULL,
-  direction = "rightwards", scaleX = FALSE, width = 1, lty = 1,
-  cex = 0.8, font = 3, tip.color = 1, adj = 0, srt = 0,
-  keep_underscores = FALSE, label_offset = 0.01, scale_bar = TRUE,
-  jitter = list(amount = 0, random = TRUE), color_gradient = c("red",
-  "yellow", "green"), alpha = NULL, bias = 1, data_intervals = NULL,
-  ...)
+densiTreeWithBranchData(
+  tree_file = NULL,
+  trees = NULL,
+  data = NULL,
+  data_name = NULL,
+  type = "cladogram",
+  consensus = NULL,
+  direction = "rightwards",
+  scaleX = FALSE,
+  width = 1,
+  lty = 1,
+  cex = 0.8,
+  font = 3,
+  tip.color = 1,
+  adj = 0,
+  srt = 0,
+  keep_underscores = FALSE,
+  label_offset = 0.01,
+  scale_bar = TRUE,
+  jitter = list(amount = 0, random = TRUE),
+  color_gradient = c("red", "yellow", "green"),
+  alpha = NULL,
+  bias = 1,
+  data_intervals = NULL,
+  ...
+)
 }
 \arguments{
 \item{tree_file}{tree file in NEXUS format with data attached to the branches/nodes of the tree. All trees should have the same tip labels (the order can change).

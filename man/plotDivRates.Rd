@@ -4,15 +4,23 @@
 \alias{plotDivRates}
 \title{Plot Diversification Rates}
 \usage{
-plotDivRates(output, fig_types = c("speciation rate", "extinction rate",
-  "net-diversification rate", "relative-extinction rate"),
-  xlab = "million years ago", col = NULL, col_alpha = "50",
-  offset = 0, xaxt = "n", yaxt = "s", ...)
+plotDivRates(
+  rates,
+  fig_types = c("speciation rate", "extinction rate", "net-diversification rate",
+    "relative-extinction rate"),
+  xlab = "million years ago",
+  col = NULL,
+  col_alpha = "50",
+  offset = 0,
+  xaxt = "n",
+  yaxt = "s",
+  ...
+)
 }
 \arguments{
-\item{output}{(list; no default) The processed output for plotting (output of processDivRates()).}
+\item{rates}{(list; no default) The processed output for plotting (output of processDivRates()).}
 
-\item{fig_types}{(character vector, c("speciation rate", "extinction rate", "net-diversification rate", "relative-extinction rate")) Which aspects of the model to visualize. See details for a complete description.}
+\item{fig_types}{(character vector, c("speciation rate", "extinction rate", "net-diversification rate", "relative-extinction rate")) Which aspects of the model to visualize. "fossilization rate" may also be included but is not plotted by default. See details for a complete description.}
 
 \item{xlab}{(character; "million years ago") The label of the x-axis.}
 
@@ -35,10 +43,11 @@ Plots diversification rates, does not return an object.
 Plots the output of a episodic diversification rate analysis
 }
 \details{
-Plots the output of diversification rate analyses. Takes as input the
+Plots the output of episodic diversification rate analyses. Takes as input the
 output of processDivRates() and plotting parameters. Does not return an
 object. For now, valid figure types include: "speciation rate",
-"extinction rate","net-diversification rate", and "relative-extinction rate".
+"extinction rate","net-diversification rate", "relative-extinction rate",
+and "fossilization rate".
 If colors are not provided (parameter col), the plot defaults to preset colors.
 }
 \examples{
@@ -60,7 +69,7 @@ primates <- processDivRates(speciation_time_log = speciation_time_file,
                             extinction_rate_log = extinction_rate_file,
                             burnin = 0.25)
 # then plot results:
-plotDivRates(output = primates)
+plotDivRates(rates = primates)
 }
 
 }
