@@ -17,13 +17,13 @@
 
 
 # libraries
-require(ggtree)
+#require(ggtree)
 
 # main processing function
-processAncStatesDiscrete = function(tree_file,
+processAncStatesDiscrete = function(path,
                                     state_labels=NULL) {
     # read in tree
-    t = treeio::read.beast(tree_file)
+    t = treeio::read.beast(path)
 
     # process column names
     include_start_states = F
@@ -32,9 +32,9 @@ processAncStatesDiscrete = function(tree_file,
     } else if ("start_state_1" %in% names(t@data) && "end_state_1" %in% names(t@data)) {
         include_start_states = T
     } else {
-        error("tree_file does not contain expected state labels: [\'anc_state\'] or [\'start_state\' and \'end_state\']")
+        error("tree file does not contain expected state labels: [\'anc_state\'] or [\'start_state\' and \'end_state\']")
     }
-    
+
     # add state labels
     t = assign_state_labels(t, state_labels, include_start_states)
 
@@ -152,12 +152,12 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
     } else {
         state_pos_str_base = c("anc_state_")
     }
-  
+
     # send error if state_labels are provided without names
     if (!is.null(state_labels) && is.null(names(state_labels))) {
         error("names(state_labels) must identify all unlabeled state names in attributes(t)$data")
     }
-    
+
     # generate state labels if none provided
     if ( is.null(state_labels) ) {
       warning("State labels not provided by user. Will be generated automatically.")
@@ -168,7 +168,7 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
       for(i in 1:length(states) ) {
         state_labels[as.character(states[i])] = LETTERS[i]
       }
-      state_labels["..."] <- "..."
+      state_labels["other"] <- "other"
     }
 
     # create list of ancestral state name tags
@@ -187,10 +187,10 @@ assign_state_labels = function(t, state_labels, include_start_states, n_states=3
         x_state[x_state_invalid] = NA
         attributes(t)$data[[m]] = x_state
     }
-    
+
     # Just add the state_labels here
     attributes(t)$state_labels <- state_labels
-    
+
     return(t)
 }
 
@@ -224,8 +224,10 @@ set_pp_factor_range = function(t, include_start_states, n_states=1)
 
 build_state_probs = function(t, state_labels, include_start_states, p_threshold = 0.01) {
     # Generates a table that stores the states for every node in a given phylogeny
-    # States that have a posterior probability below a certain threshold at a given node, will be binned into a `other` bin (this used to be called `...`, but that name causes errors in vctrs used in tidyr)
-    
+    # States that have a posterior probability below a certain threshold at a given node,
+    # will be binned into a `other` bin (this used to be called `...`,
+    # but that name causes errors in vctrs used in tidyr)
+
     n_states = length(state_labels)
     n_tips = length(attributes(t)$phylo$tip.label)
     n_node = 2 * n_tips - 1
@@ -265,7 +267,7 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
         # format column names
         colnames(dat[[s]])=as.vector(unlist(state_labels))
 
-        # add probs for >3rd state under ... label
+        # add probs for >3rd state under other label
         rem_prob = c()
         for (i in 1:nrow(dat[[s]])) {
             rem_prob[i] = 1
@@ -297,7 +299,7 @@ collect_probable_states = function(p, p_threshold=0.005)
         }
     }
     codes = unique(codes)
-    codes = c(codes, "...")
+    codes = c(codes, "other")
     return(codes)
 }
 
@@ -306,13 +308,13 @@ make_states = function(label_fn, color_fn) {
 
     # generate colors for ranges
     range_color_list = read.csv(color_fn, header=T, sep=",", colClasses="character")
-    
+
     # get area names
     area_names = unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
 
     # get state labels
     state_descriptions = read.csv(label_fn, header=T, sep=",", colClasses="character")
-    
+
     # map presence-absence ranges to area names
     range_labels = sapply(state_descriptions$range[2:nrow(state_descriptions)],
         function(x) {
@@ -320,9 +322,9 @@ make_states = function(label_fn, color_fn) {
             paste( area_names[present], collapse="")
         })
 
-    # map labels to colors 
+    # map labels to colors
     range_colors = range_color_list$color[ match(range_labels, range_color_list$range) ]
-    
+
     # generate state/color labels
     idx = 1
     st_lbl = list()
@@ -332,7 +334,7 @@ make_states = function(label_fn, color_fn) {
         st_colors[j] = range_colors[j]
     }
     st_colors[ length(st_colors)+1 ] = "lightgray"
-    st_lbl[["..."]] = "..."   
-    
+    st_lbl[["other"]] = "other"
+
     return( list(state_labels=st_lbl, state_colors=st_colors) )
 }

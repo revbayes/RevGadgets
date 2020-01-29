@@ -57,7 +57,7 @@
 #' @param title (character, NULL) Title of plot
 #' @param state_colors (character, NULL) Vector of colours to be used for states. Must be of equal length to the number of states.
 #' @param ... (various)
-#' @return 
+#' @return
 #' @examples
 #' @export
 
@@ -131,7 +131,11 @@ plotAncStatesDiscrete = function(t,
     # State colours
     if( is.null(state_colors) ) {
       print("State colors not provided by user. Defaults will be used")
-      state_colors <- RColorBrewer::brewer.pal(n = length(state_labels), name = "Set3")
+      if (length(state_labels) <= 12) {
+        state_colors <- .colFun(length(state_labels))
+      } else { stop("More than 12 states provided.
+                    Please select your own colors
+                    and provide in argument state_colors")}
       names(state_colors) <- state_labels
     }
   }
@@ -170,8 +174,11 @@ plotAncStatesDiscrete = function(t,
   }
 
   else if (summary_statistic == "PieState"){
-    
-    p <- plotPieState(p, t, include_start_states, show_state_legend, state_colors, state_labels, alpha, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x)
+
+    p <- plotPieState(p, t, include_start_states,
+                      show_state_legend, state_colors,
+                      state_labels, alpha, tip_pie_diameter,
+                      node_pie_diameter, pie_nudge_y, pie_nudge_x)
 
   }
 
@@ -236,8 +243,8 @@ inset.revgadgets = function (tree_view, insets, width = 0.1, height = 0.1, hjust
 }
 require("rvcheck")
 require("ggimage")
-geom_subview_revgadgets <- function (mapping = NULL, data = NULL, width = 0.1, height = 0.1, 
-                                     x = NULL, y = NULL, subview = NULL) 
+geom_subview_revgadgets <- function (mapping = NULL, data = NULL, width = 0.1, height = 0.1,
+                                     x = NULL, y = NULL, subview = NULL)
   # This is basically just a copy of ggimage:::geom_subview with print statements
 {
   if (is.null(data)) {
@@ -298,7 +305,7 @@ geom_subview_revgadgets <- function (mapping = NULL, data = NULL, width = 0.1, h
   print("These are the y-max coordinates:")
   print(data$ymax)
   lapply(1:nrow(data), function(i) {
-    annotation_custom(as.grob(data$subview[[i]]), xmin = data$xmin[i], 
+    annotation_custom(as.grob(data$subview[[i]]), xmin = data$xmin[i],
                       xmax = data$xmax[i], ymin = data$ymin[i], ymax = data$ymax[i])
   })
 }
@@ -522,13 +529,14 @@ plotMean <- function(p, t, include_start_states, node_label_nudge_x, node_label_
   return(p)
 }
 
-plotPieState <- function(p, t, include_start_states, show_state_legend, state_colors, state_labels, alpha, tip_pie_diameter, node_pie_diameter, pie_nudge_y, pie_nudge_x){
-  
+plotPieState <- function(p, t, include_start_states, show_state_legend,
+                         state_colors, state_labels, alpha, tip_pie_diameter,
+                         node_pie_diameter, pie_nudge_y, pie_nudge_x){
   if (include_start_states) {
     print("Start states not yet implemented for PieState ancestral states.")
     return()
   }
-  
+
   if (!("anc_state_1" %in% colnames(attributes(t)$data))) {
     anc_data = data.frame(node=names(attributes(t)$data$end_state_1),
                           anc_state_1=levels(attributes(t)$data$end_state_1)[attributes(t)$data$end_state_1],
@@ -536,15 +544,14 @@ plotPieState <- function(p, t, include_start_states, show_state_legend, state_co
     `%<+%` = ggtree::`%<+%`
     p = p %<+% anc_data
   }
-  
   # print tips
   #p = p + ggtree::geom_tippoint(ggtree::aes(colour=factor(anc_state_1)), size=1, alpha = 0.0)
-  
+
   # plot invisible node states (for legend)
   p = p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_1), size=0),na.rm=TRUE, alpha=0.0)
   #p = p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_2), size=0),na.rm=TRUE, alpha=0.0)
   #p = p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_3), size=0),na.rm=TRUE, alpha=0.0)
-  
+
   # set up the legend
   if (show_state_legend) {
     p = p + ggplot2::guides(colour=ggplot2::guide_legend("State", override.aes = list(size=length(state_labels), alpha = 1.0)), order=1)
@@ -553,19 +560,25 @@ plotPieState <- function(p, t, include_start_states, show_state_legend, state_co
   }
   p = p + ggplot2::guides(size=FALSE)
 
-  #p = p + ggplot2::scale_color_manual(values=state_colors, breaks=state_labels)
+  p = p + ggplot2::scale_color_manual(values=state_colors, breaks=state_labels)
 
   # position legend
   p = p + ggplot2::theme(legend.position="left")
-  
+
   # get anc state matrices (for pie/bar charts)
   dat_state_anc = build_state_probs(t, state_labels, include_start_states)$anc
-  
-  # make pie objects
-  pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1), alpha=alpha)
 
-  p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter, hjust=pie_nudge_x, vjust=pie_nudge_y)
-  
+  # make pie objects
+  pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
+                             color=state_colors, alpha=alpha)
+
+  #pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
+  #                           color=.colFun(length(state_labels) + 1), alpha=alpha)
+  #
+
+  #p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter, hjust=pie_nudge_x, vjust=pie_nudge_y)
+  p = p + ggtree::geom_inset(pies_anc, height=0.1, hjust=pie_nudge_x, vjust=pie_nudge_y)
+
   return(p)
 }
 
