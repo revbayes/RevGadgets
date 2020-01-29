@@ -1,10 +1,10 @@
-context("tests the plotAncStatesDiscrete summary_statistic=MAPChromosome function")
+context("tests the plotAncStatesDiscrete summary_statistic=MAP function")
 
-test_that("plots chromosome ancestral states", {
+test_that("plots MAP ancestral states", {
 
   # get files
   tree_file = system.file("extdata", "discrete_ancestral_states/ancestral_states.tree", package="RevGadgets")
-  plot_file = system.file("extdata", "discrete_ancestraL_states/ancestral_state_plot_MAP.rds", package="RevGadgets")
+  plot_file = system.file("extdata", "discrete_ancestral_states/ancestral_state_plot_MAP.rds", package="RevGadgets")
 
   # make a new plot
   require(treeio)
@@ -26,10 +26,10 @@ test_that("plots chromosome ancestral states", {
   original_p = readRDS(plot_file)
 
   # compare plot objects
-  #original_p$layers[[3]]$aes_params = p$layers[[3]]$aes_params
-  #original_p$scales$scales = p$scales$scales
-  #original_p$plot_env$p$scales$scales = p$plot_env$p$scales$scales
-  #attributes(original_p$plot_env$tr)$file = attributes(p$plot_env$tr)$file
+  original_p$layers[[3]]$aes_params = p$layers[[3]]$aes_params
+  original_p$scales$scales = p$scales$scales
+  original_p$plot_env$p$scales$scales = p$plot_env$p$scales$scales
+  attributes(original_p$plot_env$tr)$file = attributes(p$plot_env$tr)$file
   expect_equal(p, original_p)
 
 })
