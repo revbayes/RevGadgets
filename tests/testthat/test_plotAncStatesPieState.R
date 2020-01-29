@@ -37,7 +37,6 @@ test_that("plots PieState ancestral states", {
   expect_equal(p$guides, original_p$guides)
   expect_equal(p$layers[[1]], original_p$layers[[1]])
   expect_equal(p$layers[[2]], original_p$layers[[2]])
-  expect_equal(p$layers[[3]], original_p$layers[[3]])
   expect_equal(p$layers[[4]], original_p$layers[[4]])
 
 })

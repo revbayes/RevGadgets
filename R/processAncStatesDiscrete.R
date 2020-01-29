@@ -224,7 +224,7 @@ set_pp_factor_range = function(t, include_start_states, n_states=1)
 
 build_state_probs = function(t, state_labels, include_start_states, p_threshold = 0.01) {
     # Generates a table that stores the states for every node in a given phylogeny
-    # States that have a posterior probability below a certain threshold at a given node, will be binned into a `...` bin
+    # States that have a posterior probability below a certain threshold at a given node, will be binned into a `other` bin (this used to be called `...`, but that name causes errors in vctrs used in tidyr)
     
     n_states = length(state_labels)
     n_tips = length(attributes(t)$phylo$tip.label)
@@ -273,7 +273,7 @@ build_state_probs = function(t, state_labels, include_start_states, p_threshold 
                 rem_prob[i] = rem_prob[i] - dat[[s]][i,j]
             }
         }
-        dat[[s]]$`...` = rem_prob
+        dat[[s]]$other = rem_prob
         dat[[s]]$node = 1:n_node
         #print(dat[[s]][250:260,])
     }
