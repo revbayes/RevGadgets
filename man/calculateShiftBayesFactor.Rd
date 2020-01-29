@@ -4,16 +4,8 @@
 \alias{calculateShiftBayesFactor}
 \title{Bayes Factors in support of a shift in diversification rates over a given time interval.}
 \usage{
-calculateShiftBayesFactor(
-  output,
-  parameter,
-  parameter.times,
-  t1,
-  t2,
-  prior.prob = 0.5,
-  decrease = TRUE,
-  return.2lnBF = TRUE
-)
+calculateShiftBayesFactor(output, parameter, parameter.times, t1, t2,
+  prior.prob = 0.5, decrease = TRUE, return.2lnBF = TRUE)
 }
 \arguments{
 \item{output}{(list; no default) The processed output for computation (output of processDivRates()).}

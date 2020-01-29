@@ -56,18 +56,16 @@
 #' @param show_tree_scale (logical, TRUE)
 #' @param title (character, NULL) Title of plot
 #' @param state_colors (character, NULL) Vector of colours to be used for states. Must be of equal length to the number of states.
-#' @param ...
-#'
+#' @param ... (various)
+#' @return 
 #' @examples
-#'
 #' @export
 
-
 # libraries
-require(colorspace)
-require(RColorBrewer)
-require(ggplot2)
-require(ggtree)
+#require(colorspace)
+#require(RColorBrewer)
+#require(ggplot2)
+#require(ggtree)
 
 plotAncStatesDiscrete = function(t,
                                  summary_statistic,

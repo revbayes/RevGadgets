@@ -3,6 +3,7 @@
 export()
 export(calculateShiftBayesFactor)
 export(densiTreeWithBranchData)
+export(plotAncStatesDiscrete)
 export(plotDivRates)
 export(plotTrace)
 export(plotTree)

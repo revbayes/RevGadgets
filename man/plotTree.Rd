@@ -4,13 +4,8 @@
 \alias{plotTree}
 \title{Plot tree}
 \usage{
-plotTree(
-  tree,
-  chrono = FALSE,
-  node_labels = TRUE,
-  tip_labels = TRUE,
-  fossils = NULL
-)
+plotTree(tree, chrono = FALSE, node_labels = TRUE, tip_labels = TRUE,
+  fossils = NULL)
 }
 \arguments{
 \item{tree}{(list of lists of tidytree objects; no default) Name of a list of lists of

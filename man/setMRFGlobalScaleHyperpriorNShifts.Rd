@@ -4,12 +4,8 @@
 \alias{setMRFGlobalScaleHyperpriorNShifts}
 \title{Sets a global scale parameter for a GMRF or HSMRF model given a prior mean number of effective shifts.}
 \usage{
-setMRFGlobalScaleHyperpriorNShifts(
-  n.episodes,
-  model,
-  prior.n.shifts = log(2),
-  shift.size = 2
-)
+setMRFGlobalScaleHyperpriorNShifts(n.episodes, model,
+  prior.n.shifts = log(2), shift.size = 2)
 }
 \arguments{
 \item{n.episodes}{(numeric; no default) The number of episodes in the random field (the parameter vector will be this long).}

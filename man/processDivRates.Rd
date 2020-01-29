@@ -4,15 +4,10 @@
 \alias{processDivRates}
 \title{Process Diversification Rates}
 \usage{
-processDivRates(
-  speciation_time_log = "",
-  speciation_rate_log = "",
-  extinction_time_log = "",
-  extinction_rate_log = "",
-  fossilization_time_log = "",
-  fossilization_rate_log = "",
-  burnin = 0.25
-)
+processDivRates(speciation_time_log = "", speciation_rate_log = "",
+  extinction_time_log = "", extinction_rate_log = "",
+  fossilization_time_log = "", fossilization_rate_log = "",
+  burnin = 0.25)
 }
 \arguments{
 \item{speciation_time_log}{(vector of character strings or single character string; "") Path to speciation times log file(s)}

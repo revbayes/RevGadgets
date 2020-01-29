@@ -4,14 +4,8 @@
 \alias{readTrace}
 \title{Read trace}
 \usage{
-readTrace(
-  paths,
-  format = "simple",
-  delim = "\\t",
-  burnin = 0.1,
-  check.names = FALSE,
-  ...
-)
+readTrace(paths, format = "simple", delim = "\\t", burnin = 0.1,
+  check.names = FALSE, ...)
 }
 \arguments{
 \item{paths}{(vector of character strings; no default) File path(s) to trace file.}
