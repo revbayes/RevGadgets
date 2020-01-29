@@ -564,7 +564,7 @@ plotPieState <- function(p, t, include_start_states, show_state_legend, state_co
   # make pie objects
   pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1), alpha=alpha)
 
-  p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter)
+  p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter, hjust=pie_nudge_x, vjust=pie_nudge_y)
   
   return(p)
 }

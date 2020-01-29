@@ -21,6 +21,8 @@ test_that("plots PieState ancestral states", {
                             show_posterior_legend=!FALSE,
                             state_labels=c(as.character(0:2)),
                             node_pie_diameter=0.005,
+                            pie_nudge_x=0.02,
+                            pie_nudge_y=0.2,
                             alpha=.9)
   p = p + ggplot2::coord_cartesian(xlim = c(0, 20))
   #print(p)
