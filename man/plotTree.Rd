@@ -4,13 +4,27 @@
 \alias{plotTree}
 \title{Plot tree}
 \usage{
-plotTree(tree, fossils = NULL)
+plotTree(
+  tree,
+  chrono = FALSE,
+  node_labels = TRUE,
+  tip_labels = TRUE,
+  fossils = NULL
+)
 }
 \arguments{
 \item{tree}{(list of lists of tidytree objects; no default) Name of a list of lists of
 tidytree objects, such as produced by readTrees(). This object should only contain
 only one summary tree from one trace file. If it contains multiple trees or multiple
 traces, only the first will be used.}
+
+\item{chrono}{(logical; FALSE) Plot as a chronogram with node age bars and time-labeled
+x-axis?}
+
+\item{node_labels}{(logical; TRUE) Plot posterior probabilities as colored cirlces at
+nodes?}
+
+\item{tip_labels}{(logical: TRUE) Plot tip labels?}
 
 \item{fossils}{(character vector; NULL) Optional vector of the tips that are fossils,
 to be sure that these tips are highlighted in red.}
