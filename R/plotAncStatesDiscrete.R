@@ -132,7 +132,7 @@ plotAncStatesDiscrete = function(t,
     if( is.null(state_colors) ) {
       print("State colors not provided by user. Defaults will be used")
       if (length(state_labels) <= 12) {
-        state_colors <- .colFun(length(state_labels))
+        state_colors <- .colFun(length(state_labels) + 1)
       } else { stop("More than 12 states provided.
                     Please select your own colors
                     and provide in argument state_colors")}
@@ -572,12 +572,7 @@ plotPieState <- function(p, t, include_start_states, show_state_legend,
   pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
                              color=state_colors, alpha=alpha)
 
-  #pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
-  #                           color=.colFun(length(state_labels) + 1), alpha=alpha)
-  #
-
-  #p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter, hjust=pie_nudge_x, vjust=pie_nudge_y)
-  p = p + ggtree::geom_inset(pies_anc, height=0.1, hjust=pie_nudge_x, vjust=pie_nudge_y)
+  p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter, hjust=pie_nudge_x, vjust=pie_nudge_y)
 
   return(p)
 }
