@@ -184,7 +184,9 @@ plotAncStatesDiscrete = function(t,
 
   else if (summary_statistic == "PieRange") {
 
-    p <- plotPieRange(p, t, show_state_legend, state_colors, state_labels, tip_pie_diameter, node_pie_diameter, pie_nudge_x, pie_nudge_y, include_start_states)
+    p <- plotPieRange(p, t, show_state_legend, state_colors,
+                      state_labels, tip_pie_diameter, node_pie_diameter,
+                      pie_nudge_x, pie_nudge_y, include_start_states)
   }
 
   # if (use_state_colors) {
@@ -572,10 +574,7 @@ plotPieState <- function(p, t, include_start_states, show_state_legend,
   pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
                              color=state_colors, alpha=alpha)
 
-  #pies_anc = ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
-  #                           color=.colFun(length(state_labels) + 1), alpha=alpha)
-  #
-
+  #height and width are the size of the insets relative to the axes, so we should calculate
   #p = p + ggtree::geom_inset(pies_anc, height=node_pie_diameter, hjust=pie_nudge_x, vjust=pie_nudge_y)
   p = p + ggtree::geom_inset(pies_anc, height=0.1, hjust=pie_nudge_x, vjust=pie_nudge_y)
 
@@ -583,7 +582,9 @@ plotPieState <- function(p, t, include_start_states, show_state_legend,
 }
 
 
-plotPieRange <- function(p, t, show_state_legend, state_colors, state_labels, tip_pie_diameter, node_pie_diameter, pie_nudge_x, pie_nudge_y, include_start_states){
+plotPieRange <- function(p, t, show_state_legend, state_colors, state_labels,
+                         tip_pie_diameter, node_pie_diameter, pie_nudge_x,
+                         pie_nudge_y, include_start_states){
   if (!("start_state_1" %in% colnames(attributes(t)$data))) {
     stop("Start states not found in input tree.")
   }
