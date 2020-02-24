@@ -15,18 +15,17 @@ test_that("plots PieState ancestral states", {
                             include_start_states=FALSE,
                             tip_label_size=1.5,
                             tip_label_offset=0.2,
-                            node_size_range=c(2, 2),
                             tip_label_italics=FALSE,
                             node_label_size=0.0,
                             show_posterior_legend=!FALSE,
-                            state_labels=c(as.character(0:2)),
+                            state_labels=c(0:2),
                             node_pie_diameter=0.005,
                             pie_nudge_x=0.02,
                             pie_nudge_y=0.2,
                             alpha=.9)
   p = p + ggplot2::coord_cartesian(xlim = c(0, 20))
   #print(p)
-  
+
   # read original plot object
   original_p = readRDS(plot_file)
 
