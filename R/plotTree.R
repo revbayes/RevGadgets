@@ -27,6 +27,8 @@
 #' @param fossils (character vector; NULL) Optional vector of the tips that are fossils,
 #' to highlight age bars of fossils in red. Only works if node_age_bars is also TRUE.
 #'
+#' @param line_width (numeric; 1) Change line width for branches
+#'
 #' @return returns a single plot object.
 #'
 #' @examples
@@ -34,7 +36,7 @@
 #' @export
 
 plotTree <- function(tree, node_age_bars = FALSE, timeline = FALSE, node_labels = TRUE,
-                     tip_labels = TRUE, color_branch = NULL, fossils = NULL) {
+                     tip_labels = TRUE, color_branch = NULL, fossils = NULL, line_width = 1) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
@@ -52,11 +54,8 @@ plotTree <- function(tree, node_age_bars = FALSE, timeline = FALSE, node_labels 
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
   }
 
-  # format posterior data
-  phy@data$posterior[ phy@data$posterior == 1 ] <- NA
-
-  # initiate plot
-  pp <- ggtree::ggtree(phy, right = F)
+   # initiate plot
+  pp <- ggtree::ggtree(phy, right = F, size = line_width)
 
   # processing for node_age_bars
   if (node_age_bars) {
@@ -99,6 +98,7 @@ plotTree <- function(tree, node_age_bars = FALSE, timeline = FALSE, node_labels 
     }
   }
 
+  # add timeline
   if (timeline) {
     # get dimensions
     n_nodes <- treeio::Nnode(phy)
@@ -118,8 +118,12 @@ plotTree <- function(tree, node_age_bars = FALSE, timeline = FALSE, node_labels 
     pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
   }
 
-
+  # add node labels (PP)
   if (node_labels) {
+
+    # format posterior data
+    phy@data$posterior[ phy@data$posterior == 1 ] <- NA
+
     # plot clade support
     pp$data$posterior_class = NA
     pp$data$posterior_class[ which(pp$data$posterior>=0.99) ] = ">0.99"
@@ -131,18 +135,41 @@ plotTree <- function(tree, node_age_bars = FALSE, timeline = FALSE, node_labels 
     pp$data$label = sapply(pp$data$label, function(x) { gsub("_"," ",x) })
     pp$data$label = sapply(pp$data$label, function(x) { gsub("subsp. ","",x) })
 
-    # set posterior support
-    pp <- pp + ggtree::geom_nodepoint( data=pp$data[ !is.na(pp$data$posterior), ], size=2, color="black")
-    pp <- pp + ggtree::geom_nodepoint( data=pp$data[ !is.na(pp$data$posterior), ], ggplot2::aes(color=posterior_class), size=1.5)
-    #### add custom colors and default colors here ####
-    col_post <- c("#000000","#666666","#999999","#BBBBBB","#EEEEEE")
-    names(col_post) <- levels(pp$data$posterior_class)
-    pp <- pp + ggplot2::scale_color_manual(values=col_post, name="Posterior")
+    # set posterior support by color if no branch coloring
+    if(is.null(color_branch)) {
+      pp <- pp + ggtree::geom_nodepoint( data=pp$data[ !is.na(pp$data$posterior), ], size=2, color="black")
+      pp <- pp + ggtree::geom_nodepoint( data=pp$data[ !is.na(pp$data$posterior), ], ggplot2::aes(color=posterior_class), size=1.5)
+      #### add custom colors and default colors here ####
+      col_post <- c("#000000","#666666","#999999","#BBBBBB","#EEEEEE")
+      names(col_post) <- levels(pp$data$posterior_class)
+      pp <- pp + ggplot2::scale_color_manual(values=col_post, name="Posterior")
+    } else { # if branches are colored, use size for pp
+      pp <- pp +
+        ggtree::geom_nodepoint(data=pp$data[ !is.na(pp$data$posterior), ],
+                               ggplot2::aes(size=posterior_class), color="black") +
+        ggplot2::scale_size_discrete(name="Posterior")
+    }
+
   }
 
+  # add branch coloring
+  if (!is.null(color_branch)){
+    col_num <- which(colnames(phy@data) == color_branch)
+    phy@data[,col_num] <- as.numeric(as.data.frame(phy@data)[,col_num]) #convert data to numeric
+    name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch))
+    pp <- pp +
+      ggplot2::aes(color=I(as.data.frame(phy@data)[,col_num])) +
+      ggplot2::scale_color_gradient(low = "#005ac8", high = "#fa7850",
+                                    name = name)
+  }
+
+  # add tip labels
   if (tip_labels) {
     # set tip & clade names
-    pp <- pp + ggtree::geom_tiplab(size=2.5, offset=0.2)
+    pp <- pp + ggtree::geom_tiplab(size=2.5, offset=0.2, color = "black")
+    # add extra space on plot for tip labels
+    tree_height <- max(phytools::nodeHeights(phy@phylo))
+    pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
   }
 
   return(pp)
