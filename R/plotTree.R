@@ -14,9 +14,15 @@
 #'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
 #'
-#' @param node_age_bars (character; "blue") Plot time tree with node age bars with color specified.
-#' If no node_age_bars desired, set as NULL. If colors of node_age_bars should vary based on some
-#' character in the tidytree object, set as the name of the corresponding column.
+#' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
+#'
+#' @param node_age_bars_colored_by (character; NULL) Specify column to color node age bars by,
+#' such as "posterior". If null, all node age bars plotted the same color, specified by
+#' node_age_bars_color
+#'
+#' @param node_age_bars_color (character; "blue") Color for node age bars. If node_age_bars_colored_by
+#' specifies a variable (not NULL), you must provide two colors, low and high values for a gradient. Colors must be either
+#' R valid color names or valid hex codes.
 #'
 #' @param node_labels (character; NULL) Plot text labels at nodes, specified by the name of the
 #' corresponding column in the tidytree object. If NULL, no text is plotted.
@@ -73,8 +79,8 @@
 #' @export
 
 
-plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels = NULL,
-                     node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
+plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
+                     node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
                      tip_labels_italics = TRUE, tip_labels_remove_underscore = FALSE, tip_labels_color = "black",
                      tip_labels_size = 3, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
                      node_pp_size = "variable", fossil_age_bars = NULL, fossil_age_bars_color = "red", branch_color = "black",
@@ -83,9 +89,10 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
   vars <- colnames(tree[[1]][[1]]@data)
-  if (is.null(node_age_bars) == FALSE &
-      .isColor(node_age_bars) == FALSE &
-      any(vars %in% node_age_bars) == FALSE) stop("node_age_bars should be NULL, a color, or a column in your tidytree object")
+  if (is.logical(node_age_bars) == FALSE) stop("node_age_bars should be TRUE or FALSE")
+  if (.isColor(node_age_bars_color) == FALSE) stop("node_age_bars_color should be valid color(s)")
+  if (is.null(node_age_bars_colored_by) == FALSE &
+      any(vars %in% node_age_bars_colored_by) == FALSE) stop("node_age_bars_colored_by should be a column in your tidytree object")
   if (is.null(node_labels) == FALSE &
       any(vars %in% node_labels) == FALSE) stop("node_labels should be NULL or a column in your tidytree object")
   if (is.null(node_labels_color) == FALSE & .isColor(node_labels_color) == FALSE) stop("node_labels_color should be NULL or a recognized color")
@@ -99,7 +106,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
     if (node_pp_shape %in% 0:25 == FALSE) stop("node_pp_shape should be a recognized shape (value between 0 and 25)")
     if (is.numeric(node_pp_size) == FALSE & node_pp_size != "variable") stop("node_pp_size should be numeric or 'variable'")
   }
-  if (is.character(fossil_age_bars) | is.null(fossil_age_bars) == FALSE) stop("fossil_age_bars should be NULL or character string or vector")
+  if (is.character(fossil_age_bars) == FALSE & is.null(fossil_age_bars) == FALSE) stop("fossil_age_bars should be NULL or character string or vector")
   if (.isColor(fossil_age_bars_color) == FALSE) stop("fossil_age_bars_color should be a recognized color")
   if (length(branch_color) == 1 & !.isColor(branch_color)) stop("branch_color should be a recognized color")
   if (length(branch_color) == 2) {
@@ -123,7 +130,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
   phy <- tree[[1]][[1]]
 
   #check that if user wants node_age_bars tree, there are dated intervals in the file
-  if (!is.null(node_age_bars)) {
+  if (node_age_bars == TRUE) {
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
   }
 
@@ -141,29 +148,47 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
     pp <- ggtree::ggtree(phy, right = F, size = line_width)
   }
 
-
   # add timeline
   if (timeline) {
     # get dimensions
     n_nodes <- treeio::Nnode(phy)
-    max_age <- max(ape::branching.times(phy@phylo))
-    dx <- max_age %% 10
 
-    # set coordinates
+    phy@data$age_0.95_HPD <- lapply(phy@data$age_0.95_HPD, function(z) {
+      if (is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+    })
+    minmax <- t(matrix(unlist(phy@data$age_0.95_HPD), nrow = 2))
+    tree_height <- max(phytools::nodeHeights(phy@phylo))
+
+    if (node_age_bars == FALSE) {
+      max_age <- max(ape::branching.times(phy@phylo))
+    } else {
+      max_age <- max(minmax, na.rm =TRUE)
+    }
+
+    if (max_age > 100){
+      interval <- 50
+    } else {interval <- 10}
+
+    dx <- max_age %% interval
+
+        # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
     #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
     pp <- pp + ggplot2::coord_cartesian()
-    pp <- pp + ggplot2::scale_x_continuous(breaks = seq(-max_age-dx,0,10), labels = rev(seq(0,max_age+dx,10)))
+    pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
+                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
+                                           breaks = -rev(seq(0,max_age+dx,interval)),
+                                           labels = rev(seq(0,max_age+dx,interval)),
+                                           )
     pp <- pp + ggtree::theme_tree2()
-    pp <- pp + ggplot2::labs(x="Age (Ma)")
-    pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
+    #pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
     pp <- ggtree::revts(pp)
     pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
   }
 
   # processing for node_age_bars and fossil_age_bars
-  if (is.null(node_age_bars) == FALSE) {
+  if (node_age_bars == TRUE) {
     # Encountered problems with using geom_range to plot age HPDs in ggtree. It
     # appears that geom_range incorrectly rotates the HPD relative to the height
     # of the node unnecessarily. My guess for this would be because older version
@@ -177,7 +202,6 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
     # See this excellent trick by Tauana:
     # https://groups.google.com/forum/#!msg/bioc-ggtree/wuAlY9phL9Q/L7efezPgDAAJ
     # Adapted this code to also plot fossil tip uncertainty in red
-
     phy@data$age_0.95_HPD <- lapply(phy@data$age_0.95_HPD, function(z) {
       if (is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
@@ -189,13 +213,26 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
       fossil_df <-  dplyr::filter(bar_df, node_id %in% match(fossil_age_bars, phy@phylo$tip.label))
     }
     node_df <- dplyr::filter(bar_df, node_id > ape::Ntip(phy@phylo))
+    if (is.null(node_age_bars_colored_by) == TRUE) {
+      # plot age densities
+      node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
+      node_df <- dplyr::select(node_df,  node_id, min, max, y)
+      pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
+                                       data=node_df, color=node_age_bars_color, size=1.5, alpha=0.3)
+    } else if (is.null(node_age_bars_colored_by) == FALSE) {
+      ntips <- sum(pp$data$isTip)
+      pp$data$olena <- c(rep(NA, times = ntips),
+                         as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
+                                                             node_age_bars_colored_by]))))
+      node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
+      node_df <- dplyr::select(node_df,  node_id, min, max, y, olena)
+      pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y, color = olena),
+                                       data=node_df, size=1.5, alpha=0.6) +
+                 ggplot2::scale_color_gradient(low = node_age_bars_color[1], high = node_age_bars_color[2],
+                                               name = paste(.simpleCap(node_age_bars_colored_by)))
+      }
 
-    # plot age densities
-    node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
-    node_df <- dplyr::select(node_df,  node_id, min, max, y)
-    pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
-                                     data=node_df, color=node_age_bars, size=1.5, alpha=0.3)
-    if (!is.null(fossil_age_bars)) {
+    if (is.null(fossil_age_bars) == FALSE) {
       fossil_df <- dplyr::left_join(fossil_df, pp$data, by=c("node_id"="node"))
       fossil_df <- dplyr::select(fossil_df, node_id, min, max, y)
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
@@ -206,7 +243,10 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
   # add node labels (text)
   if (is.null(node_labels) == FALSE) {
 
-    pp$data$kula <- .convertAndRound(L = unlist(pp$data[ ,node_labels]))
+    ntips <- sum(pp$data$isTip)
+    pp$data$kula <- c(rep(NA, times = ntips),
+                      .convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
+                                                          node_labels])))
 
     pp <- pp + ggtree::geom_nodelab(ggplot2::aes(label = kula),
                                     geom = "text", color = node_labels_color,
@@ -220,9 +260,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
                                      size = tip_labels_size, offset=0.2,
                                      color = tip_labels_color, parse=TRUE)
     } else {pp <- pp + ggtree::geom_tiplab(size = tip_labels_size, offset = 0.2, color = tip_labels_color)}
-    # add extra space on plot for tip labels
-    tree_height <- max(phytools::nodeHeights(phy@phylo))
-    pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
+
   }
 
   # add node PP (symbols)
@@ -263,6 +301,20 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = "blue", node_labels
                                     name = name)
   }
 
+  # readjust axis
+  if (node_age_bars == FALSE & timeline == FALSE) {
+    # add extra space on plot for tip labels
+    tree_height <- max(phytools::nodeHeights(phy@phylo))
+    pp <- pp + ggtree::xlim(-max(minmax, na.rm = T), tree_height/2)
+    pp <- ggtree::revts(pp)
+  } else if (node_age_bars == TRUE & timeline == FALSE & tip_labels == TRUE) {
+    tree_height <- max(phytools::nodeHeights(phy@phylo))
+    pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
+  }
+
+  # adjust legend(s)
+
+  pp <- pp+ ggplot2::theme(legend.position=c(.9, .8))
   return(pp)
 }
 

@@ -3,12 +3,28 @@
 
   max_x = max(p$data$x)
   max_y = max(p$data$y)
-  epoch_names = c("Late\nCretaceous","Paleogene","Early\nEocene",
-                  "Mid/Late\nEocene","Oligocene","Early\nMiocene",
-                  "Mid/Late\nMiocene","Recent")
 
+  epoch_names <- rev(c("Holocene", "Pleistocene", "Pliocene",
+                   "Miocene", "Oligocene", "Eocene", "Paleocene",
+                   "Upper\nCretaceous", "Lower\nCretaceous"))
+  #epoch_ages <- rev(c(0, 0.117, 2.588, 5.332, 23.03,
+  #                33.9, 55.8, 65.5, 99.6, 145.5))
+  epoch_ages <- rev(c(0, 0.117, 2.588, 5.332, 23.03,
+                      33.9, 55.8, 65.5, 99.6))
+  period_names <- rev(c("Q", "N", "Paleogene",
+                    "Cretaceous", "Jurassic", "Triassic",
+                    "Permian", "Carboniferous", "Devonian",
+                    "Silurian", "Ordovician", "Cambrian"))
+  #period_ages <- rev(c(0, 2.588, 23.03, 65.5, 145.5,
+  #                 199.6, 251, 299, 359.2, 416,
+  #                 443.7, 488.3, 542))
+  period_ages <- rev(c(0, 2.588, 23.03, 65.5, 145.5,
+                       199.6, 251, 299, 359.2, 416,
+                       443.7, 488.3))
+  if (max_age > 140) {
+    x_pos <- max_x - c(max_age, period_ages)
+  } else x_pos <- max_x - c(max_age, epoch_ages)
 
-  x_pos = max_x-c(max_age, 65, 56, 48, 33.9, 23, 16, 5.3, 0)
   y_pos = rep(max_y, length(x_pos))
   x_pos_mid = ( x_pos[1:(length(x_pos)-1)] + x_pos[2:length(x_pos)] ) / 2
 
@@ -18,11 +34,16 @@
     box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=dy_bars, ymax=y_pos[k], fill=box_col )
     p = gginnards::append_layers(p, box, position = "bottom")
   }
-  for (k in 1:length(epoch_names)) {
-    p = p + ggplot2::annotate( geom="text", label=epoch_names[k], x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+  if (max_age > 140) {
+    for (k in 1:length(period_names)) {
+      p <- p + ggplot2::annotate( geom="text", label=period_names[k], x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+    }
+  } else {
+    for (k in 1:length(epoch_names)) {
+      p <- p + ggplot2::annotate( geom="text", label=epoch_names[k], x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+    }
   }
   return(p)
-
 }
 
 .buildTranslateDictionary <- function(lines) {
