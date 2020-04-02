@@ -27,9 +27,7 @@
 #'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
 #' one_trace <- readTrace(path = file)
 #' trace_sum <- summarizeTrace(trace = one_trace,
-#'                             vars = c("Likelihood",
-#'                                      "lambda",
-#'                                    "TL"))
+#'                             vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 #'
 #' # discrete character example, multiple runs
 #' file1 <- system.file("extdata",
@@ -43,7 +41,6 @@
 #'                                            "end_681",
 #'                                            "end_682",
 #'                                            "end_683"))
-
 #'
 #' }
 #'
