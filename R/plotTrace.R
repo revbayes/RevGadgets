@@ -242,6 +242,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
      nplots <- length(plots)
 
+    # make the qualitative plots
     if (length(vars_qual > 0)) {
       for(i in 1:length(trace)){
         if (length(vars_qual) > 1) {
@@ -250,23 +251,30 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           #calculate state probabilities and the credible set for all variables
           sp <- list()
           for (k in 1:length(vars_qual)) {
+            #add in catch case for when table only 1 state visited
             table <- sort(table(t[,vars_qual[k]])/nrow(t), decreasing = TRUE)
-            sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
-            cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
-            cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
-            sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
+            if (is.table(table) == FALSE) {
+              sp[[k]] <- data.frame(Var1 = names(table),
+                                    Freq = 1,
+                                    var = vars_qual[k],
+                                    cred_set = T)
+            } else {
+              sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
+              cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
+              cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
+              sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
+            }
           }
           state_probs <- do.call("rbind", sp)
           colnames(state_probs) <- c("state","probability","variable", "cred_set")
           state_probs$col <- state_probs$variable
           state_probs$col[!state_probs$cred_set] <- "zzzzzzz"  #cheat so it's always last and will match up with the white hex code
-          state_probs$state <- as.integer(state_probs$state)
           #reorder
           state_probs$variable <- factor(state_probs$variable,
                                          levels = unique(state_probs$variable))
           state_probs$col <- factor(state_probs$col,
                                          levels = c(levels(state_probs$variable), "zzzzzzz"))
-
+          state_probs$state <- as.character(levels(state_probs$state))[state_probs$state]
           #fill in 0 probabilities such that all variables have data for all states
           state_probs <- tidyr::complete(data = state_probs, state, variable,
                                   fill = list(probability = 0,
@@ -278,27 +286,30 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::ggplot(state_probs,
                             ggplot2::aes(color = variable, fill = col,
                                          y = probability, x = state)) +
-            ggplot2::geom_bar(position = position_dodge2(preserve = "single"),
+            ggplot2::geom_bar(position = ggplot2::position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
             ggplot2::scale_color_manual(values = .colFun(length(vars_qual))) +
             ggplot2::scale_fill_manual(values = c(.colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
-            ggplot2::guides(color = guide_legend(override.aes=list(fill=.colFun(length(vars_qual))))) +
+            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=.colFun(length(vars_qual))))) +
             ggplot2::ggtitle(label = paste0("Trace ", i)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
         }
 
         if (length(vars_qual) == 1) {
+
           #subset trace by qual variable
           t <- trace[[i]][,vars_qual]
 
           #calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
-          data_sig <- data.frame(table(state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]))
           data_full <- data.frame(state_probs)
           colnames(data_full) <- c("state", "probability")
-          colnames(data_sig) <- c("probability", "state")
-          data_sig$probability <- as.numeric(levels(data_sig$probability)[data_sig$probability])
+          data_full$state <- as.character(levels(data_full$state))[data_full$state]
+          data_sig <- data_full[1:min(which((cumsum(data_full$probability) >= 0.95) == TRUE)),]
+          #data_sig <- data.frame(table(state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]))
+          #colnames(data_sig) <- c("probability", "state")
+          #data_sig$probability <- as.numeric(levels(data_sig$probability)[data_sig$probability])
 
           #plot
           plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
@@ -327,16 +338,27 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           sp <- list()
           for (k in 1:length(vars_qual)) {
             table <- sort(table(t[,vars_qual[k]])/nrow(t), decreasing = TRUE)
-            sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
-            cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
-            cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
-            sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
+            if (is.table(table) == FALSE) {
+              sp[[k]] <- data.frame(Var1 = names(table),
+                                    Freq = 1,
+                                    var = vars_qual[k],
+                                    cred_set = T)
+            } else {
+              sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
+              cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
+              cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
+              sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
+            }
+            #sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
+            #cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
+            #cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
+            #sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
           }
           state_probs <- do.call("rbind", sp)
           colnames(state_probs) <- c("state","probability","variable", "cred_set")
           state_probs$col <- state_probs$variable
           state_probs$col[!state_probs$cred_set] <- "zzzzzzz"  #cheat so it's always last and will match up with the white hex code
-
+          state_probs$state <- as.character(levels(state_probs$state))[state_probs$state]
           #fill in 0 probabilities such that all variables have data for all states
           state_probs <- tidyr::complete(data = state_probs, state, variable,
                                          fill = list(probability = 0,
@@ -347,7 +369,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::ggplot(state_probs,
                             ggplot2::aes(color = variable, fill = col,
                                          y = probability, x = state)) +
-            ggplot2::geom_bar(position = position_dodge2(preserve = "single"),
+            ggplot2::geom_bar(position = ggplot2::position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
             ggplot2::scale_color_manual(values = .colFun(length(vars_qual))) +
@@ -364,17 +386,16 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
           #calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
-          data_sig <- data.frame(table(state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]))
           data_full <- data.frame(state_probs)
           colnames(data_full) <- c("state", "probability")
-          colnames(data_sig) <- c("probability", "state")
-          data_sig$probability <- as.numeric(levels(data_sig$probability)[data_sig$probability])
+          data_full$state <- as.character(levels(data_full$state))[data_full$state]
+          data_sig <- data_full[1:min(which((cumsum(data_full$probability) >= 0.95) == TRUE)),]
 
           #plot
           plots[[nplots + 1]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
             ggplot2::geom_bar(stat = "identity", color = .colFun(1), fill = "white") +
             ggplot2::geom_bar(data = data_sig, stat = "identity",
-                              aes(x = state, y = probability),
+                              ggplot2::aes(x = state, y = probability),
                               color = .colFun(1), fill = .colFun(1)) +
             ggthemes::theme_few() +
             ggplot2::ggtitle(label = paste0("Combined Trace: ",vars_qual)) +
