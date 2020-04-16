@@ -125,16 +125,34 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
 
   if (length(node_pp_color) == 2 & length(branch_color) == 2) stop("You may only include variable colors for either node_pp_label or branch_color, not for both")
 
-
   # grab single tree from input
   phy <- tree[[1]][[1]]
+  #### try renumbering nodes ###
+
+   #phy@data$node <- c(1,24,2,23,3,26,4,25,22,21,20,19,5,6,31,7,30,8,9,33,10,32,29,11,28,12,13,34,27,18,14,17,15,16)
+  # this works! how to automate though...
+
+  #### try autorenumbering nodes ###
+#test for duplicate nodes in tree
+
+
+  phy@data$node <- as.integer(phy@data$node)
+  dups <-unique(phy@data$node[duplicated(phy@data$node)])
+  if (length(dups == 1)) {
+    for (i in 1:nrow(phy@data)){
+      if (phy@data[i,"node"] == dups) {
+        phy@data$node[i] <- phy@phylo$edge[which(phy@phylo$edge[ ,2] == phy@data$node[i-1]),1]
+      }
+    }
+  } else if (length(dups > 1)) stop("more than one duplicated node, uh oh! ")
+
 
   #check that if user wants node_age_bars tree, there are dated intervals in the file
   if (node_age_bars == TRUE) {
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
   }
 
-  # reformat tip labels if necessary
+    # reformat tip labels if necessary
   if (tip_labels_remove_underscore & !tip_labels_italics) {
     phy@phylo$tip.label <- gsub("_", " ", phy@phylo$tip.label)
   } else if (tip_labels_remove_underscore & tip_labels_italics) {
@@ -149,14 +167,14 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   }
 
   # add timeline
-  if (timeline) {
+  if (timeline == TRUE) {
     # get dimensions
     n_nodes <- treeio::Nnode(phy)
 
-    phy@data$age_0.95_HPD <- lapply(phy@data$age_0.95_HPD, function(z) {
-      if (is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+    pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
+      if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
-    minmax <- t(matrix(unlist(phy@data$age_0.95_HPD), nrow = 2))
+    minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
     tree_height <- max(phytools::nodeHeights(phy@phylo))
 
     if (node_age_bars == FALSE) {
@@ -202,12 +220,12 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
     # See this excellent trick by Tauana:
     # https://groups.google.com/forum/#!msg/bioc-ggtree/wuAlY9phL9Q/L7efezPgDAAJ
     # Adapted this code to also plot fossil tip uncertainty in red
-    phy@data$age_0.95_HPD <- lapply(phy@data$age_0.95_HPD, function(z) {
-      if (is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+    pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
+      if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
 
-    minmax <- t(matrix(unlist(phy@data$age_0.95_HPD), nrow = 2))
-    bar_df <- data.frame(node_id=as.integer(phy@data$node), as.data.frame(minmax))
+    minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
+    bar_df <- data.frame(node_id=as.integer(pp$data$node), as.data.frame(minmax))
     names(bar_df) <- c("node_id", "min", "max")
     if (!is.null(fossil_age_bars)) {
       fossil_df <-  dplyr::filter(bar_df, node_id %in% match(fossil_age_bars, phy@phylo$tip.label))
@@ -254,7 +272,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   }
 
   # add tip labels (text)
-  if (tip_labels) {
+  if (tip_labels == TRUE) {
     if (tip_labels_italics) {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(label = paste0('italic(', label, ')')),
                                      size = tip_labels_size, offset=0.2,
@@ -264,7 +282,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   }
 
   # add node PP (symbols)
-  if (node_pp) {
+  if (node_pp == TRUE) {
     # reformat posterior
     pp$data$posterior <- as.numeric(pp$data$posterior)
 
@@ -286,26 +304,36 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   }
 
   # add branch coloration by variable
-  if (!is.null(color_branch_by)) {
+  if (is.null(color_branch_by) == FALSE) {
 
     #set default colors if none provided
     if (length(branch_color) != 2) {
       branch_color <- c("#005ac8", "#fa7850")
     }
-    col_num <- which(colnames(phy@data) == color_branch_by)
-    phy@data[,col_num] <- as.numeric(as.data.frame(phy@data)[,col_num]) #convert data to numeric
+     #col_num <- which(colnames(phy@data) == color_branch_by)
+     #phy@data[,col_num] <- as.numeric(as.data.frame(phy@data)[,col_num]) #convert data to numeric
+     #name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
+     #pp <- pp +
+     #  ggplot2::aes(color=I(as.data.frame(phy@data)[,col_num])) +
+     #  ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
+     #                                name = name)
+
+    col_num <- which(colnames(pp$data) == color_branch_by)
+    pp$data[,col_num] <- as.numeric(as.data.frame(pp$data)[,col_num]) #convert data to numeric
     name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
     pp <- pp +
-      ggplot2::aes(color=I(as.data.frame(phy@data)[,col_num])) +
+      ggplot2::aes(color=I(as.data.frame(pp$data)[,col_num])) +
       ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
                                     name = name)
+
   }
+
 
   # readjust axis
   if (node_age_bars == FALSE & timeline == FALSE) {
     # add extra space on plot for tip labels
     tree_height <- max(phytools::nodeHeights(phy@phylo))
-    pp <- pp + ggtree::xlim(-max(minmax, na.rm = T), tree_height/2)
+    pp <- pp + ggtree::xlim(-tree_height, tree_height/2)
     pp <- ggtree::revts(pp)
   } else if (node_age_bars == TRUE & timeline == FALSE & tip_labels == TRUE) {
     tree_height <- max(phytools::nodeHeights(phy@phylo))

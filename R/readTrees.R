@@ -3,7 +3,10 @@
 #' Reads in a tree file containing one or multiple trees
 #'
 #' Reads in a tree file in either nexus or newick format, and containing a single tree
-#' or multiple trees (as in the results of a Bayesian analysis).
+#' or multiple trees (as in the results of a Bayesian analysis). For reading in annotated
+#' tree files of continuous character evolution, the parameter must be considered a node
+#' parameter rather than branch parameter. Set isNodeParameter = TRUE in the extended
+#' newick monitor (mnExtNewick)
 #'
 #' @param paths (vector of character strings; no default) File path(s) to tree(s).
 #' @param tree_name (character string; default psi) Name of the tree variable.
@@ -26,7 +29,6 @@
 #' @export
 
 readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbose = TRUE, ...) {
-
   # enforce argument matching
   if (is.character(tree_name) == FALSE) stop("tree_name should be a single character")
   if (is.numeric(burnin) == FALSE) stop("burnin should be a number")

@@ -11,7 +11,7 @@
   #                33.9, 55.8, 65.5, 99.6, 145.5))
   epoch_ages <- rev(c(0, 0.117, 2.588, 5.332, 23.03,
                       33.9, 55.8, 65.5, 99.6))
-  period_names <- rev(c("Q", "N", "Paleogene",
+  period_names <- rev(c("Quaternary", "Neogene", "Paleogene",
                     "Cretaceous", "Jurassic", "Triassic",
                     "Permian", "Carboniferous", "Devonian",
                     "Silurian", "Ordovician", "Cambrian"))
@@ -36,11 +36,13 @@
   }
   if (max_age > 140) {
     for (k in 1:length(period_names)) {
-      p <- p + ggplot2::annotate( geom="text", label=period_names[k], x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+      p <- p + ggplot2::annotate( geom="text", label=period_names[k], angle = 90,
+                                  x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
     }
   } else {
     for (k in 1:length(epoch_names)) {
-      p <- p + ggplot2::annotate( geom="text", label=epoch_names[k], x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+      p <- p + ggplot2::annotate( geom="text", label=epoch_names[k], angle = 90,
+                                  x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
     }
   }
   return(p)
@@ -147,6 +149,7 @@
   else return(TRUE)
     }
 }
+
 .isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
 .parseTreeString <- function(string) {
@@ -157,9 +160,6 @@
   obj <- treeio:::BEAST("", text, stats, tree )
   return(obj)
 }
-
-
-
 
 # Right tail probability of the horseshoe
 # Integrates the density function via grid
@@ -249,6 +249,7 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   stats <- sub("];*$", "", stats)
   stats <- gsub("\"", "", stats)
 
+  #this is what is breaking readTrees for the OU output
   stats2 <- lapply(seq_along(stats), function(i) {
 
     x <- stats[[i]]
@@ -362,7 +363,6 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
 }
 
 .readNexusTrees <- function(path, burnin, verbose, ...) {
-
   # read the lines
   lines <- readLines(path)
 
