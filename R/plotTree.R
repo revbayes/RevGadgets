@@ -137,7 +137,6 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   # grab single tree from input
   phy <- tree[[1]][[1]]
 
-
   #### fix for trees with sampled ancestors ###
 #test for duplicate nodes in tree
 
@@ -158,14 +157,6 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
   }
 
-
-    # reformat tip labels if necessary
-  if (tip_labels_remove_underscore & !tip_labels_italics) {
-    phy@phylo$tip.label <- gsub("_", " ", phy@phylo$tip.label)
-  } else if (tip_labels_remove_underscore & tip_labels_italics) {
-    stop("removing underscores and italicizing tip labels is not currently supported")
-  }
-
   # initiate plot
   if (is.null(color_branch_by)) {
     pp <- ggtree::ggtree(phy, right = F, size = line_width, color = branch_color)
@@ -178,6 +169,8 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   tree_height <- max(phytools::nodeHeights(phy@phylo))
   ntips <- sum(pp$data$isTip)
 
+  # reformat labels if necessary
+  if (tip_labels_remove_underscore) { pp$data$label <- gsub("_", " ", pp$data$label)}
 
   #check that if user wants to label sampled ancs, there are sampled ancs in the files
   if (label_sampled_ancs == TRUE) {
@@ -293,7 +286,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
         ggplot2::annotate("text", x = rep(-max(unlist(pp$data$age_0.95_HPD), na.rm=T),
                                           times = nrow(sampled_ancs)),
                           y = seq(from = ntips-space_labels, by = -space_labels, length.out = nrow(sampled_ancs)),
-                          label = paste0(1:nrow(sampled_ancs),": italic(", sampled_ancs$label, ")"),
+                          label = paste0(1:nrow(sampled_ancs),": italic(`", sampled_ancs$label, "`)"),
                           size = tip_labels_size, color = tip_labels_color, hjust = 0, parse = TRUE)
     } else {
     pp <- pp + ggplot2::annotate("text", x = sampled_ancs$x, y = sampled_ancs$y,
@@ -324,13 +317,13 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
     if (tip_age_bars == TRUE) {pp$data$extant <- !pp$data$node %in% tip_df$node_id } else {pp$data$extant <- TRUE}
     if (tip_labels_italics) {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(subset = extant & isTip,
-                                                  label = paste0('italic(', label, ')')),
+                                                  label = paste0('italic(`', label, '`)')),
                                      size = tip_labels_size, offset=0.2,
                                      color = tip_labels_color, parse=TRUE)
       if (tip_age_bars == TRUE) {
         new_tip_df <- dplyr::left_join(tip_df, pp$data[,c("label", "node")], by = c("node_id" = "node"))
         pp <- pp + ggplot2::annotate("text", x = -new_tip_df$min, y = new_tip_df$y,
-                                     label = paste0('italic(', new_tip_df$label, ')'),
+                                     label = paste0('italic(`', new_tip_df$label, '`)'),
                                      hjust = 0, color = tip_labels_color,
                                      size = tip_labels_size, parse=TRUE)
       }
