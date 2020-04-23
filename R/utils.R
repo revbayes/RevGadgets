@@ -48,6 +48,63 @@
   return(p)
 }
 
+.build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0.01) {
+
+  n_states = length(state_labels)
+  n_tips = length(attributes(t)$phylo$tip.label)
+  n_node = 2 * n_tips - 1
+
+  dat = list()
+
+  if (include_start_states) {
+    state_tags = c("start","end")
+  } else {
+    state_tags = c("anc")
+  }
+
+  for (s in state_tags) {
+    dat[[s]] = data.frame( matrix(0, nrow=n_node, ncol=n_states) )
+    #dat[[s]] = cbind(node=1:n_node, dat[[s]])
+
+    for (i in 1:3)
+    {
+      m = paste(s,"_state_",i,sep="")
+      pp_str = paste(m,"_pp",sep="")
+      n_tmp = as.numeric(as.vector(attributes(t)$data$node)) # node index
+      x_tmp = as.vector(attributes(t)$data[[m]])
+      pp_tmp = as.numeric(as.vector(attributes(t)$data[[pp_str]]))
+
+      for (j in 1:length(x_tmp))
+      {
+        if (!is.na(x_tmp[j])) {
+
+          if (pp_tmp[j] > p_threshold) {
+            k = which(x_tmp[j]==state_labels)
+            dat[[s]][n_tmp[j], k] = pp_tmp[j]
+          }
+        }
+      }
+    }
+
+    # format column names
+    colnames(dat[[s]])=as.vector(unlist(state_labels))
+
+    # add probs for >3rd state under ... label
+    rem_prob = c()
+    for (i in 1:nrow(dat[[s]])) {
+      rem_prob[i] = 1
+      for (j in 1:length(dat[[s]][i,])) {
+        rem_prob[i] = rem_prob[i] - dat[[s]][i,j]
+      }
+    }
+    dat[[s]]$`...` = rem_prob
+    dat[[s]]$node = 1:n_node
+    #print(dat[[s]][250:260,])
+  }
+
+  return(dat)
+}
+
 .buildTranslateDictionary <- function(lines) {
 
   start_tree_block <- grep("begin trees;", lines, ignore.case = TRUE)
@@ -100,6 +157,25 @@
                          "#0ab45a","#006e82", "#fa78fa", "#8214a0",
                          "#fae6be", "#00a0fa","#f0f032", "#a0fa82"))}
   if (n >= 13 ) {stop("more than 12 colors is not supported")}
+}
+
+.collect_probable_states <- function(p, p_threshold=0.005) {
+  labels = c("end_state", "start_state")
+  index = c(1,2,3)
+
+  codes = c()
+  labels_pp = c()
+  for (l in labels) {
+    for (i in index) {
+      label_index = paste(l,"_",i,sep="")
+      label_index_pp = paste(l,"_",i,"_pp",sep="")
+      index_threshold = p$data[[ label_index_pp ]] > p_threshold
+      codes = c(codes, unique( p$data[[label_index]][ index_threshold ] ))
+    }
+  }
+  codes = unique(codes)
+  codes = c(codes, "...")
+  return(codes)
 }
 
 .convertAndRound <- function(L) {
