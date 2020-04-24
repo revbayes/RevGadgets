@@ -79,6 +79,14 @@
 #'
 #' @examples
 #'
+#' file <- system.file("extdata", "fbd/bears.mcc.tre", package="RevGadgets")
+#' tree <- readTrees(paths = file)
+#' plot <- plotFBDTree(tree = tree, timeline = T, tip_labels_italics = F,
+#'                     tip_labels_remove_underscore = T,
+#'                     node_age_bars = T, node_age_bars_colored_by = "posterior",
+#'                     node_age_bars_color = rev(RevGadgets:::.colFun(2))) +
+#'   ggplot2::theme(legend.position=c(.25, .85))
+#'
 #' @export
 
 
@@ -127,9 +135,6 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
 
   # grab single tree from input
   phy <- tree[[1]][[1]]
-
-
-
 
   ### fix for trees with sampled ancestors ###
   #test for duplicate nodes in tree
@@ -298,10 +303,15 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
   # add node labels (text)
   if (is.null(node_labels) == FALSE) {
 
+    #catch some funkiness from importing an unrooted tree
+    if (node_labels == "posterior") {
+      pp$data[grep("]:", unlist(pp$data[,node_labels])), node_labels] <- NA
+    }
     pp$data$kula <- c(rep(NA, times = ntips),
                       .convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                           node_labels])))
-
+    #change any NAs that got converted to characters back to NA
+    pp$data$kula[pp$data$kula == "NA"] <- NA
     pp <- pp + ggtree::geom_nodelab(ggplot2::aes(label = kula),
                                     geom = "text", color = node_labels_color,
                                     hjust = 0, size = node_labels_size)
@@ -313,24 +323,24 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
     if (tip_labels_italics) {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(subset = extant & isTip,
                                                   label = paste0('italic(`', label, '`)')),
-                                     size = tip_labels_size, offset=0.2,
+                                     size = tip_labels_size, offset = tree_height * 0.01,
                                      color = tip_labels_color, parse=TRUE)
       if (tip_age_bars == TRUE) {
         new_tip_df <- dplyr::left_join(tip_df, pp$data[,c("label", "node")], by = c("node_id" = "node"))
-        pp <- pp + ggplot2::annotate("text", x = -new_tip_df$min, y = new_tip_df$y,
+        pp <- pp + ggplot2::annotate("text", x = -new_tip_df$min + tree_height * 0.01, y = new_tip_df$y,
                                      label = paste0('italic(`', new_tip_df$label, '`)'),
                                      hjust = 0, color = tip_labels_color,
-                                     size = tip_labels_size, parse=TRUE)
+                                     size = tip_labels_size, parse = TRUE)
       }
 
     } else {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(subset = extant & isTip,
                                                   label = label),
-                                     size = tip_labels_size, offset = 0.2,
+                                     size = tip_labels_size, offset =tree_height * 0.01,
                                      color = tip_labels_color)
       if (tip_age_bars == TRUE) {
         new_tip_df <- dplyr::left_join(tip_df, pp$data[,c("label", "node")], by = c("node_id" = "node"))
-        pp <- pp + ggplot2::annotate("text", x = -new_tip_df$min, y = new_tip_df$y,
+        pp <- pp + ggplot2::annotate("text", x = -new_tip_df$min + tree_height * 0.01, y = new_tip_df$y,
                                      label = new_tip_df$label,
                                      hjust = 0, color = tip_labels_color,
                                      size = tip_labels_size)

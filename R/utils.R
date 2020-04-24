@@ -7,17 +7,13 @@
   epoch_names <- rev(c("Holocene", "Pleistocene", "Pliocene",
                    "Miocene", "Oligocene", "Eocene", "Paleocene",
                    "Upper\nCretaceous", "Lower\nCretaceous"))
-  #epoch_ages <- rev(c(0, 0.117, 2.588, 5.332, 23.03,
-  #                33.9, 55.8, 65.5, 99.6, 145.5))
   epoch_ages <- rev(c(0, 0.117, 2.588, 5.332, 23.03,
                       33.9, 55.8, 65.5, 99.6))
   period_names <- rev(c("Quaternary", "Neogene", "Paleogene",
                     "Cretaceous", "Jurassic", "Triassic",
                     "Permian", "Carboniferous", "Devonian",
                     "Silurian", "Ordovician", "Cambrian"))
-  #period_ages <- rev(c(0, 2.588, 23.03, 65.5, 145.5,
-  #                 199.6, 251, 299, 359.2, 416,
-  #                 443.7, 488.3, 542))
+
   period_ages <- rev(c(0, 2.588, 23.03, 65.5, 145.5,
                        199.6, 251, 299, 359.2, 416,
                        443.7, 488.3))
@@ -37,12 +33,12 @@
   if (max_age > 140) {
     for (k in 1:length(period_names)) {
       p <- p + ggplot2::annotate( geom="text", label=period_names[k], angle = 90,
-                                  x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+                                  x=x_pos_mid[k], y=dy_text, hjust=0, size=3.25)
     }
   } else {
     for (k in 1:length(epoch_names)) {
       p <- p + ggplot2::annotate( geom="text", label=epoch_names[k], angle = 90,
-                                  x=x_pos_mid[k], y=dy_text, hjust=0.5, size=3.25)
+                                  x=x_pos_mid[k], y=dy_text, hjust=0, size=3.25)
     }
   }
   return(p)
@@ -179,11 +175,14 @@
 }
 
 .convertAndRound <- function(L) {
-  if (any(is.na(as.numeric(L))) == FALSE) { # if integer or numeric
-    if (sum(as.numeric(L) %% 1) == 0) { # if integer
+  #sometimes there will be NAs before forcing to convert - got to remove nas before doing this test!
+  k <- L[!is.na(L)]
+  if (any(is.na(as.numeric(k))) == FALSE) { # if integer or numeric
+    if (sum(as.numeric(L) %% 1, na.rm = T) == 0) { # if integer
       labs <- L
     } else { # if numeric
       labs <- sprintf("%.3f",as.numeric(L)) # round nicely
+      labs[labs == "1.000"] <- "1"
     }
   } else { # if character
     labs <- L

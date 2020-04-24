@@ -72,7 +72,26 @@
 #'
 #' @examples
 #'
+#' # Example of standard tree plot
+#' file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
+#' tree <- readTrees(paths = file)
+#' t <- tree[[1]][[1]]@phylo
+#' num <- which(t$tip.label == "Galeopterus_variegatus")
+#' t <- phytools::reroot(t, num, position = 0.5*t$edge.length[which(t$edge[,2]==num)])
+#' tree[[1]][[1]]@phylo <- t
+#' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
+#'                  tip_labels_remove_underscore = T, node_labels_size = 3,
+#'                  tip_labels_italics = F) +
+#'   ggplot2::theme(legend.position=c(.1, .9))
 #'
+#'
+#' # Example of coloring branches by rate
+#' file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
+#' tree <- readTrees(paths = file)
+#' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F,
+#'                  tip_labels_remove_underscore = T, tip_labels_italics = F,
+#'                  color_branch_by = "branch_thetas", line_width = 1.7) +
+#'        ggplot2::theme(legend.position=c(.1, .9))
 #'
 #' @export
 
@@ -118,8 +137,8 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
 
   # grab single tree from input
   phy <- tree[[1]][[1]]
-recover()
-  # initiate plot
+
+    # initiate plot
   if (is.null(color_branch_by)) {
     pp <- ggtree::ggtree(phy, right = F, size = line_width, color = branch_color)
   } else if (!is.null(color_branch_by)) {
@@ -223,10 +242,15 @@ recover()
   # add node labels (text)
   if (is.null(node_labels) == FALSE) {
 
+    #catch some funkiness from importing an unrooted tree
+    if (node_labels == "posterior") {
+      pp$data[grep("]:", unlist(pp$data[,node_labels])), node_labels] <- NA
+    }
     pp$data$kula <- c(rep(NA, times = ntips),
                       .convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                           node_labels])))
-
+    #change any NAs that got converted to characters back to NA
+    pp$data$kula[pp$data$kula == "NA"] <- NA
     pp <- pp + ggtree::geom_nodelab(ggplot2::aes(label = kula),
                                     geom = "text", color = node_labels_color,
                                     hjust = 0, size = node_labels_size)
@@ -236,11 +260,11 @@ recover()
   if (tip_labels == TRUE) {
     if (tip_labels_italics) {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(label = paste0('italic(`', label, '`)')),
-                                     size = tip_labels_size, offset=0.2,
+                                     size = tip_labels_size, offset = tree_height * 0.01,
                                      color = tip_labels_color, parse=TRUE)
 
     } else {
-      pp <- pp + ggtree::geom_tiplab(size = tip_labels_size, offset = 0.2,
+      pp <- pp + ggtree::geom_tiplab(size = tip_labels_size, offset = tree_height * 0.01,
                                      color = tip_labels_color)
       }
   }
