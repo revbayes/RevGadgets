@@ -100,6 +100,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
   vars <- colnames(tree[[1]][[1]]@data)
+  if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
   if (is.logical(node_age_bars) == FALSE) stop("node_age_bars should be TRUE or FALSE")
   if (.isColor(node_age_bars_color) == FALSE) stop("node_age_bars_color should be valid color(s)")
   if (is.null(node_age_bars_colored_by) == FALSE &

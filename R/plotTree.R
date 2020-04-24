@@ -73,6 +73,9 @@
 #' @examples
 #'
 #' # Example of standard tree plot
+#' # Add on a scale bar using ggtree, but note that the x axis position must
+#' # be negative and scales with tree height
+#'
 #' file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
 #' t <- tree[[1]][[1]]@phylo
@@ -81,8 +84,7 @@
 #' tree[[1]][[1]]@phylo <- t
 #' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
 #'                  tip_labels_remove_underscore = T, node_labels_size = 3,
-#'                  tip_labels_italics = F) +
-#'   ggplot2::theme(legend.position=c(.1, .9))
+#'                  tip_labels_italics = F) + ggtree::geom_treescale(x = -0.1, y = 0)
 #'
 #'
 #' # Example of coloring branches by rate
@@ -105,6 +107,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
   vars <- colnames(tree[[1]][[1]]@data)
+  if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
   if (is.logical(node_age_bars) == FALSE) stop("node_age_bars should be TRUE or FALSE")
   if (.isColor(node_age_bars_color) == FALSE) stop("node_age_bars_color should be valid color(s)")
   if (is.null(node_age_bars_colored_by) == FALSE &
@@ -197,6 +200,9 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
     pp <- ggtree::revts(pp)
     pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
   }
+
+    # add scale bar
+  if (scale_bar == TRUE) {pp <- pp + ggtree::geom_treescale()}
 
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {
