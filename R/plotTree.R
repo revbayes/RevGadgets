@@ -78,10 +78,10 @@
 #'
 #' file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' t <- tree[[1]][[1]]@phylo
-#' num <- which(t$tip.label == "Galeopterus_variegatus")
-#' t <- phytools::reroot(t, num, position = 0.5*t$edge.length[which(t$edge[,2]==num)])
-#' tree[[1]][[1]]@phylo <- t
+#'  # Reroot tree before plotting
+#' num <- which(tree[[1]][[1]]@phylo$tip.label == "Galeopterus_variegatus")
+#' tree[[1]][[1]]@phylo <- phytools::reroot(tree[[1]][[1]]@phylo, num,
+#'                                            position = 0.5*tree[[1]][[1]]@phylo$edge.length[which(tree[[1]][[1]]@phylo$edge[,2]==num)])
 #' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
 #'                  tip_labels_remove_underscore = T, node_labels_size = 3,
 #'                  tip_labels_italics = F) + ggtree::geom_treescale(x = -0.1, y = 0)
