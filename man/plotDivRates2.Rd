@@ -59,6 +59,10 @@ p <- plotDivRates2(plotdata);p
 # let's say we want to change the x-axis
 p <- p + xlab("Millions of years ago");p
 
+# let's say we want to make the time intervals visible,
+# to emphasize that the model estimates rates in bins
+p <- p + geom_point();p
+
 # let's say we don't want to plot relative-extinction rate,
 # and use the same y-axis for all three rates
 plotdata2 <- plotdata \%>\%

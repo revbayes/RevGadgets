@@ -255,6 +255,10 @@ makePlotData <- function(rates, probs = c(0.025, 0.975)){
 #' # let's say we want to change the x-axis
 #' p <- p + xlab("Millions of years ago");p
 #'
+#' # let's say we want to make the time intervals visible,
+#' # to emphasize that the model estimates rates in bins
+#' p <- p + geom_point();p
+#'
 #' # let's say we don't want to plot relative-extinction rate,
 #' # and use the same y-axis for all three rates
 #' plotdata2 <- plotdata %>%
@@ -269,7 +273,7 @@ makePlotData <- function(rates, probs = c(0.025, 0.975)){
 plotDivRates2 <- function(plotdata){
   p <- plotdata %>%
     subset(grepl("rate", item)) %>%
-    ggplot(aes(x, mean, color = item))  +
+    ggplot(aes(time, mean, color = item))  +
     geom_line(aes(time, mean)) +
     geom_ribbon(aes(x = time,
                     ymin = lower,
