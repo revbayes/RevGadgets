@@ -4,10 +4,18 @@
 \alias{plotDivRates}
 \title{Plot Diversification Rates}
 \usage{
-plotDivRates(rates, fig_types = c("speciation rate", "extinction rate",
-  "net-diversification rate", "relative-extinction rate"),
-  xlab = "million years ago", col = NULL, col_alpha = "50",
-  offset = 0, xaxt = "n", yaxt = "s", ...)
+plotDivRates(
+  rates,
+  fig_types = c("speciation rate", "extinction rate", "net-diversification rate",
+    "relative-extinction rate"),
+  xlab = "million years ago",
+  col = NULL,
+  col_alpha = "50",
+  offset = 0,
+  xaxt = "n",
+  yaxt = "s",
+  ...
+)
 }
 \arguments{
 \item{rates}{(list; no default) The processed output for plotting (output of processDivRates()).}

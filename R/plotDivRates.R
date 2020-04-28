@@ -131,8 +131,8 @@ plotDivRates <- function(rates,
       mean_these_rates <- colMeans(these_rates)
       quantiles_these_rates <- apply(these_rates, 2, quantile, prob = c(0.025,0.975))
 
-      # find the limits of the y-axis
-      # we always want the speciation and extinction rates to be on the same scale
+      #find the limits of the y-axis
+      #we always want the speciation and extinction rates to be on the same scale
       if ( type %in% c("speciation rate","extinction rate")) {
 
         quantiles_speciation <-
@@ -165,3 +165,127 @@ plotDivRates <- function(rates,
 
     }
 
+
+computeMeanInterval <- function(item, rates, probs){
+  interval_times <- unlist(rates[["speciation time"]][1,grepl("interval_times", names(rates$`speciation time`))])
+  interval_times <- sort(interval_times) # For some reason these are ordered differently than rate vectors
+
+  rate <- rates[[item]]
+  rate <- rate[, grep("[0-9]", colnames(rate))]
+
+  mean_rate <- colMeans(rate)
+  quantiles <- apply(rate, 2,
+                     quantile,
+                     probs = probs)
+
+  df <- tibble(.rows = length(mean_rate))
+  df["mean"] <- mean_rate
+  df["lower"] <- quantiles[1,]
+  df["upper"] <- quantiles[2,]
+  df$time <- interval_times
+  df$item <- item
+
+  return(df)
+}
+
+removeNull <- function(x){
+  res <- x[which(!sapply(x, is.null))]
+}
+
+makePlotData <- function(rates, probs = c(0.025, 0.975)){
+  rates <- removeNull(rates)
+  res <- lapply(names(rates), function(e) computeMeanInterval(e, rates = rates, probs = probs))
+  plotdata <- do.call(rbind, res)
+  plotdata$item <- factor(plotdata$item,
+                          levels = c("speciation rate", "extinction rate", "speciation time", "extinction time",
+                                     "net-diversification rate", "relative-extinction rate"))
+  return(plotdata)
+}
+
+
+#' Plot Diversification Rates
+#'
+#' Plots the output of an episodic diversification rate analysis
+#'
+#' Plots the output of episodic diversification rate analyses. Takes as input the
+#' output of processDivRates() and plotting parameters. For now, only variable names
+#' (under "item") that contain the word "rate" are included in the plot.
+#'
+#' The return object can be manipulated. For example, you can change the axis labels,
+#' the color palette, whether the axes are to be linked, or the overall plotting style/theme,
+#' just as with any ggplot object.
+#'
+#'
+#' @param plotdata (data frame) A table consisting of the following columns:
+#' \itemize{
+#' \item{mean - the mean of the variable},
+#' \item{lower - the lower bounds of the credibility interval}
+#' \item{upper - the upper bounds of the credibility interval}
+#' \item{time - the time units on the x-axis}
+#' \item{item - the variable name, e.g. "speciation rate" or "extinction rate"}
+#' }
+#'
+#' @return A ggplot object
+#'
+#' @examples
+#'
+#' \dontrun{
+#' # first run processDivRates()
+#' speciation_time_file <- system.file("extdata",
+#'     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
+#' speciation_rate_file <- system.file("extdata",
+#'     "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")
+#' extinction_time_file <- system.file("extdata",
+#'     "epi_bd/primates_EBD_extinction_times.p", package="RevGadgets")
+#' extinction_rate_file <- system.file("extdata",
+#'     "epi_bd/primates_EBD_extinction_rates.p", package="RevGadgets")
+#'
+#' primates <- processDivRates(speciation_time_log = speciation_time_file,
+#'                             speciation_rate_log = speciation_rate_file,
+#'                             extinction_time_log = extinction_time_file,
+#'                             extinction_rate_log = extinction_rate_file,
+#'                             burnin = 0.25)
+#'
+#' # generate the plot data
+#' plotdata <- makePlotData(primates, probs = c(0.05, 0.95)) # Specify credibility interval for the ribbon plot
+#'
+#' # then plot results:
+#' p <- plotDivRates2(plotdata);p
+#'
+#' # let's say we want to change the x-axis
+#' p <- p + xlab("Millions of years ago");p
+#'
+#' # let's say we don't want to plot relative-extinction rate,
+#' # and use the same y-axis for all three rates
+#' plotdata2 <- plotdata %>%
+#'                filter(item != "relative-extinction rate")
+#' p2 <- plotDivRates2(plotdata2)
+#' p2 <- p2 +
+#'        facet_wrap(vars(item),
+#'        scale = "fixed");p2
+#' }
+#'
+#' @export
+plotDivRates2 <- function(plotdata){
+  p <- plotdata %>%
+    subset(grepl("rate", item)) %>%
+    ggplot(aes(x, mean, color = item))  +
+    geom_line(aes(time, mean)) +
+    geom_ribbon(aes(x = time,
+                    ymin = lower,
+                    ymax = upper,
+                    fill = item),
+                alpha = 0.4) +
+    scale_x_reverse() +
+    xlab("time") +
+    theme_bw() +
+    theme(axis.title.y=element_blank(),
+          legend.title = element_blank(),
+          legend.position = "none",
+          axis.line = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()) +
+    facet_wrap(vars(item), scales = "free_y")
+
+  return(p)
+}
