@@ -4,8 +4,14 @@
 \alias{readTrees}
 \title{Read trees}
 \usage{
-readTrees(paths, tree_name = "psi", burnin = 0, n_cores = 1L,
-  verbose = TRUE, ...)
+readTrees(
+  paths,
+  tree_name = "psi",
+  burnin = 0,
+  n_cores = 1L,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{paths}{(vector of character strings; no default) File path(s) to tree(s).}
@@ -28,7 +34,10 @@ Reads in a tree file containing one or multiple trees
 }
 \details{
 Reads in a tree file in either nexus or newick format, and containing a single tree
-or multiple trees (as in the results of a Bayesian analysis).
+or multiple trees (as in the results of a Bayesian analysis). For reading in annotated
+tree files of continuous character evolution, the parameter must be considered a node
+parameter rather than branch parameter. Set isNodeParameter = TRUE in the extended
+newick monitor (mnExtNewick)
 }
 \examples{
 

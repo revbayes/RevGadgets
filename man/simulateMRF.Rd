@@ -4,8 +4,13 @@
 \alias{simulateMRF}
 \title{Simulates a single Markov random field trajectory.}
 \usage{
-simulateMRF(n.episodes, model, global.scale.hyperprior,
-  initial.value = NULL, exponentiate = TRUE)
+simulateMRF(
+  n.episodes,
+  model,
+  global.scale.hyperprior,
+  initial.value = NULL,
+  exponentiate = TRUE
+)
 }
 \arguments{
 \item{n.episodes}{(numeric; no default) The number of episodes in the random field (the parameter vector will be this long).}

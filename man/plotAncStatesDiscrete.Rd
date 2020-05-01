@@ -4,20 +4,43 @@
 \alias{plotAncStatesDiscrete}
 \title{Plot discrete ancestral states on tree}
 \usage{
-plotAncStatesDiscrete(t, summary_statistic, tree_layout = "rectangular",
-  include_start_states = FALSE, xlim_visible = c(0, 40),
-  ylim_visible = NULL, tip_label_size = 4, tip_label_offset = 5,
-  tip_label_italics = FALSE, tip_node_size = 2, tip_node_shape = 15,
-  node_label_size = 4, node_pp_label_size = 0,
-  node_label_nudge_x = 0.1, node_pp_label_nudge_x = 0.1,
-  shoulder_label_size = 3, shoulder_label_nudge_x = -0.1,
-  node_pie_diameter = 1.1, tip_pie_diameter = 1.08, pie_nudge_x = 0,
-  pie_nudge_y = 0, alpha = 0.5, node_size_range = c(6, 15),
-  color_low = "#D55E00", color_mid = "#F0E442",
-  color_high = "#009E73", show_state_legend = TRUE,
-  show_posterior_legend = TRUE, show_tree_scale = TRUE,
-  state_labels = NULL, state_colors = NULL, title = "",
-  fig_height = 7, fig_width = 7, ...)
+plotAncStatesDiscrete(
+  t,
+  summary_statistic,
+  tree_layout = "rectangular",
+  include_start_states = FALSE,
+  xlim_visible = c(0, 40),
+  ylim_visible = NULL,
+  tip_label_size = 4,
+  tip_label_offset = 5,
+  tip_label_italics = FALSE,
+  tip_node_size = 2,
+  tip_node_shape = 15,
+  node_label_size = 4,
+  node_pp_label_size = 0,
+  node_label_nudge_x = 0.1,
+  node_pp_label_nudge_x = 0.1,
+  shoulder_label_size = 3,
+  shoulder_label_nudge_x = -0.1,
+  node_pie_diameter = 1.1,
+  tip_pie_diameter = 1.08,
+  pie_nudge_x = 0,
+  pie_nudge_y = 0,
+  alpha = 0.5,
+  node_size_range = c(6, 15),
+  color_low = "#D55E00",
+  color_mid = "#F0E442",
+  color_high = "#009E73",
+  show_state_legend = TRUE,
+  show_posterior_legend = TRUE,
+  show_tree_scale = TRUE,
+  state_labels = NULL,
+  state_colors = NULL,
+  title = "",
+  fig_height = 7,
+  fig_width = 7,
+  ...
+)
 }
 \arguments{
 \item{t}{(treedata; no default) The processed output from processAncStatesDiscrete}
@@ -83,6 +106,9 @@ plotAncStatesDiscrete(t, summary_statistic, tree_layout = "rectangular",
 \item{title}{(character, NULL) Title of plot}
 
 \item{...}{(various)}
+}
+\value{
+
 }
 \description{
 Function to plot ancestral states and the associated uncertainty
