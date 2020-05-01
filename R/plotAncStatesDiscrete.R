@@ -326,14 +326,14 @@ plotMAPchromosome <- function(p, t, include_start_states, shoulder_label_nudge_x
     # add clado daughter lineage start states on "shoulders" of tree
     # get x, y coordinates of all nodes
     tree = t@phylo
-    x = getXcoord(tree)
-    y = getYcoord(tree)
+    x = .getXcoord(tree)
+    y = .getYcoord(tree)
     x_anc = numeric(n_node)
     node_index = numeric(n_node)
     for (i in 1:n_node) {
-      if (getParent(tree, i) != 0) {
+      if (.getParent(tree, i) != 0) {
         # if not the root, get the x coordinate for the parent node
-        x_anc[i] = x[getParent(tree, i)]
+        x_anc[i] = x[.getParent(tree, i)]
         node_index[i] = i
       }
     }
@@ -393,14 +393,14 @@ plotMAPrange <- function(p, t, include_start_states, tip_node_size, alpha, show_
 
   # add clado daughter lineage start states on "shoulders" of tree
   # get x, y coordinates of all nodes
-  x = getXcoord(tree)
-  y = getYcoord(tree)
+  x = .getXcoord(tree)
+  y = .getYcoord(tree)
   x_anc = numeric(n_node)
   node_index = numeric(n_node)
   for (i in 1:n_node) {
-    if (getParent(tree, i) != 0) {
+    if (.getParent(tree, i) != 0) {
       # if not the root, get the x coordinate for the parent node
-      x_anc[i] = x[getParent(tree, i)]
+      x_anc[i] = x[.getParent(tree, i)]
       node_index[i] = i
     }
   }
