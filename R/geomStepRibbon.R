@@ -1,0 +1,80 @@
+#' Stolen from the \code{RmcdrPlugin.KMggplot2} (slightly modified)
+#' Step ribbon plots.
+#'
+#' \code{geom_stepribbon} is an extension of the \code{geom_ribbon}, and
+#' is optimized for Kaplan-Meier plots with pointwise confidence intervals
+#' or a confidence band.
+#'
+#' @seealso
+#'   \code{\link[ggplot2]{geom_ribbon}} \code{geom_stepribbon}
+#'   inherits from \code{geom_ribbon}.
+#' @inheritParams ggplot2:::geom_ribbon
+#' @examples
+#' library(ggplot2)
+#' huron <- data.frame(year = 1875:1972, level = as.vector(LakeHuron))
+#' h <- ggplot(huron, aes(year))
+#' h + geom_stepribbon(aes(ymin = level - 1, ymax = level + 1), fill = "grey70") +
+#'     geom_step(aes(y = level))
+#' h + geom_ribbon(aes(ymin = level - 1, ymax = level + 1), fill = "grey70") +
+#'     geom_line(aes(y = level))
+#' @rdname geom_stepribbon
+#' @importFrom ggplot2 layer GeomRibbon
+#' @export
+geom_stepribbon <- function(
+  mapping     = NULL,
+  data        = NULL,
+  stat        = "identity",
+  position    = "identity",
+  na.rm       = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE, ...) {
+
+  layer(
+    data        = data,
+    mapping     = mapping,
+    stat        = stat,
+    geom        = GeomStepribbon,
+    position    = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params      = list(na.rm = na.rm, ... )
+  )
+}
+
+#' @rdname geom_stepribbon
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomStepribbon <- ggproto(
+  "GeomStepribbon", GeomRibbon,
+
+  extra_params = c("na.rm"),
+
+  draw_group = function(data, panel_scales, coord, direction, include_final = FALSE, na.rm = FALSE) {
+    n <- nrow(data)
+    data <- as.data.frame(data)[order(data$x), ]
+
+    if (direction == "vh") {
+      xs <- rep(1:n, each = 2)[-2*n]
+      ys <- c(1, rep(2:n, each = 2))
+    } else if (direction == "hv") {
+      xs <- c(1, rep(2:n, each = 2))
+      ys <- rep(1:n, each = 2)[-2*n]
+    } else {
+      abort("Parameter `direction` is invalid.")
+    }
+    if(!include_final){
+      xs <- tail(xs, n = -1)
+      ys <- tail(ys, n = -1)
+    }
+    x <- data$x[xs]
+    ymin <- data$ymin[ys]
+    ymax <- data$ymax[ys]
+    data_attr <- data[xs, setdiff(names(data), c("x", "ymin", "ymax"))]
+    data <- new_data_frame(c(list(x = x, ymin = ymin, ymax = ymax), data_attr))
+
+    GeomRibbon$draw_group(data, panel_scales, coord, direction, include_final, na.rm = FALSE)
+
+  }
+
+)
