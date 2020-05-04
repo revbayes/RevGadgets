@@ -711,7 +711,7 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   return(t)
 }
 
-.make_states < function(label_fn, color_fn) {
+.make_states <- function(label_fn, color_fn) {
 
   # generate colors for ranges
   range_color_list = read.csv(color_fn, header=T, sep=",", colClasses="character")
