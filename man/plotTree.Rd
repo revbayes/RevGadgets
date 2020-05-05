@@ -7,7 +7,6 @@
 plotTree(
   tree,
   timeline = FALSE,
-  scale_bar = TRUE,
   node_age_bars = TRUE,
   node_age_bars_color = "blue",
   node_age_bars_colored_by = NULL,
@@ -35,8 +34,6 @@ only one summary tree from one trace file. If it contains multiple trees or mult
 traces, only the first will be used.}
 
 \item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.}
-
-\item{scale_bar}{(logical; TRUE) Add scale bar?}
 
 \item{node_age_bars}{(logical; TRUE) Plot time tree with node age bars?}
 
@@ -106,16 +103,18 @@ timescale plotted on the x - axis, and 95\% CI for node ages.
 \examples{
 
 # Example of standard tree plot
+# Add on a scale bar using ggtree, but note that the x axis position must
+# be negative and scales with tree height
+
 file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 tree <- readTrees(paths = file)
-t <- tree[[1]][[1]]@phylo
-num <- which(t$tip.label == "Galeopterus_variegatus")
-t <- phytools::reroot(t, num, position = 0.5*t$edge.length[which(t$edge[,2]==num)])
-tree[[1]][[1]]@phylo <- t
+ # Reroot tree before plotting
+num <- which(tree[[1]][[1]]@phylo$tip.label == "Galeopterus_variegatus")
+tree[[1]][[1]]@phylo <- phytools::reroot(tree[[1]][[1]]@phylo, num,
+                                           position = 0.5*tree[[1]][[1]]@phylo$edge.length[which(tree[[1]][[1]]@phylo$edge[,2]==num)])
 plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
                  tip_labels_remove_underscore = T, node_labels_size = 3,
-                 tip_labels_italics = F) +
-  ggplot2::theme(legend.position=c(.1, .9))
+                 tip_labels_italics = F) + ggtree::geom_treescale(x = -0.1, y = 0)
 
 
 # Example of coloring branches by rate

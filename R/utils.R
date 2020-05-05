@@ -180,6 +180,7 @@
   if (any(is.na(as.numeric(k))) == FALSE) { # if integer or numeric
     if (sum(as.numeric(L) %% 1, na.rm = T) == 0) { # if integer
       labs <- L
+      labs[labs == "1.000000"] <- "1" # catch case of all posterios of 1
     } else { # if numeric
       labs <- sprintf("%.3f",as.numeric(L)) # round nicely
       labs[labs == "1.000"] <- "1"
@@ -711,38 +712,38 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   return(t)
 }
 
-.make_states < function(label_fn, color_fn) {
+.make_states <- function(label_fn, color_fn) {
 
   # generate colors for ranges
-  range_color_list = read.csv(color_fn, header=T, sep=",", colClasses="character")
+  range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
 
   # get area names
-  area_names = unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
+  area_names <- unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
 
   # get state labels
-  state_descriptions = read.csv(label_fn, header=T, sep=",", colClasses="character")
+  state_descriptions <- read.csv(label_fn, header=T, sep=",", colClasses="character")
 
   # map presence-absence ranges to area names
-  range_labels = sapply(state_descriptions$range[2:nrow(state_descriptions)],
+  range_labels <- sapply(state_descriptions$range[2:nrow(state_descriptions)],
                         function(x) {
                           present = as.vector(gregexpr(pattern="1", x)[[1]])
                           paste( area_names[present], collapse="")
                         })
 
   # map labels to colors
-  range_colors = range_color_list$color[ match(range_labels, range_color_list$range) ]
+  range_colors <- range_color_list$color[ match(range_labels, range_color_list$range) ]
 
   # generate state/color labels
-  idx = 1
-  st_lbl = list()
-  st_colors = c()
+  idx <- 1
+  st_lbl <- list()
+  st_colors <- c()
   for (j in 1:(nrow(state_descriptions)-1)) {
-    st_lbl[[ as.character(j) ]] = range_labels[j]
-    st_colors[j] = range_colors[j]
+    st_lbl[[ as.character(j) ]] <- range_labels[j]
+    st_colors[j] <- range_colors[j]
   }
-  st_colors[ length(st_colors)+1 ] = "lightgray"
-  st_lbl[["other"]] = "other"
+  st_colors[ length(st_colors)+1 ] <- "lightgray"
+  st_lbl[["other"]] <- "other"
 
-  return( list(state_labels=st_lbl, state_colors=st_colors) )
+  return( list(state_labels = st_lbl, state_color = st_colors) )
 }
 
