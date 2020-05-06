@@ -106,40 +106,49 @@ plotMAP <- function(t,
                node_color_as == "state_posterior") {
       colors <- .colFun(2)
     }
-  } else { colors <- node_color }
+  } else {
+    colors <- node_color
+  }
 
   # check aesthetics lengths and adjust if needed
   # shape
   if (is.null(node_shape_as) == TRUE) {
-    if (length(node_shape) > 1) { node_shape <- node_shape[1]}
+    if (length(node_shape) > 1) {
+      node_shape <- node_shape[1]
+    }
   }
   # color
   if (is.null(node_color_as) == TRUE) {
-    if (length(colors) > 1) {colors <- colors[1]}
+    if (length(colors) > 1) {
+      colors <- colors[1]
+    }
   }
   # size
   if (is.null(node_size_as) == TRUE) {
-    if (length(node_size) > 1)  {node_size <- node_size[1]}
+    if (length(node_size) > 1) {
+      node_size <- node_size[1]
+    }
   }
 
   # add tip labels
   if (tip_labels == TRUE) {
     p <- p + ggtree:::geom_tiplab(size = tip_labels_size, offset = tip_labels_offset)
-    }
+  }
 
-
-    # add the tip states
+  # add the tip states
   if (tip_states == TRUE) {
+
     # unless node size should vary by state, don't allow tip sizes to vary
     if (is.null(node_size_as) == TRUE || node_size_as != "state") {
       tip_states_size <- tip_states_size[1]
     }
+
     # vary tip symbols by color only
     # when shape is null and size is not state
     if (is.null(node_color_as) == FALSE) {
       if (node_color_as == "state" &
           is.null(node_shape_as) == TRUE &
-          (is.null(node_size_as) == TRUE || node_size_as != "state"))  {
+          (is.null(node_size_as) == TRUE || node_size_as != "state")) {
         p <- p + ggtree::geom_tippoint(ggtree::aes(colour = factor(anc_state_1)),
                                        size = tip_states_size, alpha = state_transparency,
                                        shape = tip_states_shape)
@@ -182,18 +191,19 @@ plotMAP <- function(t,
       }
     }
 
-      # vary tip symbol by size and color
-      # when size is state, color is state, and shape is null
-      if (is.null(node_size_as) == FALSE & is.null(node_color_as) == FALSE) {
-        if (node_size_as == "state" &
-            node_color_as == "state" &
-            is.null(node_shape_as) == TRUE) {
-          p <- p + ggtree::geom_tippoint(ggtree::aes(size = anc_state_1,
-                                                     color = anc_state_1),
-                                         shape = tip_states_shape, alpha = state_transparency)
-        }
+    # vary tip symbol by size and color
+    # when size is state, color is state, and shape is null
+    if (is.null(node_size_as) == FALSE & is.null(node_color_as) == FALSE) {
+      if (node_size_as == "state" &
+          node_color_as == "state" &
+          is.null(node_shape_as) == TRUE) {
+        p <- p + ggtree::geom_tippoint(ggtree::aes(size = anc_state_1,
+                                                   color = anc_state_1),
+                                       shape = tip_states_shape, alpha = state_transparency)
+      }
     }
-   }
+
+  } # end tip_states == TRUE
 
   # set up ancestral states dataframe if anc_states not already in phylo data object
   # Carrie note: when would this happen? this should be taken care of by process anc states....
@@ -210,6 +220,7 @@ plotMAP <- function(t,
   blank_nodes <- is.null(node_color_as) == TRUE & is.null(node_size_as) == TRUE & is.null(node_shape_as) == TRUE
 
   if (blank_nodes == FALSE) {
+
     #translate to column names
     if (is.null(node_color_as) == FALSE) {
       if (node_color_as == "state") {p$data$node_color_as <- factor(p$data$anc_state_1)}
@@ -217,18 +228,17 @@ plotMAP <- function(t,
       if (node_color_as == "state_posterior") {p$data$node_color_as <- as.numeric(p$data$anc_state_1_pp)}
     }
 
-   if (is.null(node_size_as) == FALSE) {
-     if (node_size_as == "state") {p$data$node_size_as <- p$data$anc_state_1}
-     if (node_size_as == "node_posterior") {p$data$node_size_as <- as.numeric(p$data$posterior)}
-     if (node_size_as == "state_posterior") {p$data$node_size_as <- as.numeric(p$data$anc_state_1_pp)}
-   }
+    if (is.null(node_size_as) == FALSE) {
+      if (node_size_as == "state") {p$data$node_size_as <- p$data$anc_state_1}
+      if (node_size_as == "node_posterior") {p$data$node_size_as <- as.numeric(p$data$posterior)}
+      if (node_size_as == "state_posterior") {p$data$node_size_as <- as.numeric(p$data$anc_state_1_pp)}
+    }
 
-  if (is.null(node_shape_as) == FALSE) {
-    if (node_shape_as == "state") {p$data$node_shape_as <- factor(p$data$anc_state_1)}
-    if (node_shape_as == "node_posterior") {p$data$node_shape_as <- as.numeric(p$data$posterior)}
-    if (node_shape_as == "state_posterior") {p$data$node_shape_as <- as.numeric(p$data$anc_state_1_pp)}
-  }
-
+    if (is.null(node_shape_as) == FALSE) {
+      if (node_shape_as == "state") {p$data$node_shape_as <- factor(p$data$anc_state_1)}
+      if (node_shape_as == "node_posterior") {p$data$node_shape_as <- as.numeric(p$data$posterior)}
+      if (node_shape_as == "state_posterior") {p$data$node_shape_as <- as.numeric(p$data$anc_state_1_pp)}
+    }
 
     ## This is annoying and will be annoying to debug- is there a way to automate this??
 
@@ -288,7 +298,8 @@ plotMAP <- function(t,
       p <- p + ggtree::geom_nodepoint(ggtree::aes(shape = node_shape_as), color = colors,
                                       size = node_size, alpha = state_transparency)
     }
-  }
+
+  } # end blank_nodes == FALSE
 
   # add cladogenetic events
   if (cladogenetic == TRUE) {
