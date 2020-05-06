@@ -640,7 +640,6 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
 
 # set custom state labels
 .assign_state_labels <- function(t, state_labels, include_start_states, n_states=3) {
-
   # what is the ancestral state name tag?
   if (include_start_states) {
     state_pos_str_base = c("start_state_", "end_state_")
@@ -651,6 +650,14 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   # send error if state_labels are provided without names
   if (!is.null(state_labels) && is.null(names(state_labels))) {
     error("names(state_labels) must identify all unlabeled state names in attributes(t)$data")
+  }
+
+  # send error if state_labels names don't match the data
+  if (!is.null(state_labels) && any((names(state_labels) %in% t@data$anc_state_1)) == FALSE) {
+    stop(paste0("names(state_labels): ",
+                paste0(names(state_labels), collapse = ", "),
+                " do not match data in tree file: ",
+                paste0(sort(unique(t@data$anc_state_1)), collapse = ", ")))
   }
 
   # generate state labels if none provided

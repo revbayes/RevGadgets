@@ -8,21 +8,21 @@ plotMAP(
   t,
   cladogenetic = FALSE,
   tip_labels = TRUE,
-  tip_labels_size = 4,
-  tip_labels_offset = 0.1,
-  node_labels_as = "state",
-  node_labels_size = 4,
+  tip_labels_size = 2,
+  tip_labels_offset = 1,
+  node_labels_as = NULL,
+  node_labels_size = 2,
   node_labels_offset = 0.1,
   node_size_as = "state_posterior",
   node_color_as = "state",
   node_shape_as = NULL,
   node_shape = 19,
   node_color = "default",
-  node_size = c(6, 15),
+  node_size = c(2, 6),
   tip_states = TRUE,
   tip_states_size = node_size,
   tip_states_shape = node_shape,
-  state_transparency = 0.5,
+  state_transparency = 0.75,
   show_state_legend = TRUE,
   show_posterior_legend = TRUE,
   tree_layout = "rectangular"
@@ -36,16 +36,16 @@ containing tree and ancestral states.}
 
 \item{tip_labels}{(logical; TRUE) Label taxa at tips?}
 
-\item{tip_labels_size}{(numeric; 4) Size of tip labels.}
+\item{tip_labels_size}{(numeric; 2) Size of tip labels.}
 
-\item{tip_labels_offset}{(numeric; 0.1) Horizontal offset of tip labels from tree.}
+\item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from tree.}
 
-\item{node_labels_as}{(character; "state") Optional plotting of text at nodes. Possible
-values are "state" for the ancestral states (default), "state_posterior" for posterior probabilities
+\item{node_labels_as}{(character; "NULL") Optional plotting of text at nodes. Possible
+values are "state" for the ancestral states , "state_posterior" for posterior probabilities
 of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
-or NULL for not plotting any text at the nodes.}
+or NULL for not plotting any text at the nodes (default).}
 
-\item{node_labels_size}{(numeric; 4) Size of node labels text. Ignored if node_labels_as = NULL.}
+\item{node_labels_size}{(numeric; 2) Size of node labels text. Ignored if node_labels_as = NULL.}
 
 \item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels from nodes.
 Ignored if node_labels_as = NULL.}
@@ -71,7 +71,7 @@ with length of the number of states.}
 colors. If node_color_as = "state', provide a vector of length of the character states.
 If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.}
 
-\item{node_size}{(numeric; c(6, 15)) Range of sizes, or fixed size, for node symbols.
+\item{node_size}{(numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
 If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
 If node_size_as = NULL, numeric vector of length one.}
 
@@ -83,7 +83,7 @@ size as node symbols.}
 \item{tip_states_shape}{(integer; node_shape) Shape for tip symbols. Defaults to the same
 as node symbols.}
 
-\item{state_transparency}{(integer; 0.5) Alpha (transparency) of state symbols- varies from
+\item{state_transparency}{(integer; 0.75) Alpha (transparency) of state symbols- varies from
 0 to 1.}
 
 \item{show_state_legend}{(logical; TRUE) Plot legend for states?}

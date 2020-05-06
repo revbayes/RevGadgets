@@ -16,7 +16,6 @@
 
 # main processing function
 processAncStatesDiscrete = function(path, state_labels = NULL) {
-
     # read in tree
     tree <- readTrees(path)
     t <- tree[[1]][[1]]

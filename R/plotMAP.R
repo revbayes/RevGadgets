@@ -7,13 +7,13 @@
 #' containing tree and ancestral states.
 #' @param cladogenetic (logical; FALSE) Plot shoulder states of cladogenetic analyses?
 #' @param tip_labels (logical; TRUE) Label taxa at tips?
-#' @param tip_labels_size (numeric; 4) Size of tip labels.
-#' @param tip_labels_offset (numeric; 0.1) Horizontal offset of tip labels from tree.
-#' @param node_labels_as (character; "state") Optional plotting of text at nodes. Possible
-#' values are "state" for the ancestral states (default), "state_posterior" for posterior probabilities
+#' @param tip_labels_size (numeric; 2) Size of tip labels.
+#' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from tree.
+#' @param node_labels_as (character; "NULL") Optional plotting of text at nodes. Possible
+#' values are "state" for the ancestral states , "state_posterior" for posterior probabilities
 #' of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
-#' or NULL for not plotting any text at the nodes.
-#' @param node_labels_size (numeric; 4) Size of node labels text. Ignored if node_labels_as = NULL.
+#' or NULL for not plotting any text at the nodes (default).
+#' @param node_labels_size (numeric; 2) Size of node labels text. Ignored if node_labels_as = NULL.
 #' @param node_labels_offset (numeric; 0.1) Horizontal offset of node labels from nodes.
 #' Ignored if node_labels_as = NULL.
 #' @param node_size_as (character; "state_posterior") How to vary size of node symbols. Options
@@ -32,7 +32,7 @@
 #' @param node_color ("character"; "default") Colors for node symbols. Defaults to default RevGadgets
 #' colors. If node_color_as = "state', provide a vector of length of the character states.
 #' If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.
-#' @param node_size (numeric; c(6, 15)) Range of sizes, or fixed size, for node symbols.
+#' @param node_size (numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
 #' If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
 #' If node_size_as = NULL, numeric vector of length one.
 #' @param tip_states (logical; TRUE) Plot states of taxa at tips?
@@ -40,7 +40,7 @@
 #' size as node symbols.
 #' @param tip_states_shape (integer; node_shape) Shape for tip symbols. Defaults to the same
 #' as node symbols.
-#' @param state_transparency (integer; 0.5) Alpha (transparency) of state symbols- varies from
+#' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' @param show_state_legend (logical; TRUE) Plot legend for states?
 #' @param show_posterior_legend (logical; TRUE) Plot legend for posterior probabilities?
@@ -56,12 +56,12 @@ plotMAP <- function(t,
 
                     # label taxa at tips
                     tip_labels = TRUE,
-                    tip_labels_size = 4,
-                    tip_labels_offset = 0.1,
+                    tip_labels_size = 2,
+                    tip_labels_offset = 1,
 
                     # text labels at nodes
-                    node_labels_as = "state",
-                    node_labels_size = 4,
+                    node_labels_as = NULL,
+                    node_labels_size = 2,
                     node_labels_offset = 0.1,
 
                     # what to plot at nodes
@@ -72,19 +72,21 @@ plotMAP <- function(t,
                     # aesthetics for plotting at nodes
                     node_shape = 19,
                     node_color = "default",
-                    node_size = c(6, 15),
+                    node_size = c(2, 6),
 
-                    # aesthetics for tip states (inherents additional aesthetics from node_states)
+                    # aesthetics for tip states (inherents additional aesthetics from nodes)
                     tip_states = TRUE,
                     tip_states_size = node_size,
                     tip_states_shape = node_shape,
 
-                    #node_pp_label_size = 0.1,
-                    state_transparency = 0.5,
+                    state_transparency = 0.75,
                     show_state_legend = TRUE,
                     show_posterior_legend = TRUE,
                     tree_layout = "rectangular") {
-  recover()
+
+  # add in parameter compatability checks!
+
+
   # get number of nodes
   tree <- attributes(t)$phylo
   n_node <- ggtree:::getNodeNum(tree)
@@ -104,39 +106,92 @@ plotMAP <- function(t,
                node_color_as == "state_posterior") {
       colors <- .colFun(2)
     }
-  }
+  } else { colors <- node_color }
 
+  # check aesthetics lengths and adjust if needed
+  # shape
+  if (is.null(node_shape_as) == TRUE) {
+    if (length(node_shape) > 1) { node_shape <- node_shape[1]}
+  }
+  # color
+  if (is.null(node_color_as) == TRUE) {
+    if (length(colors) > 1) {colors <- colors[1]}
+  }
+  # size
+  if (is.null(node_size_as) == TRUE) {
+    if (length(node_size) > 1)  {node_size <- node_size[1]}
+  }
 
   # add tip labels
   if (tip_labels == TRUE) {
     p <- p + ggtree:::geom_tiplab(size = tip_labels_size, offset = tip_labels_offset)
     }
 
-  # add the tip states, add colors at the end
+
+    # add the tip states
   if (tip_states == TRUE) {
-    if (is.null(node_size_as) == FALSE) { # if node size should vary, pick the smaller size
+    # unless node size should vary by state, don't allow tip sizes to vary
+    if (is.null(node_size_as) == TRUE || node_size_as != "state") {
       tip_states_size <- tip_states_size[1]
     }
+    # vary tip symbols by color only
+    # when shape is null and size is not state
     if (is.null(node_color_as) == FALSE) {
-      if (node_color_as == "state") {
+      if (node_color_as == "state" &
+          is.null(node_shape_as) == TRUE &
+          (is.null(node_size_as) == TRUE || node_size_as != "state"))  {
         p <- p + ggtree::geom_tippoint(ggtree::aes(colour = factor(anc_state_1)),
                                        size = tip_states_size, alpha = state_transparency,
                                        shape = tip_states_shape)
       }
     }
+
+    # vary tip symbols by shape only
+    # when shape is state, color is not state, size is not state
     if (is.null(node_shape_as) == FALSE) {
-      if (node_shape_as == "state") {
+      if (node_shape_as == "state" &
+          (is.null(node_color_as) == TRUE || node_color_as != "state") &
+          (is.null(node_size_as) == TRUE || node_size_as != "state")) {
         p <- p + ggtree::geom_tippoint(ggtree::aes(shape = factor(anc_state_1)),
                                        size = tip_states_size, alpha = state_transparency,
                                        color = colors)
       }
     }
+
+    # vary tip symbol by shape and color
+    # when shape is state, color is state, and size is anything but state
+    if (is.null(node_color_as) == FALSE & is.null(node_shape_as) == FALSE) {
+      if (node_color_as == "state" &
+          node_shape_as == "state" &
+          (is.null(node_size_as) == TRUE || node_size_as != "state")) {
+        p <-  p + ggtree::geom_tippoint(ggtree::aes(shape = factor(anc_state_1),
+                                                    color = factor(anc_state_1)),
+                                        size = tip_states_size, alpha = state_transparency)
+      }
+    }
+
+    # vary tip symbol by size only
+    # when size is state, color is not state, and shape is null
     if (is.null(node_size_as) == FALSE) {
-      if (node_size_as == "state") {
-        p <- p + ggtree::geom_tippoint(ggtree::aes(size = anc_state_1),
+      if (node_size_as == "state" &
+          (is.null(node_color_as) == TRUE || node_color_as != "state") &
+          is.null(node_shape_as) == TRUE) {
+        p <- p + ggtree::geom_tippoint(ggtree::aes(size = as.numeric(anc_state_1)),
                                        shape = tip_states_shape, alpha = state_transparency,
                                        color = colors)
       }
+    }
+
+      # vary tip symbol by size and color
+      # when size is state, color is state, and shape is null
+      if (is.null(node_size_as) == FALSE & is.null(node_color_as) == FALSE) {
+        if (node_size_as == "state" &
+            node_color_as == "state" &
+            is.null(node_shape_as) == TRUE) {
+          p <- p + ggtree::geom_tippoint(ggtree::aes(size = anc_state_1,
+                                                     color = anc_state_1),
+                                         shape = tip_states_shape, alpha = state_transparency)
+        }
     }
    }
 
@@ -151,18 +206,7 @@ plotMAP <- function(t,
   #}
   #
 
-  # add node labels (text)
-  if (is.null(node_labels_as) == FALSE) {
-    if (node_labels_as == "state") {
-      p <- p + ggtree::geom_text(ggtree::aes(label = anc_state_1), hjust="left",
-                                 nudge_x = node_labels_offset, size = node_labels_size)
-    } else if (node_labels_as == "posterior") {
-      p <- p + ggtree::geom_text(ggtree::aes(label = .convertAndRound(posterior)), hjust="left",
-                                 nudge_x = node_labels_offset, size = node_labels_size)
-    }
-  }
-
-  # plot at nodes
+  # plot symbols at nodes and tips
   blank_nodes <- is.null(node_color_as) == TRUE & is.null(node_size_as) == TRUE & is.null(node_shape_as) == TRUE
 
   if (blank_nodes == FALSE) {
@@ -265,6 +309,16 @@ plotMAP <- function(t,
 #    p <- p + ggtree::geom_text(ggtree::aes(label=sprintf("%.02f", as.numeric(anc_state_1_pp))), hjust="left", nudge_x=node_label_nudge_x, size=node_pp_label_size)
 #  }
 
+  # add node labels (text)
+  if (is.null(node_labels_as) == FALSE) {
+    if (node_labels_as == "state") {
+      p <- p + ggtree::geom_nodelab(ggtree::aes(label = anc_state_1), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
+    } else if (node_labels_as == "state_posterior") {
+      p <- p + ggtree::geom_nodelab(ggtree::aes(label = .convertAndRound(anc_state_1_pp)), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
+    }
+  }
 
   # add custom colors, shapes, and sizes
 
