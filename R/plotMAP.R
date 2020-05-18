@@ -191,20 +191,28 @@ plotMAP <- function(t,
                node_color_as == "state_posterior") {
       colors <- .colFun(2)
     }
-  } else { colors <- node_color }
+  } else {
+    colors <- node_color
+  }
 
   ##### adjust aesthetics lengths if needed #####
   # shape
   if (is.null(node_shape_as) == TRUE) {
-    if (length(node_shape) > 1) { node_shape <- node_shape[1]}
+    if (length(node_shape) > 1) {
+      node_shape <- node_shape[1]
+    }
   }
   # color
   if (is.null(node_color_as) == TRUE) {
-    if (length(colors) > 1) {colors <- colors[1]}
+    if (length(colors) > 1) {
+      colors <- colors[1]
+    }
   }
   # size
   if (is.null(node_size_as) == TRUE) {
-    if (length(node_size) > 1)  {node_size <- node_size[1]}
+    if (length(node_size) > 1) {
+      node_size <- node_size[1]
+    }
   }
 
   ##### reformat labels if necessary #####
@@ -312,12 +320,11 @@ plotMAP <- function(t,
                                          shape = tip_states_shape, alpha = state_transparency)
         }
     }
-   }
+  }
 
   # plot symbols at nodes and tips
   blank_nodes <- is.null(node_color_as) == TRUE & is.null(node_size_as) == TRUE & is.null(node_shape_as) == TRUE
   if (blank_nodes == FALSE) {
-
     # plot if color, size, and shape vary
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == FALSE &
@@ -460,7 +467,8 @@ plotMAP <- function(t,
                                 alpha = state_transparency)
       }
     }
-  }
+
+  } # end blank_nodes == FALSE
 
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
