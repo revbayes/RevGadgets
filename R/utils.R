@@ -44,6 +44,83 @@
   return(p)
 }
 
+# set custom state labels
+.assign_state_labels <- function(t, state_labels, include_start_states, labels_as_numbers, n_states=3) {
+  # what is the ancestral state name tag?
+  if (include_start_states) {
+    state_pos_str_base = c("start_state_", "end_state_")
+  } else {
+    state_pos_str_base = c("anc_state_")
+  }
+
+  # send error if state_labels are provided without names
+  if (!is.null(state_labels) && is.null(names(state_labels))) {
+    error("names(state_labels) must identify all unlabeled state names in attributes(t)$data")
+  }
+
+  #make matrix of all anc state values
+  col_num <- grep(state_pos_str_base[1], colnames(t@data))
+  if (length(state_pos_str_base) > 1){
+    col_num2 <- grep(state_pos_str_base[2], colnames(t@data))
+    col_num <- c(col_num, col_num2)
+  }
+  pps <- grep("_pp", colnames(t@data))
+  columns <- col_num[!col_num %in% pps]
+
+  all_anc_states <- unique(c(as.matrix(t@data[, columns])))
+
+  # send error if state labels are provided but there are any
+  # states without a corresponding state label
+  if (!is.null(state_labels) && any(all_anc_states %in% c("NA", names(state_labels)) == FALSE)) {
+    stop(paste0("names(state_labels): ",
+                paste0(names(state_labels), collapse = ", "),
+                " do not match data in tree file: ",
+                paste0(sort(as.character(unique(t@data[,col_num]))), collapse = ", ")))
+  }
+
+  # generate state labels if none provided and not a chromosome analysis
+  if ( is.null(state_labels) == TRUE & labels_as_numbers == FALSE) {
+    warning("State labels not provided by user. Will be generated automatically.")
+    states <- unique(unlist(attributes(t)$data[grepl(paste0("state_","[0-9]$"),names(attributes(t)$data))]))
+    states <- states[!states == "NA"]
+    states <- states[order(states)]
+    state_labels <- list()
+    for(i in 1:length(states) ) {
+      state_labels[as.character(states[i])] = LETTERS[i]
+    }
+    state_labels["other"] <- "other"
+  }
+
+  # for chromosome analyses, just keep the names as is (numbers of chromos)
+  if ( is.null(state_labels) == TRUE & labels_as_numbers == TRUE) {
+    state_labels <- unique(unlist(attributes(t)$data[grepl(paste0("state_","[0-9]$"),names(attributes(t)$data))]))
+    state_labels <- state_labels[-which(state_labels == "NA")]
+    names(state_labels) <- state_labels
+  }
+
+  # create list of ancestral state name tags
+  state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
+
+  # overwrite state labels
+  for (m in state_pos_str_to_update)
+  {
+    # get the states
+    x_state = attributes(t)$data[[m]]
+    x_state = as.vector(x_state)
+    x_state_valid = which( x_state != "NA" )
+    x_state_invalid = which( x_state == "NA" )
+    x_state_tmp = unlist(sapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
+    x_state[x_state_valid] = x_state_tmp
+    x_state[x_state_invalid] = NA
+    attributes(t)$data[[m]] = x_state
+  }
+
+  # Just add the state_labels here
+  attributes(t)$state_labels <- state_labels
+
+  return(t)
+}
+
 .build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0.01) {
 
   n_states = length(state_labels)
@@ -217,6 +294,102 @@
 
 }
 
+# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
+.getParent <- function(tr, node) {
+  if ( node == ggtree:::getRoot(tr) )
+    return(0)
+  edge <- tr[["edge"]]
+  parent <- edge[,1]
+  child <- edge[,2]
+  res <- parent[child == node]
+  if (length(res) == 0) {
+    stop("cannot found parent node...")
+  }
+  if (length(res) > 1) {
+    stop("multiple parent found...")
+  }
+  return(res)
+}
+
+# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
+.getXcoord <- function(tr) {
+  edge <- tr$edge
+  parent <- edge[,1]
+  child <- edge[,2]
+  root <- ggtree:::getRoot(tr)
+
+  len <- tr$edge.length
+
+  N <- ggtree:::getNodeNum(tr)
+  x <- numeric(N)
+  x <- .getXcoord2(x, root, parent, child, len)
+  return(x)
+}
+
+# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
+.getXcoord2 <- function(x, root, parent, child, len, start=0, rev=FALSE) {
+  x[root] <- start
+  x[-root] <- NA  ## only root is set to start, by default 0
+
+  currentNode <- root
+  direction <- 1
+  if (rev == TRUE) {
+    direction <- -1
+  }
+  while(anyNA(x)) {
+    idx <- which(parent %in% currentNode)
+    newNode <- child[idx]
+    x[newNode] <- x[parent[idx]]+len[idx] * direction
+    currentNode <- newNode
+  }
+
+  return(x)
+}
+
+# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
+.getYcoord <- function(tr, step=1) {
+  Ntip <- length(tr[["tip.label"]])
+  N <- ggtree:::getNodeNum(tr)
+
+  edge <- tr[["edge"]]
+  parent <- edge[,1]
+  child <- edge[,2]
+
+  cl <- split(child, parent)
+  child_list <- list()
+  child_list[as.numeric(names(cl))] <- cl
+
+  y <- numeric(N)
+  tip.idx <- child[child <= Ntip]
+  y[tip.idx] <- 1:Ntip * step
+  y[-tip.idx] <- NA
+
+  currentNode <- 1:Ntip
+  while(anyNA(y)) {
+    pNode <- unique(parent[child %in% currentNode])
+    ## piping of magrittr is slower than nested function call.
+    ## pipeR is fastest, may consider to use pipeR
+    ##
+    ## child %in% currentNode %>% which %>% parent[.] %>% unique
+    ## idx <- sapply(pNode, function(i) all(child[parent == i] %in% currentNode))
+    idx <- sapply(pNode, function(i) all(child_list[[i]] %in% currentNode))
+    newNode <- pNode[idx]
+
+    y[newNode] <- sapply(newNode, function(i) {
+      mean(y[child_list[[i]]], na.rm=TRUE)
+      ##child[parent == i] %>% y[.] %>% mean(na.rm=TRUE)
+    })
+
+    currentNode <- c(currentNode[!currentNode %in% unlist(child_list[newNode])], newNode)
+    ## currentNode <- c(currentNode[!currentNode %in% child[parent %in% newNode]], newNode)
+    ## parent %in% newNode %>% child[.] %>%
+    ##     `%in%`(currentNode, .) %>% `!` %>%
+    ##         currentNode[.] %>% c(., newNode)
+  }
+
+  return(y)
+}
+
 .isColor <- function(var) {
   if (is.null(var)) {
     return(FALSE) } else {
@@ -228,6 +401,66 @@
 
 .isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
+.make_states <- function(label_fn, color_fn) {
+
+  # generate colors for ranges
+  range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
+
+  # get area names
+  area_names <- unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
+
+  # get state labels
+  state_descriptions <- read.csv(label_fn, header=T, sep=",", colClasses="character")
+
+  # map presence-absence ranges to area names
+  range_labels <- sapply(state_descriptions$range[2:nrow(state_descriptions)],
+                         function(x) {
+                           present = as.vector(gregexpr(pattern="1", x)[[1]])
+                           paste( area_names[present], collapse="")
+                         })
+
+  # map labels to colors
+  range_colors <- range_color_list$color[ match(range_labels, range_color_list$range) ]
+
+  # generate state/color labels
+  idx <- 1
+  st_lbl <- list()
+  st_colors <- c()
+  for (j in 1:(nrow(state_descriptions)-1)) {
+    st_lbl[[ as.character(j) ]] <- range_labels[j]
+    st_colors[j] <- range_colors[j]
+  }
+  st_colors[ length(st_colors)+1 ] <- "lightgray"
+  st_lbl[["other"]] <- "other"
+
+  return( list(state_labels = st_lbl, state_color = st_colors) )
+}
+
+# Fast data.frame constructor and indexing
+# No checking, recycling etc. unless asked for
+# Stolen from ggplot2
+new_data_frame <- function(x = list(), n = NULL) {
+  if (length(x) != 0 && is.null(names(x))) {
+    abort("Elements must be named")
+  }
+  lengths <- vapply(x, length, integer(1))
+  if (is.null(n)) {
+    n <- if (length(x) == 0 || min(lengths) == 0) 0 else max(lengths)
+  }
+  for (i in seq_along(x)) {
+    if (lengths[i] == n) next
+    if (lengths[i] != 1) {
+      abort("Elements must equal the number of rows or 1")
+    }
+    x[[i]] <- rep(x[[i]], n)
+  }
+
+  class(x) <- "data.frame"
+
+  attr(x, "row.names") <- .set_row_names(n)
+  x
+}
+
 .parseTreeString <- function(string) {
   text <- sub("[^(]*", "", string)
   # stats <- treeio:::read.stats_beast_internal( "", text )
@@ -237,8 +470,7 @@
   return(obj)
 }
 
-# Right tail probability of the horseshoe
-# Integrates the density function via grid
+# Right tail probability of the horseshoe: integrates the density function via grid
 pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   quants <- seq(1e-10,1-1e-10,length.out=grid.size)
   # Transform so we can look up quantiles under regular cauchy distribution
@@ -532,170 +764,6 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
 
 }
 
-.simpleCap <- function(x) {
-  s <- strsplit(x, " ")[[1]]
-  paste(toupper(substring(s, 1,1)), substring(s, 2),
-        sep="", collapse=" ")
-}
-
-
-
-### adding from processAncStatesDiscrete
-
-# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
-.getXcoord2 <- function(x, root, parent, child, len, start=0, rev=FALSE) {
-  x[root] <- start
-  x[-root] <- NA  ## only root is set to start, by default 0
-
-  currentNode <- root
-  direction <- 1
-  if (rev == TRUE) {
-    direction <- -1
-  }
-  while(anyNA(x)) {
-    idx <- which(parent %in% currentNode)
-    newNode <- child[idx]
-    x[newNode] <- x[parent[idx]]+len[idx] * direction
-    currentNode <- newNode
-  }
-
-  return(x)
-}
-
-# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
-.getXcoord <- function(tr) {
-  edge <- tr$edge
-  parent <- edge[,1]
-  child <- edge[,2]
-  root <- ggtree:::getRoot(tr)
-
-  len <- tr$edge.length
-
-  N <- ggtree:::getNodeNum(tr)
-  x <- numeric(N)
-  x <- .getXcoord2(x, root, parent, child, len)
-  return(x)
-}
-
-# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
-.getYcoord <- function(tr, step=1) {
-  Ntip <- length(tr[["tip.label"]])
-  N <- ggtree:::getNodeNum(tr)
-
-  edge <- tr[["edge"]]
-  parent <- edge[,1]
-  child <- edge[,2]
-
-  cl <- split(child, parent)
-  child_list <- list()
-  child_list[as.numeric(names(cl))] <- cl
-
-  y <- numeric(N)
-  tip.idx <- child[child <= Ntip]
-  y[tip.idx] <- 1:Ntip * step
-  y[-tip.idx] <- NA
-
-  currentNode <- 1:Ntip
-  while(anyNA(y)) {
-    pNode <- unique(parent[child %in% currentNode])
-    ## piping of magrittr is slower than nested function call.
-    ## pipeR is fastest, may consider to use pipeR
-    ##
-    ## child %in% currentNode %>% which %>% parent[.] %>% unique
-    ## idx <- sapply(pNode, function(i) all(child[parent == i] %in% currentNode))
-    idx <- sapply(pNode, function(i) all(child_list[[i]] %in% currentNode))
-    newNode <- pNode[idx]
-
-    y[newNode] <- sapply(newNode, function(i) {
-      mean(y[child_list[[i]]], na.rm=TRUE)
-      ##child[parent == i] %>% y[.] %>% mean(na.rm=TRUE)
-    })
-
-    currentNode <- c(currentNode[!currentNode %in% unlist(child_list[newNode])], newNode)
-    ## currentNode <- c(currentNode[!currentNode %in% child[parent %in% newNode]], newNode)
-    ## parent %in% newNode %>% child[.] %>%
-    ##     `%in%`(currentNode, .) %>% `!` %>%
-    ##         currentNode[.] %>% c(., newNode)
-  }
-
-  return(y)
-}
-
-# modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
-.getParent <- function(tr, node) {
-  if ( node == ggtree:::getRoot(tr) )
-    return(0)
-  edge <- tr[["edge"]]
-  parent <- edge[,1]
-  child <- edge[,2]
-  res <- parent[child == node]
-  if (length(res) == 0) {
-    stop("cannot found parent node...")
-  }
-  if (length(res) > 1) {
-    stop("multiple parent found...")
-  }
-  return(res)
-}
-
-# set custom state labels
-.assign_state_labels <- function(t, state_labels, include_start_states, n_states=3) {
-  # what is the ancestral state name tag?
-  if (include_start_states) {
-    state_pos_str_base = c("start_state_", "end_state_")
-  } else {
-    state_pos_str_base = c("anc_state_")
-  }
-
-  # send error if state_labels are provided without names
-  if (!is.null(state_labels) && is.null(names(state_labels))) {
-    error("names(state_labels) must identify all unlabeled state names in attributes(t)$data")
-  }
-
-  # send error if state_labels names don't match the data
-  if (!is.null(state_labels) && any((names(state_labels) %in% t@data$anc_state_1)) == FALSE) {
-    stop(paste0("names(state_labels): ",
-                paste0(names(state_labels), collapse = ", "),
-                " do not match data in tree file: ",
-                paste0(sort(unique(t@data$anc_state_1)), collapse = ", ")))
-  }
-
-  # generate state labels if none provided
-  if ( is.null(state_labels) ) {
-    warning("State labels not provided by user. Will be generated automatically.")
-    states <- unique(unlist(attributes(t)$data[grepl(paste0("state_","[0-9]$"),names(attributes(t)$data))]))
-    states <- states[!states == "NA"]
-    states <- states[order(states)]
-    state_labels <- list()
-    for(i in 1:length(states) ) {
-      state_labels[as.character(states[i])] = LETTERS[i]
-    }
-    state_labels["other"] <- "other"
-  }
-
-  # create list of ancestral state name tags
-  state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
-
-  # overwrite state labels
-  for (m in state_pos_str_to_update)
-  {
-    # get the states
-    x_state = attributes(t)$data[[m]]
-    x_state = as.vector(x_state)
-    x_state_valid = which( x_state != "NA" )
-    x_state_invalid = which( x_state == "NA" )
-    x_state_tmp = unlist(sapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
-    x_state[x_state_valid] = x_state_tmp
-    x_state[x_state_invalid] = NA
-    attributes(t)$data[[m]] = x_state
-  }
-
-  # Just add the state_labels here
-  attributes(t)$state_labels <- state_labels
-
-  return(t)
-}
-
 # set prob factors
 .set_pp_factor_range <- function(t, include_start_states, n_states=1) {
 
@@ -719,68 +787,17 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   return(t)
 }
 
-.make_states <- function(label_fn, color_fn) {
-
-  # generate colors for ranges
-  range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
-
-  # get area names
-  area_names <- unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
-
-  # get state labels
-  state_descriptions <- read.csv(label_fn, header=T, sep=",", colClasses="character")
-
-  # map presence-absence ranges to area names
-  range_labels <- sapply(state_descriptions$range[2:nrow(state_descriptions)],
-                        function(x) {
-                          present = as.vector(gregexpr(pattern="1", x)[[1]])
-                          paste( area_names[present], collapse="")
-                        })
-
-  # map labels to colors
-  range_colors <- range_color_list$color[ match(range_labels, range_color_list$range) ]
-
-  # generate state/color labels
-  idx <- 1
-  st_lbl <- list()
-  st_colors <- c()
-  for (j in 1:(nrow(state_descriptions)-1)) {
-    st_lbl[[ as.character(j) ]] <- range_labels[j]
-    st_colors[j] <- range_colors[j]
-  }
-  st_colors[ length(st_colors)+1 ] <- "lightgray"
-  st_lbl[["other"]] <- "other"
-
-  return( list(state_labels = st_lbl, state_color = st_colors) )
+.simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+        sep="", collapse=" ")
 }
 
 
 
 
 
-# Fast data.frame constructor and indexing
-# No checking, recycling etc. unless asked for
-# Stolen from ggplot2
-new_data_frame <- function(x = list(), n = NULL) {
-  if (length(x) != 0 && is.null(names(x))) {
-    abort("Elements must be named")
-  }
-  lengths <- vapply(x, length, integer(1))
-  if (is.null(n)) {
-    n <- if (length(x) == 0 || min(lengths) == 0) 0 else max(lengths)
-  }
-  for (i in seq_along(x)) {
-    if (lengths[i] == n) next
-    if (lengths[i] != 1) {
-      abort("Elements must equal the number of rows or 1")
-    }
-    x[[i]] <- rep(x[[i]], n)
-  }
 
-  class(x) <- "data.frame"
 
-  attr(x, "row.names") <- .set_row_names(n)
-  x
-}
 
 

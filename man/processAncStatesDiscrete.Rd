@@ -4,7 +4,7 @@
 \alias{processAncStatesDiscrete}
 \title{Process ancestral states (discrete)}
 \usage{
-processAncStatesDiscrete(path, state_labels = NULL)
+processAncStatesDiscrete(path, state_labels = NULL, labels_as_numbers = FALSE)
 }
 \description{
 [ function tags to be written ]

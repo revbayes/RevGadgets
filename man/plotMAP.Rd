@@ -10,6 +10,11 @@ plotMAP(
   tip_labels = TRUE,
   tip_labels_size = 2,
   tip_labels_offset = 1,
+  tip_labels_italics = FALSE,
+  tip_labels_remove_underscore = TRUE,
+  tip_labels_states = FALSE,
+  tip_labels_states_size = 2,
+  tip_labels_states_offset = 0.1,
   node_labels_as = NULL,
   node_labels_size = 2,
   node_labels_offset = 0.1,
@@ -34,13 +39,26 @@ containing tree and ancestral states.}
 
 \item{cladogenetic}{(logical; FALSE) Plot shoulder states of cladogenetic analyses?}
 
-\item{tip_labels}{(logical; TRUE) Label taxa at tips?}
+\item{tip_labels}{(logical; TRUE) Label taxa labels at tips?}
 
 \item{tip_labels_size}{(numeric; 2) Size of tip labels.}
 
 \item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from tree.}
 
-\item{node_labels_as}{(character; "NULL") Optional plotting of text at nodes. Possible
+\item{tip_labels_italics}{(logical; FALSE) Italicize tip labels?}
+
+\item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores from tip labels?}
+
+\item{tip_labels_states}{(logical; FALSE) Optional plotting of text at tips in addition
+to taxa labels.}
+
+\item{tip_labels_states_size}{(numeric; 2) Size of state labels at tips. Ignored if
+tip_labels_states is FALSE.}
+
+\item{tip_labels_states_offset}{(numeric; 0.1) Horizontal offset of tip state labels.
+Ignored if tip_labels_states = NULL.}
+
+\item{node_labels_as}{(character; NULL) Optional plotting of text at nodes. Possible
 values are "state" for the ancestral states , "state_posterior" for posterior probabilities
 of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
 or NULL for not plotting any text at the nodes (default).}

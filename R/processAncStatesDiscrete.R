@@ -15,7 +15,7 @@
 # - expand support for plotting arbitrary # of anc state categories
 
 # main processing function
-processAncStatesDiscrete = function(path, state_labels = NULL) {
+processAncStatesDiscrete = function(path, state_labels = NULL, labels_as_numbers = FALSE) {
     # read in tree
     tree <- readTrees(path)
     t <- tree[[1]][[1]]
@@ -31,7 +31,7 @@ processAncStatesDiscrete = function(path, state_labels = NULL) {
     }
 
     # add state labels
-    t = .assign_state_labels(t, state_labels, include_start_states)
+    t = .assign_state_labels(t, state_labels, include_start_states, labels_as_numbers)
 
     # add range for pp factors
     t = .set_pp_factor_range(t, include_start_states)
