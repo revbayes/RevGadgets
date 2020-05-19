@@ -1,6 +1,6 @@
 #' plot MAP
 #'
-#' Plot character states and posterior probabilities as points on nodes (size = pp, colour = state)
+#' Plot the MAP character state and posterior probabilities as points on nodes (size = pp, colour = state)
 #' and character state on tips (different shape from nodes, colour = state)
 #'
 #' @param t (treedata object; none) Output of processAncStatesDiscrete() function
@@ -147,26 +147,64 @@ plotMAP <- function(t,
                     show_state_legend = TRUE,
                     show_posterior_legend = TRUE,
                     tree_layout = "rectangular") {
-  ##### parameter compatability checks! #####
 
-  ##### calculate helper variables #####
+  ##### parameter compatability checks! #####
+  if (class(t) != "treedata") stop("t should be a treedata objects")
+  if (is.logical(cladogenetic) == FALSE) stop("cladogenetic should be TRUE or FALSE")
+  if (is.logical(tip_labels) == FALSE) stop("tip_labels should be TRUE or FALSE")
+  if (is.numeric(tip_labels_size) == FALSE) stop("tip_labels_size should be a number")
+  if (is.numeric(tip_labels_offset) == FALSE) stop("tip_labels_offset should be a number")
+  if (is.logical(tip_labels_italics) == FALSE) stop("tip_labels_italics should be TRUE or FALSE")
+  if (is.logical(tip_labels_remove_underscore) == FALSE) stop("tip_labels_remove_underscore should be TRUE or FALSE")
+  if (is.logical(tip_labels_states) == FALSE) stop("tip_labels_states should be TRUE or FALSE")
+  if (is.numeric(tip_labels_states_size) == FALSE) stop("tip_labels_states_size should be a number")
+  if (is.numeric(tip_labels_states_offset) == FALSE) stop("tip_labels_states_offsetshould be a number")
+  if (is.null(node_labels_as) == FALSE) {
+    node_labels_as <- match.arg(node_labels_as, choices = c("state", "state_posterior", "node_posterior"))
+  }
+  if (is.numeric(node_labels_size) == FALSE) stop("node_labels_size should be a number")
+  if (is.numeric(node_labels_offset) == FALSE) stop("node_labels_offset should be a number")
+  if (is.null(node_size_as) == FALSE) {
+    node_size_as <- match.arg(node_size_as, choices = c("state", "state_posterior", "node_posterior"))
+  }
+  if (is.null(node_color_as) == FALSE) {
+    node_color_as <- match.arg(node_color_as, choices = c("state", "state_posterior", "node_posterior"))
+  }
+  if (is.null(node_shape_as) == FALSE) {
+    if (node_shape_as != "state") stop("node_shape_as should be NULL or 'state'")
+  }
+  if (is.numeric(node_shape) == FALSE) stop("node_shape should be a number indicating symbol type")
+  if (is.character(node_color) == FALSE) stop ("node_color should be 'default' or valid color(s)")
+  if (node_color[1] != "default" & any(.isColor(node_color) == FALSE) ) stop("node_color should be valid color(s)")
+  if (any(is.numeric(node_size) == FALSE)) stop("node_size should be a single number or a vector of two numbers")
+  if (length(node_size) > 2) stop("node_size should be a single number or a vector of two numbers")
+  if (is.logical(tip_states) == FALSE) stop("tip_states should be TRUE or FALSE")
+  if (is.numeric(tip_states_size) == FALSE) stop("tip_states_size should be a number")
+  if (is.numeric(tip_states_shape) == FALSE) stop("tip_states_shape should be a number indicating symbol type")
+  if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
+  if (state_transparency > 1 | state_transparency < 0) stop("state_transparency should be a number between 0 - 1")
+  if (is.logical(show_state_legend) == FALSE) stop("show_state_legend should be TRUE or FALSE")
+  if (is.logical(show_posterior_legend) == FALSE) stop("show_posterior_legend should be TRUE or FALSE")
+  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
+
+    ##### calculate helper variables #####
 
   tree <- attributes(t)$phylo
   n_node <- ggtree:::getNodeNum(tree)
 
-  # get names of data columns
+  ##### create basic tree plot #####
+  p <- ggtree:::ggtree(t, layout = tree_layout, ladderize = TRUE)
+
+    ##### process column names #####
+
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
   } else if (cladogenetic == FALSE & "start_state_1" %in% colnames(p$data)) {
     state_pos_str_base <- "start_state_"
-  } else if (cladogenetic == FALSE & "anc_state_" %in% colnames(p$data)) {
+  } else if (cladogenetic == FALSE & "anc_state_1" %in% colnames(p$data)) {
     state_pos_str_base <- "anc_state_"
   }
 
-  ##### create basic tree plot #####
-  p <- ggtree:::ggtree(t, layout = tree_layout, ladderize = TRUE)
-
-  ##### translate to column names #####
   if (is.null(node_color_as) == FALSE) {
     if (node_color_as == "state") {p$data$node_color_as <- factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))}
     if (node_color_as == "node_posterior") {p$data$node_color_as <- as.numeric(p$data$posterior)}
@@ -214,16 +252,16 @@ plotMAP <- function(t,
 
   ##### color processing and checks #####
   # check if number of states exceeds default color palette options
-  if (node_color == "default" & length(all_states) > 12) {
+  if (node_color[1] == "default" & length(all_states) > 12) {
     stop(paste0(length(all_states), " states in dataset; please provide colors (default only can provide up to 12"))
   }
 
   # check if number of states not equal to provided colors
-  if (node_color != "default" & length(node_color) < length(all_states)) {
+  if (node_color[1] != "default" & length(node_color) < length(all_states)) {
     stop(paste0("You provided fewer colors in node_color than states in your dataset. There are ",
                 length(all_states), " states and you provide ", length(node_color), " colors."))
   }
-  if (node_color != "default" & length(node_color) > length(all_states)) {
+  if (node_color[1] != "default" & length(node_color) > length(all_states)) {
     stop(paste0("You provided more colors in node_color than states in your dataset. There are ",
                 length(all_states), " states and you provide ", length(node_color), " colors."))
   }
@@ -284,6 +322,7 @@ plotMAP <- function(t,
     `%<+%` <- ggtree::`%<+%`
     p <- p %<+% shoulder_data
   }
+
   ##### start plotting #####
 
   # add tip labels
@@ -516,8 +555,7 @@ plotMAP <- function(t,
                                 alpha = state_transparency)
       }
     }
-
-  } # end blank_nodes == FALSE
+  }
 
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
