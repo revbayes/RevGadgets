@@ -187,16 +187,16 @@ processDivRates <- function(speciation_time_log = "",
       if (!is.null(fossilization_time)) {fossilization_time$`interval_times[0]` <- rep(0, nrow(fossilization_time))}
 
       # Calculate the net-diversification and relative-extinction rates
-      net_diversification_rate <- as.matrix(speciation_rate[,5:ncol(speciation_rate)]) -
-                                   as.matrix(extinction_rate[,5:ncol(extinction_rate)])
+      net_diversification_rate <- as.matrix(speciation_rate[,grepl("speciation", colnames(speciation_rate))]) -
+                                   as.matrix(extinction_rate[,grepl("extinction", colnames(extinction_rate))])
 
       colnames(net_diversification_rate) <- paste(rep("net_div", times = ncol(net_diversification_rate)),
                                                    rep("[", times = ncol(net_diversification_rate)),
                                                    1:ncol(net_diversification_rate),
                                                    rep("]", times = ncol(net_diversification_rate)), sep = "")
 
-      relative_extinction_rate <- as.matrix(extinction_rate[,5:ncol(extinction_rate)]) /
-                                   as.matrix(speciation_rate[,5:ncol(speciation_rate)])
+      relative_extinction_rate <- as.matrix(extinction_rate[,grepl("extinction", colnames(extinction_rate))]) /
+                                   as.matrix(speciation_rate[,grepl("speciation", colnames(speciation_rate))])
 
       colnames(relative_extinction_rate) <- paste(rep("rel_ext", times = ncol(relative_extinction_rate)),
                                                    rep("[", times = ncol(relative_extinction_rate)),
