@@ -122,17 +122,18 @@
 }
 
 .build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0.01) {
-
   n_states = length(state_labels)
   n_tips = length(attributes(t)$phylo$tip.label)
   n_node = 2 * n_tips - 1
 
   dat = list()
 
-  if (include_start_states) {
-    state_tags = c("start","end")
-  } else {
+  if (include_start_states == TRUE) {
+    state_tags = c("end","start")
+  } else if (include_start_states == FALSE & "anc_state_1" %in% colnames(t@data)) {
     state_tags = c("anc")
+  } else if (include_start_states == FALSE & "end_state_1" %in% colnames(t@data)) {
+    state_tags = c("end")
   }
 
   for (s in state_tags) {
@@ -170,7 +171,7 @@
         rem_prob[i] = rem_prob[i] - dat[[s]][i,j]
       }
     }
-    dat[[s]]$`...` = rem_prob
+    dat[[s]]$"other" = rem_prob
     dat[[s]]$node = 1:n_node
     #print(dat[[s]][250:260,])
   }
@@ -232,7 +233,7 @@
   if (n >= 13 ) {stop("more than 12 colors is not supported")}
 }
 
-.collect_probable_states <- function(p, p_threshold=0.005) {
+.collect_probable_states <- function(p, p_threshold = 0.005) {
   labels = c("end_state", "start_state")
   index = c(1,2,3)
 
@@ -247,7 +248,7 @@
     }
   }
   codes = unique(codes)
-  codes = c(codes, "...")
+  codes = c(codes, "other")
   return(codes)
 }
 
@@ -292,6 +293,69 @@
   # return tree strings
   return(tree_strings)
 
+}
+
+.geom_subview_revgadgets <- function (mapping = NULL, data = NULL, width = 0.1, height = 0.1,
+                                      x = NULL, y = NULL, subview = NULL) {
+  if (is.null(data)) {
+    data <- dplyr::tibble(x = x, y = y)
+  } else if (!inherits(data, "tbl")) {
+    data <- dplyr::as_tibble(data)
+  }
+  if (is.null(mapping)) {
+    mapping <- ggplot2::aes_(x = ~x, y = ~y)
+  }
+
+  mapping <- as.list(mapping)
+
+  if (is.null(mapping$x)) {
+    stop("x aesthetic mapping should be provided")
+  }
+
+  if (is.null(mapping$y)) {
+    stop("y aesthetic mapping should be provided")
+  }
+
+  if (is.null(mapping$subview) && is.null(subview)) {
+    stop("subview must be provided")
+  }
+
+  if (is.null(mapping$subview)) {
+    if (!inherits(subview, "list")) {
+      subview <- list(subview)
+    }
+    data$subview <- subview
+  } else {
+    sv_var <- rvcheck::get_aes_var(mapping, "subview")
+    data$subview <- data[[sv_var]]
+  }
+
+  xvar <- rvcheck::get_aes_var(mapping, "x")
+  yvar <- rvcheck::get_aes_var(mapping, "y")
+
+  if (is.null(mapping$width)) {
+    data$width <- width
+  } else {
+    width_var <- rvcheck::get_aes_var(mapping, "width")
+    data$width <- data[[width_var]]
+  }
+
+  if (is.null(mapping$height)) {
+    data$height <- height
+  } else {
+    height_var <- rvcheck::get_aes_var(mapping, "height")
+    data$height <- data[[height_var]]
+  }
+
+  data$xmin <- data[[xvar]] - data$width/2
+  data$xmax <- data[[xvar]] + data$width/2
+  data$ymin <- data[[yvar]] - data$height/2
+  data$ymax <- data[[yvar]] + data$height/2
+
+  lapply(1:nrow(data), function(i) {
+    ggplot2::annotation_custom(ggplotify::as.grob(data$subview[[i]]), xmin = data$xmin[i],
+                               xmax = data$xmax[i], ymin = data$ymin[i], ymax = data$ymax[i])
+  })
 }
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
@@ -388,6 +452,34 @@
   }
 
   return(y)
+}
+
+.inset.revgadgets <- function (tree_view, insets, width = 0.1, height = 0.1, hjust = 0,
+                               vjust = 0, x = "node", pos = 0.5) {
+  df <- tree_view$data[as.numeric(names(insets)), ]
+
+  # position subviews based on tree part
+  x <- match.arg(x, c("node", "branch", "edge", "parent_shoulder"))
+  if (x == "node") {
+    xx <- df$x
+  } else if (x == "parent_shoulder") {
+    xx <- df$x[ match(df$parent, df$node) ]
+  } else {
+    xx <- df$branch
+  }
+  yy <- df$y
+  xx <- xx - hjust # x-coordinates for nodes
+  yy <- yy - vjust # y-coordinates for nodes
+
+  if (length(width) == 1) { width <- rep(width, length(insets)) }
+  if (length(height) == 1) { height <- rep(height, length(insets)) }
+
+    # old way
+  tree_view <- tree_view +
+    .geom_subview_revgadgets(subview = insets, width = width,
+                             height = height, x = xx, y = yy)
+  # return treeview with subviews
+  return(tree_view)
 }
 
 .isColor <- function(var) {
@@ -792,12 +884,6 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   paste(toupper(substring(s, 1,1)), substring(s, 2),
         sep="", collapse=" ")
 }
-
-
-
-
-
-
 
 
 

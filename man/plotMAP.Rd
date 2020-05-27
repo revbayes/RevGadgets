@@ -28,8 +28,6 @@ plotMAP(
   tip_states_size = node_size,
   tip_states_shape = node_shape,
   state_transparency = 0.75,
-  show_state_legend = TRUE,
-  show_posterior_legend = TRUE,
   tree_layout = "rectangular"
 )
 }
@@ -104,16 +102,18 @@ as node symbols.}
 \item{state_transparency}{(integer; 0.75) Alpha (transparency) of state symbols- varies from
 0 to 1.}
 
-\item{show_state_legend}{(logical; TRUE) Plot legend for states?}
-
-\item{show_posterior_legend}{(logical; TRUE) Plot legend for posterior probabilities?}
-
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
 are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'}
 }
 \description{
-Plot the MAP character state and posterior probabilities as points on nodes (size = pp, colour = state)
-and character state on tips (different shape from nodes, colour = state)
+Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
+by plotting on shoulders. Defaults to varying the symbols by color to indicate estimated
+ancestral state and varying the size of the symbol to indicate the posterior probability
+of that estimate, but symbol shape may also vary to accomodate black and white figures.
+For more details on the aesthetics options, see parameter details below. For data with
+many character states (such as choromosome counts), vary the size of the symbol by estimated
+ancestral state, and vary the posterior probability of that esimate by a color gradient.
+Text labels at nodes and tips are also available.
 }
 \examples{
 

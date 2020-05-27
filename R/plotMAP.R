@@ -1,7 +1,13 @@
 #' plot MAP
 #'
-#' Plot the MAP character state and posterior probabilities as points on nodes (size = pp, colour = state)
-#' and character state on tips (different shape from nodes, colour = state)
+#' Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
+#' by plotting on shoulders. Defaults to varying the symbols by color to indicate estimated
+#' ancestral state and varying the size of the symbol to indicate the posterior probability
+#' of that estimate, but symbol shape may also vary to accomodate black and white figures.
+#' For more details on the aesthetics options, see parameter details below. For data with
+#' many character states (such as choromosome counts), vary the size of the symbol by estimated
+#' ancestral state, and vary the posterior probability of that esimate by a color gradient.
+#' Text labels at nodes and tips are also available.
 #'
 #' @param t (treedata object; none) Output of processAncStatesDiscrete() function
 #' containing tree and ancestral states.
@@ -50,8 +56,6 @@
 #' as node symbols.
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
-#' @param show_state_legend (logical; TRUE) Plot legend for states?
-#' @param show_posterior_legend (logical; TRUE) Plot legend for posterior probabilities?
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
 #' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
 #'
@@ -144,8 +148,6 @@ plotMAP <- function(t,
                     tip_states_shape = node_shape,
 
                     state_transparency = 0.75,
-                    show_state_legend = TRUE,
-                    show_posterior_legend = TRUE,
                     tree_layout = "rectangular") {
 
   ##### parameter compatability checks! #####
@@ -187,7 +189,7 @@ plotMAP <- function(t,
   if (is.logical(show_posterior_legend) == FALSE) stop("show_posterior_legend should be TRUE or FALSE")
   tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
 
-    ##### calculate helper variables #####
+  ##### calculate helper variables #####
 
   tree <- attributes(t)$phylo
   n_node <- ggtree:::getNodeNum(tree)
@@ -195,12 +197,12 @@ plotMAP <- function(t,
   ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, layout = tree_layout, ladderize = TRUE)
 
-    ##### process column names #####
+  ##### process column names #####
 
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
   } else if (cladogenetic == FALSE & "start_state_1" %in% colnames(p$data)) {
-    state_pos_str_base <- "start_state_"
+    state_pos_str_base <- "end_state_"
   } else if (cladogenetic == FALSE & "anc_state_1" %in% colnames(p$data)) {
     state_pos_str_base <- "anc_state_"
   }
@@ -355,7 +357,7 @@ plotMAP <- function(t,
       if (node_color_as == "state" &
           is.null(node_shape_as) == TRUE &
           (is.null(node_size_as) == TRUE || node_size_as != "state"))  {
-        p <- p + ggtree::geom_tippoint(ggtree::aes(colour = node_color_as),
+        p <- p + ggtree::geom_tippoint(ggplot2::aes(colour = node_color_as),
                                        size = tip_states_size, alpha = state_transparency,
                                        shape = tip_states_shape)
       }
@@ -367,7 +369,7 @@ plotMAP <- function(t,
       if (node_shape_as == "state" &
           (is.null(node_color_as) == TRUE || node_color_as != "state") &
           (is.null(node_size_as) == TRUE || node_size_as != "state")) {
-        p <- p + ggtree::geom_tippoint(ggtree::aes(shape = node_shape_as),
+        p <- p + ggtree::geom_tippoint(ggplot2::aes(shape = node_shape_as),
                                        size = tip_states_size, alpha = state_transparency,
                                        color = colors)
       }
@@ -379,7 +381,7 @@ plotMAP <- function(t,
       if (node_color_as == "state" &
           node_shape_as == "state" &
           (is.null(node_size_as) == TRUE || node_size_as != "state")) {
-        p <-  p + ggtree::geom_tippoint(ggtree::aes(shape = node_shape_as,
+        p <-  p + ggtree::geom_tippoint(ggplot2::aes(shape = node_shape_as,
                                                     color = node_color_as),
                                         size = tip_states_size, alpha = state_transparency)
       }
@@ -391,7 +393,7 @@ plotMAP <- function(t,
       if (node_size_as == "state" &
           (is.null(node_color_as) == TRUE || node_color_as != "state") &
           is.null(node_shape_as) == TRUE) {
-        p <- p + ggtree::geom_tippoint(ggtree::aes(size = node_size_as),
+        p <- p + ggtree::geom_tippoint(ggplot2::aes(size = node_size_as),
                                        shape = tip_states_shape, alpha = state_transparency,
                                        color = "grey")
       }
@@ -403,21 +405,21 @@ plotMAP <- function(t,
         if (node_size_as == "state" &
             node_color_as == "state" &
             is.null(node_shape_as) == TRUE) {
-          p <- p + ggtree::geom_tippoint(ggtree::aes(size = node_size_as,
+          p <- p + ggtree::geom_tippoint(ggplot2::aes(size = node_size_as,
                                                      color = node_color_as),
                                          shape = tip_states_shape, alpha = state_transparency)
         }
     }
   }
 
-  # plot symbols at nodes and tips
+  # plot symbols at nodes and shoulders
   blank_nodes <- is.null(node_color_as) == TRUE & is.null(node_size_as) == TRUE & is.null(node_shape_as) == TRUE
   if (blank_nodes == FALSE) {
     # plot if color, size, and shape vary
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == FALSE &
         is.null(node_shape_as) == FALSE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour = node_color_as,
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(colour = node_color_as,
                                                   size = node_size_as, shape = node_shape_as),
                                       alpha = state_transparency)
       #add start (shoulder) states
@@ -440,7 +442,7 @@ plotMAP <- function(t,
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == FALSE &
         is.null(node_shape_as) == TRUE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour = node_color_as, size = node_size_as),
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(colour = node_color_as, size = node_size_as),
                                       shape = node_shape, alpha = state_transparency)
       #add start (shoulder) states
       if (cladogenetic == TRUE) {
@@ -461,7 +463,7 @@ plotMAP <- function(t,
     if (is.null(node_size_as) == TRUE &
         is.null(node_color_as) == FALSE &
         is.null(node_shape_as) == FALSE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour = node_color_as, shape = node_shape_as),
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(colour = node_color_as, shape = node_shape_as),
                                       size = node_size, alpha = state_transparency)
       #add start (shoulder) states
       if (cladogenetic == TRUE) {
@@ -482,7 +484,7 @@ plotMAP <- function(t,
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == TRUE &
         is.null(node_shape_as) == FALSE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(shape = node_shape_as, size = node_size_as),
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(shape = node_shape_as, size = node_size_as),
                                       color = colors, alpha = state_transparency)
       #add start (shoulder) states
       if (cladogenetic == TRUE) {
@@ -503,7 +505,7 @@ plotMAP <- function(t,
     if (is.null(node_size_as) == TRUE &
         is.null(node_color_as) == FALSE &
         is.null(node_shape_as) == TRUE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour = node_color_as), size = node_size,
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(colour = node_color_as), size = node_size,
                                       shape = node_shape, alpha = state_transparency)
       #add start (shoulder) states
       if (cladogenetic == TRUE) {
@@ -522,7 +524,7 @@ plotMAP <- function(t,
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == TRUE &
         is.null(node_shape_as) == TRUE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(size = node_size_as), color = colors,
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(size = node_size_as), color = colors,
                                       shape = node_shape, alpha = state_transparency)
       #add start (shoulder) states
       if (cladogenetic == TRUE) {
@@ -541,7 +543,7 @@ plotMAP <- function(t,
     if (is.null(node_size_as) == TRUE &
         is.null(node_color_as) == TRUE &
         is.null(node_shape_as) == FALSE) {
-      p <- p + ggtree::geom_nodepoint(ggtree::aes(shape = node_shape_as), color = colors,
+      p <- p + ggtree::geom_nodepoint(ggplot2::aes(shape = node_shape_as), color = colors,
                                       size = node_size, alpha = state_transparency)
       #add start (shoulder) states
       if (cladogenetic == TRUE) {
@@ -561,30 +563,33 @@ plotMAP <- function(t,
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_nodelab(ggtree::aes(label = end_state_1), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = end_state_1), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size) +
                  ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
                                    hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggtree::aes(label = anc_state_1), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = anc_state_1), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggtree::aes(label = end_state_1), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = end_state_1), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "state_posterior") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_nodelab(ggtree::aes(label = end_state_1_pp), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(end_state_1_pp) ), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size) +
-          ggtree::geom_text(ggplot2::aes(label = start_state_1_pp, x = x_anc, y = y),
+          ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
                             hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggtree::aes(label = anc_state_1_pp), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(anc_state_1_pp) ), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggtree::aes(label = end_state_1_pp), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(end_state_1_pp) ), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
+    } else if (node_labels_as == "node_posterior") {
+      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
     }
   }
 
