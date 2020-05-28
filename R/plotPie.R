@@ -4,7 +4,7 @@
 #'
 #' @param t (treedata object; none) Output of processAncStatesDiscrete() function
 #' containing tree and ancestral states.
-#' @param cladogenetic (logical; FALSE) Plot shoulder states of cladogenetic analyses?
+#' @param cladogenetic (logical; FALSE) Plot shoulder pies of cladogenetic analyses?
 #' @param tip_labels (logical; TRUE) Label taxa labels at tips?
 #' @param tip_labels_size (numeric; 2) Size of tip labels.
 #' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from tree.
@@ -17,29 +17,30 @@
 #' @param tip_labels_states_offset (numeric; 0.1) Horizontal offset of tip state labels.
 #' Ignored if tip_labels_states = NULL.
 #' @param node_labels_as (character; NULL) Optional plotting of text at nodes. Possible
-#' values are "state" for the MAP ancestral states, "state_posterior" for posterior probabilities
-#' of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
-#' or NULL for not plotting any text at the nodes (default).
-#' @param node_labels_size (numeric; 2) Size of node labels text. Ignored if node_labels_as = NULL.
+#' values are "state" for the MAP ancestral states, "node_posterior" for the posterior
+#' probability of the node on the tree, or NULL for not plotting any text at the nodes (default).
+#' @param node_labels_size (numeric; 2) Size of node labels text. Ignored if
+#' node_labels_as = NULL.
 #' @param node_labels_offset (numeric; 0.1) Horizontal offset of node labels from nodes.
 #' Ignored if node_labels_as = NULL.
-#' @param node_pie_size_as (character; "posterior") How to vary size of node symbols. Options
-#' are "node_posterior" or the posterior probability of the node on the tree or NULL for fixed symbol size.
-#' @param node_color_as (character; "state") How to vary to color of node symbols. Options are
-#' "state" (default) to vary by estimated ancestral states, "state_posterior" for posterior probabilities
-#' of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
-#' or NULL to set all as one color.
-#' @param node_color ("character"; "default") Colors for node symbols. Defaults to default RevGadgets
-#' colors. If node_color_as = "state', provide a vector of length of the character states.
-#' If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.
-#' @param node_size (numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
-#' If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
-#' If node_size_as = NULL, numeric vector of length one.
-#' @param tip_states (logical; TRUE) Plot states of taxa at tips?
-#' @param tip_states_size (numeric; node_size) Size for tip symbols. Defaults to the same
-#' size as node symbols.
-#' @param tip_states_shape (integer; node_shape) Shape for tip symbols. Defaults to the same
-#' as node symbols.
+#' @param pie_colors ("character"; "default") Colors for states in pies. If "default", plots
+#' the default RevGadgets colors. Provide a character vector of hex codes or other R-readible
+#' colors the same length of the number of character states. Names of the vector should
+#' correspond to state labels.
+#' @param node_pie_size (numeric; 2) Size of the pies at nodes.
+#' @param tip_pie_size (numeric; 1) Size of the pies at tips.
+#' @param shoulder_pie_size (numeric; node_pie_size) Size of the pies at shoulders for
+#' cladogenetic plots.
+#' @param tip_pies (logical; TRUE) Plot pies tips?
+#' @param node_pie_nudge_x (numeric; 0) If pies aren't centered, ajust by nudging
+#' @param node_pie_nudge_y (numeric; 0) If pies aren't centered, ajust by nudging
+#' @param tip_pie_nudge_x (numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging
+#' @param tip_pie_nudge_y (numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging
+#' @param shoulder_pie_nudge_x (numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging
+#' @param shoulder_pie_nudge_y (numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging
+#' @param collapse_states (logical; FALSE) Collapse low-probability states into "other" category?
+#' @param collapse_states_threshold (numeric; 0.05) Probability threshold for collapsing states.
+#' Varies from 0 to 1.
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' #'
@@ -68,10 +69,10 @@ plotPie <- function(t,
 
                     # pies aesthetics
                     pie_colors = "default",
-                    node_pie_size = 0.1,
+                    node_pie_size = 2,
                     shoulder_pie_size = node_pie_size,
                     tip_pies = TRUE,
-                    tip_pie_size = 0.05,
+                    tip_pie_size = 1,
 
                     # nudges to center pies
                     node_pie_nudge_x = 0,
@@ -81,11 +82,19 @@ plotPie <- function(t,
                     shoulder_pie_nudge_x = node_pie_nudge_x,
                     shoulder_pie_nudge_y = node_pie_nudge_y,
 
+                    # collapse states with low probability into "other"
                     collapse_states = FALSE,
                     collapse_states_threshold = 0.05,
+
                     state_transparency = 0.75) {
-recover()
-    ##### create basic tree plot #####
+# to do:
+  # - smart sizing based on tree coordinates
+  # - add parameter compatability checks!
+  # - have processing script output state labels
+  # - switch collapse states to processing script?
+
+
+      ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, ladderize = TRUE)
 
   ##### calculate helper variables #####
@@ -103,6 +112,8 @@ recover()
   } else if (cladogenetic == FALSE & "anc_state_1" %in% colnames(p$data)) {
     state_pos_str_base <- "anc_state_"
   }
+
+  ##### convert sizes to tree units from percentage #####
 
   ##### get state labels #####
   if (cladogenetic == TRUE) {
