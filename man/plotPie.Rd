@@ -38,7 +38,7 @@ plotPie(
 \item{t}{(treedata object; none) Output of processAncStatesDiscrete() function
 containing tree and ancestral states.}
 
-\item{cladogenetic}{(logical; FALSE) Plot shoulder states of cladogenetic analyses?}
+\item{cladogenetic}{(logical; FALSE) Plot shoulder pies of cladogenetic analyses?}
 
 \item{tip_labels}{(logical; TRUE) Label taxa labels at tips?}
 
@@ -60,42 +60,83 @@ tip_labels_states is FALSE.}
 Ignored if tip_labels_states = NULL.}
 
 \item{node_labels_as}{(character; NULL) Optional plotting of text at nodes. Possible
-values are "state" for the MAP ancestral states, "state_posterior" for posterior probabilities
-of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
-or NULL for not plotting any text at the nodes (default).}
+values are "state" for the MAP ancestral states, "node_posterior" for the posterior
+probability of the node on the tree, or NULL for not plotting any text at the nodes (default).}
 
-\item{node_labels_size}{(numeric; 2) Size of node labels text. Ignored if node_labels_as = NULL.}
+\item{node_labels_size}{(numeric; 2) Size of node labels text. Ignored if
+node_labels_as = NULL.}
 
 \item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels from nodes.
 Ignored if node_labels_as = NULL.}
 
+\item{pie_colors}{("character"; "default") Colors for states in pies. If "default", plots
+the default RevGadgets colors. Provide a character vector of hex codes or other R-readible
+colors the same length of the number of character states. Names of the vector should
+correspond to state labels.}
+
+\item{node_pie_size}{(numeric; 2) Size of the pies at nodes.}
+
+\item{shoulder_pie_size}{(numeric; node_pie_size) Size of the pies at shoulders for
+cladogenetic plots.}
+
+\item{tip_pies}{(logical; TRUE) Plot pies tips?}
+
+\item{tip_pie_size}{(numeric; 1) Size of the pies at tips.}
+
+\item{node_pie_nudge_x}{(numeric; 0) If pies aren't centered, ajust by nudging}
+
+\item{node_pie_nudge_y}{(numeric; 0) If pies aren't centered, ajust by nudging}
+
+\item{tip_pie_nudge_x}{(numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging}
+
+\item{tip_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging}
+
+\item{shoulder_pie_nudge_x}{(numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging}
+
+\item{shoulder_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging}
+
+\item{collapse_states}{(logical; FALSE) Collapse low-probability states into "other" category?}
+
+\item{collapse_states_threshold}{(numeric; 0.05) Probability threshold for collapsing states.
+Varies from 0 to 1.}
+
 \item{state_transparency}{(integer; 0.75) Alpha (transparency) of state symbols- varies from
 0 to 1.
-#'}
 
-\item{node_pie_size_as}{(character; "posterior") How to vary size of node symbols. Options
-are "node_posterior" or the posterior probability of the node on the tree or NULL for fixed symbol size.}
+#' @examples
 
-\item{node_color_as}{(character; "state") How to vary to color of node symbols. Options are
-"state" (default) to vary by estimated ancestral states, "state_posterior" for posterior probabilities
-of the estimated ancestral state, "node_posterior" or the posterior probability of the node on the tree,
-or NULL to set all as one color.}
+\dontrun{
 
-\item{node_color}{("character"; "default") Colors for node symbols. Defaults to default RevGadgets
-colors. If node_color_as = "state', provide a vector of length of the character states.
-If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.}
+# Standard ancestral state reconstruction example
 
-\item{node_size}{(numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
-If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
-If node_size_as = NULL, numeric vector of length one.}
+# process file and assign state labels
+file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
+                                    state_labels = c("1" = "Awesome",
+                                                     "2" = "Beautiful",
+                                                     "3" = "Cool!"))
+# plot
+plotPie(t = example, node_pie_size = 10, tip_pie_size = 7)
 
-\item{tip_states}{(logical; TRUE) Plot states of taxa at tips?}
+# DEC Biogeographic range evolution example
 
-\item{tip_states_size}{(numeric; node_size) Size for tip symbols. Defaults to the same
-size as node symbols.}
+# process file and assign state labels
+file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
+labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
+          "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
+          "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
+dec_example <- processAncStatesDiscrete(file, state_labels = labs)
 
-\item{tip_states_shape}{(integer; node_shape) Shape for tip symbols. Defaults to the same
-as node symbols.}
+# assign colors to states
+colors <- colorRampPalette(RevGadgets:::.colFun(12))(15)
+names(colors) <- c("K", "KO", "O", "M", "KH", "H", "MH", "KOMH",
+                   "KM", "KMH", "OMH", "OH", "OM", "KOH", "other")
+
+# plot
+plotPie(t = dec_example, node_pie_size = 2, tip_pie_size = 1,
+        pie_colors = colors, tip_labels_size = 3, cladogenetic = TRUE,
+        tip_labels_offset = 0.25, node_pie_nudge_x = 0.015,
+        node_pie_nudge_y = 0.02) + ggplot2::theme(legend.position = c(0.1, 0.75))
+}}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.

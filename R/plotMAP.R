@@ -185,8 +185,6 @@ plotMAP <- function(t,
   if (is.numeric(tip_states_shape) == FALSE) stop("tip_states_shape should be a number indicating symbol type")
   if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
   if (state_transparency > 1 | state_transparency < 0) stop("state_transparency should be a number between 0 - 1")
-  if (is.logical(show_state_legend) == FALSE) stop("show_state_legend should be TRUE or FALSE")
-  if (is.logical(show_posterior_legend) == FALSE) stop("show_posterior_legend should be TRUE or FALSE")
   tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
 
   ##### calculate helper variables #####

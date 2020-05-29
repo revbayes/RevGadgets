@@ -43,7 +43,47 @@
 #' Varies from 0 to 1.
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
-#' #'
+#'
+#' #' @examples
+#'
+#' \dontrun{
+#'
+#' # Standard ancestral state reconstruction example
+#'
+#' # process file and assign state labels
+#' file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
+#` example <- processAncStatesDiscrete(file,
+#'                                     state_labels = c("1" = "Awesome",
+#'                                                      "2" = "Beautiful",
+#'                                                      "3" = "Cool!"))
+#' # plot
+#' plotPie(t = example, node_pie_size = 10, tip_pie_size = 7)
+#'
+#' # DEC Biogeographic range evolution example
+#'
+#'# DEC example - cladogenetic
+# process file
+#' file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
+#'
+#' # labels that correspond to each region/ possible combination of regions
+#' labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
+#'           "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
+#'           "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
+#' dec_example <- processAncStatesDiscrete(file, state_labels = labs)
+#'
+#' # use the state_labels in the tidytree object to define color palette
+#' # these state_labels will be a subset of the labels you provided
+#' # (not all possible regions may be sampled in the dataset)
+#' colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(dec_example@state_labels))
+#' names(colors) <- dec_example@state_labels
+#'
+#' # plot
+#' plotPie(t = dec_example, node_pie_size = 2, tip_pie_size = 1,
+#'         pie_colors = colors, tip_labels_size = 3, cladogenetic = TRUE,
+#'         tip_labels_offset = 0.25, node_pie_nudge_x = 0.015,
+#'         node_pie_nudge_y = 0.02) + ggplot2::theme(legend.position = c(0.1, 0.75))
+#' }
+#'
 #' @export
 
 plotPie <- function(t,
@@ -89,12 +129,51 @@ plotPie <- function(t,
                     state_transparency = 0.75) {
 # to do:
   # - smart sizing based on tree coordinates
-  # - add parameter compatability checks!
-  # - have processing script output state labels
   # - switch collapse states to processing script?
 
+  ##### parameter compatibility checks #####
+  if (class(t) != "treedata") stop("t should be a treedata objects")
+  if (is.logical(cladogenetic) == FALSE) stop("cladogenetic should be TRUE or FALSE")
+  if (is.logical(tip_labels) == FALSE) stop("tip_labels should be TRUE or FALSE")
+  if (is.numeric(tip_labels_size) == FALSE) stop("tip_labels_size should be a number")
+  if (is.numeric(tip_labels_offset) == FALSE) stop("tip_labels_offset should be a number")
+  if (is.logical(tip_labels_italics) == FALSE) stop("tip_labels_italics should be TRUE or FALSE")
+  if (is.logical(tip_labels_remove_underscore) == FALSE) stop("tip_labels_remove_underscore should be TRUE or FALSE")
+  if (is.logical(tip_labels_states) == FALSE) stop("tip_labels_states should be TRUE or FALSE")
+  if (is.numeric(tip_labels_states_size) == FALSE) stop("tip_labels_states_size should be a number")
+  if (is.numeric(tip_labels_states_offset) == FALSE) stop("tip_labels_states_offsetshould be a number")
+  if (is.null(node_labels_as) == FALSE) {
+    node_labels_as <- match.arg(node_labels_as, choices = c("state", "state_posterior", "node_posterior"))
+  }
+  if (is.numeric(node_labels_size) == FALSE) stop("node_labels_size should be a number")
+  if (is.numeric(node_labels_offset) == FALSE) stop("node_labels_offset should be a number")
+  if (is.character(pie_colors) == FALSE) stop ("pie_colors should be 'default' or valid color(s)")
+  if (pie_colors[1] != "default" & any(.isColor(pie_colors) == FALSE) ) stop("pie_colors should be valid color(s)")
+  if (any(is.numeric(node_pie_size) == FALSE)) stop("node_pie_size should be a single number")
+  if (length(node_pie_size) > 1) stop("node_pie_size should be a single number")
+  if (any(is.numeric(shoulder_pie_size) == FALSE)) stop("shoulder_pie_size should be a single number")
+  if (length(shoulder_pie_size) > 1) stop("shoulder_pie_size should be a single number")
+  if (any(is.numeric(tip_pie_size) == FALSE)) stop("tip_pie_size should be a single number")
+  if (length(tip_pie_size) > 1) stop("tip_pie_size should be a single number")
+  if (is.numeric(node_pie_nudge_x) == FALSE) stop("node_pie_nudge_x should be a single number")
+  if (is.numeric(node_pie_nudge_y) == FALSE) stop("node_pie_nudge_y should be a single number")
+  if (is.numeric(tip_pie_nudge_x) == FALSE) stop("tip_pie_nudge_x should be a single number")
+  if (is.numeric(tip_pie_nudge_y) == FALSE) stop("tip_pie_nudge_y should be a single number")
+  if (is.numeric(shoulder_pie_nudge_x) == FALSE) stop("shoulder_pie_nudge_x should be a single number")
+  if (is.numeric(shoulder_pie_nudge_y) == FALSE) stop("shoulder_pie_nudge_y should be a single number")
+  if (length(node_pie_nudge_x) != 1) stop("node_pie_nudge_x should be a single number")
+  if (length(node_pie_nudge_y) != 1) stop("node_pie_nudge_y should be a single number")
+  if (length(tip_pie_nudge_x) != 1) stop("tip_pie_nudge_x should be a single number")
+  if (length(tip_pie_nudge_y) != 1) stop("tip_pie_nudge_y should be a single number")
+  if (length(shoulder_pie_nudge_x) != 1) stop("shoulder_pie_nudge_x should be a single number")
+  if (length(shoulder_pie_nudge_y) != 1) stop("shoulder_pie_nudge_y should be a single number")
+  if (is.logical(collapse_states) == FALSE) stop("collapse_states should be true or FALSE")
+  if (is.numeric(collapse_states_threshold) == FALSE) stop("collapse_states_threshold should be a number between 0 and 1")
+  if (collapse_states_threshold < 0 || collapse_states_threshold > 1) stop("collapse_states_threshold should be a number between 0 and 1")
+  if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
+  if (state_transparency < 0 || state_transparency > 1) stop("state_transparency should be a number between 0 - 1")
 
-      ##### create basic tree plot #####
+  ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, ladderize = TRUE)
 
   ##### calculate helper variables #####
