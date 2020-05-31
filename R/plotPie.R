@@ -57,11 +57,10 @@
 #'                                                      "2" = "Beautiful",
 #'                                                      "3" = "Cool!"))
 #' # plot
-#' plotPie(t = example, node_pie_size = 10, tip_pie_size = 7)
+#' plotPie(t = example)
 #'
 #' # DEC Biogeographic range evolution example
 #'
-#'# DEC example - cladogenetic
 # process file
 #' file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
 #'
@@ -69,19 +68,16 @@
 #' labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
 #'           "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
 #'           "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
-#' dec_example <- processAncStatesDiscrete(file, state_labels = labs)
-#'
-#' # use the state_labels in the tidytree object to define color palette
-#' # these state_labels will be a subset of the labels you provided
+#' # Use the state_labels in the returned tidytree object to define color palette
+#' # These state_labels may be a subset of the labels you provided
 #' # (not all possible regions may be sampled in the dataset)
 #' colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(dec_example@state_labels))
 #' names(colors) <- dec_example@state_labels
 #'
 #' # plot
-#' plotPie(t = dec_example, node_pie_size = 2, tip_pie_size = 1,
-#'         pie_colors = colors, tip_labels_size = 3, cladogenetic = TRUE,
-#'         tip_labels_offset = 0.25, node_pie_nudge_x = 0.015,
-#'         node_pie_nudge_y = 0.02) + ggplot2::theme(legend.position = c(0.1, 0.75))
+#' p <- plotPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
+#'              cladogenetic = TRUE, tip_labels_offset = 0.25) +
+#'              ggplot2::theme(legend.position = c(0.1, 0.75))
 #' }
 #'
 #' @export
@@ -109,10 +105,10 @@ plotPie <- function(t,
 
                     # pies aesthetics
                     pie_colors = "default",
-                    node_pie_size = 2,
+                    node_pie_size = 1,
                     shoulder_pie_size = node_pie_size,
                     tip_pies = TRUE,
-                    tip_pie_size = 1,
+                    tip_pie_size = 0.5,
 
                     # nudges to center pies
                     node_pie_nudge_x = 0,
@@ -122,14 +118,7 @@ plotPie <- function(t,
                     shoulder_pie_nudge_x = node_pie_nudge_x,
                     shoulder_pie_nudge_y = node_pie_nudge_y,
 
-                    # collapse states with low probability into "other"
-                    collapse_states = FALSE,
-                    collapse_states_threshold = 0.05,
-
                     state_transparency = 0.75) {
-# to do:
-  # - smart sizing based on tree coordinates
-  # - switch collapse states to processing script?
 
   ##### parameter compatibility checks #####
   if (class(t) != "treedata") stop("t should be a treedata objects")
@@ -167,22 +156,25 @@ plotPie <- function(t,
   if (length(tip_pie_nudge_y) != 1) stop("tip_pie_nudge_y should be a single number")
   if (length(shoulder_pie_nudge_x) != 1) stop("shoulder_pie_nudge_x should be a single number")
   if (length(shoulder_pie_nudge_y) != 1) stop("shoulder_pie_nudge_y should be a single number")
-  if (is.logical(collapse_states) == FALSE) stop("collapse_states should be true or FALSE")
-  if (is.numeric(collapse_states_threshold) == FALSE) stop("collapse_states_threshold should be a number between 0 and 1")
-  if (collapse_states_threshold < 0 || collapse_states_threshold > 1) stop("collapse_states_threshold should be a number between 0 and 1")
   if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
   if (state_transparency < 0 || state_transparency > 1) stop("state_transparency should be a number between 0 - 1")
 
-  ##### create basic tree plot #####
+    ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, ladderize = TRUE)
 
   ##### calculate helper variables #####
   tree <- attributes(t)$phylo
+  tree_height <- max(phytools::nodeHeights(t@phylo))
   n_node <- ggtree:::getNodeNum(tree)
   n_tip <- length(tree$tip.label)
   node_idx <- (n_tip+1):n_node
   tip_idx <- 1:n_tip
   all_idx <- 1:n_node
+
+  ##### calculate pie sizes #####
+  node_pie_size <-  ((n_tip * tree_height) / 15 ) * node_pie_size
+  shoulder_pie_size <- ((n_tip * tree_height) / 15 ) * shoulder_pie_size
+  tip_pie_size <- ((n_tip * tree_height) / 15 ) * tip_pie_size
 
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
@@ -192,52 +184,66 @@ plotPie <- function(t,
     state_pos_str_base <- "anc_state_"
   }
 
-  ##### convert sizes to tree units from percentage #####
+  ##### color and label processing #####
 
-  ##### get state labels #####
-  if (cladogenetic == TRUE) {
-    all_states <- as.character(unique(c(p$data$start_state_1, p$data$end_state_1,
-                                        p$data$start_state_2, p$data$end_state_2,
-                                        p$data$start_state_3, p$data$end_state_3)))
-  } else {
-    all_states <- as.character(unique(c(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")),
-                                        dplyr::pull(p$data, paste0(state_pos_str_base[1], "2")),
-                                        dplyr::pull(p$data, paste0(state_pos_str_base[1], "3")))))
-  }
-
-  state_labels <- c(na.omit(all_states), "other")
-
-  # add other so it gets included in legend even if states aren't collapsed
-  if ("anc_state_" %in% state_pos_str_base) {p$data$anc_state_other <- "other"}
-  if ("end_state_" %in% state_pos_str_base) {p$data$end_state_other <- "other"}
-
-  ##### color processing and checks #####
-  if (collapse_states == TRUE) {
-    used_states <- .collect_probable_states(p, p_threshold = collapse_states_threshold)
-    state_labels <- used_states
-  }
   # check if number of states exceeds default color palette options
-  if (pie_colors[1] == "default" & length(state_labels) > 12) {
-    stop(paste0(length(state_labels), " states in dataset; please provide colors (default only can provide up to 12)"))
+  if (pie_colors[1] == "default" &
+      length(t@state_labels) > 12) {
+    stop(paste0(length(t@state_labels),
+                " states in dataset; please provide colors
+                (default only can provide up to 12)"))
   }
 
   # check if number of states not equal to provided colors
-  if (pie_colors[1] != "default" & length(pie_colors) < length(state_labels)) {
-    stop(paste0("You provided fewer colors in node_color than states in your dataset. There are ",
-                length(state_labels), " states and you provide ", length(pie_colors), " colors."))
-  }
-  if (pie_colors[1] != "default" & length(pie_colors) > length(state_labels)) {
-    stop(paste0("You provided more colors in node_color than states in your dataset. There are ",
-                length(state_labels), " states and you provide ", length(pie_colors), " colors."))
+  if (pie_colors[1] != "default" &
+      length(pie_colors) < length(t@state_labels)) {
+    stop(paste0("You provided fewer colors in node_color
+                than states in your dataset. There are ",
+                length(t@state_labels), " states and you provide ",
+                length(pie_colors), " colors."))
   }
 
-  # set default colors
-  if (any(pie_colors == "default")) {
+  # set colors, add "other" if necessary
+  otherpp <- as.numeric(dplyr::pull(p$data,
+                                    var = paste0(state_pos_str_base[1],
+                                                 "other_pp")))
+  if (sum(otherpp, na.rm = TRUE) == 0) {
+    state_labels <- t@state_labels
+    # set default colors
+    if (any(pie_colors == "default")) {
       nstates <- length(state_labels)
-      colors <- .colFun(nstates)
+      colors <- c(.colFun(nstates))
       names(colors) <- state_labels
-  } else {
-    colors <- pie_colors
+    } else {
+      colors <- pie_colors
+    }
+
+  } else if (sum(otherpp, na.rm = TRUE) != 0) {
+
+    state_labels <- c(t@state_labels, "other")
+
+    if ("anc_state_" %in% state_pos_str_base) {
+      p$data$anc_state_other <- "other"
+    }
+    if ("end_state_" %in% state_pos_str_base) {
+      p$data$end_state_other <- "other"
+    }
+
+    # add other to user-set colors
+    if (pie_colors[1] != "default") {
+      pc_names <- names(pie_colors)
+      pie_colors <- c(pie_colors, "grey50")
+      names(pie_colors) <- c(pc_names, "other")
+    }
+
+    # set default colors
+    if (any(pie_colors == "default")) {
+      nstates <- length(state_labels) - 1
+      colors <- c(.colFun(nstates), "grey50")
+      names(colors) <- state_labels
+    } else {
+      colors <- pie_colors
+    }
   }
 
   ##### reformat labels if necessary #####
@@ -261,24 +267,15 @@ plotPie <- function(t,
     }
   }
 
-  # collapse states
-  if (collapse_states == TRUE){
-    p <- p + ggplot2::scale_color_manual(values = colors,
-                                         breaks = state_labels,
-                                         name = "Range",
-                                         limits = used_states)
-  } else {
-    p <- p + ggplot2::scale_color_manual(values = colors, breaks = state_labels)
-  }
-
   # set up guides
   # gotta do this for a legend!
   if (cladogenetic == TRUE) {
-
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_3), size=0),na.rm=TRUE, alpha=0.0)
-    p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_other), size=0),na.rm=TRUE, alpha=0.0)
+    if ("other" %in% state_labels) {
+      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_other), size=0),na.rm=TRUE, alpha=0.0)
+    }
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(start_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(start_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(start_state_3), size=0),na.rm=TRUE, alpha=0.0)
@@ -288,20 +285,24 @@ plotPie <- function(t,
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_3), size=0),na.rm=TRUE, alpha=0.0)
-    p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_other), size=0),na.rm=TRUE, alpha=0.0)
+    if ("other" %in% state_labels) {
+      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_other), size=0),na.rm=TRUE, alpha=0.0)
+    }
 
   } else {
-
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_3), size=0),na.rm=TRUE, alpha=0.0)
-    p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_other), size=0),na.rm=TRUE, alpha=0.0)
+    if ("other" %in% state_labels) {
+      p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_other), size=0),na.rm=TRUE, alpha=0.0)
+    }
   }
 
+  p <- p + ggplot2::scale_color_manual(values = colors, breaks = state_labels)
   p <- p + ggplot2::guides(colour = ggplot2::guide_legend("State", override.aes = list(size=4, alpha = 1.0)), order=1)
   p <- p + ggplot2::guides(size=FALSE)
 
-  # plot pies at nodes (and shoulders)
+    # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
     # create state matrices (matrix of nodes (rows) and all possible states (columns), values are pp. )
     state_probs <- .build_state_probs(t, state_labels, include_start_states = TRUE)
@@ -355,12 +356,11 @@ plotPie <- function(t,
 
     # create state matrices (matrix of nodes (rows) and all possible states (columns), values are pp. )
     dat_state_anc <- .build_state_probs(t, state_labels, include_start_states = FALSE)[[1]]
-
+    if (sum(otherpp, na.rm = TRUE) == 0) {dat_state_anc$other <- NULL}
     pies_anc <- ggtree::nodepie(dat_state_anc, cols=1:(ncol(dat_state_anc)-1),
                                color = colors, alpha = state_transparency)
 
     # add pies to tree
-
     p <- .inset.revgadgets(
       tree_view = p,
       insets = pies_anc[node_idx],
@@ -383,7 +383,6 @@ plotPie <- function(t,
     }
   }
 
-
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
     p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
@@ -403,7 +402,6 @@ plotPie <- function(t,
 
   # add space on x axis for tip labels
   if (tip_labels == TRUE) {
-    tree_height <- max(phytools::nodeHeights(t@phylo))
     p <- p + ggtree::xlim(0, tree_height + tree_height/2)
   }
 

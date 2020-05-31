@@ -123,7 +123,7 @@
   return(t)
 }
 
-.build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0.01) {
+.build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0) {
   n_states = length(state_labels)
   n_tips = length(attributes(t)$phylo$tip.label)
   n_node = 2 * n_tips - 1
@@ -165,7 +165,7 @@
     # format column names
     colnames(dat[[s]])=as.vector(unlist(state_labels))
 
-    # add probs for >3rd state under ... label
+    # add probs for >3rd state under "other" label
     rem_prob = c()
     for (i in 1:nrow(dat[[s]])) {
       rem_prob[i] = 1
@@ -175,9 +175,7 @@
     }
     dat[[s]]$"other" = rem_prob
     dat[[s]]$node = 1:n_node
-    #print(dat[[s]][250:260,])
   }
-
   return(dat)
 }
 
@@ -349,15 +347,33 @@
     data$height <- data[[height_var]]
   }
 
-  data$xmin <- data[[xvar]] - data$width/2
-  data$xmax <- data[[xvar]] + data$width/2
-  data$ymin <- data[[yvar]] - data$height/2
-  data$ymax <- data[[yvar]] + data$height/2
+  data$xmin <- data[[xvar]] - data$width/(2*max(data[[yvar]]))
+  data$xmax <- data[[xvar]] + data$width/(2*max(data[[yvar]]))
+  data$ymin <- data[[yvar]] - data$width/(2*max(data[[xvar]]))
+  data$ymax <- data[[yvar]] + data$width/(2*max(data[[xvar]]))
 
-  lapply(1:nrow(data), function(i) {
-    ggplot2::annotation_custom(ggplotify::as.grob(data$subview[[i]]), xmin = data$xmin[i],
-                               xmax = data$xmax[i], ymin = data$ymin[i], ymax = data$ymax[i])
-  })
+  # save pies as images and plot as raster grobs - this plots centered but maybe not
+  # a good long-term solution
+   results <- list()
+     for (i in 1:nrow(data)){
+       ggplot2::ggsave(".temp.png",
+                       plot = data$subview[[i]],
+                       bg = "transparent",
+                       width = 3, height = 3,
+                       units = "cm")
+       pie <- png::readPNG(".temp.png")
+       g <- grid::rasterGrob(pie, interpolate=TRUE)
+       results[[i]] <- ggplot2::annotation_custom(ggplotify::as.grob(g),
+                                  xmin = data$xmin[i],  xmax = data$xmax[i],
+                                  ymin = data$ymin[i], ymax = data$ymax[i])
+     }
+   file.remove(".temp.png")
+   return(results)
+   # old way of plotting pies - won't plot centered on nodes
+  #lapply(1:nrow(data), function(i) {
+  #  ggplot2::annotation_custom(ggplotify::as.grob(data$subview[[i]]), xmin = data$xmin[i],
+  #                             xmax = data$xmax[i], ymin = data$ymin[i], ymax = data$ymax[i])
+ #})
 }
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R

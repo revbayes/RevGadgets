@@ -29,8 +29,6 @@ plotPie(
   tip_pie_nudge_y = node_pie_nudge_y,
   shoulder_pie_nudge_x = node_pie_nudge_x,
   shoulder_pie_nudge_y = node_pie_nudge_y,
-  collapse_states = FALSE,
-  collapse_states_threshold = 0.05,
   state_transparency = 0.75
 )
 }
@@ -95,11 +93,6 @@ cladogenetic plots.}
 
 \item{shoulder_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging}
 
-\item{collapse_states}{(logical; FALSE) Collapse low-probability states into "other" category?}
-
-\item{collapse_states_threshold}{(numeric; 0.05) Probability threshold for collapsing states.
-Varies from 0 to 1.}
-
 \item{state_transparency}{(integer; 0.75) Alpha (transparency) of state symbols- varies from
 0 to 1.
 
@@ -119,17 +112,22 @@ plotPie(t = example, node_pie_size = 10, tip_pie_size = 7)
 
 # DEC Biogeographic range evolution example
 
-# process file and assign state labels
+# DEC example - cladogenetic
 file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
+
+# labels that correspond to each region/ possible combination of regions
 labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
           "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
           "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
 dec_example <- processAncStatesDiscrete(file, state_labels = labs)
 
-# assign colors to states
-colors <- colorRampPalette(RevGadgets:::.colFun(12))(15)
-names(colors) <- c("K", "KO", "O", "M", "KH", "H", "MH", "KOMH",
-                   "KM", "KMH", "OMH", "OH", "OM", "KOH", "other")
+# use the state_labels in the tidytree object to define color palette
+# these state_labels will be a subset of the labels you provided
+# (not all possible regions may be sampled in the dataset)
+# add "other" because some states with low probabilities are summarized
+new_state_labels <- c(dec_example@state_labels, "other")
+colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(new_state_labels))
+names(colors) <- new_state_labels
 
 # plot
 plotPie(t = dec_example, node_pie_size = 2, tip_pie_size = 1,
@@ -137,6 +135,11 @@ plotPie(t = dec_example, node_pie_size = 2, tip_pie_size = 1,
         tip_labels_offset = 0.25, node_pie_nudge_x = 0.015,
         node_pie_nudge_y = 0.02) + ggplot2::theme(legend.position = c(0.1, 0.75))
 }}
+
+\item{collapse_states}{(logical; FALSE) Collapse low-probability states into "other" category?}
+
+\item{collapse_states_threshold}{(numeric; 0.05) Probability threshold for collapsing states.
+Varies from 0 to 1.}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.
