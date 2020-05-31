@@ -44,7 +44,7 @@
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #'
-#' #' @examples
+#' @examples
 #'
 #' \dontrun{
 #'
