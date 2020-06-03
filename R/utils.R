@@ -354,26 +354,28 @@
 
   # save pies as images and plot as raster grobs - this plots centered but maybe not
   # a good long-term solution
-   results <- list()
-     for (i in 1:nrow(data)){
-       ggplot2::ggsave(".temp.png",
-                       plot = data$subview[[i]],
-                       bg = "transparent",
-                       width = 3, height = 3,
-                       units = "cm")
-       pie <- png::readPNG(".temp.png")
-       g <- grid::rasterGrob(pie, interpolate=TRUE)
-       results[[i]] <- ggplot2::annotation_custom(ggplotify::as.grob(g),
-                                  xmin = data$xmin[i],  xmax = data$xmax[i],
-                                  ymin = data$ymin[i], ymax = data$ymax[i])
-     }
-   file.remove(".temp.png")
-   return(results)
+
+   #results <- list()
+   #  for (i in 1:nrow(data)){
+   #    ggplot2::ggsave(".temp.png",
+   #                    plot = data$subview[[i]],
+   #                    bg = "transparent",
+   #                    width = 3, height = 3,
+   #                    units = "cm", dpi = 200)
+   #    pie <- png::readPNG(".temp.png")
+   #    g <- grid::rasterGrob(pie, interpolate=TRUE)
+   #    results[[i]] <- ggplot2::annotation_custom(ggplotify::as.grob(g),
+   #                               xmin = data$xmin[i],  xmax = data$xmax[i],
+   #                               ymin = data$ymin[i], ymax = data$ymax[i])
+   #  }
+   #file.remove(".temp.png")
+   #return(results)
+
    # old way of plotting pies - won't plot centered on nodes
-  #lapply(1:nrow(data), function(i) {
-  #  ggplot2::annotation_custom(ggplotify::as.grob(data$subview[[i]]), xmin = data$xmin[i],
-  #                             xmax = data$xmax[i], ymin = data$ymin[i], ymax = data$ymax[i])
- #})
+  lapply(1:nrow(data), function(i) {
+    ggplot2::annotation_custom(ggplotify::as.grob(data$subview[[i]]), xmin = data$xmin[i],
+                               xmax = data$xmax[i], ymin = data$ymin[i], ymax = data$ymax[i])
+  })
 }
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R

@@ -18,10 +18,10 @@ plotTree(
   tip_labels_remove_underscore = FALSE,
   tip_labels_color = "black",
   tip_labels_size = 3,
+  scale_bar = FALSE,
   node_pp = FALSE,
   node_pp_shape = 16,
   node_pp_color = "black",
-  scale_bar = FALSE,
   node_pp_size = "variable",
   branch_color = "black",
   color_branch_by = NULL,
@@ -64,6 +64,8 @@ R color name or a valid hex code.}
 R color name or a valid hex code.}
 
 \item{tip_labels_size}{(numeric; 3) Size of tip labels}
+
+\item{scale_bar}{(logical; FALSE) Plot a scale bar in branch length units?}
 
 \item{node_pp}{(logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.}

@@ -120,6 +120,7 @@ plotPie(t = example)
 
 # DEC Biogeographic range evolution example
 
+# process file
 file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
 
 # labels that correspond to each region/ possible combination of regions

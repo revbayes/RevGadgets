@@ -61,7 +61,7 @@
 #'
 #' # DEC Biogeographic range evolution example
 #'
-# process file
+#' # process file
 #' file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
 #'
 #' # labels that correspond to each region/ possible combination of regions
@@ -161,7 +161,7 @@ plotPie <- function(t,
 
     ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, ladderize = TRUE)
-
+recover()
   ##### calculate helper variables #####
   tree <- attributes(t)$phylo
   tree_height <- max(phytools::nodeHeights(t@phylo))
@@ -172,6 +172,7 @@ plotPie <- function(t,
   all_idx <- 1:n_node
 
   ##### calculate pie sizes #####
+  # multiply by 1.05? uniform padding of 5% on each side of plot
   node_pie_size <-  ((n_tip * tree_height) / 15 ) * node_pie_size
   shoulder_pie_size <- ((n_tip * tree_height) / 15 ) * shoulder_pie_size
   tip_pie_size <- ((n_tip * tree_height) / 15 ) * tip_pie_size
