@@ -139,7 +139,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   if (is.null(color_branch_by) == FALSE &
       any(vars %in% color_branch_by) == FALSE) stop("color_branch_by should be NULL or a column in your tidytree object")
   if (is.numeric(line_width) == FALSE) stop ("line_width should be numeric")
-recover()
+
   # grab single tree from input
   phy <- tree[[1]][[1]]
 
@@ -193,7 +193,7 @@ recover()
     #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
     pp <- pp + ggplot2::coord_cartesian()
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
-                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
+                                           limits = c(-max(minmax, na.rm = T)*1.05, tree_height/2),
                                            breaks = -rev(seq(0,max_age+dx,interval)),
                                            labels = rev(seq(0,max_age+dx,interval)),
                                            )
