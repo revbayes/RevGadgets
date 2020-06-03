@@ -178,7 +178,7 @@ computeMeanInterval <- function(item, rates, probs){
                      quantile,
                      probs = probs)
 
-  df <- tibble(.rows = length(mean_rate))
+  df <- dplyr::tibble(.rows = length(mean_rate))
   df["mean"] <- mean_rate
   df["lower"] <- quantiles[1,]
   df["upper"] <- quantiles[2,]
@@ -267,27 +267,28 @@ makePlotData <- function(rates, probs = c(0.025, 0.975)){
 #'
 #' @export
 plotDivRates2 <- function(plotdata){
+  `%>%` <- dplyr::`%>%`
   p <- plotdata %>%
     subset(grepl("rate", item)) %>%
-    ggplot(aes(time, mean, color = item))  +
-    geom_step(aes(time, mean),
-              direction = "vh") +
-    geom_stepribbon(aes(x = time,
-                    ymin = lower,
-                    ymax = upper,
-                    fill = item),
-                direction = "vh",
-                alpha = 0.4) +
-    scale_x_reverse() +
-    xlab("time") +
-    theme_bw() +
-    theme(axis.title.y=element_blank(),
-          legend.title = element_blank(),
-          legend.position = "none",
-          axis.line = element_line(colour = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank()) +
-    facet_wrap(vars(item), scales = "free_y")
+    ggplot2::ggplot(ggplot2::aes(time, mean, color = item))  +
+    ggplot2::geom_step(ggplot2::aes(time, mean),
+                       direction = "vh") +
+    geom_stepribbon(ggplot2::aes(x = time,
+                                 ymin = lower,
+                                 ymax = upper,
+                                 fill = item),
+                    direction = "vh",
+                    alpha = 0.4) +
+    ggplot2::scale_x_reverse() +
+    ggplot2::xlab("time") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(axis.title.y = ggplot2::element_blank(),
+                   legend.title = ggplot2::element_blank(),
+                   legend.position = "none",
+                   axis.line = ggplot2::element_line(colour = "black"),
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank()) +
+    ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y")
 
   return(p)
 }
