@@ -43,6 +43,8 @@
 #'
 #' @param tip_labels_size (numeric; 3) Size of tip labels
 #'
+#' @param scale_bar (logical; FALSE) Plot a scale bar in branch length units?
+#'
 #' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 #' symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.
 #'
@@ -101,7 +103,7 @@
 plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
                      node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
                      tip_labels_italics = TRUE, tip_labels_remove_underscore = FALSE, tip_labels_color = "black",
-                     tip_labels_size = 3, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
+                     tip_labels_size = 3, scale_bar = FALSE, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
                      node_pp_size = "variable", branch_color = "black", color_branch_by = NULL, line_width = 1) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
@@ -137,7 +139,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
   if (is.null(color_branch_by) == FALSE &
       any(vars %in% color_branch_by) == FALSE) stop("color_branch_by should be NULL or a column in your tidytree object")
   if (is.numeric(line_width) == FALSE) stop ("line_width should be numeric")
-
+recover()
   # grab single tree from input
   phy <- tree[[1]][[1]]
 

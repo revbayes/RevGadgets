@@ -21,6 +21,7 @@ plotTree(
   node_pp = FALSE,
   node_pp_shape = 16,
   node_pp_color = "black",
+  scale_bar = FALSE,
   node_pp_size = "variable",
   branch_color = "black",
   color_branch_by = NULL,
