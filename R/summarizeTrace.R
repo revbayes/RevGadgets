@@ -74,7 +74,8 @@ summarizeTrace <- function(trace, vars) {
                                 quantile_97.5 = quantile(col, prob = c(0.025,0.975))[2])
       names(output[[i]])[j] <- paste0("trace_", j)
     } else if (class(col) == "integer" | class(col) == "character" ){
-      state_probs <- sort(table(col)/length(col), decreasing = TRUE)
+      credible_set <- col
+      state_probs <- sort(table(credible_set)/length(credible_set), decreasing = TRUE)
       cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
       output[[i]][[j]] <- cred_set
       names(output[[i]])[j] <- paste0("trace_", j)
