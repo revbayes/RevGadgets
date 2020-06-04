@@ -34,7 +34,7 @@
 #' @export
 
 readTrace <- function(paths, format = "simple",
-                      delim="\t", burnin = 0.1, check.names = FALSE, ...){
+                      delim="\t", burnin = 0, check.names = FALSE, ...){
 
   # enforce argument matching
 
