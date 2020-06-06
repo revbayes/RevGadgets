@@ -73,21 +73,19 @@
 #' @return returns a single plot object.
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # Example of standard tree plot
 #' # Add on a scale bar using ggtree, but note that the x axis position must
 #' # be negative and scales with tree height
 #'
 #' file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#'  # Reroot tree before plotting
-#' num <- which(tree[[1]][[1]]@phylo$tip.label == "Galeopterus_variegatus")
-#' tree[[1]][[1]]@phylo <- phytools::reroot(tree[[1]][[1]]@phylo, num,
-#'                                            position = 0.5*tree[[1]][[1]]@phylo$edge.length[which(tree[[1]][[1]]@phylo$edge[,2]==num)])
-#' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
+#' # Reroot tree before plotting
+#' tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
+#' # Plot
+#' plot <- plotTree(tree = tree_rooted, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
 #'                  tip_labels_remove_underscore = T, node_labels_size = 3,
 #'                  tip_labels_italics = F) + ggtree::geom_treescale(x = -0.1, y = 0)
-#'
 #'
 #' # Example of coloring branches by rate
 #' file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
@@ -96,7 +94,7 @@
 #'                  tip_labels_remove_underscore = T, tip_labels_italics = F,
 #'                  color_branch_by = "branch_thetas", line_width = 1.7) +
 #'        ggplot2::theme(legend.position=c(.1, .9))
-#'
+#' }
 #' @export
 
 
