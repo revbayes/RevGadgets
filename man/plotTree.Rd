@@ -7,7 +7,7 @@
 plotTree(
   tree,
   timeline = FALSE,
-  node_age_bars = TRUE,
+  node_age_bars = FALSE,
   node_age_bars_color = "blue",
   node_age_bars_colored_by = NULL,
   node_labels = NULL,
@@ -15,7 +15,7 @@ plotTree(
   node_labels_size = 3,
   tip_labels = TRUE,
   tip_labels_italics = TRUE,
-  tip_labels_remove_underscore = FALSE,
+  tip_labels_remove_underscore = TRUE,
   tip_labels_color = "black",
   tip_labels_size = 3,
   scale_bar = FALSE,
@@ -36,7 +36,7 @@ traces, only the first will be used.}
 
 \item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.}
 
-\item{node_age_bars}{(logical; TRUE) Plot time tree with node age bars?}
+\item{node_age_bars}{(logical; FALSE) Plot time tree with node age bars?}
 
 \item{node_age_bars_color}{(character; "blue") Color for node age bars. If node_age_bars_colored_by
 specifies a variable (not NULL), you must provide two colors, low and high values for a gradient. Colors must be either
@@ -56,7 +56,7 @@ R color name or a valid hex code.}
 
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
-\item{tip_labels_italics}{(logical; FALSE) Plot tip labels in italics?}
+\item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
 
 \item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores in tip labels?}
 

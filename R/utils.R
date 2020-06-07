@@ -513,6 +513,25 @@
 
 .isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
+.makeNodeNames <- function(tree) {
+  pr <- ape::prop.part(tree)
+  labels <- attributes(pr)$labels
+  names(labels) <- 1:length(labels)
+  nodes <- lapply(pr[1:length(pr)], dplyr::recode, !!!labels)
+  nodes <- append(attributes(pr)$labels, nodes)
+
+  node_names <- numeric()
+  node_names_op <- numeric()
+  for (i in 1:length(nodes)) {
+    node_names[i] <- paste(as.numeric(sort(tree$tip.label) %in% nodes[[i]]),
+                           sep = "", collapse = "")
+    node_names_op[i] <- paste(as.numeric(!sort(tree$tip.label) %in% nodes[[i]]),
+                              sep = "", collapse = "")
+  }
+  return(data.frame(node_names = node_names,
+                    node_names_op = node_names_op))
+}
+
 .make_states <- function(label_fn, color_fn) {
 
   # generate colors for ranges
@@ -547,6 +566,8 @@
 
   return( list(state_labels = st_lbl, state_color = st_colors) )
 }
+
+
 
 # Fast data.frame constructor and indexing
 # No checking, recycling etc. unless asked for

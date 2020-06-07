@@ -14,7 +14,7 @@
 #'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
 #'
-#' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
+#' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
 #'
 #' @param node_age_bars_colored_by (character; NULL) Specify column to color node age bars by,
 #' such as "posterior". If null, all node age bars plotted the same color, specified by
@@ -34,7 +34,7 @@
 #'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
-#' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
+#' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
 #'
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip labels?
 #'
@@ -98,9 +98,9 @@
 #' @export
 
 
-plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
+plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
                      node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
-                     tip_labels_italics = TRUE, tip_labels_remove_underscore = FALSE, tip_labels_color = "black",
+                     tip_labels_italics = TRUE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                      tip_labels_size = 3, scale_bar = FALSE, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
                      node_pp_size = "variable", branch_color = "black", color_branch_by = NULL, line_width = 1) {
   # enforce argument matching
@@ -201,8 +201,8 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars
     pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
   }
 
-    # add scale bar
-  if (scale_bar == TRUE) {pp <- pp + ggtree::geom_treescale()}
+  # add scale bar
+  if (scale_bar == TRUE) {pp <- pp + ggtree::geom_treescale(x = 0, y = 0)}
 
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {
