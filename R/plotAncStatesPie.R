@@ -1,8 +1,8 @@
-#' plot Pie
+#' plot Anc States Pie
 #'
 #' Plot character states and posterior probabilities as pies on nodes.
 #'
-#' @param t (treedata object; none) Output of processAncStatesDiscrete() function
+#' @param t (treedata object; none) Output of processAncStates() function
 #' containing tree and ancestral states.
 #' @param cladogenetic (logical; FALSE) Plot shoulder pies of cladogenetic analyses?
 #' @param tip_labels (logical; TRUE) Label taxa labels at tips?
@@ -52,12 +52,12 @@
 #'
 #' # process file and assign state labels
 #' file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
-#` example <- processAncStatesDiscrete(file,
+#` example <- processAncStates(file,
 #'                                     state_labels = c("1" = "Awesome",
 #'                                                      "2" = "Beautiful",
 #'                                                      "3" = "Cool!"))
 #' # plot
-#' plotPie(t = example)
+#' plotAncStatesPie(t = example)
 #'
 #' # DEC Biogeographic range evolution example
 #'
@@ -75,14 +75,14 @@
 #' names(colors) <- dec_example@state_labels
 #'
 #' # plot
-#' p <- plotPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
+#' p <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
 #'              cladogenetic = TRUE, tip_labels_offset = 0.25) +
 #'              ggplot2::theme(legend.position = c(0.1, 0.75))
 #' }
 #'
 #' @export
 
-plotPie <- function(t,
+plotAncStatesPie <- function(t,
                     # option for plotting shoulder states
                     cladogenetic = FALSE,
 

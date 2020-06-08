@@ -1,4 +1,4 @@
-#' plot MAP
+#' plot Anc States MAP
 #'
 #' Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
 #' by plotting on shoulders. Defaults to varying the symbols by color to indicate estimated
@@ -9,7 +9,7 @@
 #' ancestral state, and vary the posterior probability of that esimate by a color gradient.
 #' Text labels at nodes and tips are also available.
 #'
-#' @param t (treedata object; none) Output of processAncStatesDiscrete() function
+#' @param t (treedata object; none) Output of processAncStates() function
 #' containing tree and ancestral states.
 #' @param cladogenetic (logical; FALSE) Plot shoulder states of cladogenetic analyses?
 #' @param tip_labels (logical; TRUE) Label taxa labels at tips?
@@ -66,31 +66,31 @@
 #'
 #' # process file
 #' file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
-#' example <- processAncStatesDiscrete(file, state_labels = c("1" = "Awesome", "2" = "Beautiful", "3" = "Cool!"))
+#' example <- processAncStates(file, state_labels = c("1" = "Awesome", "2" = "Beautiful", "3" = "Cool!"))
 #'
 #' # have states vary by color and indicate state pp with size (default)
-#' plotMAP(t = example, tip_labels_italics = T)
+#' plotAncStatesMAP(t = example, tip_labels_italics = T)
 #'
 #' # have states vary by color and symbol, label nodes with pp of states
-#' plotMAP(t = example,  node_shape_as = "state", node_size = 4, node_shape = c(15, 17,20),
+#' plotAncStatesMAP(t = example,  node_shape_as = "state", node_size = 4, node_shape = c(15, 17,20),
 #'         node_size_as = NULL, node_labels_as = "state_posterior")
 #'
 #' # black and white figure - state as symbols and state pp with text
-#' plotMAP(t = example, node_color_as = NULL, node_shape_as = "state", node_shape =  c(15, 17,20),
+#' plotAncStatesMAP(t = example, node_color_as = NULL, node_shape_as = "state", node_shape =  c(15, 17,20),
 #'         node_size_as = NULL, node_size = 4, node_labels_as = "state_posterior",
 #'         node_color = "grey", state_transparency = 1)
 #'
 #' # default with circular tree
-#' plotMAP(t = example, tree_layout = "circular")
+#' plotAncStatesMAP(t = example, tree_layout = "circular")
 #'
 #' # Chromosome evolution example
 #'
 #' # process file
 #' file <- system.file("extdata", "chromo/ChromEvol_simple_final.tree", package="RevGadgets")
-#' chromo_example <- processAncStatesDiscrete(file, labels_as_numbers = TRUE)
+#' chromo_example <- processAncStates(file, labels_as_numbers = TRUE)
 #'
 #' # plot
-#' plotMAP(t = chromo_example, node_color_as = "state_posterior", node_size_as = "state",
+#' plotAncStatesMAP(t = chromo_example, node_color_as = "state_posterior", node_size_as = "state",
 #'         node_color = RevGadgets:::.colFun(2), tip_labels_offset = 0.005,
 #'         node_labels_as = "state", node_labels_offset = 0, tip_labels_states = TRUE,
 #'         tip_labels_states_offset = 0, tip_states = FALSE)
@@ -102,16 +102,16 @@
 #' labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
 #' "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH", "11" = "KOM",
 #' "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
-#' dec_example <- processAncStatesDiscrete(file, state_labels = labs)
+#' dec_example <- processAncStates(file, state_labels = labs)
 #'
 #' # plot
-#' plotMAP(t = dec_example, cladogenetic = TRUE, tip_labels_offset = 0.5)
+#' plotAncStatesMAP(t = dec_example, cladogenetic = TRUE, tip_labels_offset = 0.5)
 #' }
 #'
 #' @export
 
 
-plotMAP <- function(t,
+plotAncStatesMAP <- function(t,
                     # option for plotting shoulder states
                     cladogenetic = FALSE,
 
