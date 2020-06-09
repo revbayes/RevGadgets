@@ -392,12 +392,16 @@ plotAncStatesPie <- function(t,
 
   # add tip states labels (text)
   if (tip_labels_states == TRUE) {
-    if (state_pos_str_base == "anc_state_") {
-      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = anc_state_1), hjust="left",
-                                   offset = tip_labels_states_offset, size = tip_labels_states_size)
+    if (state_pos_str_base[1] == "anc_state_") {
+      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = anc_state_1),
+                                   hjust = "center",
+                                   offset = tip_labels_states_offset,
+                                   size = tip_labels_states_size)
     } else {
-      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = end_state_1), hjust="left",
-                                   offset = tip_labels_states_offset, size = tip_labels_states_size)
+      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = end_state_1),
+                                   hjust = "center",
+                                   offset = tip_labels_states_offset,
+                                   size = tip_labels_states_size)
     }
   }
 
