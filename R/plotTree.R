@@ -32,9 +32,11 @@
 #'
 #' @param node_labels_size (numeric; 3) Size of node labels
 #'
+#' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from nodes.
+#'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
-#' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
+#' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
 #'
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip labels?
 #'
@@ -43,7 +45,7 @@
 #'
 #' @param tip_labels_size (numeric; 3) Size of tip labels
 #'
-#' @param scale_bar (logical; FALSE) Plot a scale bar in branch length units?
+#' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from tree.
 #'
 #' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 #' symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.
@@ -70,22 +72,23 @@
 #'
 #' @param line_width (numeric; 1) Change line width for branches
 #'
+#' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
+#' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
+#'
 #' @return returns a single plot object.
 #'
 #' @examples
 #' \dontrun{
 #' # Example of standard tree plot
-#' # Add on a scale bar using ggtree, but note that the x axis position must
-#' # be negative and scales with tree height
-#'
+
 #' file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
 #' # Reroot tree before plotting
 #' tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 #' # Plot
-#' plot <- plotTree(tree = tree_rooted, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
-#'                  tip_labels_remove_underscore = T, node_labels_size = 3,
-#'                  tip_labels_italics = F) + ggtree::geom_treescale(x = -0.1, y = 0)
+#' plot <- plotTree(tree = tree_rooted, node_labels = "posterior")
+#' # We can add a scale bar:
+#' plot + ggtree::geom_treescale(x = -0.35, y = -1)
 #'
 #' # Example of coloring branches by rate
 #' file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
@@ -99,10 +102,11 @@
 
 
 plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
-                     node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
-                     tip_labels_italics = TRUE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
-                     tip_labels_size = 3, scale_bar = FALSE, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
-                     node_pp_size = "variable", branch_color = "black", color_branch_by = NULL, line_width = 1) {
+                     node_labels = NULL, node_labels_color = "black", node_labels_size = 3, node_labels_offset = 0, tip_labels = TRUE,
+                     tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
+                     tip_labels_size = 3, tip_labels_offset = 0, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
+                     node_pp_size = "variable", branch_color = "black", color_branch_by = NULL, line_width = 1,
+                     tree_layout = "rectangular") {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
@@ -115,9 +119,11 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
   if (is.null(node_labels) == FALSE &
       any(vars %in% node_labels) == FALSE) stop("node_labels should be NULL or a column in your tidytree object")
   if (is.null(node_labels_color) == FALSE & .isColor(node_labels_color) == FALSE) stop("node_labels_color should be NULL or a recognized color")
+  if (is.numeric(node_labels_offset) == FALSE) stop ("node_labels_offset should be a number")
   if (is.logical(tip_labels) == FALSE) stop("tip_labels should be TRUE or FALSE")
   if (is.logical(tip_labels_italics) == FALSE) stop("tip_labels_italics should be TRUE or FALSE")
   if (.isColor(tip_labels_color) == FALSE) stop("tip_labels_color should be a recognized color")
+  if (is.numeric(tip_labels_offset) == FALSE) stop ("tip_labels_offset should be a number")
   if (class(node_pp) != "logical") stop("node_pp should be TRUE or FALSE")
   if (node_pp) {
     if (length(node_pp_color) > 2) stop("node_pp_color should be of length 1 or 2")
@@ -137,21 +143,36 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
   if (is.null(color_branch_by) == FALSE &
       any(vars %in% color_branch_by) == FALSE) stop("color_branch_by should be NULL or a column in your tidytree object")
   if (is.numeric(line_width) == FALSE) stop ("line_width should be numeric")
+  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
 
   # grab single tree from input
   phy <- tree[[1]][[1]]
 
     # initiate plot
   if (is.null(color_branch_by)) {
-    pp <- ggtree::ggtree(phy, right = F, size = line_width, color = branch_color)
+    pp <- ggtree::ggtree(phy,
+                         right = F,
+                         size = line_width,
+                         color = branch_color,
+                         layout = tree_layout)
   } else if (!is.null(color_branch_by)) {
-    pp <- ggtree::ggtree(phy, right = F, size = line_width)
+    pp <- ggtree::ggtree(phy,
+                         right = F,
+                         size = line_width,
+                         layout = tree_layout)
   }
-
 
   #### paramter compatibility checks ###
   if (length(node_pp_color) == 2 & length(branch_color) == 2) stop("You may only include variable colors for either
                                                                    node_pp_label or branch_color, not for both")
+  if (tree_layout != "rectangular") {
+
+    if (timeline == TRUE) { stop("timeline is only compatible with
+                                 tree_layout = 'rectangular'")}
+
+    if (node_age_bars == TRUE) { stop("node_age_bars are only compatible with
+                                      tree_layout = 'rectangular'")}
+  }
   #check that if user wants node_age_bars tree, there are dated intervals in the file
   if (node_age_bars == TRUE) {
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
@@ -200,9 +221,6 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
     pp <- ggtree::revts(pp)
     pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
   }
-
-  # add scale bar
-  if (scale_bar == TRUE) {pp <- pp + ggtree::geom_treescale(x = 0, y = 0)}
 
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {
@@ -257,9 +275,10 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
                                                           node_labels])))
     #change any NAs that got converted to characters back to NA
     pp$data$kula[pp$data$kula == "NA"] <- NA
-    pp <- pp + ggtree::geom_nodelab(ggplot2::aes(label = kula),
-                                    geom = "text", color = node_labels_color,
-                                    hjust = 0, size = node_labels_size)
+    pp <- pp + ggtree::geom_text(ggplot2::aes(label = kula),
+                                 color = node_labels_color,
+                                 nudge_x = node_labels_offset,
+                                 hjust = 0, size = node_labels_size)
   }
 
   # add tip labels (text)

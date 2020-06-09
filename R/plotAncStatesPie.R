@@ -161,8 +161,8 @@ plotAncStatesPie <- function(t,
 
     ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, ladderize = TRUE)
-recover()
-  ##### calculate helper variables #####
+
+    ##### calculate helper variables #####
   tree <- attributes(t)$phylo
   tree_height <- max(phytools::nodeHeights(t@phylo))
   n_node <- ggtree:::getNodeNum(tree)

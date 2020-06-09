@@ -13,19 +13,21 @@ plotTree(
   node_labels = NULL,
   node_labels_color = "black",
   node_labels_size = 3,
+  node_labels_offset = 0,
   tip_labels = TRUE,
-  tip_labels_italics = TRUE,
+  tip_labels_italics = FALSE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_color = "black",
   tip_labels_size = 3,
-  scale_bar = FALSE,
+  tip_labels_offset = 0,
   node_pp = FALSE,
   node_pp_shape = 16,
   node_pp_color = "black",
   node_pp_size = "variable",
   branch_color = "black",
   color_branch_by = NULL,
-  line_width = 1
+  line_width = 1,
+  tree_layout = "rectangular"
 )
 }
 \arguments{
@@ -54,9 +56,11 @@ R color name or a valid hex code.}
 
 \item{node_labels_size}{(numeric; 3) Size of node labels}
 
+\item{node_labels_offset}{(numeric; 0) Horizontal offset of node labels from nodes.}
+
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
-\item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
+\item{tip_labels_italics}{(logical; FALSE) Plot tip labels in italics?}
 
 \item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores in tip labels?}
 
@@ -65,7 +69,7 @@ R color name or a valid hex code.}
 
 \item{tip_labels_size}{(numeric; 3) Size of tip labels}
 
-\item{scale_bar}{(logical; FALSE) Plot a scale bar in branch length units?}
+\item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from tree.}
 
 \item{node_pp}{(logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.}
@@ -91,6 +95,9 @@ If only 1 color is provided and you specify color_branch_by, default colorswill 
 treedata object to color branches, such as a rate.}
 
 \item{line_width}{(numeric; 1) Change line width for branches}
+
+\item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
+are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'}
 }
 \value{
 returns a single plot object.
@@ -106,17 +113,14 @@ timescale plotted on the x - axis, and 95\% CI for node ages.
 \examples{
 \dontrun{
 # Example of standard tree plot
-# Add on a scale bar using ggtree, but note that the x axis position must
-# be negative and scales with tree height
-
 file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 tree <- readTrees(paths = file)
 # Reroot tree before plotting
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 # Plot
-plot <- plotTree(tree = tree_rooted, node_age_bars = FALSE, node_pp = F, node_labels = "posterior",
-                 tip_labels_remove_underscore = T, node_labels_size = 3,
-                 tip_labels_italics = F) + ggtree::geom_treescale(x = -0.1, y = 0)
+plot <- plotTree(tree = tree_rooted, node_labels = "posterior")
+# We can add a scale bar:
+plot + ggtree::geom_treescale(x = -0.35, y = -1)
 
 # Example of coloring branches by rate
 file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
