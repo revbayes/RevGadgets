@@ -4,51 +4,31 @@
 \alias{plotDivRates}
 \title{Plot Diversification Rates}
 \usage{
-plotDivRates(
-  rates,
-  fig_types = c("speciation rate", "extinction rate", "net-diversification rate",
-    "relative-extinction rate"),
-  xlab = "million years ago",
-  col = NULL,
-  col_alpha = "50",
-  offset = 0,
-  xaxt = "n",
-  yaxt = "s",
-  ...
-)
+plotDivRates(rates, probs = c(0.025, 0.975))
 }
 \arguments{
-\item{rates}{(list; no default) The processed output for plotting (output of processDivRates()).}
+\item{rates}{(list of dataframes; no default) A list of dataframes,
+such as produced by processDivRates(), containing the data on rates
+and interval times for each type of rate to be plotted (e.g.
+speciation rate, etc.).}
 
-\item{fig_types}{(character vector, c("speciation rate", "extinction rate", "net-diversification rate", "relative-extinction rate")) Which aspects of the model to visualize. "fossilization rate" may also be included but is not plotted by default. See details for a complete description.}
-
-\item{xlab}{(character; "million years ago") The label of the x-axis.}
-
-\item{col}{(character; NULL) Colors used for printing in hex code. Must be of same length as fig_types.}
-
-\item{col_alpha}{(character; "50") Alpha channel parameter for credible intervals plotting. May range from 00 (completely transparent) to FF (completely opaque).}
-
-\item{offset}{(numeric; 0) Value to offset the x-axis by.}
-
-\item{xaxt}{(character; "n") The type of x-axis to plot. By default, no x-axis is plotted (recommended).}
-
-\item{yaxt}{(character; "s") The type of y-axis to plot.}
-
-\item{...}{Parameters delegated to various plotting functions.}
+\item{probs}{(numeric vector; c(0.025, 0.975)) a vector of length two
+containing the upper and lower bounds for the confidence intervals.}
 }
 \value{
-Plots diversification rates, does not return an object.
+A ggplot object
 }
 \description{
-Plots the output of a episodic diversification rate analysis
+Plots the output of an episodic diversification rate analysis
 }
 \details{
 Plots the output of episodic diversification rate analyses. Takes as input the
-output of processDivRates() and plotting parameters. Does not return an
-object. For now, valid figure types include: "speciation rate",
-"extinction rate","net-diversification rate", "relative-extinction rate",
-and "fossilization rate".
-If colors are not provided (parameter col), the plot defaults to preset colors.
+output of processDivRates() and plotting parameters. For now, only variable names
+(under "item") that contain the word "rate" are included in the plot.
+
+The return object can be manipulated. For example, you can change the axis labels,
+the color palette, whether the axes are to be linked, or the overall plotting style/theme,
+just as with any ggplot object.
 }
 \examples{
 
@@ -68,8 +48,21 @@ primates <- processDivRates(speciation_time_log = speciation_time_file,
                             extinction_time_log = extinction_time_file,
                             extinction_rate_log = extinction_rate_file,
                             burnin = 0.25)
+
 # then plot results:
-plotDivRates(rates = primates)
+p <- plotDivRates(rates = primates);p
+
+# let's say we want to change the x-axis
+p <- p + ggplot2::xlab("Millions of years ago");p
+
+# let's say we don't want to plot relative-extinction rate,
+# and use the same y-axis for all three rates
+plotdata2 <- plotdata \%>\%
+               filter(item != "relative-extinction rate")
+p2 <- plotDivRates(plotdata2)
+p2 <- p2 +
+       facet_wrap(vars(item),
+       scale = "fixed");p2
 }
 
 }

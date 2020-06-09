@@ -252,6 +252,28 @@
   return(codes)
 }
 
+.computeMeanInterval <- function(item, rates, probs){
+  interval_times <- unlist(rates[["speciation time"]][1,grepl("interval_times", names(rates$`speciation time`))])
+  interval_times <- sort(interval_times) # For some reason these are ordered differently than rate vectors
+
+  rate <- rates[[item]]
+  rate <- rate[, grep("[0-9]", colnames(rate))]
+
+  mean_rate <- colMeans(rate)
+  quantiles <- apply(rate, 2,
+                     quantile,
+                     probs = probs)
+
+  df <- dplyr::tibble(.rows = length(mean_rate))
+  df["mean"] <- mean_rate
+  df["lower"] <- quantiles[1,]
+  df["upper"] <- quantiles[2,]
+  df$time <- interval_times
+  df$item <- item
+
+  return(df)
+}
+
 .convertAndRound <- function(L) {
   #sometimes there will be NAs before forcing to convert - got to remove nas before doing this test!
   k <- L[!is.na(L)]
@@ -532,7 +554,17 @@
                     node_names_op = node_names_op))
 }
 
-.make_states <- function(label_fn, color_fn) {
+.makePlotData <- function(rates, probs){
+  rates <- .removeNull(rates)
+  res <- lapply(names(rates), function(e) .computeMeanInterval(e, rates = rates, probs = probs))
+  plotdata <- do.call(rbind, res)
+  plotdata$item <- factor(plotdata$item,
+                          levels = c("speciation rate", "extinction rate", "speciation time", "extinction time",
+                                     "net-diversification rate", "relative-extinction rate"))
+  return(plotdata)
+}
+
+.makeStates <- function(label_fn, color_fn) {
 
   # generate colors for ranges
   range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
@@ -566,8 +598,6 @@
 
   return( list(state_labels = st_lbl, state_color = st_colors) )
 }
-
-
 
 # Fast data.frame constructor and indexing
 # No checking, recycling etc. unless asked for
@@ -895,6 +925,10 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   # return the trees
   return(trees)
 
+}
+
+.removeNull <- function(x){
+  res <- x[which(!sapply(x, is.null))]
 }
 
 # set prob factors

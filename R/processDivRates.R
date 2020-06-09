@@ -13,22 +13,21 @@
 #' only one log file per parameter type is accepted (i.e. log files from multiple runs
 #' must be combined before reading into the function).
 #'
-#'@param speciation_time_log (vector of character strings or single character string; "") Path to speciation times log file(s)
-#'@param speciation_rate_log (vector of character strings or single character string; "") Path to speciation rates log file(s)
-#'@param extinction_time_log (vector of character strings or single character string; "") Path to extinction times log file(s)
-#'@param extinction_rate_log (vector of character strings or single character string; "") Path to extinction rates log file(s)
-#'@param fossilization_time_log (vector of character strings or single character string; "") Path to fossilization times log file(s)
-#'@param fossilization_rate_log (vector of character strings or single character string; "") Path to fossilization rates log file(s)
-
-#'@param burnin (single numeric value; default = 0) Fraction of generations to
-#' discard (if value provided is between 0 and 1) or number of generations (if
-#' value provided is greater than 1). Passed to readTrace().
+#' @param speciation_time_log (vector of character strings or single character string; "") Path to speciation times log file(s)
+#' @param speciation_rate_log (vector of character strings or single character string; "") Path to speciation rates log file(s)
+#' @param extinction_time_log (vector of character strings or single character string; "") Path to extinction times log file(s)
+#' @param extinction_rate_log (vector of character strings or single character string; "") Path to extinction rates log file(s)
+#' @param fossilization_time_log (vector of character strings or single character string; "") Path to fossilization times log file(s)
+#' @param fossilization_rate_log (vector of character strings or single character string; "") Path to fossilization rates log file(s)
+#' @param burnin (single numeric value; default = 0) Fraction of generations to
+#'  discard (if value provided is between 0 and 1) or number of generations (if
+#'  value provided is greater than 1). Passed to readTrace().
 #'
-#'@return List object with processed rate and time parameters.
+#' @return List object with processed rate and time parameters.
 #'
-#'@examples
+#' @examples
 #'
-#'\dontrun{
+#' \dontrun{
 #'
 #' speciation_time_file <- system.file("extdata",
 #'     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
