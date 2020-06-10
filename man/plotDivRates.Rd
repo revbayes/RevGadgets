@@ -43,26 +43,23 @@ extinction_time_file <- system.file("extdata",
 extinction_rate_file <- system.file("extdata",
     "epi_bd/primates_EBD_extinction_rates.p", package="RevGadgets")
 
-primates <- processDivRates(speciation_time_log = speciation_time_file,
-                            speciation_rate_log = speciation_rate_file,
-                            extinction_time_log = extinction_time_file,
-                            extinction_rate_log = extinction_rate_file,
-                            burnin = 0.25)
+rates <- processDivRates(speciation_time_log = speciation_time_file,
+                         speciation_rate_log = speciation_rate_file,
+                         extinction_time_log = extinction_time_file,
+                         extinction_rate_log = extinction_rate_file,
+                         burnin = 0.25)
 
 # then plot results:
-p <- plotDivRates(rates = primates);p
+p <- plotDivRates(rates = rates);p
 
 # let's say we want to change the x-axis
 p <- p + ggplot2::xlab("Millions of years ago");p
 
 # let's say we don't want to plot relative-extinction rate,
 # and use the same y-axis for all three rates
-plotdata2 <- plotdata \%>\%
-               filter(item != "relative-extinction rate")
-p2 <- plotDivRates(plotdata2)
-p2 <- p2 +
-       facet_wrap(vars(item),
-       scale = "fixed");p2
+rates[grep("relative-extinction", names(rates))] <- NULL
+p2 <- plotDivRates(rates)
+p2 <- p2 + ggplot2::facet_wrap(ggplot2::vars(item), scale = "fixed");p2
 }
 
 }
