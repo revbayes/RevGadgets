@@ -150,7 +150,7 @@ plotAncStatesMAP <- function(t,
                     state_transparency = 0.75,
                     tree_layout = "rectangular") {
 
-  ##### parameter compatability checks! #####
+    ##### parameter compatability checks! #####
   if (class(t) != "treedata") stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE) stop("cladogenetic should be TRUE or FALSE")
   if (is.logical(tip_labels) == FALSE) stop("tip_labels should be TRUE or FALSE")
@@ -193,7 +193,11 @@ plotAncStatesMAP <- function(t,
   n_node <- ggtree:::getNodeNum(tree)
 
   ##### create basic tree plot #####
-  p <- ggtree:::ggtree(t, layout = tree_layout, ladderize = TRUE)
+  # supressing warning:
+  # Warning message:
+  #   `tbl_df()` is deprecated as of dplyr 1.0.0.
+  # Please use `tibble::as_tibble()` instead.
+  p <- suppressWarnings(ggtree:::ggtree(t, layout = tree_layout, ladderize = TRUE))
 
   ##### process column names #####
 
