@@ -56,7 +56,6 @@
 #' @export
 
 plotDivRates <- function(rates, probs = c(0.025, 0.975)){
-recover()
   plotdata <- .makePlotData(rates = rates, probs = probs)
   rates_to_plot <- unique(plotdata$item)[grep("rate", unique(plotdata$item))]
 
