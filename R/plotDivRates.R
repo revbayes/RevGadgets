@@ -56,7 +56,7 @@
 #' @export
 
 plotDivRates <- function(rates, probs = c(0.025, 0.975)){
-
+recover()
   plotdata <- .makePlotData(rates = rates, probs = probs)
   rates_to_plot <- unique(plotdata$item)[grep("rate", unique(plotdata$item))]
 
@@ -72,14 +72,15 @@ plotDivRates <- function(rates, probs = c(0.025, 0.975)){
                                  ymax = upper,
                                  fill = item),
                     direction = "vh",
-                    alpha = 0.4) +
+                    alpha = 0.4,
+                    color = NA) +
     ggplot2::scale_x_reverse() +
     ggplot2::xlab("time") +
     ggplot2::theme_bw() +
     ggplot2::theme(axis.title.y = ggplot2::element_blank(),
                    legend.title = ggplot2::element_blank(),
                    legend.position = "none",
-                   axis.line = ggplot2::element_line(colour = "black"),
+                   #axis.line = ggplot2::element_line(colour = "black"),
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
                    strip.background = ggplot2::element_blank()) +
