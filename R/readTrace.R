@@ -27,9 +27,16 @@
 #'
 #' \dontrun{
 #' file <- system.file("extdata",
-#'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
+#'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 #' one_trace <- readTrace(paths = file)
-#' multi_trace <- readTrace(paths = c(file, file))
+#'
+#' file_1 <- system.file("extdata",
+#'     "comp_method_disc/mkstates_run_1.txt", package="RevGadgets")
+#' file_2 <- system.file("extdata",
+#'     "comp_method_disc/mkstates_run_2.txt", package="RevGadgets")
+#'
+#' multi_trace <- readTrace(path = c(file_1, file_2))
+#'
 #' }
 #' @export
 

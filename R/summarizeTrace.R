@@ -24,8 +24,8 @@
 #' \dontrun{
 #' # continuous character only example, one run
 #' file <- system.file("extdata",
-#'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
-#' one_trace <- readTrace(path = file)
+#'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
+#' one_trace <- readTrace(paths = file)
 #' trace_sum <- summarizeTrace(trace = one_trace,
 #'                             vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 #'
@@ -36,6 +36,7 @@
 #'     "comp_method_disc/mkstates_run_2.txt", package="RevGadgets")
 #'
 #' multi_trace <- readTrace(path = c(file1, file2))
+#'
 #' trace_sum_multi <- summarizeTrace(trace = multi_trace,
 #'                                   vars = c("end_680",
 #'                                            "end_681",
