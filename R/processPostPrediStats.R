@@ -16,13 +16,13 @@
 #'     "PPS/simulated_data_pps_example.csv", package="RevGadgets")
 #' file_emp <- system.file("extdata",
 #'     "PPS/empirical_data_pps_example.csv", package="RevGadgets")
-#' t <- processPosteriorPredictiveStatistics(path_sim = file_sim,
+#' t <- processPostPredStats(path_sim = file_sim,
 #'                                           path_emp = file_emp)
 #' }
 #'
 #' @export
 
-processPosteriorPredictiveStatistics <- function(path_sim, path_emp) {
+processPostPredStats <- function(path_sim, path_emp) {
   # parameter checks
   paths <- c(path_sim, path_emp)
   character_paths_are_strings <- is.character(paths)

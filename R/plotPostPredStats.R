@@ -9,7 +9,7 @@
 #'
 #' @param data (list of data frames; no default) A list of data frames
 #' of the empirical and simulated values, such as the output of
-#' processPosteriorPredictiveStatistics.R
+#' processPostPredStats.R
 #'
 #' @return A list of ggplot objects, where each plot contains a density distribution
 #' of the predicted values and a dashed line of the empirical value. The light blue
@@ -23,15 +23,15 @@
 #'     "PPS/simulated_data_pps_example.csv", package="RevGadgets")
 #' file_emp <- system.file("extdata",
 #'     "PPS/empirical_data_pps_example.csv", package="RevGadgets")
-#' t <- processPosteriorPredictiveStatistics(path_sim = file_sim,
-#'                                           path_emp = file_emp)
-#' plots <- plotPosteriorPredictiveStatistics(data = t)
+#' t <- processPostPredStats(path_sim = file_sim,
+#'                          path_emp = file_emp)
+#' plots <- plotPostPredStats(data = t)
 #'
 #' }
 #'
 #' @export
 
-plotPosteriorPredictiveStatistics <- function(data) {
+plotPostPredStats <- function(data) {
   sim <- data$simulated
   emp <- data$empirical
   names <- colnames( emp )
