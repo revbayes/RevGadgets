@@ -95,7 +95,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
                      tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                      tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
                      node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
-                     tip_age_bars_color = "red", branch_color = "black", color_branch_by = NULL, line_width = 1) {
+                     tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
