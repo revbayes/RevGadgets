@@ -43,17 +43,25 @@ each parameter separately.
 \dontrun{
 
 file <- system.file("extdata",
-    "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
+    "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 one_trace <- readTrace(paths = file)
 plots <- plotTrace(trace = one_trace,
                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 plots[[1]]
 # add custom colors
-plots[[1]] + scale_fill_manual(values = c("green","red","blue","orange"))
+# THIS DOESNT WORK
+plots[[1]] + ggplot2::scale_color_manual(values = c("green","red","blue","orange")) + ggplot2::scale_fill_manual(values = c("green","red","blue","orange"))
+
 
 # make the same plot, using match
-
 plots <- plotTrace(trace = one_trace, match = "pi")
+
+# plot some qualitative variables
+file <- system.file("extdata", "comp_method_disc/freeK_RJ.p", package = "RevGadgets")
+trace <- readTrace(path = file)
+
+plots <- plotTrace(trace = trace, vars = c("prob_rate_12", "prob_rate_13", "prob_rate_31", "prob_rate_32"))
+
 
 }
 
