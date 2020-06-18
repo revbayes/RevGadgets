@@ -1,6 +1,6 @@
 #' process Posterior Predictive Statistics
 #'
-#' Reads in and processes posterior predictive statistics data
+#' Reads in and processes posterior-predictive statistics
 #'
 #' @param path_sim (character string; no default) Path to the .csv file containing
 #' the simulated data results
@@ -23,8 +23,10 @@
 #' @export
 
 processPostPredStats <- function(path_sim, path_emp) {
+
   # parameter checks
   paths <- c(path_sim, path_emp)
+
   character_paths_are_strings <- is.character(paths)
   if ( any(character_paths_are_strings == FALSE) == TRUE ) {
     # print out the ones that are not character strings
@@ -32,6 +34,7 @@ processPostPredStats <- function(path_sim, path_emp) {
          paste0("\t",paths[character_paths_are_strings == FALSE]), sep="\n")
     stop()
   }
+
   do_files_exist <- file.exists(paths)
   if ( any(do_files_exist == FALSE) == TRUE ) {
     # print out paths to files that don't exist
@@ -41,17 +44,24 @@ processPostPredStats <- function(path_sim, path_emp) {
   }
 
   # read in data
-  posterior_predictive_data <- read.table(path_sim,
-                                          header = TRUE,
-                                          sep = ",",
-                                          check.names = FALSE)
-  posterior_original_data   <- read.table(path_emp,
-                                          header = TRUE,
-                                          sep = ",",
-                                          check.names = FALSE)
+  posterior_predictive_statistics <- read.table(path_sim,
+                                                header = TRUE,
+                                                sep = ",",
+                                                check.names = FALSE)
+
+  observed_statistics <- read.table(path_emp,
+                                    header = TRUE,
+                                    sep = ",",
+                                    check.names = FALSE)
+
+  # check that the statistics match
+  if ( length(setdiff(colnames(posterior_predictive_statistics), colnames(observed_statistics))) > 0 ) {
+    cat( "Simulated and observed files do not have the same statistics.\n")
+    stop()
+  }
 
   # return list
-  return(list(simulated = posterior_predictive_data,
-              empirical = posterior_original_data))
+  return(list(simulated = posterior_predictive_statistics,
+              observed  = observed_statistics))
 }
 
