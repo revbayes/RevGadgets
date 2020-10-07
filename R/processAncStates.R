@@ -27,6 +27,7 @@
 #' @export
 #'
 processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALSE) {
+    #recover()
     # read in tree
     tree <- readTrees(path)
     t <- tree[[1]][[1]]

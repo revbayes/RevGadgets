@@ -46,6 +46,7 @@
 
 # set custom state labels
 .assign_state_labels <- function(t, state_labels, include_start_states, labels_as_numbers, n_states=3) {
+  #recover()
   # what is the ancestral state name tag?
   if (include_start_states) {
     state_pos_str_base = c("start_state_", "end_state_")
@@ -75,7 +76,7 @@
     stop(paste0("names(state_labels): ",
                 paste0(names(state_labels), collapse = ", "),
                 " do not match data in tree file: ",
-                paste0(sort(as.character(unique(t@data[,col_num]))), collapse = ", ")))
+                paste0(sort(all_anc_states[all_anc_states != "NA"]), collapse = ", ")))
   }
 
   # generate state labels if none provided and not a chromosome analysis
