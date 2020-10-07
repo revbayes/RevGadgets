@@ -24,7 +24,7 @@ plotFBDTree(
   node_pp_color = "black",
   node_pp_size = "variable",
   tip_age_bars = FALSE,
-  tip_age_bars_color = "red",
+  tip_age_bars_color = "green",
   branch_color = "black",
   color_branch_by = NULL,
   line_width = 1
