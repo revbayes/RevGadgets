@@ -75,6 +75,9 @@
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
 #' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
 #'
+#' @param legend_x {numeric, 0.1} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
+#' @param legend_y {numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
+#'
 #' @return returns a single plot object.
 #'
 #' @examples
@@ -106,7 +109,9 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
                      tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                      tip_labels_size = 3, tip_labels_offset = 0, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
                      node_pp_size = "variable", branch_color = "black", color_branch_by = NULL, line_width = 1,
-                     tree_layout = "rectangular") {
+                     tree_layout = "rectangular",
+                     legend_x = 0.1, legend_y = 0.8) {
+
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
@@ -354,7 +359,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
 
   # adjust legend(s)
 
-  pp <- pp + ggplot2::theme(legend.position=c(.9, .8))
+  pp <- pp + ggplot2::theme(legend.position=c(legend_x, legend_y))
   return(pp)
 }
 

@@ -75,6 +75,9 @@
 #' @param label_sampled_ancs (logical; FALSE) Label any sampled ancestors? Will inherent tip labels
 #' aesthetics for size and color.
 #'
+#' @param legend_x {numeric, 0.9} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
+#' @param legend_y {numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
+#'
 #' @return returns a single plot object.
 #'
 #' @examples
@@ -95,7 +98,8 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
                      tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                      tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
                      node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
-                     tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1) {
+                     tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1,
+                     legend_x = 0.9, legend_y = 0.8) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
@@ -133,6 +137,8 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
       any(vars %in% color_branch_by) == FALSE) stop("color_branch_by should be NULL or a column in your tidytree object")
   if (is.numeric(line_width) == FALSE) stop ("line_width should be numeric")
   if (is.logical(label_sampled_ancs) == FALSE) stop("label_sampled_ancs should be TRUE or FALSE")
+  if (is.numeric(legend_x) == FALSE) stop("legend_x should be numeric")
+  if (is.numeric(legend_y) == FALSE) stop("legend_x should be numeric")
 
   # grab single tree from input
   phy <- tree[[1]][[1]]
@@ -176,8 +182,11 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
   #check that if user wants to label sampled ancs, there are sampled ancs in the files
   if (label_sampled_ancs == TRUE) {
     sampled_ancs <- pp$data[!pp$data$isTip & !is.na(pp$data$sampled_ancestor), ]
-    if (nrow(sampled_ancs) < 1) stop("You specified label_sampled_acs == TRUE,
-                                     but there are no sampled ancestors in your dataset")
+    if (nrow(sampled_ancs) < 1) {
+      label_sampled_acs <- FALSE
+    }
+    # if (nrow(sampled_ancs) < 1) stop("You specified label_sampled_acs == TRUE,
+    #                                  but there are no sampled ancestors in your dataset")
   }
 
   # add timeline
@@ -411,7 +420,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
 
   # adjust legend(s)
 
-  pp <- pp+ ggplot2::theme(legend.position=c(.9, .8))
+  pp <- pp+ ggplot2::theme(legend.position=c(legend_x, legend_y))
   return(pp)
 }
 
