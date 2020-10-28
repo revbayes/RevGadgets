@@ -43,6 +43,7 @@
 #' Varies from 0 to 1.
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
+#' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
 #'
 #' @examples
 #'
@@ -59,7 +60,7 @@
 #' # plot
 #' plotAncStatesPie(t = example)
 #'
-#' # DEC Biogeographic range evolution example
+#' # DEC Biogeographic range evolution example (with timeline)
 #'
 #' # process file
 #' file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
@@ -68,6 +69,7 @@
 #' labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
 #'           "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
 #'           "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
+#' dec_example  <- processAncStates(file , state_labels = labs)
 #' # Use the state_labels in the returned tidytree object to define color palette
 #' # These state_labels may be a subset of the labels you provided
 #' # (not all possible regions may be sampled in the dataset)
@@ -76,7 +78,7 @@
 #'
 #' # plot
 #' p <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-#'              cladogenetic = TRUE, tip_labels_offset = 0.25) +
+#'              cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
 #'              ggplot2::theme(legend.position = c(0.1, 0.75))
 #' }
 #'
@@ -118,7 +120,8 @@ plotAncStatesPie <- function(t,
                     shoulder_pie_nudge_x = node_pie_nudge_x,
                     shoulder_pie_nudge_y = node_pie_nudge_y,
 
-                    state_transparency = 0.75) {
+                    state_transparency = 0.75,
+                    timeline = F) {
 
   ##### parameter compatibility checks #####
   if (class(t) != "treedata") stop("t should be a treedata objects")
@@ -158,6 +161,7 @@ plotAncStatesPie <- function(t,
   if (length(shoulder_pie_nudge_y) != 1) stop("shoulder_pie_nudge_y should be a single number")
   if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
   if (state_transparency < 0 || state_transparency > 1) stop("state_transparency should be a number between 0 - 1")
+  if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
 
     ##### create basic tree plot #####
   p <- ggtree:::ggtree(t, ladderize = TRUE)
@@ -251,6 +255,46 @@ plotAncStatesPie <- function(t,
   if (tip_labels_remove_underscore) {p$data$label <- gsub("_", " ", p$data$label)}
 
   ##### start plotting #####
+
+  # add timeline
+  if (timeline == TRUE) {
+
+    if ("age_0.95_HPD" %in% colnames(p$data)){
+      p$data$age_0.95_HPD <- lapply(p$data$age_0.95_HPD, function(z) {
+        if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+      })
+      minmax <- t(matrix(unlist(p$data$age_0.95_HPD), nrow = 2))
+    }
+    if (!"age_0.95_HPD" %in% colnames(p$data)) {
+      max_age <- max(ape::branching.times(tree))
+      print("Adding timeline using branch lengths. Make sure branch lengths are in MYA units!")
+    } else {
+      max_age <- max(minmax, na.rm =TRUE)
+      print("Adding timeline using age_0.95_HPD from tree file.")
+    }
+
+    if (max_age > 100){
+      interval <- 50
+    } else {interval <- 10}
+
+    dx <- max_age %% interval
+
+    # set coordinates
+    p <- p + ggplot2::coord_cartesian()
+    p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
+                                         expand = c(0, 0),
+                                         limits = c(-max_age*1.05, tree_height/2),
+                                         breaks = -rev(seq(0,max_age+dx,interval)),
+                                         labels = rev(seq(0,max_age+dx,interval)),
+    )
+    p <- p + ggtree::theme_tree2()
+    #pp <- p + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
+    p <- ggtree::revts(p)
+    n_tips <- length(tree$tip.label)
+    p <- p + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
+    #p  <- p + ggplot2::annotate(geom = "segment", x = 0, xend = -max_age, y = -n_tips/20, yend = -n_tips/20)
+    p <- .add_epoch_times(p, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
+  }
 
   # add tip labels
   if (tip_labels == TRUE) {
@@ -406,7 +450,7 @@ plotAncStatesPie <- function(t,
   }
 
   # add space on x axis for tip labels
-  if (tip_labels == TRUE) {
+  if (tip_labels == TRUE & timeline == FALSE) {
     p <- p + ggtree::xlim(0, tree_height + tree_height/2)
   }
 

@@ -28,7 +28,8 @@ plotAncStatesMAP(
   tip_states_size = node_size,
   tip_states_shape = node_shape,
   state_transparency = 0.75,
-  tree_layout = "rectangular"
+  tree_layout = "rectangular",
+  timeline = FALSE
 )
 }
 \arguments{
@@ -104,6 +105,8 @@ as node symbols.}
 
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
 are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'}
+
+\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
 }
 \description{
 Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
@@ -126,6 +129,9 @@ example <- processAncStates(file, state_labels = c("1" = "Awesome", "2" = "Beaut
 
 # have states vary by color and indicate state pp with size (default)
 plotAncStatesMAP(t = example, tip_labels_italics = T)
+
+# have states vary by color and indicate state pp with size , and add a timeline
+plotAncStatesMAP(t = example, tip_labels_italics = T, timeline = T)
 
 # have states vary by color and symbol, label nodes with pp of states
 plotAncStatesMAP(t = example,  node_shape_as = "state", node_size = 4, node_shape = c(15, 17,20),

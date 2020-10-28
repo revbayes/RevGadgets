@@ -27,7 +27,9 @@ plotTree(
   branch_color = "black",
   color_branch_by = NULL,
   line_width = 1,
-  tree_layout = "rectangular"
+  tree_layout = "rectangular",
+  legend_x = 0.1,
+  legend_y = 0.8
 )
 }
 \arguments{
@@ -98,6 +100,10 @@ treedata object to color branches, such as a rate.}
 
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
 are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'}
+
+\item{legend_x}{{numeric, 0.1} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
+
+\item{legend_y}{{numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
 }
 \value{
 returns a single plot object.

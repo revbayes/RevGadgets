@@ -59,6 +59,8 @@
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
 #' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
 #'
+#' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
+#'
 #' @examples
 #'
 #' \dontrun{
@@ -70,6 +72,9 @@
 #'
 #' # have states vary by color and indicate state pp with size (default)
 #' plotAncStatesMAP(t = example, tip_labels_italics = T)
+#'
+#' # have states vary by color and indicate state pp with size , and add a timeline
+#' plotAncStatesMAP(t = example, tip_labels_italics = T, timeline = T)
 #'
 #' # have states vary by color and symbol, label nodes with pp of states
 #' plotAncStatesMAP(t = example,  node_shape_as = "state", node_size = 4, node_shape = c(15, 17,20),
@@ -148,8 +153,8 @@ plotAncStatesMAP <- function(t,
                     tip_states_shape = node_shape,
 
                     state_transparency = 0.75,
-                    tree_layout = "rectangular") {
-
+                    tree_layout = "rectangular",
+                    timeline = FALSE) {
     ##### parameter compatability checks! #####
   if (class(t) != "treedata") stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE) stop("cladogenetic should be TRUE or FALSE")
@@ -186,6 +191,11 @@ plotAncStatesMAP <- function(t,
   if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
   if (state_transparency > 1 | state_transparency < 0) stop("state_transparency should be a number between 0 - 1")
   tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
+  if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
+  if (tree_layout != "rectangular") {
+    if (timeline == TRUE) { stop("timeline is only compatible with
+                                 tree_layout = 'rectangular'")}
+  }
 
   ##### calculate helper variables #####
 
@@ -256,18 +266,20 @@ plotAncStatesMAP <- function(t,
 
   ##### color processing and checks #####
   # check if number of states exceeds default color palette options
-  if (node_color[1] == "default" & length(all_states) > 12) {
-    stop(paste0(length(all_states), " states in dataset; please provide colors (default only can provide up to 12"))
-  }
+  if (!is.null(node_color_as) && node_color_as == "states") {
+    if (node_color[1] == "default" & length(all_states) > 12) {
+      stop(paste0(length(all_states), " states in dataset; please provide colors (default only can provide up to 12"))
+    }
 
-  # check if number of states not equal to provided colors
-  if (node_color[1] != "default" & length(node_color) < length(all_states)) {
-    stop(paste0("You provided fewer colors in node_color than states in your dataset. There are ",
-                length(all_states), " states and you provide ", length(node_color), " colors."))
-  }
-  if (node_color[1] != "default" & length(node_color) > length(all_states)) {
-    stop(paste0("You provided more colors in node_color than states in your dataset. There are ",
-                length(all_states), " states and you provide ", length(node_color), " colors."))
+    # check if number of states not equal to provided colors
+    if (node_color[1] != "default" & length(node_color) < length(all_states)) {
+      stop(paste0("You provided fewer colors in node_color than states in your dataset. There are ",
+                  length(all_states), " states and you provide ", length(node_color), " colors."))
+    }
+    if (node_color[1] != "default" & length(node_color) > length(all_states)) {
+      stop(paste0("You provided more colors in node_color than states in your dataset. There are ",
+                  length(all_states), " states and you provide ", length(node_color), " colors."))
+    }
   }
 
   # set default colors
@@ -625,6 +637,46 @@ plotAncStatesMAP <- function(t,
   if (tip_labels == TRUE) {
     tree_height <- max(phytools::nodeHeights(t@phylo))
     p <- p + ggtree::xlim(0, tree_height + tree_height/2)
+  }
+
+  # add timeline
+  if (timeline == TRUE) {
+
+    if ("age_0.95_HPD" %in% colnames(p$data)){
+      p$data$age_0.95_HPD <- lapply(p$data$age_0.95_HPD, function(z) {
+        if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+      })
+      minmax <- t(matrix(unlist(p$data$age_0.95_HPD), nrow = 2))
+    }
+      if (!"age_0.95_HPD" %in% colnames(p$data)) {
+        max_age <- max(ape::branching.times(tree))
+        print("Adding timeline using branch lengths. Make sure branch lengths are in MYA units!")
+      } else {
+        max_age <- max(minmax, na.rm =TRUE)
+        print("Adding timeline using age_0.95_HPD from tree file.")
+      }
+
+    if (max_age > 100){
+      interval <- 50
+    } else {interval <- 10}
+
+    dx <- max_age %% interval
+
+    # set coordinates
+    p <- p + ggplot2::coord_cartesian()
+    p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
+                                         expand = c(0, 0),
+                                         limits = c(-max_age*1.05, tree_height/2),
+                                         breaks = -rev(seq(0,max_age+dx,interval)),
+                                         labels = rev(seq(0,max_age+dx,interval)),
+    )
+    p <- p + ggtree::theme_tree2()
+    #pp <- p + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
+    p <- ggtree::revts(p)
+    n_tips <- length(tree$tip.label)
+    p <- p + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
+    #p  <- p + ggplot2::annotate(geom = "segment", x = 0, xend = -max_age, y = -n_tips/20, yend = -n_tips/20)
+    p <- .add_epoch_times(p, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
   }
 
   return(p)

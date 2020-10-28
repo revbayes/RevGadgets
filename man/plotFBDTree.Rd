@@ -27,7 +27,9 @@ plotFBDTree(
   tip_age_bars_color = "green",
   branch_color = "black",
   color_branch_by = NULL,
-  line_width = 1
+  line_width = 1,
+  legend_x = 0.9,
+  legend_y = 0.8
 )
 }
 \arguments{
@@ -99,6 +101,10 @@ If only 1 color is provided and you specify color_branch_by, default colorswill 
 treedata object to color branches, such as a rate.}
 
 \item{line_width}{(numeric; 1) Change line width for branches}
+
+\item{legend_x}{{numeric, 0.9} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
+
+\item{legend_y}{{numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
 }
 \value{
 returns a single plot object.

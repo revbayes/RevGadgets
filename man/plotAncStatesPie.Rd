@@ -29,7 +29,8 @@ plotAncStatesPie(
   tip_pie_nudge_y = node_pie_nudge_y,
   shoulder_pie_nudge_x = node_pie_nudge_x,
   shoulder_pie_nudge_y = node_pie_nudge_y,
-  state_transparency = 0.75
+  state_transparency = 0.75,
+  timeline = F
 )
 }
 \arguments{
@@ -96,6 +97,8 @@ cladogenetic plots.}
 \item{state_transparency}{(integer; 0.75) Alpha (transparency) of state symbols- varies from
 0 to 1.}
 
+\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
+
 \item{collapse_states}{(logical; FALSE) Collapse low-probability states into "other" category?}
 
 \item{collapse_states_threshold}{(numeric; 0.05) Probability threshold for collapsing states.
@@ -118,7 +121,7 @@ file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGa
 # plot
 plotAncStatesPie(t = example)
 
-# DEC Biogeographic range evolution example
+# DEC Biogeographic range evolution example (with timeline)
 
 # process file
 file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
@@ -127,6 +130,7 @@ file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
 labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
           "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
           "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
+dec_example  <- processAncStates(file , state_labels = labs)
 # Use the state_labels in the returned tidytree object to define color palette
 # These state_labels may be a subset of the labels you provided
 # (not all possible regions may be sampled in the dataset)
@@ -135,7 +139,7 @@ names(colors) <- dec_example@state_labels
 
 # plot
 p <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-             cladogenetic = TRUE, tip_labels_offset = 0.25) +
+             cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
              ggplot2::theme(legend.position = c(0.1, 0.75))
 }
 

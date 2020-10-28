@@ -194,7 +194,6 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
     # add timeline
   if (timeline == TRUE) {
 
-
     pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
       if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
@@ -211,20 +210,23 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
 
     dx <- max_age %% interval
 
-        # set coordinates
+    # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
     #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
     pp <- pp + ggplot2::coord_cartesian()
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
-                                           limits = c(-max(minmax, na.rm = T)*1.05, tree_height/2),
+                                           expand = c(0, 0),
+                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
                                            breaks = -rev(seq(0,max_age+dx,interval)),
                                            labels = rev(seq(0,max_age+dx,interval)),
-                                           )
+    )
     pp <- pp + ggtree::theme_tree2()
     #pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
     pp <- ggtree::revts(pp)
-    pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
+    n_tips <- length(phy@phylo$tip.label)
+    pp <- pp + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
+    pp <- .add_epoch_times(pp, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
   }
 
   # processing for node_age_bars and tip_age_bars

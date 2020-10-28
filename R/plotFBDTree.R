@@ -192,7 +192,6 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
   # add timeline
   if (timeline == TRUE) {
 
-
     pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
       if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
@@ -215,6 +214,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
     #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
     pp <- pp + ggplot2::coord_cartesian()
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
+                                           expand = c(0, 0),
                                            limits = c(-max(minmax, na.rm = T), tree_height/2),
                                            breaks = -rev(seq(0,max_age+dx,interval)),
                                            labels = rev(seq(0,max_age+dx,interval)),
@@ -222,7 +222,9 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
     pp <- pp + ggtree::theme_tree2()
     #pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
     pp <- ggtree::revts(pp)
-    pp <- .add_epoch_times(pp, max_age, dy_bars=-7, dy_text=-3)
+    n_tips <- length(phy@phylo$tip.label)
+    pp <- pp + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
+    pp <- .add_epoch_times(pp, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
   }
 
   # processing for node_age_bars and tip_age_bars
