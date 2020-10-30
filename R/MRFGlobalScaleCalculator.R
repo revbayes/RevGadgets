@@ -26,7 +26,7 @@
 #' trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=gs)
 #' plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
 #'
-#' @export
+
 
 setMRFGlobalScaleHyperpriorNShifts <- function(n.episodes,model,prior.n.shifts=log(2),shift.size=2) {
   if ( model == "GMRF" ) {
@@ -163,7 +163,6 @@ setGMRFGlobalScaleExpectedNumberOfJumps <- function(n.episodes,prior.n.shifts=lo
 #' trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=0.0021)
 #' plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
 #'
-#' @export
 
 simulateMRF <- function(n.episodes,model,global.scale.hyperprior,initial.value=NULL,exponentiate=TRUE) {
   ndiffs <- n.episodes - 1
