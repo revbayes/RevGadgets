@@ -14,5 +14,5 @@ test_that("plot pi traces", {
                         "graphs/plotTrace_pi.Rdata",
                         package="RevGadgets")
   load(file_2) # loads an object called 'plots'
-  expect_equal(plots[[1]], plots_new[[1]])
+  expect_equal(plots, plots_new)
   })
