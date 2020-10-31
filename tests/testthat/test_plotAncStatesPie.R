@@ -4,7 +4,7 @@ test_that("plots pies of ancestral states", {
 
   # get files
   tree_file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
-  plot_file <- system.file("extdata", "graphs/plotAncStatesPie.RData", package="RevGadgets")
+  plot_file <- system.file("extdata", "graphs/plotAncStatesPie.rds", package="RevGadgets")
 
   # make a new plot
   # labels that correspond to each region/ possible combination of regions
@@ -24,9 +24,13 @@ test_that("plots pies of ancestral states", {
 
 
   # read original plot object
-  load(plot_file)
+  plot_orig <- readRDS(plot_file)
 
   # compare plot objects
-  expect_equal(plot[[1]], plot_new[[1]])
+  for (i in 1:length(plot_new)) {
+    if (names(plot_orig[i]) != "plot_env") {
+      expect_equal(plot_new[[i]], plot_orig[[i]])
+    }
+  }
 
 })

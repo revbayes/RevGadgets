@@ -7,12 +7,20 @@ test_that("plot pi traces", {
                       package="RevGadgets")
   one_trace <- readTrace(path = file_1)
   # produce the plot pi parameters object
-  plots_new <- plotTrace(trace = one_trace,
-                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
+  plot_new <- plotTrace(trace = one_trace,
+                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
   # load the saved plot for comparison
-  file_2 <- system.file("extdata",
-                        "graphs/plotTrace_pi.Rdata",
+  plot_file <- system.file("extdata",
+                        "graphs/plotTrace_pi.rds",
                         package="RevGadgets")
-  load(file_2) # loads an object called 'plots'
-  expect_equal(plots, plots_new)
-  })
+  #read in original plot
+  plot_orig <- readRDS(plot_file)[[1]]
+
+  # compare plot objects
+  for (i in 1:length(plot_new)) {
+    if (names(plot_new[i]) != "plot_env") {
+      expect_equal(plot_new[[i]], plot_orig[[i]])
+    }
+  }
+
+})
