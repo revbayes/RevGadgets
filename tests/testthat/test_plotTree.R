@@ -1,0 +1,21 @@
+context("tests the plotTree function")
+
+test_that("plot basic, not-yet-rooted phylogeny", {
+  # load in the trace file
+  file_1 <-  system.file("extdata",
+                         "sub_models/primates_cytb_GTR_MAP.tre",
+                         package = "RevGadgets")
+  tree <- readTrees(paths = file_1)
+  # produce the plot pi parameters object
+  plot_new <- plotTree(tree = tree, node_labels = "posterior")
+  # load the saved plot for comparison
+  file_2 <- system.file("extdata",
+                        "graphs/plotTree_basic.rds",
+                        package="RevGadgets")
+  plot_orig <- readRDS(file_2) # loads an object called 'plot'
+  for (i in 1:length(plot_new)) {
+    if (names(plot_new[i]) != "plot_env") {
+      expect_equal(plot_new[[i]], plot_orig[[i]])
+    }
+  }
+})

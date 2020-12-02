@@ -9,8 +9,8 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-Imports: ape, phytools, ggtree, treeio, dplyr, tidytree, methods
+RoxygenNote: 7.1.0
+Imports: ape, phytools, ggtree, treeio, dplyr, tidytree, methods, ggplot2 (>= 3.0.0), reshape, ggthemes, tidyr, tibble, gginnards, ggimage
 Suggests: testthat,
     knitr,
     rmarkdown

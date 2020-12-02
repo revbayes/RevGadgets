@@ -58,7 +58,6 @@
 #' densiTreeWithBranchData(trees = trees, data = data, color_gradient = c("green", "blue"), width = 2)
 #'
 #' @export
-#' @importFrom graphics axis par plot.new plot.window strwidth text
 #' @importClassesFrom tidytree treedata
 
 
@@ -109,8 +108,8 @@ densiTreeWithBranchData <- function(tree_files = NULL, burnin = 0.1, trees = NUL
   }
   else {
     # obtain max and min of data range
-    min.data <- min(sapply(data, function(x) min(x)))
-    max.data <- max(sapply(data, function(x) max(x)))
+    min.data <- min(sapply(data, function(x) min(as.numeric(x[[1]]))))
+    max.data <- max(sapply(data, function(x) max(as.numeric(x[[1]]))))
     data_intervals <- seq(min.data, max.data, 0.1*(max.data - min.data))
   }
 

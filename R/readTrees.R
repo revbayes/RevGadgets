@@ -3,27 +3,37 @@
 #' Reads in a tree file containing one or multiple trees
 #'
 #' Reads in a tree file in either nexus or newick format, and containing a single tree
-#' or multiple trees (as in the results of a Bayesian analysis).
+#' or multiple trees (as in the results of a Bayesian analysis). For reading in annotated
+#' tree files of continuous character evolution, the parameter must be considered a node
+#' parameter rather than branch parameter. Set isNodeParameter = TRUE in the extended
+#' newick monitor (mnExtNewick)
 #'
 #' @param paths (vector of character strings; no default) File path(s) to tree(s).
 #' @param tree_name (character string; default psi) Name of the tree variable.
 #' @param burnin (single numeric value; default = 0.1) Fraction of generations to
 #' discard (if value provided is between 0 and 1) or number of generations (if
 #' value provided is greater than 1).
+#' @param n_cores (integer; default 1) Number of cores for parallelizing.
 #' @param verbose (logical; default true) Display a status bar?
 #'
 #' @return A list (across runs) of lists (across samples) of treedata objects.
 #'
 #' @examples
 #'
-#' \dontrun{
-#'}
+#'
+#' file <- system.file("extdata",
+#'     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
+#' tree_single <- readTrees(paths = file)
+#'
 #'
 #' @export
 
-readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...) {
-
+readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbose = TRUE, ...) {
   # enforce argument matching
+  if (is.character(tree_name) == FALSE) stop("tree_name should be a single character")
+  if (is.numeric(burnin) == FALSE) stop("burnin should be a number")
+  if (is.logical(verbose) == FALSE) stop("verbose should be TRUE or FALSE")
+
   character_paths_are_strings <- is.character(paths)
   if ( any(character_paths_are_strings == FALSE) == TRUE ) {
     # print out the ones that are not character strings
@@ -40,38 +50,25 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, verbose = TRUE, ...
     stop()
   }
 
-  all_nexus <- sapply(paths, isNexusFile)
+  all_nexus <- sapply(paths, .isNexusFile)
   if ( all(all_nexus == TRUE) ) {
-    trees <- lapply(paths, readNexusTrees, burnin = burnin, verbose = verbose, ...)
+    trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose, ...)
   } else if ( all(all_nexus == FALSE) ) {
     n_paths  <- length(paths)
     trees    <- vector("list", n_paths)
-    for(i in 1:n_paths) {
-      cat("Reading trees in file: ", paths[i], "\n", sep="")
-      trees[[i]] <- readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose, ...)
+    if ( n_cores > 1) {
+      cat("Reading trees.\n", sep="")
+      mclapply(paths, .readTreeLogs, tree_name = tree_name, burnin = burnin, verbose = FALSE, ..., mc.cores=n_cores)
+    } else {
+      for(i in 1:n_paths) {
+        cat("Reading trees in file: ", paths[i], "\n", sep="")
+        trees[[i]] <- .readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose, ...)
+      }
     }
   } else {
     stop("All files should be of the same format.")
   }
 
   return(trees)
-
-#  # read in tree(s) of type nexus or newick
-#
-#  if (format == "nexus") {
-#    tree <- ape::read.nexus(file = path)
-#  } else if (format == "newick") {
-#    tree <- ape::read.tree(file = path)
-#  }
-#
-#  # convert to type multiPhylo for consistency
-#
-#  if (class(tree) == "phylo") {
-#    tree <- c(tree)
-#  } else if (class(tree) != "multiPhylo") {
-#    stop ("tree(s) not of type phylo or multiPhylo")
-#  }
-#
-#  return(tree)
-#
 }
+
