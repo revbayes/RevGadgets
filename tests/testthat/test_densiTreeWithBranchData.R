@@ -7,10 +7,14 @@ test_that("plot doesn't error out", {
   tree_file = system.file("extdata", "beast2", "msbd.rates.trees", package = "RevGadgets")
 
   pdf("Rplots.pdf")
+  
   expect_silent(densiTreeWithBranchData(trees = trees, data = data))
   expect_silent(densiTreeWithBranchData(trees = trees, data = data, data_intervals = c(0,11)))
   expect_silent(densiTreeWithBranchData(trees = trees, data = data, data_intervals = 0:5))
+  
+  # this produces no messages when running directly but messages on R CMD CHECK - couldn't find out why
   densiTreeWithBranchData(tree_files = tree_file, burnin = 0, data_name = "lambda")
+  
   dev.off()
   file.remove("Rplots.pdf")
 })
