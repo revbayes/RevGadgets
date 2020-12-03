@@ -5,7 +5,8 @@
 \title{DensiTree-style plot with branch-specific data}
 \usage{
 densiTreeWithBranchData(
-  tree_file = NULL,
+  tree_files = NULL,
+  burnin = 0.1,
   trees = NULL,
   data = NULL,
   data_name = NULL,

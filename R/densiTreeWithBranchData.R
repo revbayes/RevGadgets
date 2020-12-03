@@ -87,13 +87,13 @@ densiTreeWithBranchData <- function(tree_files = NULL, burnin = 0.1, trees = NUL
       dplyr::select(x@data, data_name)
     })
     for (i in seq_along(treedata)) {
-      treedata[[i]] <- methods::new("treedata", phylo = treedata[[i]]@phylo, data = data[[i]])
+      treedata[[i]] <- tidytree::treedata(phylo = treedata[[i]]@phylo, data = data[[i]])
     }
   }
   else {
-    data <- lapply(data, function(d) dplyr::tbl_df(as.data.frame(d)))
+    data <- lapply(data, function(d) tibble::as_tibble(as.data.frame(d)))
     treedata <- lapply(seq_along(trees), function(idx) {
-      methods::new("treedata", phylo = trees[[idx]], data = data[[idx]])
+      tidytree::treedata(phylo = trees[[idx]], data = data[[idx]])
     })
   }
 

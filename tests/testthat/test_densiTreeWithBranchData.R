@@ -6,10 +6,13 @@ test_that("plot doesn't error out", {
   #TODO file used here is Beast2 file because RB doesn't output distributions as Nexus
   tree_file = system.file("extdata", "beast2", "msbd.rates.trees", package = "RevGadgets")
 
+  pdf("Rplots.pdf")
   expect_silent(densiTreeWithBranchData(trees = trees, data = data))
   expect_silent(densiTreeWithBranchData(trees = trees, data = data, data_intervals = c(0,11)))
   expect_silent(densiTreeWithBranchData(trees = trees, data = data, data_intervals = 0:5))
   expect_silent(densiTreeWithBranchData(tree_files = tree_file, burnin = 0, data_name = "lambda"))
+  dev.off()
+  file.remove("Rplots.pdf")
 })
 
 test_that("invalid inputs are rejected", {
