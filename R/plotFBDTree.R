@@ -108,7 +108,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
   vars <- colnames(tree[[1]][[1]]@data)
   if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
   if (is.logical(node_age_bars) == FALSE) stop("node_age_bars should be TRUE or FALSE")
-  if (.isColor(node_age_bars_color) == FALSE) stop("node_age_bars_color should be valid color(s)")
+  if (any(.isColor(node_age_bars_color) == FALSE)) stop("node_age_bars_color should be valid color(s)")
   if (is.null(node_age_bars_colored_by) == FALSE &
       any(vars %in% node_age_bars_colored_by) == FALSE) stop("node_age_bars_colored_by should be a column in your tidytree object")
   if (is.null(node_labels) == FALSE &
@@ -195,7 +195,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
   if (timeline == TRUE) {
 
     pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
-      if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+      if (any(is.null(z)) || any(is.na(z))) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
     minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
     if (node_age_bars == FALSE) {
@@ -245,7 +245,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
     # https://groups.google.com/forum/#!msg/bioc-ggtree/wuAlY9phL9Q/L7efezPgDAAJ
     # Adapted this code to also plot fossil tip uncertainty in red
     pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
-      if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+      if (any(is.null(z)) || any(is.na(z))) { return(c(NA,NA)) } else { return(as.numeric(z)) }
     })
 
     minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))

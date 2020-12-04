@@ -529,7 +529,7 @@
   if (is.null(var)) {
     return(FALSE) } else {
   t <- try(col2rgb(var), silent = TRUE)
-  if (class(t) == "try-error") {return(FALSE)}
+  if (length(t) == 1 && class(t) == "try-error") {return(FALSE)}
   else return(TRUE)
     }
 }
