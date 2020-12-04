@@ -58,11 +58,11 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
     trees    <- vector("list", n_paths)
     if ( n_cores > 1) {
       cat("Reading trees.\n", sep="")
-      mclapply(paths, .readTreeLogs, tree_name = tree_name, burnin = burnin, verbose = FALSE, ..., mc.cores=n_cores)
+      mclapply(paths, .readTreeLogs, tree_name = tree_name, burnin = burnin, verbose = FALSE, mc.cores=n_cores)
     } else {
       for(i in 1:n_paths) {
         cat("Reading trees in file: ", paths[i], "\n", sep="")
-        trees[[i]] <- .readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose, ...)
+        trees[[i]] <- .readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose)
       }
     }
   } else {

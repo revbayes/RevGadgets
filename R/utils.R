@@ -884,7 +884,7 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
 
 }
 
-.readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
+.readTreeLogs <- function(path, tree_name, burnin, verbose) {
 
   # read the samples
   samples <- utils::read.table(path, header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)
