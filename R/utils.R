@@ -668,16 +668,16 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   # they appear in the newick string
 
   phylo <- ape::read.tree(text = tree2)
-  root <- tidytree:::rootnode(phylo)
+  root <- tidytree::rootnode(phylo)
   nnode <- phylo$Nnode
 
   tree_label <- c(phylo$tip.label, phylo$node.label)
   ii <- match(nn, tree_label)
 
   if ( any(grepl("TRANSLATE", beast, ignore.case = TRUE)) ) {
-    label2 <- c(phylo$tip.label, root:treeio:::getNodeNum(phylo))
+    label2 <- c(phylo$tip.label, root:treeio::getNodeNum(phylo))
   } else {
-    label2 <- as.character(1:treeio:::getNodeNum(phylo))
+    label2 <- as.character(1:treeio::getNodeNum(phylo))
   }
   node <- label2[match(nn, tree_label)]
 

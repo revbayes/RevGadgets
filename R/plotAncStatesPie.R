@@ -161,7 +161,7 @@ plotAncStatesPie <- function(t,
   if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
 
     ##### create basic tree plot #####
-  p <- ggtree:::ggtree(t, ladderize = TRUE)
+  p <- ggtree::ggtree(t, ladderize = TRUE)
 
     ##### calculate helper variables #####
   tree <- attributes(t)$phylo
@@ -352,9 +352,9 @@ plotAncStatesPie <- function(t,
     dat_state_start <- state_probs$start
 
     # make pies
-    pies_start <- ggtree:::nodepie(dat_state_start, cols = 1:(ncol(dat_state_start) - 1),
+    pies_start <- ggtree::nodepie(dat_state_start, cols = 1:(ncol(dat_state_start) - 1),
                                   color = colors, alpha = state_transparency)
-    pies_end <- ggtree:::nodepie(dat_state_end, cols = 1:(ncol(dat_state_end) - 1),
+    pies_end <- ggtree::nodepie(dat_state_end, cols = 1:(ncol(dat_state_end) - 1),
                                 color = colors, alpha = state_transparency)
 
     # add pies to tree
