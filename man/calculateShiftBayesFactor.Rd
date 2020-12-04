@@ -30,7 +30,7 @@ calculateShiftBayesFactor(
 
 \item{decrease}{(logical; default TRUE) Should support be assessed for a decrease in the parameter (if TRUE) or an increase (if FALSE) between t1 and t2?}
 
-\item{lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
+\item{return.2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
 }
 \value{
 The Bayes Factor.

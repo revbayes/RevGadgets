@@ -62,6 +62,8 @@ R color name or a valid hex code.}
 
 \item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
 
+\item{tip_labels_remove_underscore}{(logical; FALSE) Should underscores be replaced by spaces in tip labels?}
+
 \item{tip_labels_color}{(character; "black") Color to plot tip labels, either as a valid
 R color name or a valid hex code.}
 

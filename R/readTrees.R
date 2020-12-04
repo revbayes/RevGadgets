@@ -28,7 +28,7 @@
 #'
 #' @export
 
-readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbose = TRUE, ...) {
+readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbose = TRUE) {
   # enforce argument matching
   if (is.character(tree_name) == FALSE) stop("tree_name should be a single character")
   if (is.numeric(burnin) == FALSE) stop("burnin should be a number")
@@ -52,7 +52,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
 
   all_nexus <- sapply(paths, .isNexusFile)
   if ( all(all_nexus == TRUE) ) {
-    trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose, ...)
+    trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose)
   } else if ( all(all_nexus == FALSE) ) {
     n_paths  <- length(paths)
     trees    <- vector("list", n_paths)

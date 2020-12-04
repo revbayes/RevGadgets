@@ -834,7 +834,7 @@ pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
   return(stats3)
 }
 
-.readNexusTrees <- function(path, burnin, verbose, ...) {
+.readNexusTrees <- function(path, burnin, verbose) {
   # read the lines
   lines <- readLines(path)
 
