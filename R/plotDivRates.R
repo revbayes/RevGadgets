@@ -55,7 +55,7 @@
 #'
 #' @export
 
-plotDivRates <- function(rates){
+plotDivRates <- function(rates, facet = TRUE){
   rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
 
   `%>%` <- dplyr::`%>%`
@@ -83,8 +83,12 @@ plotDivRates <- function(rates){
                    panel.grid.minor = ggplot2::element_blank(),
                    strip.background = ggplot2::element_blank()) +
     ggplot2::scale_color_manual(values = .colFun(length(rates_to_plot))) +
-    ggplot2::scale_fill_manual(values = .colFun(length(rates_to_plot))) +
-    ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y")
+    ggplot2::scale_fill_manual(values = .colFun(length(rates_to_plot)))
+
+    if (facet){
+      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y")
+    }
+
 
   return(p)
 }
