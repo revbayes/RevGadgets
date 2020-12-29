@@ -4,7 +4,7 @@
 \alias{plotDivRates}
 \title{Plot Diversification Rates}
 \usage{
-plotDivRates(rates, probs = c(0.025, 0.975))
+plotDivRates(rates, facet = TRUE)
 }
 \arguments{
 \item{rates}{(list of dataframes; no default) A list of dataframes,

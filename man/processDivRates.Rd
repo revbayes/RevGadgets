@@ -11,7 +11,8 @@ processDivRates(
   extinction_rate_log = "",
   fossilization_time_log = "",
   fossilization_rate_log = "",
-  burnin = 0.25
+  burnin = 0.25,
+  probs = c(0.025, 0.975)
 )
 }
 \arguments{
