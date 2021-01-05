@@ -3,10 +3,9 @@
 # test_that("plots mass extinctions", {
 #
 #   # get files
-#   # mass_extinction_probability_file <- system.file("extdata", "mass_extinction/crocs_mass_extinction_probabilities.p", package="RevGadgets")
-#   # plot_file <- system.file("extdata", "graphs/plotMassExtinctionBayesFactor.rds", package="RevGadgets")
-#   mass_extinction_probability_file <- "inst/extdata/mass_extinction/crocs_mass_extinction_probabilities.p"
-#   plot_file <- "inst/extdata/graphs/plotMassExtinctionBayesFactor.rds"
+#   mass_extinction_probability_file <- system.file("extdata", "mass_extinction/crocs_mass_extinction_probabilities.p", package="RevGadgets")
+#   plot_file <- system.file("extdata", "graphs/plotMassExtinctionBayesFactor.rds", package="RevGadgets")
+#
 #   # make a new plot
 #   mass_extinction_probabilities <- readTrace(mass_extinction_probability_file,burnin = 0.25)
 #
