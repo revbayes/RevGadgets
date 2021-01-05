@@ -3,8 +3,8 @@
 #' This function computes the Bayes Factor in favor of a rate-shift between time t1 and t2 (t1 < t2).
 #' The default assumption (suitable to standard HSMRF and GMRF models) is that the prior probability of a shift is 0.5.
 #'
-#' @param rate.trace (list; no default) The processed Rev output of the rate of interst throught time for computation (output of readTrace()).
-#' @param time.trace (list; no default) The processed Rev output of the change/interval times of the rate of interst throught time for computation (output of readTrace()).
+#' @param rate.trace (list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).
+#' @param time.trace (list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).
 #' @param rate.name (character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.
 #' @param time.name (character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.
 #' @param t1 (numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).
@@ -70,7 +70,7 @@ calculateShiftBayesFactor <- function(rate.trace,time.trace,rate.name,time.name,
   }
 
   if ( dim(time_log)[2] != dim(rate_log)[2] ) {
-    stop("Number interval times does not match dimension of parameter.")
+    stop("Number of interval times does not match dimension of parameter.")
   }
 
   # Check if the times are constant
