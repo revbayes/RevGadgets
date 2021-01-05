@@ -36,7 +36,7 @@
 #'
 #' # times when mass extinctions were allowed
 #' tree_age <- 243.5
-#' interval_times <- seq(1/tree_age,tree_age-(1/tree_age),1/n_intervals)
+#' interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
 #'
 #' # then plot results:
 #' p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,mass.extinction.times=interval_times,mass.extinction.name="mass_extinction_probabilities",prior_prob);p
