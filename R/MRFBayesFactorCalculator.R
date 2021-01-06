@@ -3,9 +3,10 @@
 #' This function computes the Bayes Factor in favor of a rate-shift between time t1 and t2 (t1 < t2).
 #' The default assumption (suitable to standard HSMRF and GMRF models) is that the prior probability of a shift is 0.5.
 #'
-#' @param output (list; no default) The processed output for computation (output of processDivRates()).
-#' @param parameter (character; no default) The name of the parameter (list element in output) for which Bayes Factor is to be calculated.
-#' @param parameter.times (character; no default) The name of the interval times (list element in output) for the parameter.
+#' @param rate.trace (list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).
+#' @param time.trace (list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).
+#' @param rate.name (character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.
+#' @param time.name (character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.
 #' @param t1 (numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).
 #' @param t2 (numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).
 #' @param decrease (logical; default TRUE) Should support be assessed for a decrease in the parameter (if TRUE) or an increase (if FALSE) between t1 and t2?
@@ -26,71 +27,65 @@
 #'     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
 #' speciation_rate_file <- system.file("extdata",
 #'     "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")
-#' extinction_time_file <- system.file("extdata",
-#'     "epi_bd/primates_EBD_extinction_times.p", package="RevGadgets")
-#' extinction_rate_file <- system.file("extdata",
-#'     "epi_bd/primates_EBD_extinction_rates.p", package="RevGadgets")
 #'
-#' primates <- processDivRates(speciation_time_log = speciation_time_file,
-#'                             speciation_rate_log = speciation_rate_file,
-#'                             extinction_time_log = extinction_time_file,
-#'                             extinction_rate_log = extinction_rate_file,
-#'                             burnin = 0.25)
-#' calculateShiftBayesFactor(primates,"speciation rate","speciation time",0.0,40.0,decrease=FALSE)
+#' speciation_rate <- readTrace(speciation_rate_file,burnin = 0.25)
+#' speciation_times <- readTrace(speciation_times_file,burnin = 0.25)
+#'
+#' calculateShiftBayesFactor(speciation_rate,speciation_times,"speciation","interval_times",0.0,40.0,decrease=FALSE)
 #'}
 #'
 #' @export
 
-calculateShiftBayesFactor <- function(output,parameter,parameter.times,t1,t2,prior.prob=0.5,decrease=TRUE,return.2lnBF=TRUE) {
+calculateShiftBayesFactor <- function(rate.trace,time.trace,rate.name,time.name,t1,t2,prior.prob=0.5,decrease=TRUE,return.2lnBF=TRUE) {
 
   # Make sure times are in correct order
   times <- sort(c(t1,t2))
   t1 <- times[1]
   t2 <- times[2]
 
-  # Find parameter and times
-  parameter_index <- which(names(output) == parameter)
-  if ( all(names(output) != parameter) ) {
-    stop(paste0("Cannot find parameter named \"",parameter,"\" in output"))
+  # Condense log lists into data frames
+  rate_log <- do.call(rbind,rate.trace)
+  time_log <- do.call(rbind,time.trace)
+
+  # Find parameter and times, remove rest of trace
+  is_rate <- grepl(paste0(rate.name,"["),names(rate_log),fixed=TRUE)
+  is_time <- grepl(paste0(time.name,"["),names(time_log),fixed=TRUE)
+
+  if ( sum(is_rate) < 2 ) {
+    stop(paste0("Cannot find diversification rate parameter named \"",rate.name,"\" in rate.trace"))
   }
 
-  times_index <- which(names(output) == parameter.times)
-  if ( all(names(output) != parameter) ) {
-    stop(paste0("Cannot find parameter named \"",parameter,"\" in output"))
+  if ( sum(is_time) < 1 ) {
+    stop(paste0("Cannot find rate change times parameter named \"",time.name,"\" in time.trace"))
   }
 
-  # Get only what we need out of times and rates
-  output[[parameter_index]] <- output[[parameter_index]][,!grepl("iteration",tolower(names(output[[parameter_index]])))]
-  output[[parameter_index]] <- output[[parameter_index]][,!grepl("posterior",tolower(names(output[[parameter_index]])))]
-  output[[parameter_index]] <- output[[parameter_index]][,!grepl("likelihood",tolower(names(output[[parameter_index]])))]
-  output[[parameter_index]] <- output[[parameter_index]][,!grepl("prior",tolower(names(output[[parameter_index]])))]
+  rate_log <- rate_log[,is_rate]
+  time_log <- time_log[,is_time]
 
-  output[[times_index]] <- output[[times_index]][,!grepl("iteration",tolower(names(output[[times_index]])))]
-  output[[times_index]] <- output[[times_index]][,!grepl("posterior",tolower(names(output[[times_index]])))]
-  output[[times_index]] <- output[[times_index]][,!grepl("likelihood",tolower(names(output[[times_index]])))]
-  output[[times_index]] <- output[[times_index]][,!grepl("prior",tolower(names(output[[times_index]])))]
+  # Add times[0] = 0 to time_log
+  time_log$`interval_times[0]` <- rep(0.0,dim(time_log)[1])
 
-  if ( dim(output[[times_index]])[1] != dim(output[[parameter_index]])[1] ) {
+  if ( dim(time_log)[1] != dim(rate_log)[1] ) {
     stop("Different number of samples for parameter and parameter times.")
   }
 
-  if ( dim(output[[times_index]])[2] != dim(output[[parameter_index]])[2] ) {
-    stop("Number interval times does not match dimension of parameter.")
+  if ( dim(time_log)[2] != dim(rate_log)[2] ) {
+    stop("Number of interval times does not match dimension of parameter.")
   }
 
   # Check if the times are constant
   times_are_constant <- FALSE
-  if ( all(apply(output[[times_index]],2,function(x){max(x) - min(x) < .Machine$double.eps})) ) {
+  if ( all(apply(time_log,2,function(x){max(x) - min(x) < .Machine$double.eps})) ) {
     times_are_constant <- TRUE
   }
 
   # Vectors to store posterior distribution of rates at t1 and t2
-  niter <- dim(output[[times_index]])[1]
+  niter <- dim(time_log)[1]
   rate1 <- numeric(niter)
   rate2 <- numeric(niter)
 
   if ( times_are_constant ) {
-    sorted_times <- sort(output[[times_index]][1,])
+    sorted_times <- sort(time_log[1,])
 
     # Avoid issues finding the maximum time
     if ( t2 == max(sorted_times) ) {
@@ -101,14 +96,14 @@ calculateShiftBayesFactor <- function(output,parameter,parameter.times,t1,t2,pri
     index1 <- findInterval(t1,sorted_times)
     index2 <- findInterval(t2,sorted_times)
 
-    rate1 <- output[[parameter_index]][,index1]
-    rate2 <- output[[parameter_index]][,index2]
+    rate1 <- rate_log[,index1]
+    rate2 <- rate_log[,index2]
   } else {
     for (i in 1:niter) {
       t1 <- times[1]
       t2 <- times[2]
 
-      sorted_times <- sort(output[[times_index]][i,])
+      sorted_times <- sort(time_log[i,])
 
       # Avoid issues finding the maximum time
       if ( t2 == max(sorted_times) ) {
@@ -119,8 +114,8 @@ calculateShiftBayesFactor <- function(output,parameter,parameter.times,t1,t2,pri
       index1 <- findInterval(t1,sorted_times)
       index2 <- findInterval(t2,sorted_times)
 
-      rate1[i] <- output[[parameter_index]][i,index1]
-      rate2[i] <- output[[parameter_index]][i,index2]
+      rate1[i] <- rate_log[i,index1]
+      rate2[i] <- rate_log[i,index2]
     }
   }
 

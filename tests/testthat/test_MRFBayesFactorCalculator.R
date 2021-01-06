@@ -1,4 +1,4 @@
-context("Tests the MRFBayesFactorCalculator")
+context("Tests Bayes Factor calculations from MRF models")
 
 test_that("compare expected calculations from documentation example", {
   # read in and process primates diversification rate data
