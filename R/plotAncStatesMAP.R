@@ -207,7 +207,7 @@ plotAncStatesMAP <- function(t,
   # Warning message:
   #   `tbl_df()` is deprecated as of dplyr 1.0.0.
   # Please use `tibble::as_tibble()` instead.
-  p <- suppressWarnings(ggtree:::ggtree(t, layout = tree_layout, ladderize = TRUE))
+  p <- suppressWarnings(ggtree::ggtree(t, layout = tree_layout, ladderize = TRUE))
 
   ##### process column names #####
 
