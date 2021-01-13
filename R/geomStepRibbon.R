@@ -73,7 +73,7 @@ GeomStepribbon <- ggplot2::ggproto(
     data_attr <- data[xs, setdiff(names(data), c("x", "ymin", "ymax"))]
     data <- new_data_frame(c(list(x = x, ymin = ymin, ymax = ymax), data_attr))
 
-    GeomRibbon$draw_group(data, panel_scales, coord, direction, include_final, na.rm = FALSE)
+    GeomRibbon$draw_group(data, panel_scales, coord, na.rm = FALSE)
 
   }
 
