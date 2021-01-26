@@ -11,7 +11,7 @@
 #' @param t2 (numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).
 #' @param decrease (logical; default TRUE) Should support be assessed for a decrease in the parameter (if TRUE) or an increase (if FALSE) between t1 and t2?
 #' @param prior.prob (numeric; 0.5) The prior probability of a shift over this interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).
-#' @param lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
+#' @param return.2lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
 #'
 #' @return The Bayes Factor.
 #'

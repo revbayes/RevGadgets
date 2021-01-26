@@ -98,11 +98,6 @@ cladogenetic plots.}
 0 to 1.}
 
 \item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
-
-\item{collapse_states}{(logical; FALSE) Collapse low-probability states into "other" category?}
-
-\item{collapse_states_threshold}{(numeric; 0.05) Probability threshold for collapsing states.
-Varies from 0 to 1.}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.

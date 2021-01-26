@@ -529,7 +529,7 @@
   if (is.null(var)) {
     return(FALSE) } else {
   t <- try(col2rgb(var), silent = TRUE)
-  if (class(t) == "try-error") {return(FALSE)}
+  if (length(t) == 1 && class(t) == "try-error") {return(FALSE)}
   else return(TRUE)
     }
 }
@@ -834,7 +834,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   return(stats3)
 }
 
-.readNexusTrees <- function(path, burnin, verbose, ...) {
+.readNexusTrees <- function(path, burnin, verbose) {
   # read the lines
   lines <- readLines(path)
 
@@ -884,7 +884,7 @@ new_data_frame <- function(x = list(), n = NULL) {
 
 }
 
-.readTreeLogs <- function(path, tree_name, burnin, verbose, ...) {
+.readTreeLogs <- function(path, tree_name, burnin, verbose) {
 
   # read the samples
   samples <- utils::read.table(path, header=TRUE, stringsAsFactors=FALSE, check.names=FALSE)

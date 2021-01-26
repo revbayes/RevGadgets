@@ -38,9 +38,6 @@
 #' @param tip_pie_nudge_y (numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging
 #' @param shoulder_pie_nudge_x (numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging
 #' @param shoulder_pie_nudge_y (numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging
-#' @param collapse_states (logical; FALSE) Collapse low-probability states into "other" category?
-#' @param collapse_states_threshold (numeric; 0.05) Probability threshold for collapsing states.
-#' Varies from 0 to 1.
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
@@ -124,7 +121,7 @@ plotAncStatesPie <- function(t,
                     timeline = F) {
 
   ##### parameter compatibility checks #####
-  if (class(t) != "treedata") stop("t should be a treedata objects")
+  if (class(t) != "treedata") stop("t should be a treedata object")
   if (is.logical(cladogenetic) == FALSE) stop("cladogenetic should be TRUE or FALSE")
   if (is.logical(tip_labels) == FALSE) stop("tip_labels should be TRUE or FALSE")
   if (is.numeric(tip_labels_size) == FALSE) stop("tip_labels_size should be a number")

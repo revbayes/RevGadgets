@@ -4,14 +4,7 @@
 \alias{readTrees}
 \title{Read trees}
 \usage{
-readTrees(
-  paths,
-  tree_name = "psi",
-  burnin = 0,
-  n_cores = 1L,
-  verbose = TRUE,
-  ...
-)
+readTrees(paths, tree_name = "psi", burnin = 0, n_cores = 1L, verbose = TRUE)
 }
 \arguments{
 \item{paths}{(vector of character strings; no default) File path(s) to tree(s).}
