@@ -5,9 +5,10 @@
 \title{Bayes Factors in support of a shift in diversification rates over a given time interval.}
 \usage{
 calculateShiftBayesFactor(
-  output,
-  parameter,
-  parameter.times,
+  rate.trace,
+  time.trace,
+  rate.name,
+  time.name,
   t1,
   t2,
   prior.prob = 0.5,
@@ -16,11 +17,13 @@ calculateShiftBayesFactor(
 )
 }
 \arguments{
-\item{output}{(list; no default) The processed output for computation (output of processDivRates()).}
+\item{rate.trace}{(list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).}
 
-\item{parameter}{(character; no default) The name of the parameter (list element in output) for which Bayes Factor is to be calculated.}
+\item{time.trace}{(list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).}
 
-\item{parameter.times}{(character; no default) The name of the interval times (list element in output) for the parameter.}
+\item{rate.name}{(character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.}
+
+\item{time.name}{(character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.}
 
 \item{t1}{(numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).}
 
@@ -46,17 +49,11 @@ speciation_time_file <- system.file("extdata",
     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
 speciation_rate_file <- system.file("extdata",
     "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")
-extinction_time_file <- system.file("extdata",
-    "epi_bd/primates_EBD_extinction_times.p", package="RevGadgets")
-extinction_rate_file <- system.file("extdata",
-    "epi_bd/primates_EBD_extinction_rates.p", package="RevGadgets")
 
-primates <- processDivRates(speciation_time_log = speciation_time_file,
-                            speciation_rate_log = speciation_rate_file,
-                            extinction_time_log = extinction_time_file,
-                            extinction_rate_log = extinction_rate_file,
-                            burnin = 0.25)
-calculateShiftBayesFactor(primates,"speciation rate","speciation time",0.0,40.0,decrease=FALSE)
+speciation_rate <- readTrace(speciation_rate_file,burnin = 0.25)
+speciation_times <- readTrace(speciation_time_file,burnin = 0.25)
+
+calculateShiftBayesFactor(speciation_rate,speciation_times,"speciation","interval_times",0.0,40.0,decrease=FALSE)
 }
 
 }

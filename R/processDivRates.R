@@ -53,7 +53,8 @@ processDivRates <- function(speciation_time_log = "",
                             extinction_rate_log = "",
                             fossilization_time_log = "",
                             fossilization_rate_log = "",
-                            burnin = 0.25) {
+                            burnin = 0.25,
+                            probs = c(0.025, 0.975)) {
 
   # enforce argument matching
   if (is.character(speciation_time_log) == FALSE) stop("speciation_time_log must be a character string or vector of strings")
@@ -203,7 +204,7 @@ processDivRates <- function(speciation_time_log = "",
                                                    rep("]", times = ncol(relative_extinction_rate)), sep = "")
 
         # return a list of processed data frames
-        res <- list("speciation rate" = speciation_rate,
+        rates <- list("speciation rate" = speciation_rate,
                     "extinction rate" = extinction_rate,
                     "net-diversification rate" = net_diversification_rate,
                     "relative-extinction rate" = relative_extinction_rate,
@@ -211,7 +212,9 @@ processDivRates <- function(speciation_time_log = "",
                     "speciation time" = speciation_time,
                     "extinction time" = extinction_time,
                     "fossilization time" = fossilization_time)
-        return(res)
+
+        plotdata <- .makePlotData(rates = rates, probs = probs)
+        return(plotdata)
     }
   }
 }

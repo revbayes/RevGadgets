@@ -2,11 +2,20 @@ Package: RevGadgets
 Type: Package
 Title: Visualize and Postprocessing of RevBayes Analyses
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: Carrie Tribble <cmt2@berkeley.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: c(
+    person("Carrie", "Tribble", email = "ctribble09@gmail.com", role = c("aut", "cre")),
+    person("William A.", "Freyman", role = "aut"),
+    person("Michael J.", "Landis", role = "aut"),
+    person("Lim Jun", "Ying", role = "aut"),
+    person("Joelle", "Barido-Sottani", role = "aut"),
+    person("Andrew", "Magee", role = "aut"),
+    person("Bjorn Tore", "Kopperud", role = "aut"),
+    person("Sebastian", "Hohna", role = "aut"),
+    person("Michael R.", "May", role = "aut")
+    )
+Maintainer: Carrie Tribble <ctribble09@gmail.com>
+Description: RevGadgets is designed to process and visualize the output of complex phylogenetic analyses from the RevBayes phylogenetic graphical modeling software.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

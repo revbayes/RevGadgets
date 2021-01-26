@@ -55,13 +55,12 @@
 #'
 #' @export
 
-plotDivRates <- function(rates, probs = c(0.025, 0.975)){
-  plotdata <- .makePlotData(rates = rates, probs = probs)
-  rates_to_plot <- unique(plotdata$item)[grep("rate", unique(plotdata$item))]
+plotDivRates <- function(rates, facet = TRUE){
+  rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
 
   `%>%` <- dplyr::`%>%`
 
-    p <- plotdata %>%
+    p <- rates %>%
     subset(grepl("rate", item)) %>%
     ggplot2::ggplot(ggplot2::aes(time, mean, color = item))  +
     ggplot2::geom_step(ggplot2::aes(time, mean),
@@ -84,8 +83,12 @@ plotDivRates <- function(rates, probs = c(0.025, 0.975)){
                    panel.grid.minor = ggplot2::element_blank(),
                    strip.background = ggplot2::element_blank()) +
     ggplot2::scale_color_manual(values = .colFun(length(rates_to_plot))) +
-    ggplot2::scale_fill_manual(values = .colFun(length(rates_to_plot))) +
-    ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y")
+    ggplot2::scale_fill_manual(values = .colFun(length(rates_to_plot)))
+
+    if (facet){
+      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y")
+    }
+
 
   return(p)
 }
