@@ -16,7 +16,7 @@ test_that("plots MAP of ancestral states", {
   # compare plot objects
   for (i in 1:length(plot_new)) {
     if (names(plot_orig[i]) != "plot_env") {
-      expect_equal(plot_new, plot_orig)
+      expect_equal(plot_new[[i]], plot_orig[[i]])
     }
   }
 
