@@ -50,7 +50,7 @@ GeomStepribbon <- ggplot2::ggproto(
 
   extra_params = c("na.rm"),
 
-  draw_group = function(data, panel_scales, coord, direction, include_final = FALSE, na.rm = FALSE) {
+  draw_group = function(data, panel_scales, coord, direction = "vh", include_final = FALSE, na.rm = FALSE) {
     n <- nrow(data)
     data <- as.data.frame(data)[order(data$x), ]
 

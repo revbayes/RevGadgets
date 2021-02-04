@@ -68,6 +68,24 @@ matchNodes = function(phy) {
 #' @export
 #'
 #' @examples
+#' library(RevGadgets)
+#' library(tidytree)
+#' library(ggplot2)
+#' library(ape)
+#'
+#' treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
+#' logfile <- system.file("extdata", "bds/primates_BDS_rates_truncated.log", package="RevGadgets")
+#'
+#' branch_data <- read.table(logfile, header = TRUE, sep = "\t")
+#' tree <- as.treedata(read.tree(treefile))
+#'
+#' annotated_tree <- processBranchData(tree, branch_data, summary = "median")
+#'
+#' p <- ggtree(annotated_tree) +
+#'   aes(colour = avg_lambda) +
+#'   theme(legend.position=c(0.2,0.80), legend.background=element_blank()) +
+#'   scale_color_continuous("Posterior median \nspeciation rate",
+#'                          low="blue", high="green")
 processBranchData <- function(tree, df, burnin = 0.25,
                               parnames = c("avg_lambda", "avg_mu", "num_shifts"),
                               summary = "median"){
