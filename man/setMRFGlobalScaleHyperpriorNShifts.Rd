@@ -32,13 +32,14 @@ That is, an effective shift is the event that rate[i+1]/rate[i] > shift.size or 
 Finding these values for a HSMRF model can take several seconds for large values of n.episodes because of the required numerical integration.
 }
 \examples{
+\dontrun{
 # Get global scale for a HSMRF model with 100 episodes.
 gs <- setMRFGlobalScaleHyperpriorNShifts(100,"HSMRF")
 
 # Plot a draw from this HSMRF distribution
 trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=gs)
 plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
-
+}
 }
 \references{
 Magee et al. (2019) Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts.

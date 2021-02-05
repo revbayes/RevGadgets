@@ -18,6 +18,7 @@
 #' doi: https://doi.org/10.1101/853960
 #'
 #' @examples
+#' \dontrun{
 #' # Get global scale for a HSMRF model with 100 episodes.
 #' gs <- setMRFGlobalScaleHyperpriorNShifts(100,"HSMRF")
 #'
@@ -25,7 +26,8 @@
 
 #' trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=gs)
 #' plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
-#'
+#' }
+#' @export
 
 
 setMRFGlobalScaleHyperpriorNShifts <- function(n.episodes,model,prior.n.shifts=log(2),shift.size=2) {

@@ -34,7 +34,7 @@
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
 #' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
-#' 
+#'
 #' @param tip_labels_remove_underscore (logical; FALSE) Should underscores be replaced by spaces in tip labels?
 #'
 #' @param tip_labels_color (character; "black") Color to plot tip labels, either as a valid
@@ -83,7 +83,7 @@
 #' @return returns a single plot object.
 #'
 #' @examples
-#'
+#' \dontrun{
 #' file <- system.file("extdata", "fbd/bears.mcc.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
 #' plot <- plotFBDTree(tree = tree, timeline = T, tip_labels_italics = F,
@@ -91,7 +91,7 @@
 #'                     node_age_bars = T, node_age_bars_colored_by = "posterior",
 #'                     node_age_bars_color = rev(RevGadgets:::.colFun(2))) +
 #'   ggplot2::theme(legend.position=c(.25, .85))
-#'
+#' }
 #' @export
 
 
