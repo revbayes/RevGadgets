@@ -12,7 +12,7 @@ test_that("plots FBD tree", {
                           tip_labels_remove_underscore = T, tip_age_bars = T,
                           node_age_bars = T, node_age_bars_colored_by = "posterior",
                           node_age_bars_color = rev(RevGadgets:::.colFun(2))) + ggplot2::theme(legend.position=c(.25, .85))
-
+  print(plot_new)
   # read original plot object
   plot_orig <- readRDS(plot_file)
 

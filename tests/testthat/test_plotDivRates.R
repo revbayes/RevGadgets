@@ -1,5 +1,5 @@
 context("tests the plotDivRates function")
-
+#note: does not compare the generated plot to the expectation
 test_that("plot works", {
  file_spectimes <- system.file("extdata", "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
  file_specrates <- system.file("extdata", "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")

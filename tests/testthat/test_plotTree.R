@@ -8,6 +8,7 @@ test_that("plot basic, not-yet-rooted phylogeny", {
   tree <- readTrees(paths = file_1)
   # produce the plot pi parameters object
   plot_new <- plotTree(tree = tree, node_labels = "posterior")
+  print(plot_new)
   # load the saved plot for comparison
   file_2 <- system.file("extdata",
                         "graphs/plotTree_basic.rds",

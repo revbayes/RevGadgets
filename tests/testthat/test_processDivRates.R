@@ -14,8 +14,8 @@ test_that("processes birth-death scripts", {
                              extinction_time_log = file_exttimes,
                              extinction_rate_log = file_extrates,
                              burnin = 0.25)
- expect_equal(length(primates), 8)
- expect_equal(class(primates), "list")
- expect_equal(nrow(primates[[1]]), 3750)
+ expect_equal(ncol(primates), 5)
+ expect_equal(class(primates), c("tbl_df","tbl","data.frame"))
+ expect_equal(nrow(primates), 66)
 })
 
