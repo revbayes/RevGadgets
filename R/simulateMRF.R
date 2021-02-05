@@ -20,10 +20,12 @@
 #' \emph{Bayesian analysis}, \bold{13 (1)}, 225.
 #'
 #' @examples
+#' \dontrun{
 #' # Simulate a 100-episode HSMRF model for a speciation-rate through time
 #' trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=0.0021)
 #' plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
-#'
+#' }
+#' @export
 
 simulateMRF <- function(n.episodes,model,global.scale.hyperprior,initial.value=NULL,exponentiate=TRUE) {
   ndiffs <- n.episodes - 1

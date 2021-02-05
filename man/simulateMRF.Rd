@@ -32,10 +32,11 @@ The MRF can be taken to be on the log-scale (such as for a birth rate) or the re
 The first value must be specified
 }
 \examples{
+\dontrun{
 # Simulate a 100-episode HSMRF model for a speciation-rate through time
 trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=0.0021)
 plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
-
+}
 }
 \references{
 Magee et al. (2020) Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts.
