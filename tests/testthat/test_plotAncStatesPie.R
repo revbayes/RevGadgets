@@ -3,7 +3,7 @@ context("tests the plotAncStatesPie function")
 test_that("plots pies of ancestral states", {
 
   # get files
-  tree_file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
+  tree_file <- system.file("extdata", "dec/small_dec.tre", package="RevGadgets")
   plot_file <- system.file("extdata", "graphs/plotAncStatesPie.rds", package="RevGadgets")
 
   # make a new plot
@@ -18,8 +18,10 @@ test_that("plots pies of ancestral states", {
   colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(dec_example@state_labels))
   names(colors) <- dec_example@state_labels
   # create plot
-  plot_new <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-                        cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
+  plot_new <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 2,
+                        cladogenetic = TRUE, tip_labels_offset = 0.01, timeline = F,
+                        node_pie_size = 5, tip_pie_size = 3) +
+    ggplot2::scale_x_continuous(limits = c(-0.5,1)) +
     ggplot2::theme(legend.position = c(0.1, 0.75))
   #print(plot_new)
 
