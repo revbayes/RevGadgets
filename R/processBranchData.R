@@ -17,7 +17,7 @@
 #' library(ape)
 #'
 #' treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
-#' logfile <- system.file("extdata", "bds/primates_BDS_rates_truncated.log", package="RevGadgets")
+#' logfile <- system.file("extdata", "bds/primates_BDS_rates_truncated.p", package="RevGadgets")
 #'
 #' branch_data <- read.table(logfile, header = TRUE, sep = "\t")
 #' tree <- tidytree::as.treedata(read.tree(treefile))
