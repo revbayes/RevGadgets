@@ -20,3 +20,5 @@ test_that("plot basic, not-yet-rooted phylogeny", {
     }
   }
 })
+
+# add a more complex test for the colored branches plot

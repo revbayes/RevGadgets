@@ -342,14 +342,14 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
     pp$data[,col_num] <- as.numeric(as.data.frame(pp$data)[,col_num]) #convert data to numeric
     name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
     pp <- pp +
-      ggplot2::aes(color=I(as.data.frame(pp$data)[,col_num])) +
+      ggplot2::aes(color=as.data.frame(pp$data)[,col_num]) +
       ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
                                     name = name)
 
   }
 
   # readjust axis
-  if (node_age_bars == FALSE & timeline == FALSE) {
+  if (node_age_bars == FALSE & timeline == FALSE & tip_labels == TRUE) {
     # add extra space on plot for tip labels
     tree_height <- max(phytools::nodeHeights(phy@phylo))
     pp <- pp + ggtree::xlim(-tree_height, tree_height/2)
