@@ -77,7 +77,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
     } else if (!nexus & newick_single & !newick_trace) {
 
       tree_string <- readLines(paths[i], n=1)
-      trees[[i]] <- .parseTreeString(tree_string)
+      trees[[i]][[1]] <- .parseTreeString(tree_string)
 
     } else if (!nexus & !newick_single & newick_trace) {
 
@@ -86,7 +86,9 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
 
     } else {stop("tree file format unrecognized")}
 
-    }
+  }
+
+
    # all_nexus <- sapply(paths, .isNexusFile)
   # if ( all(all_nexus == TRUE) ) {
   #   trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose)

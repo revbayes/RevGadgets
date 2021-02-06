@@ -4,7 +4,7 @@ test_that("reads single nexus tree", {
   file <- system.file("extdata", "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
   tree_single <- readTrees(paths = file)
   expect_equal(length(tree_single), 1)
-  expect_equal(class(tree_single), "list")
+  expect_equal(class(tree_single[[1]][[1]])[1], "treedata")
   expect_equal(length(tree_single[[1]][[1]]@phylo$tip.label), 23)
 })
 
@@ -20,6 +20,6 @@ test_that("reads single newick", {
   file <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
   tree_new <- readTrees(path = file)
   expect_equal(length(tree_new[[1]]), 1)
-  expect_equal(class(tree_new[[1]])[1], "treedata")
-  expect_equal(length(tree_new[[1]]@phylo$tip.label), 233)
+  expect_equal(class(tree_new[[1]][[1]])[1], "treedata")
+  expect_equal(length(tree_new[[1]][[1]]@phylo$tip.label), 233)
 })
