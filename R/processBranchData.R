@@ -20,7 +20,7 @@
 #'
 #' annotated_tree <- processBranchData(tree, branch_data, summary = "median")
 #'
-#' p <- ggtree(annotated_tree) +
+#' p <- ggtree(annotated_tree[[1]][[1]]) +
 #'   aes(colour = avg_lambda) +
 #'   theme(legend.position=c(0.2,0.80), legend.background=element_blank()) +
 #'   scale_color_continuous("Posterior median \nspeciation rate",
@@ -28,12 +28,13 @@
 #'
 #' # OR
 #'
-#' p <- plotTree(tree = list(list(annotated_tree)),
+#' p <- plotTree(tree = annotated_tree,
 #'               node_age_bars = FALSE,
 #'               node_pp = F,
 #'               tip_labels = FALSE,
 #'               color_branch_by = "avg_lambda",
-#'               line_width = 0.8) +
+#'               line_width = 0.8,
+#'               branch_color = c("blue","green")) +
 #'      ggplot2::theme(legend.position=c(.1, .9))
 #'
 #' }
@@ -51,6 +52,6 @@ processBranchData <- function(tree, df, burnin = 0.25,
   }
   tree2 <- tidytree::as.treedata(tree_tbl)
 
-  return(tree2)
+  return(list(list(tree2)))
 }
 
