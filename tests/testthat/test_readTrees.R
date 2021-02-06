@@ -16,3 +16,10 @@ test_that("reads tree trace", {
   expect_equal(length(tree_multi[[1]][[1]]@phylo$tip.label), 23)
 })
 
+test_that("reads single newick", {
+  file <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
+  tree_new <- readTrees(path = file)
+  expect_equal(length(tree_new[[1]]), 1)
+  expect_equal(class(tree_new[[1]])[1], "treedata")
+  expect_equal(length(tree_new[[1]]@phylo$tip.label), 233)
+})

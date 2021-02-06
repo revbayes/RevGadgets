@@ -20,12 +20,22 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #'
+#' # read in a single nexus file
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
 #' tree_single <- readTrees(paths = file)
 #'
+#' # read in a single newick string
+#' file <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
+#' tree_new <- readTrees(path = file)
 #'
+#' # read in a tree trace (may take a few seconds)
+#' file <- system.file("extdata", "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
+#' tree_multi <- readTrees(path = file)
+#'
+#' }
 #' @export
 
 readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbose = TRUE) {
@@ -49,26 +59,52 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
          paste0("\t",paths[do_files_exist == FALSE]), sep="\n")
     stop()
   }
+  #recover()
 
-  all_nexus <- sapply(paths, .isNexusFile)
-  if ( all(all_nexus == TRUE) ) {
-    trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose)
-  } else if ( all(all_nexus == FALSE) ) {
-    n_paths  <- length(paths)
-    trees    <- vector("list", n_paths)
-    if ( n_cores > 1) {
-      cat("Reading trees.\n", sep="")
-      mclapply(paths, .readTreeLogs, tree_name = tree_name, burnin = burnin, verbose = FALSE, mc.cores=n_cores)
-    } else {
-      for(i in 1:n_paths) {
-        cat("Reading trees in file: ", paths[i], "\n", sep="")
-        trees[[i]] <- .readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose)
-      }
+  n_paths  <- length(paths)
+  trees    <- vector("list", n_paths)
+  for (i in 1:length(paths)){
+    nexus <- .isNexusFile(paths[i])
+    newick_single <- .isSingleNewick(paths[i])
+    if (!newick_single & !nexus){
+      newick_trace <- T
+    } else {newick_trace <- F}
+
+    if (nexus & !newick_single & !newick_trace){
+
+      trees[[i]] <- .readNexusTrees(path = paths[i], burnin = burnin, verbose = verbose)
+
+    } else if (!nexus & newick_single & !newick_trace) {
+
+      tree_string <- readLines(paths[i], n=1)
+      trees[[i]] <- .parseTreeString(tree_string)
+
+    } else if (!nexus & !newick_single & newick_trace) {
+
+      trees[[i]] <- .readTreeLogs(path = paths[i], tree_name = tree_name, burnin = burnin,
+                                  verbose = verbose)
+
+    } else {stop("tree file format unrecognized")}
+
     }
-  } else {
-    stop("All files should be of the same format.")
-  }
-
+   # all_nexus <- sapply(paths, .isNexusFile)
+  # if ( all(all_nexus == TRUE) ) {
+  #   trees <- lapply(paths, .readNexusTrees, burnin = burnin, verbose = verbose)
+  # } else if ( all(all_nexus == FALSE) ) {
+  #   n_paths  <- length(paths)
+  #   trees    <- vector("list", n_paths)
+  #   if ( n_cores > 1) {
+  #     cat("Reading trees.\n", sep="")
+  #     mclapply(paths, .readTreeLogs, tree_name = tree_name, burnin = burnin, verbose = FALSE, mc.cores=n_cores)
+  #   } else {
+  #     for(i in 1:n_paths) {
+  #       cat("Reading trees in file: ", paths[i], "\n", sep="")
+  #       trees[[i]] <- .readTreeLogs(paths[i], tree_name = tree_name, burnin = burnin, verbose = verbose)
+  #     }
+  #   }
+  # } else {
+  #   stop("All files should be of the same format.")
+  # }
   return(trees)
 }
 

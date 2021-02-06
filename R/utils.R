@@ -536,6 +536,8 @@
 
 .isNexusFile <- function(file) readLines(file, n=1) == "#NEXUS"
 
+.isSingleNewick <- function(file) strsplit(readLines(file, n =1 ), split ="")[[1]][1] == "("
+
 .makeNodeNames <- function(tree) {
   pr <- ape::prop.part(tree)
   labels <- attributes(pr)$labels
