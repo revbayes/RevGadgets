@@ -53,7 +53,8 @@ p <- plotTree(tree = annotated_tree,
               node_pp = F,
               tip_labels = FALSE,
               color_branch_by = "avg_lambda",
-              line_width = 0.8) +
+              line_width = 0.8,
+              branch_color = c("blue","green")) +
      ggplot2::theme(legend.position=c(.1, .9))
 
 }

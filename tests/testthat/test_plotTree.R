@@ -8,17 +8,19 @@ test_that("plot basic, not-yet-rooted phylogeny", {
   tree <- readTrees(paths = file_1)
   # produce the plot pi parameters object
   plot_new <- plotTree(tree = tree, node_labels = "posterior")
-  print(plot_new)
+  #print(plot_new)
   # load the saved plot for comparison
   file_2 <- system.file("extdata",
                         "graphs/plotTree_basic.rds",
                         package="RevGadgets")
   plot_orig <- readRDS(file_2) # loads an object called 'plot'
-  for (i in 1:length(plot_new)) {
-    if (names(plot_new[i]) != "plot_env") {
-      expect_equal(plot_new[[i]], plot_orig[[i]])
-    }
-  }
+
+  # test for errors in plot_new
+  expect_error(print(plot_new), NA)
+
+  #  compare plot data objects
+  expect_equal(plot_new$data, plot_orig$data)
+
 })
 
 # add a more complex test for the colored branches plot

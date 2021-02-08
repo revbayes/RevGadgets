@@ -16,11 +16,10 @@ test_that("plot pi traces", {
   #read in original plot
   plot_orig <- readRDS(plot_file)[[1]]
 
-  # compare plot objects
-  for (i in 1:length(plot_new)) {
-    if (names(plot_new[i]) != "plot_env") {
-      expect_equal(plot_new[[i]], plot_orig[[i]])
-    }
-  }
+  # test for errors in plot_new
+  expect_error(print(plot_new), NA)
+
+  # compare plot data objects
+  expect_equal(plot_new$data, plot_orig$data)
 
 })

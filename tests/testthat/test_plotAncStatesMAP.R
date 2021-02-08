@@ -8,16 +8,15 @@ test_that("plots MAP of ancestral states", {
   # make a new plot
   example <- processAncStates(tree_file, state_labels = c("1" = "Awesome", "2" = "Beautiful", "3" = "Cool!"))
   plot_new <- plotAncStatesMAP(t = example)
-  print(plot_new)
+  #print(plot_new)
 
   # read original plot object
   plot_orig <- readRDS(plot_file)
 
-  # compare plot objects
+  #  plot new doesn't error out
+  expect_error(print(plot_new), NA)
 
-  for (i in 1:length(plot_new)){
-    if (names(plot_new[i]) != "plot_env"){
-      expect_equal(plot_new[[i]], plot_orig[[i]])
-    }
-  }
+  # compare plot dataobjects
+  expect_equal(plot_new$data, plot_orig$data)
+
 })

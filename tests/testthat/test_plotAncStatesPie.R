@@ -29,11 +29,11 @@ test_that("plots pies of ancestral states", {
   # read original plot object
   plot_orig <- readRDS(plot_file)
 
-  # compare plot objects
-  for (i in 1:length(plot_new)) {
-    if (names(plot_orig[i]) != "plot_env" & names(plot_orig[i]) != "layers") {
-      expect_equal(plot_new[[i]], plot_orig[[i]])
-    }
-  }
+  # test for errors in plot_new
+  expect_error(print(plot_new), NA)
+
+  # compare plot data objects
+  expect_equal(plot_new$data, plot_orig$data)
+
 
 })
