@@ -77,7 +77,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
     } else if (!nexus & newick_single & !newick_trace) {
 
       tree_string <- readLines(paths[i], n=1)
-      trees[[i]][[1]] <- .parseTreeString(tree_string)
+      trees[[i]] <- list(.parseTreeString(tree_string))
 
     } else if (!nexus & !newick_single & newick_trace) {
 
