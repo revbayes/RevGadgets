@@ -125,7 +125,10 @@ Text labels at nodes and tips are also available.
 
 # process file
 file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
-example <- processAncStates(file, state_labels = c("1" = "Awesome", "2" = "Beautiful", "3" = "Cool!"))
+example <- processAncStates(file,
+                            state_labels = c("1" = "Awesome",
+                                             "2" = "Beautiful",
+                                             "3" = "Cool!"))
 
 # have states vary by color and indicate state pp with size (default)
 plotAncStatesMAP(t = example, tip_labels_italics = T)
@@ -134,13 +137,16 @@ plotAncStatesMAP(t = example, tip_labels_italics = T)
 plotAncStatesMAP(t = example, tip_labels_italics = T, timeline = T)
 
 # have states vary by color and symbol, label nodes with pp of states
-plotAncStatesMAP(t = example,  node_shape_as = "state", node_size = 4, node_shape = c(15, 17,20),
-        node_size_as = NULL, node_labels_as = "state_posterior")
+plotAncStatesMAP(t = example,  node_shape_as = "state",
+                 node_size = 4, node_shape = c(15, 17,20),
+                 node_size_as = NULL, node_labels_as = "state_posterior")
 
 # black and white figure - state as symbols and state pp with text
-plotAncStatesMAP(t = example, node_color_as = NULL, node_shape_as = "state", node_shape =  c(15, 17,20),
-        node_size_as = NULL, node_size = 4, node_labels_as = "state_posterior",
-        node_color = "grey", state_transparency = 1)
+plotAncStatesMAP(t = example, node_color_as = NULL,
+                 node_shape_as = "state", node_shape =  c(15, 17,20),
+                 node_size_as = NULL, node_size = 4,
+                 node_labels_as = "state_posterior",
+                 node_color = "grey", state_transparency = 1)
 
 # default with circular tree
 plotAncStatesMAP(t = example, tree_layout = "circular")

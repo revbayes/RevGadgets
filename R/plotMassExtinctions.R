@@ -12,7 +12,7 @@
 #' @param mass.extinction.times (numeric; no default) Vector of the fixed grid of times at which mass extinctions were allowed to occur.
 #' @param mass.extinction.name (character; no default) The name of the mass extinction probability parameter (e.g. "mass_extinction_probabilities") for which support is to be calculated/plotted.
 #' @param prior.prob (numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).
-#' @param lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
+#' @param return.2lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
 #'
 #' @return A ggplot object
 #'
@@ -25,7 +25,8 @@
 #'\dontrun{
 #'
 #' mass_extinction_probability_file <- system.file("extdata",
-#'     "mass_extinction/crocs_mass_extinction_probabilities.p", package="RevGadgets")
+#'     "mass_extinction/crocs_mass_extinction_probabilities.p",
+#'     package="RevGadgets")
 #'
 #' mass_extinction_probabilities <- readTrace(mass_extinction_probability_file,burnin = 0.25)
 #'
@@ -39,12 +40,17 @@
 #' interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
 #'
 #' # then plot results:
-#' p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,mass.extinction.times=interval_times,mass.extinction.name="mass_extinction_probabilities",prior_prob);p
+#' p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,
+#'                          mass.extinction.times=interval_times,
+#'                          mass.extinction.name="mass_extinction_probabilities",prior_prob);p
 #'}
 #'
 #' @export
 
-plotMassExtinctions <- function(mass.extinction.trace,mass.extinction.times,mass.extinction.name,prior.prob,return.2lnBF=TRUE) {
+plotMassExtinctions <- function(mass.extinction.trace,
+                                mass.extinction.times,
+                                mass.extinction.name,
+                                prior.prob,return.2lnBF=TRUE) {
 
   # Condense log lists into data frames
   me_log <- do.call(rbind,mass.extinction.trace)
@@ -85,16 +91,17 @@ plotMassExtinctions <- function(mass.extinction.trace,mass.extinction.times,mass
   # Data frame for ggplot
   bfdf <- data.frame(bf=BF,time=mass.extinction.times)
 
-  p <- ggplot2::ggplot(data=bfdf, mapping=aes(x=time,y=bf)) +
-    ggplot2::geom_rect(mapping=aes(ymin=-Inf,ymax=2,xmin=-Inf,xmax=Inf),fill="grey70") +
-    ggplot2::geom_rect(mapping=aes(ymin=2,ymax=6,xmin=-Inf,xmax=Inf),fill="grey80") +
-    ggplot2::geom_rect(mapping=aes(ymin=6,ymax=10,xmin=-Inf,xmax=Inf),fill="grey90") +
-    ggplot2::geom_col(aes(fill="red")) +
+  p <- ggplot2::ggplot(data=bfdf, mapping=ggplot2::aes(x=time,y=bf)) +
+    ggplot2::geom_rect(mapping=ggplot2::aes(ymin=-Inf,ymax=2,xmin=-Inf,xmax=Inf),fill="grey70") +
+    ggplot2::geom_rect(mapping=ggplot2::aes(ymin=2,ymax=6,xmin=-Inf,xmax=Inf),fill="grey80") +
+    ggplot2::geom_rect(mapping=ggplot2::aes(ymin=6,ymax=10,xmin=-Inf,xmax=Inf),fill="grey90") +
+    ggplot2::geom_col(ggplot2::aes(fill="red")) +
     ggplot2::geom_hline(yintercept=0,linetype="dashed") +
-    ggplot2::scale_x_reverse() + xlab("million years ago") +
+    ggplot2::scale_x_reverse() +
+    ggplot2::xlab("million years ago") +
     ggplot2::ylab("2 log Bayes factor") +
     ggplot2::theme_classic() +
-    ggplot2::theme(legend.position="none",panel.border=element_rect(color="black",fill=NA))
+    ggplot2::theme(legend.position="none",panel.border=ggplot2::element_rect(color="black",fill=NA))
 
   return(p)
 }

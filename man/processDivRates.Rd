@@ -31,6 +31,9 @@ processDivRates(
 \item{burnin}{(single numeric value; default = 0) Fraction of generations to
 discard (if value provided is between 0 and 1) or number of generations (if
 value provided is greater than 1). Passed to readTrace().}
+
+\item{probs}{(numeric vector; c(0.025, 0.975)) a vector of length two
+containing the upper and lower bounds for the confidence intervals.}
 }
 \value{
 List object with processed rate and time parameters.

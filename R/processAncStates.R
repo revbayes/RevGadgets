@@ -39,7 +39,7 @@ processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALS
     } else if ("start_state_1" %in% names(t@data) && "end_state_1" %in% names(t@data)) {
         include_start_states <- T
     } else {
-        error("tree file does not contain expected state labels: [\'anc_state\'] or [\'start_state\' and \'end_state\']")
+        stop("tree file does not contain expected state labels: [\'anc_state\'] or [\'start_state\' and \'end_state\']")
     }
 
     # add state labels

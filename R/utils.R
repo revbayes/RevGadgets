@@ -56,7 +56,7 @@
 
   # send error if state_labels are provided without names
   if (!is.null(state_labels) && is.null(names(state_labels))) {
-    error("names(state_labels) must identify all unlabeled state names in attributes(t)$data")
+    stop("names(state_labels) must identify all unlabeled state names in attributes(t)$data")
   }
 
   #make matrix of all anc state values
@@ -607,7 +607,7 @@
 # Stolen from ggplot2
 new_data_frame <- function(x = list(), n = NULL) {
   if (length(x) != 0 && is.null(names(x))) {
-    abort("Elements must be named")
+    stop("Elements must be named")
   }
   lengths <- vapply(x, length, integer(1))
   if (is.null(n)) {
@@ -616,7 +616,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   for (i in seq_along(x)) {
     if (lengths[i] == n) next
     if (lengths[i] != 1) {
-      abort("Elements must equal the number of rows or 1")
+      stop("Elements must equal the number of rows or 1")
     }
     x[[i]] <- rep(x[[i]], n)
   }
