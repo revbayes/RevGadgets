@@ -21,7 +21,7 @@ plotMassExtinctions(
 
 \item{prior.prob}{(numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).}
 
-\item{lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
+\item{return.2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
 }
 \value{
 A ggplot object
@@ -40,7 +40,8 @@ just as with any ggplot object.
 \dontrun{
 
 mass_extinction_probability_file <- system.file("extdata",
-    "mass_extinction/crocs_mass_extinction_probabilities.p", package="RevGadgets")
+    "mass_extinction/crocs_mass_extinction_probabilities.p",
+    package="RevGadgets")
 
 mass_extinction_probabilities <- readTrace(mass_extinction_probability_file,burnin = 0.25)
 
@@ -54,7 +55,9 @@ tree_age <- 243.5
 interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
 
 # then plot results:
-p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,mass.extinction.times=interval_times,mass.extinction.name="mass_extinction_probabilities",prior_prob);p
+p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,
+                         mass.extinction.times=interval_times,
+                         mass.extinction.name="mass_extinction_probabilities",prior_prob);p
 }
 
 }

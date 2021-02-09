@@ -12,8 +12,7 @@ such as produced by processDivRates(), containing the data on rates
 and interval times for each type of rate to be plotted (e.g.
 speciation rate, etc.).}
 
-\item{probs}{(numeric vector; c(0.025, 0.975)) a vector of length two
-containing the upper and lower bounds for the confidence intervals.}
+\item{facet}{(logical; TRUE) plot rates in separate facets.}
 }
 \value{
 A ggplot object

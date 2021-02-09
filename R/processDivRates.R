@@ -22,7 +22,8 @@
 #' @param burnin (single numeric value; default = 0) Fraction of generations to
 #'  discard (if value provided is between 0 and 1) or number of generations (if
 #'  value provided is greater than 1). Passed to readTrace().
-#'
+#' @param probs (numeric vector; c(0.025, 0.975)) a vector of length two
+#' containing the upper and lower bounds for the confidence intervals.
 #' @return List object with processed rate and time parameters.
 #'
 #' @examples
@@ -129,18 +130,18 @@ processDivRates <- function(speciation_time_log = "",
   }
 
   # read in log files as lists of data.frames with readTrace()
-  speciation_time <- readTrace(path = speciation_time_log,
+  speciation_time <- readTrace(paths = speciation_time_log,
                                 burnin = burnin)
-  speciation_rate <- readTrace(path = speciation_rate_log,
+  speciation_rate <- readTrace(paths = speciation_rate_log,
                                 burnin = burnin)
-  extinction_time <- readTrace(path = extinction_time_log,
+  extinction_time <- readTrace(paths = extinction_time_log,
                                 burnin = burnin)
-  extinction_rate <- readTrace(path = extinction_rate_log,
+  extinction_rate <- readTrace(paths = extinction_rate_log,
                                 burnin = burnin)
   if (fossilization_time_log != "") {
-    fossilization_time <- readTrace(path = fossilization_time_log,
+    fossilization_time <- readTrace(paths = fossilization_time_log,
                                  burnin = burnin)
-    fossilization_rate <- readTrace(path = fossilization_rate_log,
+    fossilization_rate <- readTrace(paths = fossilization_rate_log,
                                  burnin = burnin)
   } else {
     fossilization_time <- NULL

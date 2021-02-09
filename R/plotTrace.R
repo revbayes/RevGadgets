@@ -42,7 +42,9 @@
 #' plots[[1]]
 #' # add custom colors
 #' # THIS DOESNT WORK
-#' plots[[1]] + ggplot2::scale_color_manual(values = c("green","red","blue","orange")) + ggplot2::scale_fill_manual(values = c("green","red","blue","orange"))
+#' plots[[1]] +
+#'    ggplot2::scale_color_manual(values = c("green","red","blue","orange")) +
+#'    ggplot2::scale_fill_manual(values = c("green","red","blue","orange"))
 #'
 #'
 #' # make the same plot, using match
@@ -52,7 +54,9 @@
 #' file <- system.file("extdata", "comp_method_disc/freeK_RJ.p", package = "RevGadgets")
 #' trace <- readTrace(path = file)
 #'
-#' plots <- plotTrace(trace = trace, vars = c("prob_rate_12", "prob_rate_13", "prob_rate_31", "prob_rate_32"))
+#' plots <- plotTrace(trace = trace,
+#'                    vars = c("prob_rate_12", "prob_rate_13",
+#'                             "prob_rate_31", "prob_rate_32"))
 #'
 #'
 #' }

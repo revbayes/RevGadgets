@@ -49,7 +49,7 @@ posteriorSamplesToParametricPrior <- function(samples,
   par <- numeric()
 
   sample_mean <- mean(samples)
-  sample_var <- variance_inflation_factor * var(samples)
+  sample_var <- variance_inflation_factor * stats::var(samples)
 
   if ( grepl("gam",tolower(distribution)) ) {
     # Fit a gamma distribution
