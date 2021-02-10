@@ -164,6 +164,10 @@ plotPostPredStats <- function(data,
 
   }
 
+
+  # name each element of the list according to the statistic
+  names(plots) <- colnames(data[[2]])
+
   return(plots)
 
 }
