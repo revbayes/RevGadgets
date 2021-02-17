@@ -1,4 +1,5 @@
-# hack to define variables used in ggplots
+# hack to define variables used within gg expressions
+# https://community.rstudio.com/t/how-to-solve-no-visible-binding-for-global-variable-note/28887
 utils::globalVariables(c("anc_state_1", "anc_state_1_pp", "anc_state_2",
                          "anc_state_3","anc_state_other", "bf",
                          "clado_node_color_as", "clado_node_shape_as",
