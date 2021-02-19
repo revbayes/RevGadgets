@@ -17,6 +17,9 @@
 #' contains multiple traces (such as from multiple runs), summarizeTrace() will provide
 #' summaries for each trace individually, as well as the combined trace.
 #'
+#' @param color ("character"; "default") Colors for parameters. Defaults to default RevGadgets
+#' colors. For non-default colors, provide a named vector of length of the number of parameters.
+#'
 #' @param vars (character or character vector; NULL) The specific name(s) of the variable(s)
 #' to be summarized.
 #'
@@ -40,12 +43,12 @@
 #' plots <- plotTrace(trace = one_trace,
 #'                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 #' plots[[1]]
-#' # add custom colors
-#' # THIS DOESNT WORK
-#' plots[[1]] +
-#'    ggplot2::scale_color_manual(values = c("green","red","blue","orange")) +
-#'    ggplot2::scale_fill_manual(values = c("green","red","blue","orange"))
 #'
+#' # add custom colors
+#' plots <- plotTrace(trace = one_trace,
+#'                    vars = c("pi[3]","pi[4]","pi[1]","pi[2]"),
+#'                    color = c("pi[1]" = "green","pi[2]"= "red","pi[3]"= "blue","pi[4]"= "orange"))
+#' plots[[1]]
 #'
 #' # make the same plot, using match
 #' plots <- plotTrace(trace = one_trace, match = "pi")
@@ -58,17 +61,36 @@
 #'                    vars = c("prob_rate_12", "prob_rate_13",
 #'                             "prob_rate_31", "prob_rate_32"))
 #'
-#'
+#' # with custom colors
+#' plots <- plotTrace(trace = trace,
+#'                    vars = c("prob_rate_12", "prob_rate_13",
+#'                             "prob_rate_31", "prob_rate_32"),
+#'                    color = c("prob_rate_12" = "green","prob_rate_13" = "red",
+#'                              "prob_rate_31"= "blue","prob_rate_32" = "orange"))
+#' plots[[1]]
 #' }
 #'
 #' @export
 
 
-plotTrace <- function(trace, vars = NULL, match = NULL) {
+plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
   # enforce argument matching
   if (is.list(trace) == FALSE) stop("trace should be a list of data frames")
   if (is.data.frame(trace[[1]]) == FALSE) stop("trace should be a list of data frames")
+  if (is.character(color) == FALSE) stop ("color should be 'default' or valid color(s)")
+  if (color[1] != "default" & any(.isColor(color) == FALSE) ) stop("node_color should be valid color(s)")
+  if (color[1] == "default" & length(vars) > 12) {
+    stop(paste0(length(vars), " states in dataset; please provide colors (default only can provide up to 12"))
+  }
+  if (color[1] != "default" & length(color) < length(vars)) {
+    stop(paste0("You provided fewer colors in node_color than states in your dataset. There are ",
+                length(vars), " states and you provide ", length(color), " colors."))
+  }
+  if (color[1] != "default" & length(color) > length(vars)) {
+    stop(paste0("You provided more colors in node_color than states in your dataset. There are ",
+                length(vars), " states and you provide ", length(color), " colors."))
+  }
   if (is.null(vars) & is.null(match)) stop("Either vars or match should be specified")
   if (!is.null(vars) & !is.null(match)) stop("Only vars OR match should be specified")
   if (is.character(vars) == FALSE & !is.null(vars)) stop("vars should be a character vector")
@@ -90,6 +112,7 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
     if (length(vars) == 0) {stop("match did not correspond to any column names in provided trace")}
   }
 
+
     plots <- list()
     #identify type of vars and split by quantitative vs. qualitative
     classes <- character()
@@ -100,6 +123,21 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
     vars_qual <- vars[classes != "numeric"]
     if (length(vars_quant) > 12) {stop("Please supply fewer than 12 quantitative variables")}
     if (length(vars_qual) > 12) {stop("Please supply fewer than 12 qualitative variables")}
+
+    # set up colors
+    if (color[1] == "default") {
+      if (length(vars_quant) > 0) {
+        col_vec_quant <- .colFun(length(vars_quant))
+        names(col_vec_quant) <- vars[classes == "numeric"]
+      }
+      if (length(vars_qual) > 0) {
+        col_vec_qual <- .colFun(length(vars_qual))
+        names(col_vec_qual) <- vars[classes != "numeric"]
+      }
+    } else {
+      col_vec_quant <- color[vars_quant]
+      col_vec_qual <- color[vars_qual]
+    }
 
     # make the quantitative plots
     if (length(vars_quant > 0)) {
@@ -128,11 +166,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           plots[[i]] <- plots[[i]] +
             ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                         ggplot2::aes(x=x,ymax=y,ymin=0),
-                                        fill = .colFun(length(vars_quant))[k], alpha=0.5)
+                                        fill = col_vec_quant[k], alpha=0.5)
         }
 
         plots[[i]] <- plots[[i]] +
-          ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
+          ggplot2::scale_color_manual(values = col_vec_quant) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -159,10 +197,10 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         plots[[i]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value),
                                 position = "identity",
-                                color = .colFun(1),geom="line") +
+                                color = col_vec_quant[1],geom="line") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
-                               fill = .colFun(1)) +
+                               fill = col_vec_quant[1]) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_quant)) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -203,11 +241,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
           plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
             ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                  ggplot2::aes(x=x,ymax=y,ymin=0),
-                                 fill = .colFun(length(vars_quant))[k], alpha=0.5)
+                                 fill = col_vec_quant[k], alpha=0.5)
         }
 
         plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
-          ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
+          ggplot2::scale_color_manual(values = col_vec_quant) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = "Combined Trace:")  +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -233,11 +271,11 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
         # plot density, filling in the 95% credible interval
         plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value),
-                                color = .colFun(1),geom="line",
+                                color = col_vec_quant[1],geom="line",
                                 position = "identity") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
-                               fill = .colFun(1)) +
+                               fill = col_vec_quant[1]) +
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste("Combined Trace")) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -303,9 +341,9 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::geom_bar(position = ggplot2::position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
-            ggplot2::scale_color_manual(values = .colFun(length(vars_qual))) +
-            ggplot2::scale_fill_manual(values = c(.colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
-            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=.colFun(length(vars_qual))))) +
+            ggplot2::scale_color_manual(values = col_vec_qual) +
+            ggplot2::scale_fill_manual(values = c(col_vec_qual, "#ffffff"), guide = FALSE) +
+            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=col_vec_qual))) +
             ggplot2::ggtitle(label = paste0("Trace ", i)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
         }
@@ -327,19 +365,13 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
           #plot
           plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
-                                ggplot2::geom_bar(stat = "identity", color = .colFun(1), fill = "white") +
+                                ggplot2::geom_bar(stat = "identity", color = col_vec_qual[1], fill = "white") +
                                 ggplot2::geom_bar(data = data_sig, stat = "identity",
                                                   ggplot2::aes(x = state, y = probability),
-                                        color = .colFun(1), fill = .colFun(1)) +
+                                        color = col_vec_qual[1], fill = col_vec_qual[1]) +
                                 ggthemes::theme_few() +
                                 ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_qual)) +
                                 ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-
-
-
-
-
         }
       }
       # add combined trace for multiple traces
@@ -386,9 +418,9 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
             ggplot2::geom_bar(position = ggplot2::position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
-            ggplot2::scale_color_manual(values = .colFun(length(vars_qual))) +
-            ggplot2::scale_fill_manual(values = c(.colFun(length(vars_qual)), "#ffffff"), guide = FALSE) +
-            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=.colFun(length(vars_qual))))) +
+            ggplot2::scale_color_manual(values = col_vec_qual) +
+            ggplot2::scale_fill_manual(values = c(col_vec_qual, "#ffffff"), guide = FALSE) +
+            ggplot2::guides(color = ggplot2::guide_legend(override.aes=list(fill=col_vec_qual))) +
             ggplot2::ggtitle(label = paste0("Combined Trace")) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
@@ -407,10 +439,10 @@ plotTrace <- function(trace, vars = NULL, match = NULL) {
 
           #plot
           plots[[nplots + 1]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
-            ggplot2::geom_bar(stat = "identity", color = .colFun(1), fill = "white") +
+            ggplot2::geom_bar(stat = "identity", color = col_vec_qual[1], fill = "white") +
             ggplot2::geom_bar(data = data_sig, stat = "identity",
                               ggplot2::aes(x = state, y = probability),
-                              color = .colFun(1), fill = .colFun(1)) +
+                              color = col_vec_qual[1], fill = col_vec_qual[1]) +
             ggthemes::theme_few() +
             ggplot2::ggtitle(label = paste0("Combined Trace: ",vars_qual)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))

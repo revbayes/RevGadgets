@@ -30,7 +30,8 @@ plotAncStatesPie(
   shoulder_pie_nudge_x = node_pie_nudge_x,
   shoulder_pie_nudge_y = node_pie_nudge_y,
   state_transparency = 0.75,
-  timeline = F
+  timeline = FALSE,
+  timeline_units = list("epochs", "periods")
 )
 }
 \arguments{
@@ -98,6 +99,8 @@ cladogenetic plots.}
 0 to 1.}
 
 \item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
+
+\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.

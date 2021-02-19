@@ -7,6 +7,7 @@
 plotTree(
   tree,
   timeline = FALSE,
+  timeline_units = list("epochs", "periods"),
   node_age_bars = FALSE,
   node_age_bars_color = "blue",
   node_age_bars_colored_by = NULL,
@@ -39,6 +40,8 @@ only one summary tree from one trace file. If it contains multiple trees or mult
 traces, only the first will be used.}
 
 \item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.}
+
+\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
 
 \item{node_age_bars}{(logical; FALSE) Plot time tree with node age bars?}
 

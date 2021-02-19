@@ -29,7 +29,8 @@ plotAncStatesMAP(
   tip_states_shape = node_shape,
   state_transparency = 0.75,
   tree_layout = "rectangular",
-  timeline = FALSE
+  timeline = FALSE,
+  timeline_units = list("epochs", "periods")
 )
 }
 \arguments{
@@ -104,11 +105,11 @@ as node symbols.}
 0 to 1.}
 
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
-are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
-'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'. When cladogenetic = TRUE,
-only "rectangular" and 'circular' are available.}
+are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'}
 
 \item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
+
+\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
 }
 \description{
 Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
@@ -152,13 +153,6 @@ plotAncStatesMAP(t = example, node_color_as = NULL,
 
 # default with circular tree
 plotAncStatesMAP(t = example, tree_layout = "circular")
-
-# default with 'ape' tree, note that you may have to manually adjust the axes limits
-# we recommend setting tip_labels_offset to 0
-p <- plotAncStatesMAP(t = example, tree_layout = "ape", tip_labels_offset = 0)
-tree_height <- max(phytools::nodeHeights(example@phylo))
-p + ggplot2::xlim(-tree_height/3, tree_height*2) +
-  ggplot2::ylim(-tree_height/3, tree_height*2)
 
 # Chromosome evolution example
 

@@ -5,23 +5,23 @@
 \title{Plot Mass Extinction Support}
 \usage{
 plotMassExtinctions(
-  mass.extinction.trace,
-  mass.extinction.times,
-  mass.extinction.name,
-  prior.prob,
-  return.2lnBF = TRUE
+  mass_extinction_trace,
+  mass_extinction_times,
+  mass_extinction_name,
+  prior_prob,
+  return_2lnBF = TRUE
 )
 }
 \arguments{
-\item{mass.extinction.trace}{(list; no default) The processed Rev output of the mass extinction probabilities (output of readTrace()).}
+\item{mass_extinction_trace}{(list; no default) The processed Rev output of the mass extinction probabilities (output of readTrace()).}
 
-\item{mass.extinction.times}{(numeric; no default) Vector of the fixed grid of times at which mass extinctions were allowed to occur.}
+\item{mass_extinction_times}{(numeric; no default) Vector of the fixed grid of times at which mass extinctions were allowed to occur.}
 
-\item{mass.extinction.name}{(character; no default) The name of the mass extinction probability parameter (e.g. "mass_extinction_probabilities") for which support is to be calculated/plotted.}
+\item{mass_extinction_name}{(character; no default) The name of the mass extinction probability parameter (e.g. "mass_extinction_probabilities") for which support is to be calculated/plotted.}
 
-\item{prior.prob}{(numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).}
+\item{prior_prob}{(numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).}
 
-\item{return.2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
+\item{return_2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
 }
 \value{
 A ggplot object
@@ -55,9 +55,9 @@ tree_age <- 243.5
 interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
 
 # then plot results:
-p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,
-                         mass.extinction.times=interval_times,
-                         mass.extinction.name="mass_extinction_probabilities",prior_prob);p
+p <- plotMassExtinctions(mass_extinction_trace=mass_extinction_probabilities,
+                         mass_extinction_times=interval_times,
+                         mass_extinction_name="mass_extinction_probabilities",prior_prob);p
 }
 
 }

@@ -25,5 +25,6 @@ Imports: ape, phytools, ggtree, treeio, dplyr, tidytree, methods,
   ggimage, ggplotify, png, rvcheck, stats
 Suggests: testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    deeptime
 VignetteBuilder: knitr

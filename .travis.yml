@@ -9,6 +9,7 @@ r_check_args: --no-build-vignettes --no_manual --timings
 
 r_github_packages:
  - GuangchuangYu/ggtree
+ - willgearty/deeptime
 
 addons:
   apt:

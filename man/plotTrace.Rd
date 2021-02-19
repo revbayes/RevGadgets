@@ -4,13 +4,16 @@
 \alias{plotTrace}
 \title{Plot trace}
 \usage{
-plotTrace(trace, vars = NULL, match = NULL)
+plotTrace(trace, color = "default", vars = NULL, match = NULL)
 }
 \arguments{
 \item{trace}{(list of data frames; no default) Name of a list of data frames,
 such as produced by readTrace(). If the readTrace() output
 contains multiple traces (such as from multiple runs), summarizeTrace() will provide
 summaries for each trace individually, as well as the combined trace.}
+
+\item{color}{("character"; "default") Colors for parameters. Defaults to default RevGadgets
+colors. For non-default colors, provide a named vector of length of the number of parameters.}
 
 \item{vars}{(character or character vector; NULL) The specific name(s) of the variable(s)
 to be summarized.}
@@ -48,12 +51,12 @@ one_trace <- readTrace(paths = file)
 plots <- plotTrace(trace = one_trace,
                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 plots[[1]]
-# add custom colors
-# THIS DOESNT WORK
-plots[[1]] +
-   ggplot2::scale_color_manual(values = c("green","red","blue","orange")) +
-   ggplot2::scale_fill_manual(values = c("green","red","blue","orange"))
 
+# add custom colors
+plots <- plotTrace(trace = one_trace,
+                   vars = c("pi[3]","pi[4]","pi[1]","pi[2]"),
+                   color = c("pi[1]" = "green","pi[2]"= "red","pi[3]"= "blue","pi[4]"= "orange"))
+plots[[1]]
 
 # make the same plot, using match
 plots <- plotTrace(trace = one_trace, match = "pi")
@@ -66,7 +69,13 @@ plots <- plotTrace(trace = trace,
                    vars = c("prob_rate_12", "prob_rate_13",
                             "prob_rate_31", "prob_rate_32"))
 
-
+# with custom colors
+plots <- plotTrace(trace = trace,
+                   vars = c("prob_rate_12", "prob_rate_13",
+                            "prob_rate_31", "prob_rate_32"),
+                   color = c("prob_rate_12" = "green","prob_rate_13" = "red",
+                             "prob_rate_31"= "blue","prob_rate_32" = "orange"))
+plots[[1]]
 }
 
 }
