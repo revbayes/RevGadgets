@@ -8,11 +8,11 @@
 #' the color palette, whether the axes are to be linked, or the overall plotting style/theme,
 #' just as with any ggplot object.
 #'
-#' @param mass.extinction.trace (list; no default) The processed Rev output of the mass extinction probabilities (output of readTrace()).
-#' @param mass.extinction.times (numeric; no default) Vector of the fixed grid of times at which mass extinctions were allowed to occur.
-#' @param mass.extinction.name (character; no default) The name of the mass extinction probability parameter (e.g. "mass_extinction_probabilities") for which support is to be calculated/plotted.
-#' @param prior.prob (numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).
-#' @param return.2lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
+#' @param mass_extinction_trace (list; no default) The processed Rev output of the mass extinction probabilities (output of readTrace()).
+#' @param mass_extinction_times (numeric; no default) Vector of the fixed grid of times at which mass extinctions were allowed to occur.
+#' @param mass_extinction_name (character; no default) The name of the mass extinction probability parameter (e.g. "mass_extinction_probabilities") for which support is to be calculated/plotted.
+#' @param prior_prob (numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).
+#' @param return_2lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
 #'
 #' @return A ggplot object
 #'
@@ -40,31 +40,31 @@
 #' interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
 #'
 #' # then plot results:
-#' p <- plotMassExtinctions(mass.extinction.trace=mass_extinction_probabilities,
-#'                          mass.extinction.times=interval_times,
-#'                          mass.extinction.name="mass_extinction_probabilities",prior_prob);p
+#' p <- plotMassExtinctions(mass_extinction_trace=mass_extinction_probabilities,
+#'                          mass_extinction_times=interval_times,
+#'                          mass_extinction_name="mass_extinction_probabilities",prior_prob);p
 #'}
 #'
 #' @export
 
-plotMassExtinctions <- function(mass.extinction.trace,
-                                mass.extinction.times,
-                                mass.extinction.name,
-                                prior.prob,return.2lnBF=TRUE) {
+plotMassExtinctions <- function(mass_extinction_trace,
+                                mass_extinction_times,
+                                mass_extinction_name,
+                                prior_prob,return_2lnBF=TRUE) {
 
   # Condense log lists into data frames
-  me_log <- do.call(rbind,mass.extinction.trace)
+  me_log <- do.call(rbind,mass_extinction_trace)
 
   # Find parameter and times, remove rest of trace
-  is_me <- grepl(paste0(mass.extinction.name,"["),names(me_log),fixed=TRUE)
+  is_me <- grepl(paste0(mass_extinction_name,"["),names(me_log),fixed=TRUE)
 
   if ( sum(is_me) < 1 ) {
-    stop(paste0("Cannot find mass extinction probability parameter named \"",rate.name,"\" in mass.extinction.trace"))
+    stop(paste0("Cannot find mass extinction probability parameter named \"",rate.name,"\" in mass_extinction_trace"))
   }
 
   me_log <- me_log[,is_me]
 
-  if ( dim(me_log)[2] != length(mass.extinction.times) ) {
+  if ( dim(me_log)[2] != length(mass_extinction_times) ) {
     stop("Number of provided interval times does not match number of mass extinctions.")
   }
 
@@ -81,15 +81,15 @@ plotMassExtinctions <- function(mass.extinction.trace,
 
   # Prior odds are 1 under a MRF model
   posterior_odds <- me_prob / (1 - me_prob)
-  prior_odds <- prior.prob / (1 - prior.prob)
+  prior_odds <- prior_prob / (1 - prior_prob)
   BF <- posterior_odds / prior_odds
 
-  if ( return.2lnBF == TRUE ) {
+  if ( return_2lnBF == TRUE ) {
     BF <- 2 * log(BF)
   }
 
   # Data frame for ggplot
-  bfdf <- data.frame(bf=BF,time=mass.extinction.times)
+  bfdf <- data.frame(bf=BF,time=mass_extinction_times)
 
   p <- ggplot2::ggplot(data=bfdf, mapping=ggplot2::aes(x=time,y=bf)) +
     ggplot2::geom_rect(mapping=ggplot2::aes(ymin=-Inf,ymax=2,xmin=-Inf,xmax=Inf),fill="grey70") +
