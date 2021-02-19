@@ -219,7 +219,7 @@ plotTree <- function(tree,
     ### if error bars, -x lim should be as old as the max of the error bar
 
     n_tips <- length(phy@phylo$tip.label)
-    pp <- pp + coord_geo(dat  = timeline_units,
+    pp <- pp + deeptime::coord_geo(dat  = timeline_units,
                          pos  = lapply(1:length(timeline_units), function(x) "bottom"),
                          size = lapply(1:length(timeline_units), function(x) 4),
                          xlim = c(-1.01*max(minmax, na.rm = T), tree_height/2),

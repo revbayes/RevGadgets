@@ -41,7 +41,8 @@
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
-#'
+#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the timescale.
+
 #' @examples
 #'
 #' \dontrun{
@@ -118,7 +119,9 @@ plotAncStatesPie <- function(t,
                     shoulder_pie_nudge_y = node_pie_nudge_y,
 
                     state_transparency = 0.75,
-                    timeline = F) {
+
+                    timeline = FALSE,
+                    timeline_units = list("epochs", "periods")) {
 
   ##### parameter compatibility checks #####
   if (class(t) != "treedata") stop("t should be a treedata object")

@@ -218,7 +218,7 @@ plotFBDTree <- function(tree,
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
     n_tips <- length(phy@phylo$tip.label)
-    pp <- pp + coord_geo(dat  = timeline_units,
+    pp <- pp + deeptime::coord_geo(dat  = timeline_units,
                          pos  = lapply(1:length(timeline_units), function(x) "bottom"),
                          size = lapply(1:length(timeline_units), function(x) 4),
                          xlim = c(-max(minmax, na.rm = T), tree_height/2),

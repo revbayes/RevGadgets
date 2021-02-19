@@ -57,11 +57,11 @@
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
-#' are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
-#' 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'. When cladogenetic = TRUE,
-#' only "rectangular" and 'circular' are available.
+#' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
 #'
 #' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
+#'
+#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the timescale.
 #'
 #' @examples
 #'
@@ -95,13 +95,6 @@
 #'
 #' # default with circular tree
 #' plotAncStatesMAP(t = example, tree_layout = "circular")
-#'
-#' # default with 'ape' tree, note that you may have to manually adjust the axes limits
-#' # we recommend setting tip_labels_offset to 0
-#' p <- plotAncStatesMAP(t = example, tree_layout = "ape", tip_labels_offset = 0)
-#' tree_height <- max(phytools::nodeHeights(example@phylo))
-#' p + ggplot2::xlim(-tree_height/3, tree_height*2) +
-#'   ggplot2::ylim(-tree_height/3, tree_height*2)
 #'
 #' # Chromosome evolution example
 #'
@@ -169,7 +162,9 @@ plotAncStatesMAP <- function(t,
 
                     state_transparency = 0.75,
                     tree_layout = "rectangular",
-                    timeline = FALSE) {
+                    timeline = FALSE,
+                    timeline_units = list("epochs", "periods")) {
+
     ##### parameter compatability checks! #####
   if (class(t) != "treedata") stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE) stop("cladogenetic should be TRUE or FALSE")
@@ -205,13 +200,7 @@ plotAncStatesMAP <- function(t,
   if (is.numeric(tip_states_shape) == FALSE) stop("tip_states_shape should be a number indicating symbol type")
   if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
   if (state_transparency > 1 | state_transparency < 0) stop("state_transparency should be a number between 0 - 1")
-  if (cladogenetic == FALSE) {
-    tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'ellipse',
-                                                      'roundrect', 'fan', 'circular', 'inward_circular',
-                                                      'radial', 'equal_angle', 'daylight', 'ape'))
-  } else if (cladogenetic == TRUE) {
-    tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'circular'))
-  }
+  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
   if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
   if (tree_layout != "rectangular") {
     if (timeline == TRUE) { stop("timeline is only compatible with
@@ -594,36 +583,36 @@ plotAncStatesMAP <- function(t,
     }
   }
 
-    # add node labels (text)
+  # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = end_state_1), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size) +
                  ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
                                    hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1), subset = !isTip, hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = anc_state_1), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = end_state_1), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "state_posterior") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
-                                    nudge_x = node_labels_offset, size = node_labels_size) +
-                 ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
-                                   hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(end_state_1_pp) ), hjust="left",
+                                      nudge_x = node_labels_offset, size = node_labels_size) +
+          ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
+                            hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(anc_state_1_pp) ), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(end_state_1_pp) ), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "node_posterior") {
-      p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(posterior), subset = !isTip), hjust = "left",
+      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
                                     nudge_x = node_labels_offset, size = node_labels_size)
     }
   }
@@ -698,6 +687,29 @@ plotAncStatesMAP <- function(t,
     p <- p + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
     #p  <- p + ggplot2::annotate(geom = "segment", x = 0, xend = -max_age, y = -n_tips/20, yend = -n_tips/20)
     p <- .add_epoch_times(p, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
+
+    # set coordinates
+    ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
+    ### if error bars, -x lim should be as old as the max of the error bar
+    # n_tips <- length(t@phylo$tip.label)
+    #
+    # p <- p + deeptime::coord_geo(dat  = timeline_units,
+    #                              pos  = lapply(1:length(timeline_units), function(x) "bottom"),
+    #                              size = lapply(1:length(timeline_units), function(x) 4),
+    #                              xlim = c(-1.05*max_age, tree_height/2),
+    #                              ylim = c(0, n_tips*1.1),
+    #                              neg  = TRUE)
+    #
+    # p <- p + ggplot2::scale_x_continuous(name   = "Age (Ma)",
+    #                                      expand = c(0, 0),
+    #                                      limits = c(-1.05*max_age, tree_height/2),
+    #                                      breaks = -rev(seq(0,max_age+dx,interval)),
+    #                                      labels = rev(seq(0,max_age+dx,interval)))
+    #
+    # p <- p + ggtree::theme_tree2()
+    # p <- ggtree::revts(p)
+    # p <- p + ggplot2::scale_y_continuous(limits = c(0, n_tips*1.1), expand = c(0, 0))
+
   }
 
   return(p)
