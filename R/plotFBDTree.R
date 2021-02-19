@@ -13,6 +13,8 @@
 #'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
 #'
+#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the timescale.
+#'
 #' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
 #'
 #' @param node_age_bars_colored_by (character; NULL) Specify column to color node age bars by,
@@ -95,13 +97,15 @@
 #' @export
 
 
-plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
-                     node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
-                     tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
-                     tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
-                     node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
-                     tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1,
-                     legend_x = 0.9, legend_y = 0.8) {
+plotFBDTree <- function(tree,
+                        timeline = FALSE, timeline_units = list("epochs", "periods"),
+                        node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
+                        node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
+                        tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
+                        tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
+                        node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
+                        tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1,
+                        legend_x = 0.9, legend_y = 0.8) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
@@ -213,8 +217,13 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
     # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
-    #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
-    pp <- pp + ggplot2::coord_cartesian()
+    n_tips <- length(phy@phylo$tip.label)
+    pp <- pp + coord_geo(dat  = timeline_units,
+                         pos  = lapply(1:length(timeline_units), function(x) "bottom"),
+                         size = lapply(1:length(timeline_units), function(x) 4),
+                         xlim = c(-max(minmax, na.rm = T), tree_height/2),
+                         ylim = c(0, n_tips*1.1),
+                         neg  = TRUE)
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
                                            expand = c(0, 0),
                                            limits = c(-max(minmax, na.rm = T), tree_height/2),
@@ -222,11 +231,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
                                            labels = rev(seq(0,max_age+dx,interval)),
     )
     pp <- pp + ggtree::theme_tree2()
-    #pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
     pp <- ggtree::revts(pp)
-    n_tips <- length(phy@phylo$tip.label)
-    pp <- pp + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
-    pp <- .add_epoch_times(pp, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
   }
 
   # processing for node_age_bars and tip_age_bars
@@ -256,6 +261,7 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
     }
     node_df <- dplyr::filter(bar_df, isTip == FALSE)
     if (is.null(node_age_bars_colored_by) == TRUE) {
+
       # plot age densities
       node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
       node_df <- dplyr::select(node_df,  node_id, min, max, y)
@@ -269,6 +275,9 @@ plotFBDTree <- function(tree, timeline = FALSE, node_age_bars = TRUE, node_age_b
       }
 
     } else if (is.null(node_age_bars_colored_by) == FALSE) {
+      if ( length(node_age_bars_color) == 1 ) {
+        node_age_bars_color <- .colFun(2)[2:1]
+      }
       pp$data$olena <- c(rep(NA, times = ntips),
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                                         node_age_bars_colored_by]))))

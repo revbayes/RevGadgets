@@ -14,6 +14,8 @@
 #'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
 #'
+#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the timescale.
+#'
 #' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
 #'
 #' @param node_age_bars_colored_by (character; NULL) Specify column to color node age bars by,
@@ -104,7 +106,9 @@
 #' @export
 
 
-plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
+plotTree <- function(tree,
+                     timeline = FALSE, timeline_units = list("epochs", "periods"),
+                     node_age_bars = FALSE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
                      node_labels = NULL, node_labels_color = "black", node_labels_size = 3, node_labels_offset = 0, tip_labels = TRUE,
                      tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                      tip_labels_size = 3, tip_labels_offset = 0, node_pp = FALSE, node_pp_shape = 16, node_pp_color = "black",
@@ -167,7 +171,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
                          layout = tree_layout)
   }
 
-  #### paramter compatibility checks ###
+  #### parameter compatibility checks ###
   if (length(node_pp_color) == 2 & length(branch_color) == 2) stop("You may only include variable colors for either
                                                                    node_pp_label or branch_color, not for both")
   if (tree_layout != "rectangular") {
@@ -191,7 +195,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
   # reformat labels if necessary
   if (tip_labels_remove_underscore) { pp$data$label <- gsub("_", " ", pp$data$label)}
 
-    # add timeline
+  # add timeline
   if (timeline == TRUE) {
 
     pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
@@ -213,20 +217,38 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
     # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
-    #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
-    pp <- pp + ggplot2::coord_cartesian()
+
+    n_tips <- length(phy@phylo$tip.label)
+    pp <- pp + coord_geo(dat  = timeline_units,
+                         pos  = lapply(1:length(timeline_units), function(x) "bottom"),
+                         size = lapply(1:length(timeline_units), function(x) 4),
+                         xlim = c(-1.01*max(minmax, na.rm = T), tree_height/2),
+                         ylim = c(0, n_tips*1.1),
+                         neg  = TRUE)
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
                                            expand = c(0, 0),
-                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
+                                           limits = c(-1.01*max(minmax, na.rm = T), tree_height/2),
                                            breaks = -rev(seq(0,max_age+dx,interval)),
                                            labels = rev(seq(0,max_age+dx,interval)),
     )
     pp <- pp + ggtree::theme_tree2()
-    #pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
     pp <- ggtree::revts(pp)
-    n_tips <- length(phy@phylo$tip.label)
-    pp <- pp + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
-    pp <- .add_epoch_times(pp, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
+
+    # #pp <- pp + ggplot2::coord_cartesian(xlim = c(-max_age,30), ylim=c(-7, n_nodes+1.5), expand=F)
+    # pp <- pp + ggplot2::coord_cartesian()
+    # pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
+    #                                        expand = c(0, 0),
+    #                                        limits = c(-max(minmax, na.rm = T), tree_height/2),
+    #                                        breaks = -rev(seq(0,max_age+dx,interval)),
+    #                                        labels = rev(seq(0,max_age+dx,interval)),
+    # )
+    # pp <- pp + ggtree::theme_tree2()
+    # #pp <- pp + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
+    # pp <- ggtree::revts(pp)
+    # n_tips <- length(phy@phylo$tip.label)
+    # pp <- pp + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
+    # pp <- .add_epoch_times(pp, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
+
   }
 
   # processing for node_age_bars and tip_age_bars
@@ -251,6 +273,7 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
     bar_df <- data.frame(node_id = as.integer(pp$data$node), isTip = pp$data$isTip, as.data.frame(minmax))
     names(bar_df) <- c("node_id", "isTip", "min", "max")
     node_df <- dplyr::filter(bar_df, isTip == FALSE)
+
     if (is.null(node_age_bars_colored_by) == TRUE) {
       # plot age densities
       node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
@@ -258,16 +281,20 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
                                        data=node_df, color=node_age_bars_color, size=1.5, alpha=0.8)
      } else if (is.null(node_age_bars_colored_by) == FALSE) {
+      if ( length(node_age_bars_color) == 1 ) {
+        node_age_bars_color <- .colFun(2)[2:1]
+      }
       pp$data$olena <- c(rep(NA, times = ntips),
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                              node_age_bars_colored_by]))))
       node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
-      node_df <- dplyr::select(node_df,  node_id, min, max, y, olena)
+      node_df <- dplyr::select(node_df, node_id, min, max, y, olena)
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y, color = olena),
                                        data=node_df, size=1.5, alpha=0.8) +
                  ggplot2::scale_color_gradient(low = node_age_bars_color[1], high = node_age_bars_color[2],
                                                name = paste(.simpleCap(node_age_bars_colored_by)))
-      }
+     }
+
   }
 
   # add node labels (text)
@@ -320,7 +347,6 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
                                       low = node_pp_color[1], high = node_pp_color[2])
     }
 
-
   }
 
   # add branch coloration by variable
@@ -349,14 +375,11 @@ plotTree <- function(tree, timeline = FALSE, node_age_bars = FALSE, node_age_bar
   }
 
   # readjust axis
-  if (node_age_bars == FALSE & timeline == FALSE & tip_labels == TRUE) {
+  if (timeline == FALSE & tip_labels == TRUE) {
     # add extra space on plot for tip labels
     tree_height <- max(phytools::nodeHeights(phy@phylo))
     pp <- pp + ggtree::xlim(-tree_height, tree_height/2)
     pp <- ggtree::revts(pp)
-  } else if (node_age_bars == TRUE & timeline == FALSE & tip_labels == TRUE) {
-    tree_height <- max(phytools::nodeHeights(phy@phylo))
-    pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
   }
 
   # adjust legend(s)
