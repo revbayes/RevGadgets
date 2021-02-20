@@ -57,7 +57,9 @@
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
-#' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
+#' are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
+#' 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'. When cladogenetic = TRUE,
+#' only "rectangular" and 'circular' are available.
 #'
 #' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
 #'
@@ -95,6 +97,15 @@
 #'
 #' # default with circular tree
 #' plotAncStatesMAP(t = example, tree_layout = "circular")
+#'
+#' # default with 'ape' tree layout, note that you may have to manually adjust the axes limits
+#' # we recommend setting tip_labels_offset to 0
+#'
+#' p <- plotAncStatesMAP(t = example, tree_layout = "ape", tip_labels_offset = 0)
+#'
+#' tree_height <- max(phytools::nodeHeights(example@phylo))
+#' p + ggplot2::xlim(-tree_height/3, tree_height*2) +
+#'     ggplot2::ylim(-tree_height/3, tree_height*2)
 #'
 #' # Chromosome evolution example
 #'
@@ -200,7 +211,13 @@ plotAncStatesMAP <- function(t,
   if (is.numeric(tip_states_shape) == FALSE) stop("tip_states_shape should be a number indicating symbol type")
   if (is.numeric(state_transparency) == FALSE) stop("state_transparency should be a number between 0 - 1")
   if (state_transparency > 1 | state_transparency < 0) stop("state_transparency should be a number between 0 - 1")
-  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
+  if (cladogenetic == FALSE) {
+    tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'ellipse',
+                                                      'roundrect', 'fan', 'circular', 'inward_circular',
+                                                      'radial', 'equal_angle', 'daylight', 'ape'))
+  } else if (cladogenetic == TRUE) {
+    tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'circular'))
+  }
   if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
   if (tree_layout != "rectangular") {
     if (timeline == TRUE) { stop("timeline is only compatible with
@@ -587,29 +604,28 @@ plotAncStatesMAP <- function(t,
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = end_state_1), hjust="left",
-                                      nudge_x = node_labels_offset, size = node_labels_size) +
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",                                      nudge_x = node_labels_offset, size = node_labels_size) +
                  ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
                                    hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = anc_state_1), hjust="left",
-                                      nudge_x = node_labels_offset, size = node_labels_size)
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1), subset = !isTip, hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = end_state_1), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "state_posterior") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(end_state_1_pp) ), hjust="left",
-                                      nudge_x = node_labels_offset, size = node_labels_size) +
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size) +
           ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
                             hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(anc_state_1_pp) ), hjust="left",
-                                      nudge_x = node_labels_offset, size = node_labels_size)
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(end_state_1_pp) ), hjust="left",
-                                      nudge_x = node_labels_offset, size = node_labels_size)
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "node_posterior") {
       p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
