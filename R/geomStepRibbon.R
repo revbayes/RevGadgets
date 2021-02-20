@@ -19,6 +19,9 @@
 #'     geom_line(aes(y = level))
 #' @rdname geom_stepribbon
 #' @importFrom ggplot2 layer GeomRibbon
+#'
+#' @export
+#'
 geom_stepribbon <- function(
   mapping     = NULL,
   data        = NULL,
@@ -43,6 +46,7 @@ geom_stepribbon <- function(
 #' @rdname geom_stepribbon
 #' @format NULL
 #' @usage NULL
+#' @export
 GeomStepribbon <- ggplot2::ggproto(
   "GeomStepribbon", GeomRibbon,
 
