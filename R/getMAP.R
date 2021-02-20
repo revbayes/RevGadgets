@@ -22,6 +22,6 @@
 getMAP <- function(var) {
   d <- density(var)
   f <- approxfun(d$x, d$y)
-  op <- optim(par = mean(var), fn = f, method = "SANN", control = list(fnscale = -1))
+  op <- stats::optim(par = mean(var), fn = f, method = "SANN", control = list(fnscale = -1))
   return(op$par)
 }
