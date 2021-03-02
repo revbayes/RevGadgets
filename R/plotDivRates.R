@@ -16,6 +16,9 @@
 #' and interval times for each type of rate to be plotted (e.g.
 #' speciation rate, etc.).
 #'
+#' @param fix_axes (logical; TRUE) Fix the y axes of speciation,
+#' extinction, and fossilization rates.
+#'
 #' @param facet (logical; TRUE) plot rates in separate facets.
 #'
 #' @return A ggplot object
@@ -56,7 +59,6 @@
 
 plotDivRates <- function(rates, facet = TRUE){
   rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
-
   `%>%` <- dplyr::`%>%`
 
     p <- rates %>%
@@ -73,8 +75,9 @@ plotDivRates <- function(rates, facet = TRUE){
                     color = NA) +
     ggplot2::scale_x_reverse() +
     ggplot2::xlab("time") +
+    ggplot2::ylab("rate") +
     ggplot2::theme_bw() +
-    ggplot2::theme(axis.title.y = ggplot2::element_blank(),
+    ggplot2::theme(#axis.title.y = ggplot2::element_blank(),
                    legend.title = ggplot2::element_blank(),
                    legend.position = "none",
                    #axis.line = ggplot2::element_line(colour = "black"),
@@ -85,7 +88,7 @@ plotDivRates <- function(rates, facet = TRUE){
     ggplot2::scale_fill_manual(values = .colFun(length(rates_to_plot)))
 
     if (facet){
-      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y")
+      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y", labeller = ggplot2::labeller(item = .capitalize))
     }
 
 

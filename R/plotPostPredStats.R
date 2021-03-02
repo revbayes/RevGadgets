@@ -11,13 +11,13 @@
 #' of the empirical and simulated values, such as the output of
 #' processPostPredStats.R
 #' @param prob (vector of numerics; default c(0.9, 0.95)) The posterior-predictive intervals to shade.
-#' @param col (vector of colors; default NULL) The colors for each quantile
+#' @param col (vector of colors; default NULL) The colors for each quantile. Defaults to blue and red.
 #' @param side (character; default "both") Whether the intervals are on "both" sides, the "left" side, or the "right" side of the distribution.
 #'
 #' @return A list of ggplot objects, where each plot contains a density distribution
-#' of the predicted values and a dashed line of the empirical value. The light blue
-#' shaded region of the density plot corresponds to the 5% two-sided quantile and
-#' the dark blue corresponds to the 2% two-sided quantile.
+#' of the predicted values and a dashed line of the empirical value. The blue
+#' shaded region of the density plot corresponds to the 5\% two-sided quantile and
+#' the red corresponds to the 2\% two-sided quantile.
 #'
 #' @details Each plot shows the rejection region for the provided quantiles, as well as a p-value
 #' for the observed statistic. If side="left" (/"right"), then the p-value is the fraction of simulated
@@ -158,7 +158,7 @@ plotPostPredStats <- function(data,
       ggplot2::theme_bw() +
       ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
                      panel.grid.minor = ggplot2::element_blank()) +
-      ggplot2::annotate("text", x=p_x, y=p_y, label=p_lab)
+      ggplot2::annotate("text", x=p_x, y=p_y, label=p_lab, size = 3, hjust = 1)
 
     plots[[i]] <- p
 

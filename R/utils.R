@@ -205,6 +205,11 @@
   return(dictionary)
 }
 
+.capitalize <- function(string) {
+    substr(string, 1, 1) <- toupper(substr(string, 1, 1))
+    string
+}
+
 .colFun <- function(n) {
   if (n == 1) {return("#005ac8")}
   if (n == 2) {return(c("#005ac8","#fa7850"))}

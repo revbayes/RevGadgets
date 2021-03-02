@@ -13,6 +13,9 @@ and interval times for each type of rate to be plotted (e.g.
 speciation rate, etc.).}
 
 \item{facet}{(logical; TRUE) plot rates in separate facets.}
+
+\item{fix_axes}{(logical; TRUE) Fix the y axes of speciation,
+extinction, and fossilization rates.}
 }
 \value{
 A ggplot object

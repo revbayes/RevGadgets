@@ -13,15 +13,15 @@ processPostPredStats.R}
 
 \item{prob}{(vector of numerics; default c(0.9, 0.95)) The posterior-predictive intervals to shade.}
 
-\item{col}{(vector of colors; default NULL) The colors for each quantile}
+\item{col}{(vector of colors; default NULL) The colors for each quantile. Defaults to blue and red.}
 
 \item{side}{(character; default "both") Whether the intervals are on "both" sides, the "left" side, or the "right" side of the distribution.}
 }
 \value{
 A list of ggplot objects, where each plot contains a density distribution
-of the predicted values and a dashed line of the empirical value. The light blue
-shaded region of the density plot corresponds to the 5% two-sided quantile and
-the dark blue corresponds to the 2% two-sided quantile.
+of the predicted values and a dashed line of the empirical value. The blue
+shaded region of the density plot corresponds to the 5\% two-sided quantile and
+the red corresponds to the 2\% two-sided quantile.
 }
 \description{
 Plots the posterior predictive statistics data
