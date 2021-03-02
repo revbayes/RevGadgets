@@ -74,6 +74,8 @@ summarizeTrace <- function(trace, vars) {
       names(q_2.5) <- NULL
       names(q_97.5) <- NULL
       output[[i]][[j]] <- c(mean = mean(col),
+                            median = median(col),
+                            MAP = getMAP(col),
                             quantile_2.5 = q_2.5,
                             quantile_97.5 = q_97.5)
       names(output[[i]])[j] <- paste0("trace_", j)
@@ -97,8 +99,10 @@ summarizeTrace <- function(trace, vars) {
         names(q_2.5) <- NULL
         names(q_97.5) <- NULL
         output[[i]][[num_traces + 1]] <- c(mean = mean(col),
-                                                    quantile_2.5 = q_2.5,
-                                                    quantile_97.5 = q_97.5)
+                                           median = median(col),
+                                           MAP = getMAP(col),
+                                           quantile_2.5 = q_2.5,
+                                           quantile_97.5 = q_97.5)
         names(output[[i]])[num_traces + 1] <- "Combined"
       } else if (class(col) == "integer" | class(col) == "character" ){
         credible_set <- col
