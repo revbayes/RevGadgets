@@ -63,16 +63,20 @@ summarizeTrace <- function(trace, vars) {
 
   # subset to desired characters
   output <- list()
-
+recover()
   # pass through vars and summarize each
   for (i in 1:length(vars)) {
     output[[i]] <-list()
     for (j in 1:length(trace)) {
     col <- trace[[j]][,vars[i]]
     if (class(col) == "numeric"){
-      output[[i]][[j]] <- data.frame(mean = mean(col),
-                                quantile_2.5 = quantile(col, prob = c(0.025,0.975))[1],
-                                quantile_97.5 = quantile(col, prob = c(0.025,0.975))[2])
+      q_2.5 <- quantile(col, prob = c(0.025,0.975))[1]
+      q_97.5 <- quantile(col, prob = c(0.025,0.975))[2]
+      names(q_2.5) <- NULL
+      names(q_97.5) <- NULL
+      output[[i]][[j]] <- c(mean = mean(col),
+                            quantile_2.5 = q_2.5,
+                            quantile_97.5 = q_97.5)
       names(output[[i]])[j] <- paste0("trace_", j)
     } else if (class(col) == "integer" | class(col) == "character" ){
       credible_set <- col
@@ -89,12 +93,17 @@ summarizeTrace <- function(trace, vars) {
       col <- combined_trace[,vars[i]]
       num_traces <- length(trace)
       if (class(col) == "numeric"){
-        output[[i]][[num_traces + 1]] <- data.frame(mean = mean(col),
-                                       quantile_2.5 = quantile(col, prob = c(0.025,0.975))[1],
-                                       quantile_97.5 = quantile(col, prob = c(0.025,0.975))[2])
+        q_2.5 <- quantile(col, prob = c(0.025,0.975))[1]
+        q_97.5 <- quantile(col, prob = c(0.025,0.975))[2]
+        names(q_2.5) <- NULL
+        names(q_97.5) <- NULL
+        output[[i]][[num_traces + 1]] <- c(mean = mean(col),
+                                                    quantile_2.5 = q_2.5,
+                                                    quantile_97.5 = q_97.5)
         names(output[[i]])[num_traces + 1] <- "Combined"
       } else if (class(col) == "integer" | class(col) == "character" ){
-        state_probs <- sort(table(col)/length(col), decreasing = TRUE)
+        credible_set <- col
+        state_probs <- sort(table(credible_set)/length(credible_set), decreasing = TRUE)
         cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
         output[[i]][[num_traces + 1]] <- cred_set
         names(output[[i]])[num_traces + 1] <- "Combined"

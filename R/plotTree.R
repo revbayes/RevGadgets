@@ -75,7 +75,8 @@
 #' @param line_width (numeric; 1) Change line width for branches
 #'
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
-#' are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'
+#' are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
+#' 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'.
 #'
 #' @param legend_x {numeric, 0.1} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
 #' @param legend_y {numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
@@ -152,8 +153,14 @@ plotTree <- function(tree,
   if (is.null(color_branch_by) == FALSE &
       any(vars %in% color_branch_by) == FALSE) stop("color_branch_by should be NULL or a column in your tidytree object")
   if (is.numeric(line_width) == FALSE) stop ("line_width should be numeric")
-  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle','daylight'))
-
+  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'ellipse',
+                                                    'roundrect', 'fan', 'circular', 'inward_circular',
+                                                    'radial', 'equal_angle', 'daylight', 'ape'))
+  if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
+  if (tree_layout != "rectangular") {
+    if (timeline == TRUE) { stop("timeline is only compatible with
+                                 tree_layout = 'rectangular'")}
+  }
   # grab single tree from input
   phy <- tree[[1]][[1]]
 

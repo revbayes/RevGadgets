@@ -102,7 +102,8 @@ treedata object to color branches, such as a rate.}
 \item{line_width}{(numeric; 1) Change line width for branches}
 
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
-are 'rectangular', 'slanted', 'fan', 'circular', 'radial', 'equal_angle', or 'daylight'}
+are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
+'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'.}
 
 \item{legend_x}{{numeric, 0.1} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
 
