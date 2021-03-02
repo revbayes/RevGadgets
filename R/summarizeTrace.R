@@ -63,7 +63,6 @@ summarizeTrace <- function(trace, vars) {
 
   # subset to desired characters
   output <- list()
-recover()
   # pass through vars and summarize each
   for (i in 1:length(vars)) {
     output[[i]] <-list()
