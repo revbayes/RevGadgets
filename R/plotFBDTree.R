@@ -12,8 +12,13 @@
 #' traces, only the first will be used.
 #'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
+#'#'
+#' @param geo (logical; timeline) Add a geological timeline? Defaults to the same as timeline.
 #'
-#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the timescale.
+#' @param time_bars (logical; timeline) Add vertical gray bars to indicate gelogical timeline units
+#' if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.
+#'
+#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the geo timescale.
 #'
 #' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
 #'
@@ -99,6 +104,7 @@
 
 plotFBDTree <- function(tree,
                         timeline = FALSE, timeline_units = list("epochs", "periods"),
+                        geo = timeline, time_bars = timeline,
                         node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
                         node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
                         tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
@@ -213,22 +219,44 @@ plotFBDTree <- function(tree,
     } else {interval <- 10}
 
     dx <- max_age %% interval
-
+#recover()
     # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
-    pp <- pp + deeptime::coord_geo(dat  = timeline_units,
-                         pos  = lapply(1:length(timeline_units), function(x) "bottom"),
-                         size = lapply(1:length(timeline_units), function(x) 4),
-                         xlim = c(-max(minmax, na.rm = T), tree_height/2),
-                         ylim = c(0, ntips*1.1),
-                         neg  = TRUE)
+    if (geo == TRUE) {
+      if (length(timeline_units) == 1){
+      pp <- pp + deeptime::coord_geo(dat  = timeline_units,
+                                     pos  = lapply(1:length(timeline_units), function(x) "bottom"),
+                                     size = lapply(1:length(timeline_units), function(x) tip_labels_size),
+                                     xlim = c(-max(minmax, na.rm = T), tree_height/2),
+                                     ylim = c(0, ntips*1.1),
+                                     height = grid::unit(4, "line"),
+                                     skip = c("Holocene", "Late Pleistocene"),
+                                     abbrv = F,
+                                     rot = 90,
+                                     center_end_labels = T,
+                                     bord = c("right", "top", "bottom"),
+                                     neg  = TRUE)
+      } else if (length(timeline_units) == 2) {
+        pp <- pp + deeptime::coord_geo(dat  = timeline_units,
+                                       pos  = lapply(1:length(timeline_units), function(x) "bottom"),
+                                       size = lapply(1:length(timeline_units), function(x) tip_labels_size),
+                                       xlim = c(-max(minmax, na.rm = T), tree_height/2),
+                                       ylim = c(0, ntips*1.1),
+                                       skip = c("Holocene", "Late Pleistocene"),
+                                       center_end_labels = T,
+                                       bord = c("right", "top", "bottom"),
+                                       neg  = TRUE)
+
+      }
+    }
+
     tot <- max_age + tree_height/2
-    pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)")
-                                           #expand = c(0, 0),
-                                           #limits = c(-max(minmax, na.rm = T), tree_height/2),
-                                           #breaks = -rev(seq(0,max_age+dx,interval)),
-                                           #labels = rev(seq(0,max_age+dx,interval))) +
+    pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
+                                           expand = c(0, 0),
+                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
+                                           breaks = -rev(seq(0,max_age+dx,interval)),
+                                           labels = rev(seq(0,max_age+dx,interval)))
     #pp <- pp + ggtree::theme_tree2()
     pp <- ggtree::revts(pp)
 
@@ -244,6 +272,25 @@ plotFBDTree <- function(tree,
                         y = tick_height*3,
                         label = rev(xline), size = tip_labels_size)
 
+    # add vertical gray bars
+    if (geo & time_bars) {
+      if ("epochs" %in% timeline_units) {
+        x_pos <- -rev(c(0, getScaleData("epochs")$max_age))
+      } else {
+        x_pos <-  -rev(c(0,getScaleData("periods")$max_age))
+      }
+    } else if (!geo & time_bars){
+      x_pos <- -rev(xline)
+    }
+   for (k in 2:(length(x_pos))) {
+     box_col = "gray92"
+     if (k %% 2 == 1) box_col = "white"
+     box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=0, ymax=ntips, fill=box_col )
+     pp <- gginnards::append_layers(pp, box, position = "bottom")
+
+  }
+
+
     if (tip_labels) {
       # recenter legend
      pp <- pp + ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = max_age/(2*tot) ))
@@ -251,6 +298,8 @@ plotFBDTree <- function(tree,
 
 
   }
+
+
 
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {

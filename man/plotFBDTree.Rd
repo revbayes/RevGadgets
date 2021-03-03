@@ -8,6 +8,8 @@ plotFBDTree(
   tree,
   timeline = FALSE,
   timeline_units = list("epochs", "periods"),
+  geo = timeline,
+  time_bars = timeline,
   node_age_bars = TRUE,
   node_age_bars_color = "blue",
   node_age_bars_colored_by = NULL,
@@ -39,9 +41,15 @@ treedata objects, such as produced by readTrees(). This object should only conta
 only one summary tree from one trace file. If it contains multiple trees or multiple
 traces, only the first will be used.}
 
-\item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.}
+\item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
+#'}
 
-\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
+\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the geo timescale.}
+
+\item{geo}{(logical; timeline) Add a geological timeline? Defaults to the same as timeline.}
+
+\item{time_bars}{(logical; timeline) Add vertical gray bars to indicate gelogical timeline units
+if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.}
 
 \item{node_age_bars}{(logical; TRUE) Plot time tree with node age bars?}
 
