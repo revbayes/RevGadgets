@@ -146,7 +146,7 @@ plotFBDTree <- function(tree,
   if (is.numeric(legend_x) == FALSE) stop("legend_x should be numeric")
   if (is.numeric(legend_y) == FALSE) stop("legend_x should be numeric")
 
-  # grab single tree from input
+    # grab single tree from input
   phy <- tree[[1]][[1]]
 
   ### fix for trees with sampled ancestors ###
@@ -168,7 +168,7 @@ plotFBDTree <- function(tree,
     pp <- ggtree::ggtree(phy, right = F, size = line_width)
   }
 
-  #### paramter compatibility checks ###
+  #### parameter compatibility checks ###
   if (length(node_pp_color) == 2 & length(branch_color) == 2) stop("You may only include variable colors for either
                                                                    node_pp_label or branch_color, not for both")
 
@@ -195,7 +195,7 @@ plotFBDTree <- function(tree,
     #                                  but there are no sampled ancestors in your dataset")
   }
 
-  # add timeline
+    # add timeline
   if (timeline == TRUE) {
 
     pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
@@ -217,21 +217,39 @@ plotFBDTree <- function(tree,
     # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
-    n_tips <- length(phy@phylo$tip.label)
     pp <- pp + deeptime::coord_geo(dat  = timeline_units,
                          pos  = lapply(1:length(timeline_units), function(x) "bottom"),
                          size = lapply(1:length(timeline_units), function(x) 4),
                          xlim = c(-max(minmax, na.rm = T), tree_height/2),
-                         ylim = c(0, n_tips*1.1),
+                         ylim = c(0, ntips*1.1),
                          neg  = TRUE)
-    pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
-                                           expand = c(0, 0),
-                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
-                                           breaks = -rev(seq(0,max_age+dx,interval)),
-                                           labels = rev(seq(0,max_age+dx,interval)),
-    )
-    pp <- pp + ggtree::theme_tree2()
+    tot <- max_age + tree_height/2
+    pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)")
+                                           #expand = c(0, 0),
+                                           #limits = c(-max(minmax, na.rm = T), tree_height/2),
+                                           #breaks = -rev(seq(0,max_age+dx,interval)),
+                                           #labels = rev(seq(0,max_age+dx,interval))) +
+    #pp <- pp + ggtree::theme_tree2()
     pp <- ggtree::revts(pp)
+
+    tick_height <- ntips/100
+    xline <- pretty(c(0, max_age))[pretty(c(0, max_age)) < max_age]
+    df <- data.frame(x = -xline, y = rep(0, length(xline)),
+                     vx= -xline, vy = rep(tick_height, length(xline)))
+
+    pp <- pp + ggplot2::geom_segment(ggplot2::aes(x = 0, y = 0, xend = -max_age, yend = 0)) +
+      ggplot2::geom_segment(data = df, ggplot2::aes(x = x, y = y,
+                                                    xend = vx, yend = vy)) +
+      ggplot2::annotate("text", x = -rev(xline),
+                        y = tick_height*3,
+                        label = rev(xline), size = tip_labels_size)
+
+    if (tip_labels) {
+      # recenter legend
+     pp <- pp + ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = max_age/(2*tot) ))
+    }
+
+
   }
 
   # processing for node_age_bars and tip_age_bars
