@@ -7,8 +7,8 @@
 plotFBDTree(
   tree,
   timeline = FALSE,
-  timeline_units = list("epochs", "periods"),
   geo = timeline,
+  geo_units = list("epochs", "periods"),
   time_bars = timeline,
   node_age_bars = TRUE,
   node_age_bars_color = "blue",
@@ -30,9 +30,7 @@ plotFBDTree(
   tip_age_bars_color = "green",
   branch_color = "black",
   color_branch_by = NULL,
-  line_width = 1,
-  legend_x = 0.9,
-  legend_y = 0.8
+  line_width = 1
 )
 }
 \arguments{
@@ -44,9 +42,9 @@ traces, only the first will be used.}
 \item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
 #'}
 
-\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the geo timescale.}
-
 \item{geo}{(logical; timeline) Add a geological timeline? Defaults to the same as timeline.}
+
+\item{geo_units}{(list; list("epochs", "periods")) Which geological units to include in the geo timescale.}
 
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate gelogical timeline units
 if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.}
@@ -114,10 +112,6 @@ If only 1 color is provided and you specify color_branch_by, default colorswill 
 treedata object to color branches, such as a rate.}
 
 \item{line_width}{(numeric; 1) Change line width for branches}
-
-\item{legend_x}{{numeric, 0.9} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
-
-\item{legend_y}{{numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
 }
 \value{
 returns a single plot object.

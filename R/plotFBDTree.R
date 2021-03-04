@@ -18,7 +18,7 @@
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate gelogical timeline units
 #' if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.
 #'
-#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the geo timescale.
+#' @param geo_units (list; list("epochs", "periods")) Which geological units to include in the geo timescale.
 #'
 #' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
 #'
@@ -84,9 +84,6 @@
 #' @param label_sampled_ancs (logical; FALSE) Label any sampled ancestors? Will inherent tip labels
 #' aesthetics for size and color.
 #'
-#' @param legend_x {numeric, 0.9} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
-#' @param legend_y {numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.
-#'
 #' @return returns a single plot object.
 #'
 #' @examples
@@ -103,15 +100,13 @@
 
 
 plotFBDTree <- function(tree,
-                        timeline = FALSE, timeline_units = list("epochs", "periods"),
-                        geo = timeline, time_bars = timeline,
+                        timeline = FALSE, geo = timeline, geo_units = list("epochs", "periods"), time_bars = timeline,
                         node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
                         node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
                         tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                         tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
                         node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
-                        tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1,
-                        legend_x = 0.9, legend_y = 0.8) {
+                        tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
@@ -149,8 +144,8 @@ plotFBDTree <- function(tree,
       any(vars %in% color_branch_by) == FALSE) stop("color_branch_by should be NULL or a column in your tidytree object")
   if (is.numeric(line_width) == FALSE) stop ("line_width should be numeric")
   if (is.logical(label_sampled_ancs) == FALSE) stop("label_sampled_ancs should be TRUE or FALSE")
-  if (is.numeric(legend_x) == FALSE) stop("legend_x should be numeric")
-  if (is.numeric(legend_y) == FALSE) stop("legend_x should be numeric")
+  #if (is.numeric(legend_x) == FALSE) stop("legend_x should be numeric")
+  #if (is.numeric(legend_y) == FALSE) stop("legend_x should be numeric")
 
     # grab single tree from input
   phy <- tree[[1]][[1]]
@@ -217,41 +212,44 @@ plotFBDTree <- function(tree,
     if (max_age > 100){
       interval <- 50
     } else {interval <- 10}
-
     dx <- max_age %% interval
-#recover()
     # set coordinates
     ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
     ### if error bars, -x lim should be as old as the max of the error bar
+    tick_height <- ntips/100
     if (geo == TRUE) {
-      if (length(timeline_units) == 1){
-      pp <- pp + deeptime::coord_geo(dat  = timeline_units,
-                                     pos  = lapply(1:length(timeline_units), function(x) "bottom"),
-                                     size = lapply(1:length(timeline_units), function(x) tip_labels_size),
-                                     xlim = c(-max(minmax, na.rm = T), tree_height/2),
-                                     ylim = c(0, ntips*1.1),
-                                     height = grid::unit(4, "line"),
-                                     skip = c("Holocene", "Late Pleistocene"),
-                                     abbrv = F,
-                                     rot = 90,
-                                     center_end_labels = T,
-                                     bord = c("right", "top", "bottom"),
-                                     neg  = TRUE)
-      } else if (length(timeline_units) == 2) {
-        pp <- pp + deeptime::coord_geo(dat  = timeline_units,
-                                       pos  = lapply(1:length(timeline_units), function(x) "bottom"),
-                                       size = lapply(1:length(timeline_units), function(x) tip_labels_size),
+      #determine whether to include quaternary
+      if (tree_height > 50) {
+        skipit <- c("Quaternary", "Holocene", "Late Pleistocene")
+      } else {skipit <- c("Holocene", "Late Pleistocene")}
+      # add deep timescale
+      if (length(geo_units) == 1){
+        pp <- pp + deeptime::coord_geo(dat  = geo_units,
+                                       pos  = lapply(1:length(geo_units), function(x) "bottom"),
+                                       size = lapply(1:length(geo_units), function(x) tip_labels_size),
                                        xlim = c(-max(minmax, na.rm = T), tree_height/2),
-                                       ylim = c(0, ntips*1.1),
-                                       skip = c("Holocene", "Late Pleistocene"),
+                                       ylim = c(-tick_height*5, ntips*1.1),
+                                       height = grid::unit(4, "line"),
+                                       skip = skipit,
+                                       abbrv = F,
+                                       rot = 90,
+                                       center_end_labels = T,
+                                       bord = c("right", "top", "bottom"),
+                                       neg  = TRUE)
+      } else if (length(geo_units) == 2) {
+        pp <- pp + deeptime::coord_geo(dat  = geo_units,
+                                       pos  = lapply(1:length(geo_units), function(x) "bottom"),
+                                       size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                       xlim = c(-max(minmax, na.rm = T), tree_height/2),
+                                       ylim = c(-tick_height*5, ntips*1.1),
+                                       skip = skipit,
                                        center_end_labels = T,
                                        bord = c("right", "top", "bottom"),
                                        neg  = TRUE)
 
       }
     }
-
-    tot <- max_age + tree_height/2
+    #add axis title
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
                                            expand = c(0, 0),
                                            limits = c(-max(minmax, na.rm = T), tree_height/2),
@@ -259,25 +257,25 @@ plotFBDTree <- function(tree,
                                            labels = rev(seq(0,max_age+dx,interval)))
     #pp <- pp + ggtree::theme_tree2()
     pp <- ggtree::revts(pp)
-
-    tick_height <- ntips/100
+    # add ma ticks and labels
     xline <- pretty(c(0, max_age))[pretty(c(0, max_age)) < max_age]
-    df <- data.frame(x = -xline, y = rep(0, length(xline)),
-                     vx= -xline, vy = rep(tick_height, length(xline)))
+    df <- data.frame(x = -xline, y = rep(-tick_height*5, length(xline)),
+                     vx= -xline, vy = rep(-tick_height*5 + tick_height, length(xline)))
 
-    pp <- pp + ggplot2::geom_segment(ggplot2::aes(x = 0, y = 0, xend = -max_age, yend = 0)) +
+    pp <- pp + ggplot2::geom_segment(ggplot2::aes(x = 0, y = -tick_height*5,
+                                                  xend = -max_age, yend = -tick_height*5)) +
       ggplot2::geom_segment(data = df, ggplot2::aes(x = x, y = y,
                                                     xend = vx, yend = vy)) +
       ggplot2::annotate("text", x = -rev(xline),
-                        y = tick_height*3,
+                        y = -tick_height*5 + tick_height*2,
                         label = rev(xline), size = tip_labels_size)
 
     # add vertical gray bars
     if (geo & time_bars) {
-      if ("epochs" %in% timeline_units) {
-        x_pos <- -rev(c(0, getScaleData("epochs")$max_age))
+      if ("epochs" %in% geo_units) {
+        x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
       } else {
-        x_pos <-  -rev(c(0,getScaleData("periods")$max_age))
+        x_pos <-  -rev(c(0,deeptime::getScaleData("periods")$max_age))
       }
     } else if (!geo & time_bars){
       x_pos <- -rev(xline)
@@ -285,21 +283,16 @@ plotFBDTree <- function(tree,
    for (k in 2:(length(x_pos))) {
      box_col = "gray92"
      if (k %% 2 == 1) box_col = "white"
-     box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=0, ymax=ntips, fill=box_col )
+     box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
      pp <- gginnards::append_layers(pp, box, position = "bottom")
 
   }
-
-
     if (tip_labels) {
       # recenter legend
+     tot <- max_age + tree_height/2
      pp <- pp + ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = max_age/(2*tot) ))
     }
-
-
   }
-
-
 
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {
@@ -388,6 +381,13 @@ plotFBDTree <- function(tree,
                           label = paste0(1:nrow(sampled_ancs),": ", sampled_ancs$label),
                           size = tip_labels_size, color = tip_labels_color, hjust = 0)
     }
+
+    t_height <- ntips/200
+    df <- data.frame(x = sampled_ancs$x, vx = sampled_ancs$x,
+                     y = sampled_ancs$y + t_height, vy = sampled_ancs$y - t_height)
+    pp <- pp + ggplot2::geom_segment(data = df, ggplot2::aes(x = x, y = y,
+                                                                    xend = vx, yend = vy))
+
   }
 
   # add node labels (text)
@@ -500,7 +500,7 @@ plotFBDTree <- function(tree,
 
   # adjust legend(s)
 
-  pp <- pp+ ggplot2::theme(legend.position=c(legend_x, legend_y))
+  #pp <- pp+ ggplot2::theme(legend.position=c(legend_x, legend_y))
   return(pp)
 }
 
