@@ -100,7 +100,7 @@ plotFBDTree <- function(tree,
                         timeline = FALSE, geo = timeline, geo_units = list("epochs", "periods"), time_bars = timeline,
                         node_age_bars = TRUE, age_bars_color = "blue", age_bars_colored_by = NULL,
                         node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
-                        tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
+                        tip_labels_italics = TRUE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                         tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
                         node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
                         branch_color = "black", color_branch_by = NULL, line_width = 1) {
