@@ -187,7 +187,7 @@ plotFBDTree <- function(tree,
   if (tip_labels_remove_underscore) { pp$data$label <- gsub("_", " ", pp$data$label)}
 
   #check that if user wants to label sampled ancs, there are sampled ancs in the files
-  if (label_sampled_ancs == TRUE) {
+  if (label_sampled_ancs == TRUE & "sampled_ancestor" %in% colnames(pp$data)) {
     sampled_ancs <- pp$data[!pp$data$isTip & !is.na(pp$data$sampled_ancestor), ]
     if (nrow(sampled_ancs) < 1) {
       label_sampled_acs <- FALSE
@@ -360,7 +360,7 @@ plotFBDTree <- function(tree,
   }
 
   # label sampled ancestors
-  if (label_sampled_ancs == TRUE) {
+  if (label_sampled_ancs == TRUE & "sampled_ancestor" %in% colnames(pp$data)) {
     sampled_ancs <- pp$data[!pp$data$isTip & !is.na(pp$data$sampled_ancestor), ]
     space_labels <- ntips/30
     if (tip_labels_italics == TRUE) {
