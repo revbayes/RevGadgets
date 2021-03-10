@@ -290,7 +290,7 @@ plotFBDTree <- function(tree,
      pp <- pp + ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = max_age/(2*tot) ))
     }
   }
-recover()
+
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {
     # Encountered problems with using geom_range to plot age HPDs in ggtree. It
@@ -313,9 +313,11 @@ recover()
     minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
     bar_df <- data.frame(node_id = as.integer(pp$data$node), isTip = pp$data$isTip, as.data.frame(minmax))
     names(bar_df) <- c("node_id", "isTip", "min", "max")
-    #if (tip_age_bars == TRUE) {
-    #  tip_df <-  dplyr::filter(bar_df, isTip == TRUE & !is.na(min))
-    #}
+    if (tip_age_bars == TRUE) {
+     tip_df <- dplyr::filter(bar_df, isTip == TRUE & !is.na(min))
+     tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
+     tip_df <- dplyr::select(tip_df, node_id, min, max, y)
+    }
     #node_df <- dplyr::filter(bar_df, isTip == FALSE)
     if (is.null(age_bars_colored_by) == TRUE) {
 
@@ -325,8 +327,8 @@ recover()
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
                                        data=bar_df, color=age_bars_color, size=1.5, alpha=0.8)
       #if (tip_age_bars == TRUE) {
-      #  tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
-      #  tip_df <- dplyr::select(tip_df, node_id, min, max, y)
+      # tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
+      # tip_df <- dplyr::select(tip_df, node_id, min, max, y)
       #  pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
       #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
       #}
@@ -336,7 +338,7 @@ recover()
         age_bars_color <- .colFun(2)[2:1]
       }
       sampled_tip_probs <- 1- as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
-      sampled_tip_probs[is.na(sampled_ancs_probs)] <- 0
+      sampled_tip_probs[is.na(sampled_tip_probs)] <- 0
       pp$data$olena <- c(sampled_tip_probs,
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                                         age_bars_colored_by]))))
@@ -347,8 +349,8 @@ recover()
         ggplot2::scale_color_gradient(low = age_bars_color[1], high = age_bars_color[2],
                                       name = paste(.simpleCap(age_bars_colored_by)))
       #if (tip_age_bars == TRUE) { # how to color tip bars if node age bars vary based on something not coded for tips, like PP?
-      #  tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
-      #  tip_df <- dplyr::select(tip_df, node_id, min, max, y)
+      # tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
+      # tip_df <- dplyr::select(tip_df, node_id, min, max, y)
       #  pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
       #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
       #}
@@ -408,7 +410,11 @@ recover()
 
   # add tip labels (text)
   if (tip_labels == TRUE) {
-    if (tip_age_bars == TRUE) {pp$data$extant <- !pp$data$node %in% tip_df$node_id } else {pp$data$extant <- TRUE}
+    if (tip_age_bars == TRUE) {
+      pp$data$extant <- !pp$data$node %in% tip_df$node_id
+    } else {
+      pp$data$extant <- TRUE
+    }
     if (tip_labels_italics) {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(subset = extant & isTip,
                                                   label = paste0('italic(`', label, '`)')),
