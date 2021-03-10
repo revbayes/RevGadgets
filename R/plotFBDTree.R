@@ -22,13 +22,13 @@
 #'
 #' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
 #'
-#' @param node_age_bars_colored_by (character; NULL) Specify column to color node age bars by,
-#' such as "posterior". If null, all node age bars plotted the same color, specified by
-#' node_age_bars_color
+#' @param age_bars_colored_by (character; NULL) Specify column to color node/tip age bars by,
+#' such as "posterior". If null, all age bars plotted the same color, specified by
+#' age_bars_color
 #'
-#' @param node_age_bars_color (character; "blue") Color for node age bars. If node_age_bars_colored_by
-#' specifies a variable (not NULL), you must provide two colors, low and high values for a gradient. Colors must be either
-#' R valid color names or valid hex codes.
+#' @param age_bars_color (character; "blue") Color for node/tip age bars. If age_bars_colored_by
+#' specifies a variable (not NULL), you must provide two colors, low and high values for a gradient.
+#' Colors must be either R valid color names or valid hex codes.
 #'
 #' @param node_labels (character; NULL) Plot text labels at nodes, specified by the name of the
 #' corresponding column in the tidytree object. If NULL, no text is plotted.
@@ -67,9 +67,6 @@
 #' serial sampled analyses or fossilized birth-death analyses, or any cases where some tip ages are
 #' estimated.
 #'
-#' @param tip_age_bars_color (character; "red") Color for tip age bars. Colors must be either
-#' R valid color names or valid hex codes.
-#'
 #' @param branch_color (character; "black") A single character string specifying the color (R color
 #' name or hex code) for all branches OR a vector of length 2 specifying two colors for a gradient,
 #' used to color the branches according to the variable specified in color_branch_by.
@@ -92,8 +89,8 @@
 #' tree <- readTrees(paths = file)
 #' plot <- plotFBDTree(tree = tree, timeline = T, tip_labels_italics = F,
 #'                     tip_labels_remove_underscore = T,
-#'                     node_age_bars = T, node_age_bars_colored_by = "posterior",
-#'                     node_age_bars_color = rev(RevGadgets:::.colFun(2))) +
+#'                     node_age_bars = T, age_bars_colored_by = "posterior",
+#'                     age_bars_color = rev(RevGadgets:::.colFun(2))) +
 #'   ggplot2::theme(legend.position=c(.25, .85))
 #' }
 #' @export
@@ -101,21 +98,21 @@
 
 plotFBDTree <- function(tree,
                         timeline = FALSE, geo = timeline, geo_units = list("epochs", "periods"), time_bars = timeline,
-                        node_age_bars = TRUE, node_age_bars_color = "blue", node_age_bars_colored_by = NULL,
+                        node_age_bars = TRUE, age_bars_color = "blue", age_bars_colored_by = NULL,
                         node_labels = NULL, node_labels_color = "black", node_labels_size = 3, tip_labels = TRUE,
                         tip_labels_italics = FALSE, tip_labels_remove_underscore = TRUE, tip_labels_color = "black",
                         tip_labels_size = 3,  label_sampled_ancs = FALSE, node_pp = FALSE, node_pp_shape = 16,
                         node_pp_color = "black", node_pp_size = "variable", tip_age_bars = FALSE,
-                        tip_age_bars_color = "green", branch_color = "black", color_branch_by = NULL, line_width = 1) {
+                        branch_color = "black", color_branch_by = NULL, line_width = 1) {
   # enforce argument matching
   if (!is.list(tree)) stop("tree should be a list of lists of treedata objects")
   if (class(tree[[1]][[1]]) != "treedata") stop("tree should be a list of lists of treedata objects")
   vars <- colnames(tree[[1]][[1]]@data)
   if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
   if (is.logical(node_age_bars) == FALSE) stop("node_age_bars should be TRUE or FALSE")
-  if (any(.isColor(node_age_bars_color) == FALSE)) stop("node_age_bars_color should be valid color(s)")
-  if (is.null(node_age_bars_colored_by) == FALSE &
-      any(vars %in% node_age_bars_colored_by) == FALSE) stop("node_age_bars_colored_by should be a column in your tidytree object")
+  if (any(.isColor(age_bars_color) == FALSE)) stop("age_bars_color should be valid color(s)")
+  if (is.null(age_bars_colored_by) == FALSE &
+      any(vars %in% age_bars_colored_by) == FALSE) stop("age_bars_colored_by should be a column in your tidytree object")
   if (is.null(node_labels) == FALSE &
       any(vars %in% node_labels) == FALSE) stop("node_labels should be NULL or a column in your tidytree object")
   if (is.null(node_labels_color) == FALSE & .isColor(node_labels_color) == FALSE) stop("node_labels_color should be NULL or a recognized color")
@@ -130,7 +127,6 @@ plotFBDTree <- function(tree,
     if (is.numeric(node_pp_size) == FALSE & node_pp_size != "variable") stop("node_pp_size should be numeric or 'variable'")
   }
   if (is.logical(tip_age_bars) == FALSE) stop("tip_age_bars should be TRUE or FALSE")
-  if (.isColor(tip_age_bars_color) == FALSE) stop("tip_age_bars_color should be a recognized color")
   if (length(branch_color) == 1 & !.isColor(branch_color)) stop("branch_color should be a recognized color")
   if (length(branch_color) == 2) {
     if (.isColor(branch_color[1] == FALSE) &
@@ -294,7 +290,7 @@ plotFBDTree <- function(tree,
      pp <- pp + ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = max_age/(2*tot) ))
     }
   }
-
+recover()
   # processing for node_age_bars and tip_age_bars
   if (node_age_bars == TRUE) {
     # Encountered problems with using geom_range to plot age HPDs in ggtree. It
@@ -317,43 +313,45 @@ plotFBDTree <- function(tree,
     minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
     bar_df <- data.frame(node_id = as.integer(pp$data$node), isTip = pp$data$isTip, as.data.frame(minmax))
     names(bar_df) <- c("node_id", "isTip", "min", "max")
-    if (tip_age_bars == TRUE) {
-      tip_df <-  dplyr::filter(bar_df, isTip == TRUE & !is.na(min))
-    }
-    node_df <- dplyr::filter(bar_df, isTip == FALSE)
-    if (is.null(node_age_bars_colored_by) == TRUE) {
+    #if (tip_age_bars == TRUE) {
+    #  tip_df <-  dplyr::filter(bar_df, isTip == TRUE & !is.na(min))
+    #}
+    #node_df <- dplyr::filter(bar_df, isTip == FALSE)
+    if (is.null(age_bars_colored_by) == TRUE) {
 
       # plot age densities
-      node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
-      node_df <- dplyr::select(node_df,  node_id, min, max, y)
+      bar_df <- dplyr::left_join(bar_df, pp$data, by=c("node_id"="node"))
+      bar_df <- dplyr::select(bar_df,  node_id, min, max, y)
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
-                                       data=node_df, color=node_age_bars_color, size=1.5, alpha=0.8)
-      if (tip_age_bars == TRUE) {
-        tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
-        tip_df <- dplyr::select(tip_df, node_id, min, max, y)
-        pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
-                                         data=tip_df, color = tip_age_bars_color, size=1.5, alpha=0.8)
-      }
+                                       data=bar_df, color=age_bars_color, size=1.5, alpha=0.8)
+      #if (tip_age_bars == TRUE) {
+      #  tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
+      #  tip_df <- dplyr::select(tip_df, node_id, min, max, y)
+      #  pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
+      #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
+      #}
 
-    } else if (is.null(node_age_bars_colored_by) == FALSE) {
-      if ( length(node_age_bars_color) == 1 ) {
-        node_age_bars_color <- .colFun(2)[2:1]
+    } else if (is.null(age_bars_colored_by) == FALSE) {
+      if ( length(age_bars_color) == 1 ) {
+        age_bars_color <- .colFun(2)[2:1]
       }
-      pp$data$olena <- c(rep(NA, times = ntips),
+      sampled_tip_probs <- 1- as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
+      sampled_tip_probs[is.na(sampled_ancs_probs)] <- 0
+      pp$data$olena <- c(sampled_tip_probs,
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
-                                                                        node_age_bars_colored_by]))))
-      node_df <- dplyr::left_join(node_df, pp$data, by=c("node_id"="node"))
-      node_df <- dplyr::select(node_df,  node_id, min, max, y, olena)
+                                                                        age_bars_colored_by]))))
+      bar_df <- dplyr::left_join(bar_df, pp$data, by=c("node_id"="node"))
+      bar_df <- dplyr::select(bar_df,  node_id, min, max, y, olena)
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y, color = olena),
-                                       data=node_df, size=1.5, alpha=0.8) +
-        ggplot2::scale_color_gradient(low = node_age_bars_color[1], high = node_age_bars_color[2],
-                                      name = paste(.simpleCap(node_age_bars_colored_by)))
-      if (tip_age_bars == TRUE) { # how to color tip bars if node age bars vary based on something not coded for tips, like PP?
-        tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
-        tip_df <- dplyr::select(tip_df, node_id, min, max, y)
-        pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
-                                         data=tip_df, color = tip_age_bars_color, size=1.5, alpha=0.8)
-      }
+                                       data=bar_df, size=1.5, alpha=0.8) +
+        ggplot2::scale_color_gradient(low = age_bars_color[1], high = age_bars_color[2],
+                                      name = paste(.simpleCap(age_bars_colored_by)))
+      #if (tip_age_bars == TRUE) { # how to color tip bars if node age bars vary based on something not coded for tips, like PP?
+      #  tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
+      #  tip_df <- dplyr::select(tip_df, node_id, min, max, y)
+      #  pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
+      #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
+      #}
     }
 
 
