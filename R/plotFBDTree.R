@@ -146,8 +146,14 @@ plotFBDTree <- function(tree,
   if (is.logical(label_sampled_ancs) == FALSE) stop("label_sampled_ancs should be TRUE or FALSE")
   #if (is.numeric(legend_x) == FALSE) stop("legend_x should be numeric")
   #if (is.numeric(legend_y) == FALSE) stop("legend_x should be numeric")
-
-    # grab single tree from input
+  if (is.list(geo_units)) {
+    if (length(geo_units) != 2) stop("geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')")
+    if (geo_units[[1]] != "epochs" & geo_units[[1]] != "periods") stop("geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')")
+    if (geo_units[[2]] != "epochs" & geo_units[[2]] != "periods") stop("geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')")
+    } else {
+      if (geo_units != "epochs" & geo_units != "periods") stop("geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')")
+  }
+   # grab single tree from input
   phy <- tree[[1]][[1]]
 
   ### fix for trees with sampled ancestors ###
@@ -204,7 +210,7 @@ plotFBDTree <- function(tree,
     })
     minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
     if (node_age_bars == FALSE) {
-      max_age <- max(ape::branching.times(phy@phylo))
+      max_age <- tree_height
     } else {
       max_age <- max(minmax, na.rm =TRUE)
     }
@@ -271,21 +277,22 @@ plotFBDTree <- function(tree,
                         label = rev(xline), size = tip_labels_size)
 
     # add vertical gray bars
-    if (geo & time_bars) {
-      if ("epochs" %in% geo_units) {
-        x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
-      } else {
-        x_pos <-  -rev(c(0,deeptime::getScaleData("periods")$max_age))
+    if (time_bars) {
+      if (geo) {
+        if ("epochs" %in% geo_units) {
+          x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
+        } else {
+          x_pos <-  -rev(c(0,deeptime::getScaleData("periods")$max_age))
+        }
+      } else if (!geo){
+        x_pos <- -rev(xline)
       }
-    } else if (!geo & time_bars){
-      x_pos <- -rev(xline)
+      for (k in 2:(length(x_pos))) {
+        box_col = "gray92"
+        if (k %% 2 == 1) box_col = "white"
+        box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
+        pp <- gginnards::append_layers(pp, box, position = "bottom")
     }
-   for (k in 2:(length(x_pos))) {
-     box_col = "gray92"
-     if (k %% 2 == 1) box_col = "white"
-     box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
-     pp <- gginnards::append_layers(pp, box, position = "bottom")
-
   }
     if (tip_labels) {
       # recenter legend
@@ -458,8 +465,6 @@ plotFBDTree <- function(tree,
         ggplot2::scale_color_gradient(name="Posterior",
                                       low = node_pp_color[1], high = node_pp_color[2])
     }
-
-
   }
 
   # add branch coloration by variable
@@ -487,16 +492,34 @@ plotFBDTree <- function(tree,
 
   }
 
-  # readjust axis
-  if (node_age_bars == FALSE & timeline == FALSE) {
-    # add extra space on plot for tip labels
-    tree_height <- max(phytools::nodeHeights(phy@phylo))
-    pp <- pp + ggtree::xlim(-tree_height, tree_height/2)
+  # readjust axis for non-timeline plots
+  if (timeline == FALSE) {
+
+    if (node_age_bars == FALSE) {
+      xlim_min <- -tree_height
+    } else {
+      xlim_min <- -max(t(matrix(unlist(pp$data$age_0.95_HPD),
+                                nrow = 2)),na.rm = T)
+    }
+
+    if (tip_labels == TRUE) {
+      xlim_max <- tree_height/2
+    } else {xlim_max <- 0}
+
+    pp <- pp + ggtree::xlim(xlim_min, xlim_max)
     pp <- ggtree::revts(pp)
-  } else if (node_age_bars == TRUE & timeline == FALSE & tip_labels == TRUE) {
-    tree_height <- max(phytools::nodeHeights(phy@phylo))
-    pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
+
   }
+
+  #if (node_age_bars == FALSE & timeline == FALSE) {
+  #  # add extra space on plot for tip labels
+  #  tree_height <- max(phytools::nodeHeights(phy@phylo))
+  #  pp <- pp + ggtree::xlim(-tree_height, tree_height/2)
+  #  pp <- ggtree::revts(pp)
+  #} else if (node_age_bars == TRUE & timeline == FALSE & tip_labels == TRUE) {
+  #  tree_height <- max(phytools::nodeHeights(phy@phylo))
+  #  pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
+  #}
 
   # adjust legend(s)
 
