@@ -486,7 +486,7 @@ plotFBDTree <- function(tree,
     pp$data[,col_num] <- as.numeric(as.data.frame(pp$data)[,col_num]) #convert data to numeric
     name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
     pp <- pp +
-      ggplot2::aes(color=I(as.data.frame(pp$data)[,col_num])) +
+      ggplot2::aes(color=as.data.frame(pp$data)[,col_num]) +
       ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
                                     name = name)
 
