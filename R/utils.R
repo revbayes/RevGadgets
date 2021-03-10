@@ -1169,3 +1169,79 @@ reorder_treedata <- function(tdObject, order = "postorder") {
         sep="", collapse=" ")
 }
 
+.matchNodesTreeData <- function(treedata, phy) {
+
+  # get some useful info
+  num_sampled_anc = sum(phy$node.label != "")
+  num_tips        = length(phy$tip.label)
+  num_nodes       = phy$Nnode
+  sampled_ancs    = which(tabulate(phy$edge[,1]) == 1)
+  tip_indexes     = 1:(num_tips + num_sampled_anc)
+  node_indexes    = (num_tips + num_sampled_anc) + num_nodes:1
+
+  node_map     = data.frame(R=1:(num_tips + num_nodes), Rev=NA, visits=0)
+  current_node = num_tips + 1
+  k = 1
+  t = 1
+
+  while(TRUE) {
+
+    # compute the number of descendants of this tip
+    current_num_descendants = sum(phy$edge[,1] == current_node)
+
+    if ( current_node <= num_tips ) {
+
+      treedata_node = which(as.character(treedata@data$node) == current_node)
+      node_map$Rev[node_map$R == current_node] = as.numeric(treedata@data[treedata_node,]$index)
+      current_node = phy$edge[phy$edge[,2] == current_node,1]
+      t = t + 1
+
+    } else if ( current_node %in% sampled_ancs ) {
+
+      if ( node_map$visits[node_map$R == current_node] == 0 ) {
+        node_map$Rev[node_map$R == current_node] = node_indexes[k]
+        k = k + 1
+      }
+      node_map$visits[node_map$R == current_node] = node_map$visits[node_map$R == current_node] + 1
+
+      if ( node_map$visits[node_map$R == current_node] == 1 ) {
+        # go left
+        current_node = phy$edge[phy$edge[,1] == current_node,2][1]
+      } else if ( node_map$visits[node_map$R == current_node] == 2 ) {
+        # go down
+        if (current_node == num_tips + 1) {
+          break
+        } else {
+          current_node = phy$edge[phy$edge[,2] == current_node,1]
+        }
+      }
+
+    } else {
+
+      if ( node_map$visits[node_map$R == current_node] == 0 ) {
+        node_map$Rev[node_map$R == current_node] = node_indexes[k]
+        k = k + 1
+      }
+      node_map$visits[node_map$R == current_node] = node_map$visits[node_map$R == current_node] + 1
+
+      num_visits = node_map$visits[node_map$R == current_node]
+
+      if ( num_visits <= current_num_descendants ) {
+        # go to next descendant
+        current_node = phy$edge[phy$edge[,1] == current_node,2][current_num_descendants - num_visits + 1]
+      } else if ( num_visits > current_num_descendants ) {
+        # go down
+        if (current_node == num_tips + 1) {
+          break
+        } else {
+          current_node = phy$edge[phy$edge[,2] == current_node,1]
+        }
+      }
+
+    }
+
+  }
+
+  return(node_map[,1:2])
+
+}

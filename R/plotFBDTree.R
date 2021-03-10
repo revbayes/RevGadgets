@@ -157,16 +157,10 @@ plotFBDTree <- function(tree,
   phy <- tree[[1]][[1]]
 
   ### fix for trees with sampled ancestors ###
-  #test for duplicate nodes in tree
-  phy@data$node <- as.integer(phy@data$node)
-  dups <-unique(phy@data$node[duplicated(phy@data$node)])
-  if (length(dups == 1)) {
-    for (i in 1:nrow(phy@data)){
-      if (phy@data[i,"node"] == dups) {
-        phy@data$node[i] <- phy@phylo$edge[which(phy@phylo$edge[ ,2] == phy@data$node[i-1]),1]
-      }
-    }
-  } else if (length(dups > 1)) stop("more than one duplicated node, uh oh! ")
+  # get the phylo
+  phylo    = phy@phylo
+  node_map = .matchNodesTreeData(phy, phylo)
+  phy@data$node = as.character(node_map[match(as.numeric(phy@data$index), node_map$Rev),]$R)
 
   # initiate plot
   if (is.null(color_branch_by)) {
