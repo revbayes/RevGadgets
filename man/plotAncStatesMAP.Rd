@@ -30,7 +30,9 @@ plotAncStatesMAP(
   state_transparency = 0.75,
   tree_layout = "rectangular",
   timeline = FALSE,
-  timeline_units = list("epochs", "periods")
+  geo = timeline,
+  geo_units = list("epochs", "periods"),
+  time_bars = timeline
 )
 }
 \arguments{
@@ -109,9 +111,15 @@ are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'. When cladogenetic = TRUE,
 only "rectangular" and 'circular' are available.}
 
-\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
+\item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
+#'}
 
-\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
+\item{geo}{(logical; timeline) Add a geological timeline? Defaults to the same as timeline.}
+
+\item{geo_units}{(list; list("epochs", "periods")) Which geological units to include in the geo timescale.}
+
+\item{time_bars}{(logical; timeline) Add vertical gray bars to indicate gelogical timeline units
+if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.}
 }
 \description{
 Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
