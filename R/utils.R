@@ -415,10 +415,10 @@
   child <- edge[,2]
   res <- parent[child == node]
   if (length(res) == 0) {
-    stop("cannot found parent node...")
+    stop("cannot find parent node...")
   }
   if (length(res) > 1) {
-    stop("multiple parent found...")
+    stop("multiple parents found...")
   }
   return(res)
 }
