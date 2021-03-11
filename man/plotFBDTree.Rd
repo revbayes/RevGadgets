@@ -17,7 +17,7 @@ plotFBDTree(
   node_labels_color = "black",
   node_labels_size = 3,
   tip_labels = TRUE,
-  tip_labels_italics = FALSE,
+  tip_labels_italics = TRUE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_color = "black",
   tip_labels_size = 3,
@@ -27,7 +27,6 @@ plotFBDTree(
   node_pp_color = "black",
   node_pp_size = "variable",
   tip_age_bars = FALSE,
-  tip_age_bars_color = "green",
   branch_color = "black",
   color_branch_by = NULL,
   line_width = 1
