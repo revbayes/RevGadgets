@@ -10,6 +10,7 @@
 #'   inherits from \code{geom_ribbon}.
 #' @inheritParams ggplot2:::geom_ribbon
 #' @examples
+#' \dontrun{
 #' huron <- data.frame(year = 1875:1972, level = as.vector(LakeHuron))
 #'
 #' h <- ggplot2::ggplot(huron, ggplot2::aes(year))
@@ -19,7 +20,7 @@
 #'
 #' h + ggplot2::geom_ribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1), fill = "grey70") +
 #'     ggplot2::geom_line(ggplot2::aes(y = level))
-#'
+#' }
 #' @rdname geom_stepribbon
 #' @importFrom ggplot2 layer GeomRibbon
 #'
