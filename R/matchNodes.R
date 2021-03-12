@@ -8,8 +8,8 @@
 #' @examples
 #' \dontrun{
 #' treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
-#' tree <- tidytree::as.treedata(read.tree(treefile))
-#' map <- matchNodes(tree@phylo)
+#' tree <- readTrees(treefile)
+#' map <- matchNodes(tree[[1]][[1]]@phylo)
 #' }
 #'
 matchNodes <- function(phy) {
