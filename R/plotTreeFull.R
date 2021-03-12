@@ -188,8 +188,10 @@ plotTreeFull <- function(tree,
 
   ### fix for trees with sampled ancestors ###
   phylo    <- phy@phylo
-  node_map <- .matchNodesTreeData(phy, phylo)
-  phy@data$node <- as.character(node_map[match(as.numeric(phy@data$index), node_map$Rev),]$R)
+  node_map<- .matchNodesTreeData(phy, phylo)
+  # if ("sampled_ancestor" %in% colnames(phy@data)) {
+    phy@data$node <- as.character(node_map[match(as.numeric(phy@data$index), node_map$Rev),]$R)
+  # }
 
   # initiate plot
   if (is.null(color_branch_by)) {
@@ -377,8 +379,14 @@ plotTreeFull <- function(tree,
       if ( length(age_bars_color) == 1 ) {
         age_bars_color <- .colFun(2)[2:1]
       }
-      sampled_tip_probs <- 1- as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
-      sampled_tip_probs[is.na(sampled_tip_probs)] <- 0
+
+      if ( "sampled_ancestor" %in% colnames(pp$data) == TRUE ) {
+        sampled_tip_probs <- 1 - as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
+        sampled_tip_probs[is.na(sampled_tip_probs)] <- 0
+      } else {
+        sampled_tip_probs <- rep(1, sum(pp$data$isTip) )
+      }
+
       pp$data$olena <- c(sampled_tip_probs,
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                                         age_bars_colored_by]))))
@@ -434,14 +442,15 @@ plotTreeFull <- function(tree,
   # add node labels (text)
   if (is.null(node_labels) == FALSE) {
 
-    #catch some funkiness from importing an unrooted tree
+    # catch some funkiness from importing an unrooted tree
     if (node_labels == "posterior") {
       pp$data[grep("]:", unlist(pp$data[,node_labels])), node_labels] <- NA
     }
     pp$data$kula <- c(rep(NA, times = ntips),
                       .convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                           node_labels])))
-    #change any NAs that got converted to characters back to NA
+
+    # change any NAs that got converted to characters back to NA
     pp$data$kula[pp$data$kula == "NA"] <- NA
     pp <- pp + ggtree::geom_text(ggplot2::aes(label = kula),
                                  color = node_labels_color,

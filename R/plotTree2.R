@@ -141,41 +141,43 @@ plotTree2 <- function(tree,
 
                      tree_layout = "rectangular") {
 
-plotTreeFull(tree = tree,
+  # call plotTreeFull as appropriate
+  plotTreeFull(tree = tree,
 
-            timeline = timeline,
-            geo_units = geo_units,
-            geo = geo,
-            time_bars = time_bars,
+               timeline = timeline,
+               geo_units = geo_units,
+               geo = geo,
+               time_bars = time_bars,
 
-            node_age_bars = node_age_bars,
-            age_bars_color = age_bars_color,
-            age_bars_colored_by = age_bars_colored_by,
+               node_age_bars = node_age_bars,
+               age_bars_color = age_bars_color,
+               age_bars_colored_by = age_bars_colored_by,
 
-            node_labels = node_labels,
-            node_labels_color = node_labels_color,
-            node_labels_offset = node_labels_offset,
-            node_labels_size = node_labels_size,
+               node_labels = node_labels,
+               node_labels_color = node_labels_color,
+               node_labels_offset = node_labels_offset,
+               node_labels_size = node_labels_size,
 
-            tip_labels = tip_labels,
-            tip_labels_italics = tip_labels_italics,
-            tip_labels_remove_underscore = tip_labels_remove_underscore,
-            tip_labels_color = tip_labels_color,
-            tip_labels_size = tip_labels_size,
-            tip_labels_offset = tip_labels_offset,
+               tip_labels = tip_labels,
+               tip_labels_italics = tip_labels_italics,
+               tip_labels_remove_underscore = tip_labels_remove_underscore,
+               tip_labels_color = tip_labels_color,
+               tip_labels_size = tip_labels_size,
+               tip_labels_offset = tip_labels_offset,
 
-            node_pp = node_pp,
-            node_pp_shape = node_pp_shape,
-            node_pp_color = node_pp_color,
-            node_pp_size = node_pp_size,
+               node_pp = node_pp,
+               node_pp_shape = node_pp_shape,
+               node_pp_color = node_pp_color,
+               node_pp_size = node_pp_size,
 
-            branch_color = branch_color,
-            color_branch_by = color_branch_by,
-            line_width = line_width,
+               branch_color = branch_color,
+               color_branch_by = color_branch_by,
+               line_width = line_width,
 
-            tree_layout = tree_layout,
+               tree_layout = tree_layout,
 
-            # Turn off FBD-specific aspects
-            label_sampled_ancs = F, tip_age_bars = F
-            )
+               # Turn off FBD-specific aspects
+               label_sampled_ancs = F, tip_age_bars = F
+  )
+
 }

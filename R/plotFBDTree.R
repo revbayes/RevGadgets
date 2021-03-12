@@ -333,15 +333,23 @@ plotFBDTree <- function(tree,
       #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
       #}
 
-    } else if (is.null(age_bars_colored_by) == FALSE) {
+    } else if ( is.null(age_bars_colored_by) == FALSE ) {
+
       if ( length(age_bars_color) == 1 ) {
         age_bars_color <- .colFun(2)[2:1]
       }
-      sampled_tip_probs <- 1- as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
-      sampled_tip_probs[is.na(sampled_tip_probs)] <- 0
+
+      if ( "sampled_ancestor" %in% colnames(pp$data) == TRUE ) {
+        sampled_tip_probs <- 1 - as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
+        sampled_tip_probs[is.na(sampled_tip_probs)] <- 0
+      } else {
+        sampled_tip_probs <- rep(1, sum(pp$data$isTip) )
+      }
+
       pp$data$olena <- c(sampled_tip_probs,
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                                         age_bars_colored_by]))))
+
       bar_df <- dplyr::left_join(bar_df, pp$data, by=c("node_id"="node"))
       bar_df <- dplyr::select(bar_df,  node_id, min, max, y, olena)
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y, color = olena),
