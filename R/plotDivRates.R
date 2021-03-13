@@ -16,10 +16,8 @@
 #' and interval times for each type of rate to be plotted (e.g.
 #' speciation rate, etc.).
 #'
-#' @param fix_axes (logical; TRUE) Fix the y axes of speciation,
-#' extinction, and fossilization rates.
-#'
 #' @param facet (logical; TRUE) plot rates in separate facets.
+#'
 #'
 #' @return A ggplot object
 #'

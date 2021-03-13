@@ -41,8 +41,8 @@
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state symbols- varies from
 #' 0 to 1.
 #' @param timeline (logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.
-#' @param timeline_units (list; list("epochs", "periods")) Which geological units to include in the timescale.
-
+#' @param time_bars (logical; timeline) Add vertical gray bars to indicate time intervals (in MYA).
+#'
 #' @examples
 #'
 #' \dontrun{

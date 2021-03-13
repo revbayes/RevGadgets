@@ -100,7 +100,7 @@ cladogenetic plots.}
 
 \item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
 
-\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
+\item{time_bars}{(logical; timeline) Add vertical gray bars to indicate time intervals (in MYA).}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.

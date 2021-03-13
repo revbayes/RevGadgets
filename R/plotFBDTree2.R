@@ -38,6 +38,8 @@
 #'
 #' @param node_labels_size (numeric; 3) Size of node labels
 #'
+#' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from nodes.
+#'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
 #' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
@@ -48,6 +50,8 @@
 #' R color name or a valid hex code.
 #'
 #' @param tip_labels_size (numeric; 3) Size of tip labels
+#'
+#' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from tree.
 #'
 #' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 #' symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.

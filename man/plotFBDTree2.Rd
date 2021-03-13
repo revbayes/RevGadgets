@@ -72,6 +72,8 @@ R color name or a valid hex code.}
 
 \item{node_labels_size}{(numeric; 3) Size of node labels}
 
+\item{node_labels_offset}{(numeric; 0) Horizontal offset of node labels from nodes.}
+
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
 \item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
@@ -82,6 +84,8 @@ R color name or a valid hex code.}
 R color name or a valid hex code.}
 
 \item{tip_labels_size}{(numeric; 3) Size of tip labels}
+
+\item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from tree.}
 
 \item{node_pp}{(logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.}

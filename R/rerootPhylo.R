@@ -92,7 +92,7 @@ rerootPhylo <- function(tree, outgroup) {
         data.frame(
           index     = as.character(length(t_rooted$tip.label) + t_rooted$Nnode),
           node      = as.character(length(t_rooted$tip.label) + t_rooted$Nnode),
-          node_name = tail(.makeNodeNames(tree = t_rooted)$node_names, 1)
+          node_name = utils::tail(.makeNodeNames(tree = t_rooted)$node_names, 1)
         )
 
       tree[[i]][[j]]@data <- dplyr::full_join(tree[[i]][[j]]@data, node_names_new, by = c("index","node", "node_name"))
