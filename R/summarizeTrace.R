@@ -31,9 +31,9 @@
 #'
 #' # continuous character example, multiple runs
 #' file_1 <- system.file("extdata",
-#'     "sub_models/primates_cytb_covariotide_run_1.p", package="RevGadgets")
+#'     "sub_models/primates_cytb_GTR_run_1.p", package="RevGadgets")
 #' file_2 <- system.file("extdata",
-#'     "sub_models/primates_cytb_covariotide_run_2.p", package="RevGadgets")
+#'     "sub_models/primates_cytb_GTR_run_2.p", package="RevGadgets")
 #'
 #' multi_trace <- readTrace(path = c(file_1, file_2))
 #'

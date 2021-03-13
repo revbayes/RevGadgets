@@ -38,7 +38,7 @@ newick monitor (mnExtNewick)
 
 # read in a single nexus file
 file <- system.file("extdata",
-    "sub_models/primates_cytb_covariotide_MAP.tre", package="RevGadgets")
+    "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
 tree_single <- readTrees(paths = file)
 
 # read in a single newick string
@@ -46,7 +46,7 @@ file <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
 tree_new <- readTrees(path = file)
 
 # read in a tree trace (may take a few seconds)
-file <- system.file("extdata", "sub_models/primates_cytb_covariotide.trees", package="RevGadgets")
+file <- system.file("extdata", "sub_models/primates_cytb_GTR.trees", package="RevGadgets")
 tree_multi <- readTrees(path = file)
 
 }

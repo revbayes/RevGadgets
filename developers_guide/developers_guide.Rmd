@@ -806,7 +806,7 @@ We recommend that plotting functions are tested by comparing a saved version of 
 test_that("plot pi traces", {
   # load in the trace file
   file_1 <- system.file("extdata",
-                      "sub_models/primates_cytb_covariotide.p",
+                      "sub_models/primates_cytb_GTR.p",
                       package="RevGadgets")
   one_trace <- readTrace(path = file_1)
   # produce the plot pi parameters object

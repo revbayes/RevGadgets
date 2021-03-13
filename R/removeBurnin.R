@@ -18,7 +18,7 @@
 #'
 #' \dontrun{
 #' file <- system.file("extdata",
-#'     "sub_models/primates_cytb_covariotide.p", package="RevGadgets")
+#'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 #' one_trace <- readTrace(paths = file)
 #'
 #' one_trace_burnin <- removeBurnin(trace = one_trace, burnin = 0.1)
