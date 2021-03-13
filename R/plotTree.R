@@ -107,7 +107,7 @@
 #' }
 #' @export
 #'
-plotTree2 <- function(tree,
+plotTree <- function(tree,
 
                      timeline = FALSE,
                      geo_units = list("epochs", "periods"),

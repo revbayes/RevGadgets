@@ -100,7 +100,7 @@
 #' @export
 
 
-plotFBDTree2 <- function(tree,
+plotFBDTree <- function(tree,
 
                          timeline = FALSE,
                          geo = timeline,

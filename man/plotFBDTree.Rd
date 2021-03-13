@@ -11,25 +11,27 @@ plotFBDTree(
   geo_units = list("epochs", "periods"),
   time_bars = timeline,
   node_age_bars = TRUE,
+  tip_age_bars = FALSE,
   age_bars_color = "blue",
   age_bars_colored_by = NULL,
   node_labels = NULL,
   node_labels_color = "black",
   node_labels_size = 3,
+  node_labels_offset = 0,
   tip_labels = TRUE,
   tip_labels_italics = TRUE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_color = "black",
   tip_labels_size = 3,
-  label_sampled_ancs = FALSE,
+  tip_labels_offset = 0,
   node_pp = FALSE,
   node_pp_shape = 16,
   node_pp_color = "black",
   node_pp_size = "variable",
-  tip_age_bars = FALSE,
   branch_color = "black",
   color_branch_by = NULL,
-  line_width = 1
+  line_width = 1,
+  label_sampled_ancs = FALSE
 )
 }
 \arguments{
@@ -50,6 +52,10 @@ if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.}
 
 \item{node_age_bars}{(logical; TRUE) Plot time tree with node age bars?}
 
+\item{tip_age_bars}{(logical; FALSE) Plot node age bars for the tips as well? Useful for plotting
+serial sampled analyses or fossilized birth-death analyses, or any cases where some tip ages are
+estimated.}
+
 \item{age_bars_color}{(character; "blue") Color for node/tip age bars. If age_bars_colored_by
 specifies a variable (not NULL), you must provide two colors, low and high values for a gradient.
 Colors must be either R valid color names or valid hex codes.}
@@ -66,6 +72,8 @@ R color name or a valid hex code.}
 
 \item{node_labels_size}{(numeric; 3) Size of node labels}
 
+\item{node_labels_offset}{(numeric; 0) Horizontal offset of node labels from nodes.}
+
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
 \item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
@@ -77,8 +85,7 @@ R color name or a valid hex code.}
 
 \item{tip_labels_size}{(numeric; 3) Size of tip labels}
 
-\item{label_sampled_ancs}{(logical; FALSE) Label any sampled ancestors? Will inherent tip labels
-aesthetics for size and color.}
+\item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from tree.}
 
 \item{node_pp}{(logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
 symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.}
@@ -94,10 +101,6 @@ will be indicated by color along the specified gradient.}
 be fixed at the specified value. If a character, it should specify "variable", indicating that
 size should be scaled by the posterior value.}
 
-\item{tip_age_bars}{(logical; FALSE) Plot node age bars for the tips as well? Useful for plotting
-serial sampled analyses or fossilized birth-death analyses, or any cases where some tip ages are
-estimated.}
-
 \item{branch_color}{(character; "black") A single character string specifying the color (R color
 name or hex code) for all branches OR a vector of length 2 specifying two colors for a gradient,
 used to color the branches according to the variable specified in color_branch_by.
@@ -108,6 +111,9 @@ If only 1 color is provided and you specify color_branch_by, default colorswill 
 treedata object to color branches, such as a rate.}
 
 \item{line_width}{(numeric; 1) Change line width for branches}
+
+\item{label_sampled_ancs}{(logical; FALSE) Label any sampled ancestors? Will inherent tip labels
+aesthetics for size and color.}
 }
 \value{
 returns a single plot object.
@@ -124,7 +130,7 @@ birth-death analyses.
 \dontrun{
 file <- system.file("extdata", "fbd/bears.mcc.tre", package="RevGadgets")
 tree <- readTrees(paths = file)
-plot <- plotFBDTree(tree = tree, timeline = T, tip_labels_italics = F,
+plot <- plotFBDTree2(tree = tree, timeline = T, tip_labels_italics = F,
                     tip_labels_remove_underscore = T,
                     node_age_bars = T, age_bars_colored_by = "posterior",
                     age_bars_color = rev(RevGadgets:::.colFun(2))) +

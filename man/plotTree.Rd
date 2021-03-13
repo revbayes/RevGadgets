@@ -2,15 +2,17 @@
 % Please edit documentation in R/plotTree.R
 \name{plotTree}
 \alias{plotTree}
-\title{Plot tree}
+\title{Plot tree 2}
 \usage{
 plotTree(
   tree,
   timeline = FALSE,
-  timeline_units = list("epochs", "periods"),
+  geo_units = list("epochs", "periods"),
+  geo = timeline,
+  time_bars = timeline,
   node_age_bars = FALSE,
-  node_age_bars_color = "blue",
-  node_age_bars_colored_by = NULL,
+  age_bars_color = "blue",
+  age_bars_colored_by = NULL,
   node_labels = NULL,
   node_labels_color = "black",
   node_labels_size = 3,
@@ -28,9 +30,7 @@ plotTree(
   branch_color = "black",
   color_branch_by = NULL,
   line_width = 1,
-  tree_layout = "rectangular",
-  legend_x = 0.1,
-  legend_y = 0.8
+  tree_layout = "rectangular"
 )
 }
 \arguments{
@@ -39,19 +39,25 @@ treedata objects, such as produced by readTrees(). This object should only conta
 only one summary tree from one trace file. If it contains multiple trees or multiple
 traces, only the first will be used.}
 
-\item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.}
+\item{timeline}{(logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
+#'}
 
-\item{timeline_units}{(list; list("epochs", "periods")) Which geological units to include in the timescale.}
+\item{geo_units}{(list; list("epochs", "periods")) Which geological units to include in the geo timescale.}
+
+\item{geo}{(logical; timeline) Add a geological timeline? Defaults to the same as timeline.}
+
+\item{time_bars}{(logical; timeline) Add vertical gray bars to indicate gelogical timeline units
+if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.}
 
 \item{node_age_bars}{(logical; FALSE) Plot time tree with node age bars?}
 
-\item{node_age_bars_color}{(character; "blue") Color for node age bars. If node_age_bars_colored_by
+\item{age_bars_color}{(character; "blue") Color for node age bars. If age_bars_colored_by
 specifies a variable (not NULL), you must provide two colors, low and high values for a gradient. Colors must be either
 R valid color names or valid hex codes.}
 
-\item{node_age_bars_colored_by}{(character; NULL) Specify column to color node age bars by,
+\item{age_bars_colored_by}{(character; NULL) Specify column to color node age bars by,
 such as "posterior". If null, all node age bars plotted the same color, specified by
-node_age_bars_color}
+age_bars_color}
 
 \item{node_labels}{(character; NULL) Plot text labels at nodes, specified by the name of the
 corresponding column in the tidytree object. If NULL, no text is plotted.}
@@ -104,10 +110,6 @@ treedata object to color branches, such as a rate.}
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
 are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'.}
-
-\item{legend_x}{{numeric, 0.1} The x position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
-
-\item{legend_y}{{numeric, 0.8} The y position of the legend relative to the bottom-left corner, as a fraction of the entire plot region.}
 }
 \value{
 returns a single plot object.
@@ -128,14 +130,14 @@ tree <- readTrees(paths = file)
 # Reroot tree before plotting
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 # Plot
-plot <- plotTree(tree = tree_rooted, node_labels = "posterior")
+plot <- plotTree2(tree = tree_rooted, node_labels = "posterior")
 # We can add a scale bar:
 plot + ggtree::geom_treescale(x = -0.35, y = -1)
 
 # Example of coloring branches by rate
 file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
 tree <- readTrees(paths = file)
-plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F,
+plot <- plotTree2(tree = tree, node_age_bars = FALSE, node_pp = F,
                  tip_labels_remove_underscore = T, tip_labels_italics = F,
                  color_branch_by = "branch_thetas", line_width = 1.7) +
        ggplot2::theme(legend.position=c(.1, .9))
