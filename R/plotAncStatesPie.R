@@ -51,10 +51,10 @@
 #'
 #' # process file and assign state labels
 #' file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
-#` example <- processAncStates(file,
-#'                                     state_labels = c("1" = "Awesome",
-#'                                                      "2" = "Beautiful",
-#'                                                      "3" = "Cool!"))
+#' example <- processAncStates(file,
+#'                             state_labels = c("1" = "Awesome",
+#'                                              "2" = "Beautiful",
+#'                                              "3" = "Cool!"))
 #' # plot
 #' plotAncStatesPie(t = example)
 #'
@@ -75,9 +75,9 @@
 #' names(colors) <- dec_example@state_labels
 #'
 #' # plot
-#' p <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-#'              cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
-#'              ggplot2::theme(legend.position = c(0.1, 0.75))
+#' plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
+#'         cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
+#'         ggplot2::theme(legend.position = c(0.1, 0.75))
 #' }
 #'
 #' @export
@@ -121,7 +121,10 @@ plotAncStatesPie <- function(t,
                     state_transparency = 0.75,
 
                     timeline = FALSE,
-                    timeline_units = list("epochs", "periods")) {
+                    # geo scale currently not working for pies
+                    #geo = timeline,
+                    #geo_units = list("epochs", "periods"),
+                    time_bars = timeline) {
 
   ##### parameter compatibility checks #####
   if (class(t) != "treedata") stop("t should be a treedata object")
@@ -170,16 +173,16 @@ plotAncStatesPie <- function(t,
   tree <- attributes(t)$phylo
   tree_height <- max(phytools::nodeHeights(t@phylo))
   n_node <- ggtree:::getNodeNum(tree)
-  n_tip <- length(tree$tip.label)
-  node_idx <- (n_tip+1):n_node
-  tip_idx <- 1:n_tip
+  ntips <- length(tree$tip.label)
+  node_idx <- (ntips+1):n_node
+  tip_idx <- 1:ntips
   all_idx <- 1:n_node
 
   ##### calculate pie sizes #####
   # multiply by 1.05? uniform padding of 5% on each side of plot
-  node_pie_size <-  ((n_tip * tree_height) / 15 ) * node_pie_size
-  shoulder_pie_size <- ((n_tip * tree_height) / 15 ) * shoulder_pie_size
-  tip_pie_size <- ((n_tip * tree_height) / 15 ) * tip_pie_size
+  node_pie_size <-  ((ntips * tree_height) / 15 ) * node_pie_size
+  shoulder_pie_size <- ((ntips * tree_height) / 15 ) * shoulder_pie_size
+  tip_pie_size <- ((ntips * tree_height) / 15 ) * tip_pie_size
 
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
@@ -259,41 +262,96 @@ plotAncStatesPie <- function(t,
   # add timeline
   if (timeline == TRUE) {
 
-    if ("age_0.95_HPD" %in% colnames(p$data)){
-      p$data$age_0.95_HPD <- lapply(p$data$age_0.95_HPD, function(z) {
-        if (is.null(z) || is.na(z)) { return(c(NA,NA)) } else { return(as.numeric(z)) }
-      })
-      minmax <- t(matrix(unlist(p$data$age_0.95_HPD), nrow = 2))
-    }
-    if (!"age_0.95_HPD" %in% colnames(p$data)) {
-      max_age <- max(ape::branching.times(tree))
-      print("Adding timeline using branch lengths. Make sure branch lengths are in MYA units!")
-    } else {
-      max_age <- max(minmax, na.rm =TRUE)
-      print("Adding timeline using age_0.95_HPD from tree file.")
-    }
+    geo <- FALSE
+    geo_units <- NULL
+
+    max_age <- tree_height
 
     if (max_age > 100){
       interval <- 50
     } else {interval <- 10}
-
     dx <- max_age %% interval
-
     # set coordinates
-    p <- p + ggplot2::coord_cartesian()
+    ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
+    ### if error bars, -x lim should be as old as the max of the error bar
+    tick_height <- ntips/100
+    if (geo == TRUE) {
+      #determine whether to include quaternary
+      if (tree_height > 50) {
+        skipit <- c("Quaternary", "Holocene", "Late Pleistocene")
+      } else {skipit <- c("Holocene", "Late Pleistocene")}
+      # add deep timescale
+      if (length(geo_units) == 1){
+        p <- p + deeptime::coord_geo(dat  = geo_units,
+                                     pos  = lapply(1:length(geo_units), function(x) "bottom"),
+                                     size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                     xlim = c(-tree_height, tree_height/2),
+                                     ylim = c(-tick_height*5, ntips*1.1),
+                                     height = grid::unit(4, "line"),
+                                     skip = skipit,
+                                     abbrv = F,
+                                     rot = 90,
+                                     center_end_labels = T,
+                                     bord = c("right", "top", "bottom"),
+                                     neg  = TRUE)
+      } else if (length(geo_units) == 2) {
+        p <- p + deeptime::coord_geo(dat  = geo_units,
+                                     pos  = lapply(1:length(geo_units), function(x) "bottom"),
+                                     size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                     xlim = c(-tree_height, tree_height/2),
+                                     ylim = c(-tick_height*5, ntips*1.1),
+                                     skip = skipit,
+                                     center_end_labels = T,
+                                     bord = c("right", "top", "bottom"),
+                                     neg  = TRUE)
+
+      }
+    }
+    #add axis title
     p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
-                                         expand = c(0, 0),
-                                         limits = c(-max_age*1.05, tree_height/2),
-                                         breaks = -rev(seq(0,max_age+dx,interval)),
-                                         labels = rev(seq(0,max_age+dx,interval)),
-    )
-    p <- p + ggtree::theme_tree2()
-    #pp <- p + ggplot2::theme(legend.position=c(.05, .955), axis.line = ggplot2::element_line(colour = "black"))
+                                         limits = c(-tree_height, tree_height/2))
+    #p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
+    #                                     expand = c(0, 0),
+    #                                     limits = c(-tree_height, tree_height/2),
+    #                                     breaks = -rev(seq(0,max_age+dx,interval)),
+    #                                     labels = rev(seq(0,max_age+dx,interval)))
     p <- ggtree::revts(p)
-    n_tips <- length(tree$tip.label)
-    p <- p + ggplot2::scale_y_continuous(limits = c(-n_tips/20, n_tips*1.1), expand = c(0, 0))
-    #p  <- p + ggplot2::annotate(geom = "segment", x = 0, xend = -max_age, y = -n_tips/20, yend = -n_tips/20)
-    p <- .add_epoch_times(p, max_age, dy_bars=-n_tips/20, dy_text=-n_tips/25)
+    # add ma ticks and labels
+    xline <- pretty(c(0, max_age))[pretty(c(0, max_age)) < max_age]
+    df <- data.frame(x = -xline, y = rep(-tick_height*5, length(xline)),
+                     vx= -xline, vy = rep(-tick_height*5 + tick_height, length(xline)))
+
+    p <- p + ggplot2::geom_segment(ggplot2::aes(x = 0, y = -tick_height*5,
+                                                xend = -max_age, yend = -tick_height*5)) +
+      ggplot2::geom_segment(data = df, ggplot2::aes(x = x, y = y,
+                                                    xend = vx, yend = vy)) +
+      ggplot2::annotate("text", x = -rev(xline),
+                        y = -tick_height*5 + tick_height*2,
+                        label = rev(xline), size = tip_labels_size)
+
+    # add vertical gray bars
+    if (time_bars) {
+      if (geo) {
+        if ("epochs" %in% geo_units) {
+          x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
+        } else {
+          x_pos <-  -rev(c(0,deeptime::getScaleData("periods")$max_age))
+        }
+      } else if (!geo){
+        x_pos <- -rev(xline)
+      }
+      for (k in 2:(length(x_pos))) {
+        box_col = "gray92"
+        if (k %% 2 == 1) box_col = "white"
+        box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
+        p <- gginnards::append_layers(p, box, position = "bottom")
+      }
+    }
+    if (tip_labels) {
+      # recenter legend
+      tot <- max_age + tree_height/2
+      p <- p + ggplot2::theme(axis.title.x = ggplot2::element_text(hjust = max_age/(2*tot) ))
+    }
   }
 
   # add tip labels

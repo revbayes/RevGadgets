@@ -31,7 +31,7 @@ plotAncStatesPie(
   shoulder_pie_nudge_y = node_pie_nudge_y,
   state_transparency = 0.75,
   timeline = FALSE,
-  timeline_units = list("epochs", "periods")
+  time_bars = timeline
 )
 }
 \arguments{
@@ -113,9 +113,10 @@ Plot character states and posterior probabilities as pies on nodes.
 
 # process file and assign state labels
 file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
-                                    state_labels = c("1" = "Awesome",
-                                                     "2" = "Beautiful",
-                                                     "3" = "Cool!"))
+example <- processAncStates(file,
+                            state_labels = c("1" = "Awesome",
+                                             "2" = "Beautiful",
+                                             "3" = "Cool!"))
 # plot
 plotAncStatesPie(t = example)
 
@@ -136,9 +137,9 @@ colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(dec_example@state_la
 names(colors) <- dec_example@state_labels
 
 # plot
-p <- plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-             cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
-             ggplot2::theme(legend.position = c(0.1, 0.75))
+plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
+        cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
+        ggplot2::theme(legend.position = c(0.1, 0.75))
 }
 
 }
