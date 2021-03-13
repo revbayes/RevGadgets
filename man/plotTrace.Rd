@@ -68,6 +68,7 @@ trace <- readTrace(path = file)
 plots <- plotTrace(trace = trace,
                    vars = c("prob_rate_12", "prob_rate_13",
                             "prob_rate_31", "prob_rate_32"))
+plots[[1]]
 
 # with custom colors
 plots <- plotTrace(trace = trace,

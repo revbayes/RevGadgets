@@ -23,7 +23,7 @@
 #' gs <- setMRFGlobalScaleHyperpriorNShifts(100,"HSMRF")
 #'
 #' # Plot a draw from this HSMRF distribution
-
+#'
 #' trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=gs)
 #' plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
 #' }

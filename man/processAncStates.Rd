@@ -31,7 +31,7 @@ example <- processAncStates(file,
 
 #chromosome evolution example
 file <- system.file("extdata", "chromo/ChromEvol_simple_final.tree", package="RevGadgets")
-chromo_example <- processAncStatesDiscrete(file, labels_as_numbers = TRUE)
+chromo_example <- processAncStates(file, labels_as_numbers = TRUE)
 }
 
 }

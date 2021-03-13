@@ -55,8 +55,8 @@ speciation_times <- readTrace(speciation_time_file,burnin = 0.25)
 
 calculateShiftBayesFactor(speciation_rate,
                           speciation_times,
-                          "speciation","
-                          interval_times",
+                          "speciation",
+                          "interval_times",
                           0.0,40.0,
                           decrease=FALSE)
 }

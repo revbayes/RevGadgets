@@ -33,7 +33,9 @@
 #'                             extinction_rate_log = extinction_rate_file,
 #'                             burnin = 0.25)
 #'
-#' speciation_1_gamma_prior <- posteriorSamplesToParametricPrior(primates[[1]][,1],"gamma")
+#' speciation_rates <- dplyr::pull(primates[which(primates$item == "speciation rate"),], "mean")
+#' speciation_1_gamma_prior <- posteriorSamplesToParametricPrior(speciation_rates,"gamma")
+#'
 #'}
 #'
 #' @export

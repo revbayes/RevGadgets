@@ -38,20 +38,23 @@ one_trace <- readTrace(paths = file)
 trace_sum <- summarizeTrace(trace = one_trace,
                             vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 
-# discrete character example, multiple runs
-file1 <- system.file("extdata",
-    "comp_method_disc/mkstates_run_1.txt", package="RevGadgets")
-file2 <- system.file("extdata",
-    "comp_method_disc/mkstates_run_2.txt", package="RevGadgets")
+# continuous character example, multiple runs
+file_1 <- system.file("extdata",
+    "sub_models/primates_cytb_covariotide_run_1.p", package="RevGadgets")
+file_2 <- system.file("extdata",
+    "sub_models/primates_cytb_covariotide_run_2.p", package="RevGadgets")
 
-multi_trace <- readTrace(path = c(file1, file2))
+multi_trace <- readTrace(path = c(file_1, file_2))
 
 trace_sum_multi <- summarizeTrace(trace = multi_trace,
-                                  vars = c("end_680",
-                                           "end_681",
-                                           "end_682",
-                                           "end_683"))
+                                  vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 
+# discrete character example
+file <- system.file("extdata", "comp_method_disc/freeK_RJ.p", package = "RevGadgets")
+trace <- readTrace(path = file)
+summarizeTrace(trace = trace,
+                vars = c("prob_rate_12", "prob_rate_13",
+                         "prob_rate_31", "prob_rate_32"))
 }
 
 }
