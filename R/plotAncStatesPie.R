@@ -71,7 +71,7 @@
 #' # Use the state_labels in the returned tidytree object to define color palette
 #' # These state_labels may be a subset of the labels you provided
 #' # (not all possible regions may be sampled in the dataset)
-#' colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(dec_example@state_labels))
+#' colors <- colorRampPalette(colFun(12))(length(dec_example@state_labels))
 #' names(colors) <- dec_example@state_labels
 #'
 #' # plot
@@ -220,7 +220,7 @@ plotAncStatesPie <- function(t,
     # set default colors
     if (any(pie_colors == "default")) {
       nstates <- length(state_labels)
-      colors <- c(.colFun(nstates))
+      colors <- c(colFun(nstates))
       names(colors) <- state_labels
     } else {
       colors <- pie_colors
@@ -247,7 +247,7 @@ plotAncStatesPie <- function(t,
     # set default colors
     if (any(pie_colors == "default")) {
       nstates <- length(state_labels) - 1
-      colors <- c(.colFun(nstates), "grey50")
+      colors <- c(colFun(nstates), "grey50")
       names(colors) <- state_labels
     } else {
       colors <- pie_colors

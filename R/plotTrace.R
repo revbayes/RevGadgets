@@ -128,11 +128,11 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
     # set up colors
     if (color[1] == "default") {
       if (length(vars_quant) > 0) {
-        col_vec_quant <- .colFun(length(vars_quant))
+        col_vec_quant <- colFun(length(vars_quant))
         names(col_vec_quant) <- vars[classes == "numeric"]
       }
       if (length(vars_qual) > 0) {
-        col_vec_qual <- .colFun(length(vars_qual))
+        col_vec_qual <- colFun(length(vars_qual))
         names(col_vec_qual) <- vars[classes != "numeric"]
       }
     } else {
@@ -181,8 +181,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
         #                                                     fill = variable,
         #                                                     color = variable)) +
         #              ggplot2::geom_density(alpha = 0.5) +
-        #              ggplot2::scale_fill_manual(values = .colFun(length(vars_quant))) +
-        #              ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
+        #              ggplot2::scale_fill_manual(values = colFun(length(vars_quant))) +
+        #              ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
         #              ggthemes::theme_few() +
         #              ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
         #              ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -208,7 +208,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
         # old version with no differential fill for credible interval
         #plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-        #  ggplot2::geom_density(fill = .colFun(1), color = .colFun(1)) +
+        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
         #  ggthemes::theme_few() +
         #  ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_quant)) +
         #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -256,8 +256,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
         #                                                                     fill = variable,
         #                                                                     color = variable)) +
         #  ggplot2::geom_density(alpha = 0.5) +
-        #  ggplot2::scale_fill_manual(values = .colFun(length(vars_quant))) +
-        #  ggplot2::scale_color_manual(values = .colFun(length(vars_quant))) +
+        #  ggplot2::scale_fill_manual(values = colFun(length(vars_quant))) +
+        #  ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
         #  ggthemes::theme_few() +
         #  ggplot2::ggtitle(label = "Combined Trace:") +
         #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -284,7 +284,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
         # old version with no differential fill for credible interval
         #plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-        #  ggplot2::geom_density(fill = .colFun(1), color = .colFun(1)) +
+        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
         #  ggthemes::theme_few() +
         #  ggplot2::ggtitle(label = paste("Combined Trace:", vars_quant)) +
         #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))

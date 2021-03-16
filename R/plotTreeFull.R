@@ -377,7 +377,7 @@ plotTreeFull <- function(tree,
 
     } else if (is.null(age_bars_colored_by) == FALSE) {
       if ( length(age_bars_color) == 1 ) {
-        age_bars_color <- .colFun(2)[2:1]
+        age_bars_color <- colFun(2)[2:1]
       }
 
       if ( "sampled_ancestor" %in% colnames(pp$data) == TRUE ) {

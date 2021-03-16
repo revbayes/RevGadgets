@@ -133,7 +133,7 @@ dec_example  <- processAncStates(file , state_labels = labs)
 # Use the state_labels in the returned tidytree object to define color palette
 # These state_labels may be a subset of the labels you provided
 # (not all possible regions may be sampled in the dataset)
-colors <- colorRampPalette(RevGadgets:::.colFun(12))(length(dec_example@state_labels))
+colors <- colorRampPalette(colFun(12))(length(dec_example@state_labels))
 names(colors) <- dec_example@state_labels
 
 # plot

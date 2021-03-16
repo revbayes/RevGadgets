@@ -120,7 +120,7 @@
 #'
 #' # plot
 #' plotAncStatesMAP(t = chromo_example, node_color_as = "state_posterior", node_size_as = "state",
-#'         node_color = RevGadgets:::.colFun(2), tip_labels_offset = 0.005,
+#'         node_color = colFun(2), tip_labels_offset = 0.005,
 #'         node_labels_as = "state", node_labels_offset = 0, tip_labels_states = TRUE,
 #'         tip_labels_states_offset = 0, tip_states = FALSE)
 #'
@@ -329,14 +329,14 @@ plotAncStatesMAP <- function(t,
   # set default colors
   if (any(node_color == "default")) {
     if (is.null(node_color_as) == TRUE) {
-      colors <- .colFun(1)
+      colors <- colFun(1)
     } else if (node_color_as == "state") {
       nstates <- length(all_states)
-      colors <- .colFun(nstates)
+      colors <- colFun(nstates)
       names(colors) <- all_states
     } else if (node_color_as == "node_posterior" |
                node_color_as == "state_posterior") {
-      colors <- .colFun(2)
+      colors <- colFun(2)
     }
   } else {
     colors <- node_color

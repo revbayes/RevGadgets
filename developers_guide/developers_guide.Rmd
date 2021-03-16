@@ -371,7 +371,7 @@ plotDivRates <- function(output,
 
 ## General
 
-Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets > R subdirectory. Functions that are called internally but are not exported should be named with a period proceeding the function name (for example: .colFun()), put in the utils.R script and kept in alphabetical order. There's no need to test  or document these internal functions. 
+Each function should be defined in an R script with the name of the function as the file name. For example the plotDivRates() function is defined in a source file called: plotDivRates.R. These files should be stored in the RevGadgets > R subdirectory. Functions that are called internally but are not exported should be named with a period proceeding the function name (for example: colFun()), put in the utils.R script and kept in alphabetical order. There's no need to test  or document these internal functions. 
 
 ## Package Dependencies
 

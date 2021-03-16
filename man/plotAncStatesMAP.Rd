@@ -181,7 +181,7 @@ chromo_example <- processAncStates(file, labels_as_numbers = TRUE)
 
 # plot
 plotAncStatesMAP(t = chromo_example, node_color_as = "state_posterior", node_size_as = "state",
-        node_color = RevGadgets:::.colFun(2), tip_labels_offset = 0.005,
+        node_color = colFun(2), tip_labels_offset = 0.005,
         node_labels_as = "state", node_labels_offset = 0, tip_labels_states = TRUE,
         tip_labels_states_offset = 0, tip_states = FALSE)
 

@@ -82,8 +82,8 @@ plotDivRates <- function(rates, facet = TRUE){
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
                    strip.background = ggplot2::element_blank()) +
-    ggplot2::scale_color_manual(values = .colFun(length(rates_to_plot))) +
-    ggplot2::scale_fill_manual(values = .colFun(length(rates_to_plot)))
+    ggplot2::scale_color_manual(values = colFun(length(rates_to_plot))) +
+    ggplot2::scale_fill_manual(values = colFun(length(rates_to_plot)))
 
     if (facet){
       p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y", labeller = ggplot2::labeller(item = .capitalize))
@@ -210,7 +210,7 @@ plotDivRates <- function(rates, facet = TRUE){
 # # Make color vector
 # if ( is.null(col) ) {
 #
-#   col <- .colFun(5)
+#   col <- colFun(5)
 #   names(col) <- c("speciation rate",
 #                   "extinction rate",
 #                   "net-diversification rate",
