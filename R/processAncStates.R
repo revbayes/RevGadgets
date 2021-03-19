@@ -8,6 +8,10 @@
 #' @param labels_as_numbers (logical; FALSE) Should the state labels be treated as
 #' integers (for example, as chromosome numbers)?
 #'
+#' @param missing_to_NA (logical; TRUE) Should missing data, coded as "?", be coded to NA?
+#' If TRUE, the state will not be plotted. If FALSE, it will be considered an additional state
+#' when plotting.
+#'
 #' @examples
 #'
 #' \dontrun{
@@ -26,8 +30,9 @@
 #'
 #' @export
 #'
-processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALSE) {
-    #recover()
+processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALSE,
+                             missing_to_NA = TRUE) {
+   # recover()
     # read in tree
     tree <- readTrees(path)
     t <- tree[[1]][[1]]
@@ -43,7 +48,7 @@ processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALS
     }
 
     # add state labels
-    t <- .assign_state_labels(t, state_labels, include_start_states, labels_as_numbers)
+    t <- .assign_state_labels(t, state_labels, include_start_states, labels_as_numbers, missing_to_NA)
 
     # add range for pp factors
     t <- .set_pp_factor_range(t, include_start_states)

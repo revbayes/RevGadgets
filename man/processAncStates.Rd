@@ -4,7 +4,12 @@
 \alias{processAncStates}
 \title{Process Anc States}
 \usage{
-processAncStates(path, state_labels = NULL, labels_as_numbers = FALSE)
+processAncStates(
+  path,
+  state_labels = NULL,
+  labels_as_numbers = FALSE,
+  missing_to_NA = TRUE
+)
 }
 \arguments{
 \item{path}{(character string; no default) File path to annotated tree.}
@@ -14,6 +19,10 @@ named with the current state labels in annotated tree file (as characters).}
 
 \item{labels_as_numbers}{(logical; FALSE) Should the state labels be treated as
 integers (for example, as chromosome numbers)?}
+
+\item{missing_to_NA}{(logical; TRUE) Should missing data, coded as "?", be coded to NA?
+If TRUE, the state will not be plotted. If FALSE, it will be considered an additional state
+when plotting.}
 }
 \description{
 Process data for ancestral states plotting

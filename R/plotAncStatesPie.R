@@ -169,7 +169,7 @@ plotAncStatesPie <- function(t,
     ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ladderize = TRUE)
 
-    ##### calculate helper variables #####
+  ##### calculate helper variables #####
   tree <- attributes(t)$phylo
   tree_height <- max(phytools::nodeHeights(t@phylo))
   n_node <- ggtree:::getNodeNum(tree)
@@ -376,6 +376,11 @@ plotAncStatesPie <- function(t,
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_3), size=0),na.rm=TRUE, alpha=0.0)
+
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(end_state_3), size=0),na.rm=TRUE, alpha=0.0)
+
     if ("other" %in% state_labels) {
       p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_other), size=0),na.rm=TRUE, alpha=0.0)
     }
@@ -388,6 +393,11 @@ plotAncStatesPie <- function(t,
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_3), size=0),na.rm=TRUE, alpha=0.0)
+
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(anc_state_1), size=0),na.rm=TRUE, alpha=0.0)
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(anc_state_2), size=0),na.rm=TRUE, alpha=0.0)
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(anc_state_3), size=0),na.rm=TRUE, alpha=0.0)
+
     if ("other" %in% state_labels) {
       p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(anc_state_other), size=0),na.rm=TRUE, alpha=0.0)
     }
@@ -396,6 +406,11 @@ plotAncStatesPie <- function(t,
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_3), size=0),na.rm=TRUE, alpha=0.0)
+
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
+    p <- p + ggtree::geom_tippoint(ggtree::aes(colour=factor(end_state_3), size=0),na.rm=TRUE, alpha=0.0)
+
     if ("other" %in% state_labels) {
       p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_other), size=0),na.rm=TRUE, alpha=0.0)
     }

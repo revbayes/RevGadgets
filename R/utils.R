@@ -45,7 +45,8 @@
 }
 
 # set custom state labels
-.assign_state_labels <- function(t, state_labels, include_start_states, labels_as_numbers, n_states=3) {
+.assign_state_labels <- function(t, state_labels, include_start_states,
+                                 labels_as_numbers, missing_to_NA, n_states=3) {
   #recover()
   # what is the ancestral state name tag?
   if (include_start_states) {
@@ -68,6 +69,18 @@
   pps <- grep("_pp", colnames(t@data))
   columns <- col_num[!col_num %in% pps]
 
+  #change ? to NA
+  if (missing_to_NA == TRUE) {
+    for (c in columns){
+      x_state = attributes(t)$data[[c]]
+      x_state = as.vector(x_state)
+      x_state[x_state == "?"] <- "NA"
+      attributes(t)$data[[c]] = x_state
+    }
+  }
+
+
+
   all_anc_states <- unique(c(as.matrix(t@data[, columns])))
 
   # send error if state labels are provided but there are any
@@ -78,7 +91,6 @@
                 " do not match data in tree file: ",
                 paste0(sort(all_anc_states[all_anc_states != "NA"]), collapse = ", ")))
   }
-
   # generate state labels if none provided and not a chromosome analysis
   if ( is.null(state_labels) == TRUE & labels_as_numbers == FALSE) {
     warning("State labels not provided by user. Will be generated automatically.")

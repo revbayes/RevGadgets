@@ -305,10 +305,10 @@ plotAncStatesMAP <- function(t,
   if (cladogenetic == TRUE) {
     all_states <- unique(c(p$data$start_state_1, p$data$end_state_1))
   } else {
-    all_states <- unique(factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))))
+    all_states <- na.omit(unique(factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))))
   }
 
-  ##### color processing and checks #####
+    ##### color processing and checks #####
   # check if number of states exceeds default color palette options
   if (!is.null(node_color_as) && node_color_as == "states") {
     if (node_color[1] == "default" & length(all_states) > 12) {
@@ -762,7 +762,9 @@ plotAncStatesMAP <- function(t,
   }
   if (is.null(node_color_as) == FALSE) {
     if (node_color_as == "state") {
-      p <- p + ggplot2::scale_color_manual(values = colors, name = node_color_as)
+      p <- p + ggplot2::scale_color_manual(values = colors,
+                                           na.translate = FALSE,
+                                           name = node_color_as)
     } else if (node_color_as == "state_posterior" | node_color_as == "node_posterior") {
       p <- p + ggplot2::scale_color_gradient(low = colors[1], high = colors[2], name = node_color_as)
     }
