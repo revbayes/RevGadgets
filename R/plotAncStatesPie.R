@@ -436,7 +436,7 @@ plotAncStatesPie <- function(t,
     # add pies to tree
 
     # jitter anything that's 0
-    zeros <- which(pull(p$data,"x") == 0 )
+    zeros <- which(dplyr::pull(p$data,"x") == 0 )
     p$data[zeros, "x"] <- 0.0001
 
     # add node pies
