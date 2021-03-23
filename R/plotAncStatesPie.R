@@ -259,7 +259,7 @@ plotAncStatesPie <- function(t,
 
   ##### start plotting #####
 
-  # add timeline
+    # add timeline
   if (timeline == TRUE) {
 
     geo <- FALSE
@@ -435,6 +435,10 @@ plotAncStatesPie <- function(t,
 
     # add pies to tree
 
+    # jitter anything that's 0
+    zeros <- which(pull(p$data,"x") == 0 )
+    p$data[zeros, "x"] <- 0.0001
+
     # add node pies
     p <- .inset.revgadgets(
       tree_view = p,
@@ -457,7 +461,7 @@ plotAncStatesPie <- function(t,
       vjust = shoulder_pie_nudge_y
     )
 
-    # add tip pies
+    #add tip pies
     if (tip_pies == TRUE) {
       p <- .inset.revgadgets(
         tree_view = p,
