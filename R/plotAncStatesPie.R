@@ -178,6 +178,9 @@ plotAncStatesPie <- function(t,
   tip_idx <- 1:ntips
   all_idx <- 1:n_node
 
+  ##### reorder labels #####
+  state_labels <- as.factor(attributes(t)$state_labels)
+
   ##### calculate pie sizes #####
   # multiply by 1.05? uniform padding of 5% on each side of plot
   node_pie_size <-  ((ntips * tree_height) / 15 ) * node_pie_size
@@ -196,18 +199,18 @@ plotAncStatesPie <- function(t,
 
   # check if number of states exceeds default color palette options
   if (pie_colors[1] == "default" &
-      length(t@state_labels) > 12) {
-    stop(paste0(length(t@state_labels),
+      length(state_labels) > 12) {
+    stop(paste0(length(state_labels),
                 " states in dataset; please provide colors
                 (default only can provide up to 12)"))
   }
 
   # check if number of states not equal to provided colors
   if (pie_colors[1] != "default" &
-      length(pie_colors) < length(t@state_labels)) {
+      length(pie_colors) < length(state_labels)) {
     stop(paste0("You provided fewer colors in node_color
                 than states in your dataset. There are ",
-                length(t@state_labels), " states and you provide ",
+                length(state_labels), " states and you provide ",
                 length(pie_colors), " colors."))
   }
 
@@ -216,7 +219,6 @@ plotAncStatesPie <- function(t,
                                     var = paste0(state_pos_str_base[1],
                                                  "other_pp")))
   if (sum(otherpp, na.rm = TRUE) == 0) {
-    state_labels <- t@state_labels
     # set default colors
     if (any(pie_colors == "default")) {
       nstates <- length(state_labels)
@@ -228,7 +230,7 @@ plotAncStatesPie <- function(t,
 
   } else if (sum(otherpp, na.rm = TRUE) != 0) {
 
-    state_labels <- c(t@state_labels, "other")
+    state_labels <- as.factor(c(t@state_labels, "other"))
 
     if ("anc_state_" %in% state_pos_str_base) {
       p$data$anc_state_other <- "other"
@@ -370,7 +372,7 @@ plotAncStatesPie <- function(t,
     }
   }
 
-  # set up guides
+    # set up guides
   # gotta do this for a legend!
   if (cladogenetic == TRUE) {
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
@@ -416,7 +418,7 @@ plotAncStatesPie <- function(t,
     }
   }
 
-  p <- p + ggplot2::scale_color_manual(values = colors, breaks = state_labels)
+  p <- p + ggplot2::scale_color_manual(values = colors, breaks = levels(state_labels))
   p <- p + ggplot2::guides(colour = ggplot2::guide_legend("State", override.aes = list(size=4, alpha = 1.0)), order=1)
   p <- p + ggplot2::guides(size=FALSE)
 
