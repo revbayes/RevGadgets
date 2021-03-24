@@ -188,10 +188,10 @@ plotTreeFull <- function(tree,
 
   ### fix for trees with sampled ancestors ###
   phylo    <- phy@phylo
-  node_map<- .matchNodesTreeData(phy, phylo)
-  # if ("sampled_ancestor" %in% colnames(phy@data)) {
+  node_map <- .matchNodesTreeData(phy, phylo)
+  if ("sampled_ancestor" %in% colnames(phy@data)) {
     phy@data$node <- as.character(node_map[match(as.numeric(phy@data$index), node_map$Rev),]$R)
-  # }
+  }
 
   # initiate plot
   if (is.null(color_branch_by)) {
