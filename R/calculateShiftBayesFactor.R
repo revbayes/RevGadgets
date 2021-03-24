@@ -3,15 +3,15 @@
 #' This function computes the Bayes Factor in favor of a rate-shift between time t1 and t2 (t1 < t2).
 #' The default assumption (suitable to standard HSMRF and GMRF models) is that the prior probability of a shift is 0.5.
 #'
-#' @param rate.trace (list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).
-#' @param time.trace (list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).
-#' @param rate.name (character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.
-#' @param time.name (character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.
+#' @param rate_trace (list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).
+#' @param time_trace (list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).
+#' @param rate_name (character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.
+#' @param time_name (character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.
 #' @param t1 (numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).
 #' @param t2 (numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).
 #' @param decrease (logical; default TRUE) Should support be assessed for a decrease in the parameter (if TRUE) or an increase (if FALSE) between t1 and t2?
-#' @param prior.prob (numeric; 0.5) The prior probability of a shift over this interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).
-#' @param return.2lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
+#' @param prior_prob (numeric; 0.5) The prior probability of a shift over this interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).
+#' @param return_2lnBF (logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?
 #'
 #' @return The Bayes Factor.
 #'
@@ -41,7 +41,7 @@
 #'
 #' @export
 
-calculateShiftBayesFactor <- function(rate.trace,time.trace,rate.name,time.name,t1,t2,prior.prob=0.5,decrease=TRUE,return.2lnBF=TRUE) {
+calculateShiftBayesFactor <- function(rate_trace,time_trace,rate_name,time_name,t1,t2,prior_prob=0.5,decrease=TRUE,return_2lnBF=TRUE) {
 
   # Make sure times are in correct order
   times <- sort(c(t1,t2))
@@ -49,19 +49,19 @@ calculateShiftBayesFactor <- function(rate.trace,time.trace,rate.name,time.name,
   t2 <- times[2]
 
   # Condense log lists into data frames
-  rate_log <- do.call(rbind,rate.trace)
-  time_log <- do.call(rbind,time.trace)
+  rate_log <- do.call(rbind,rate_trace)
+  time_log <- do.call(rbind,time_trace)
 
   # Find parameter and times, remove rest of trace
-  is_rate <- grepl(paste0(rate.name,"["),names(rate_log),fixed=TRUE)
-  is_time <- grepl(paste0(time.name,"["),names(time_log),fixed=TRUE)
+  is_rate <- grepl(paste0(rate_name,"["),names(rate_log),fixed=TRUE)
+  is_time <- grepl(paste0(time_name,"["),names(time_log),fixed=TRUE)
 
   if ( sum(is_rate) < 2 ) {
-    stop(paste0("Cannot find diversification rate parameter named \"",rate.name,"\" in rate.trace"))
+    stop(paste0("Cannot find diversification rate parameter named \"",rate_name,"\" in rate_trace"))
   }
 
   if ( sum(is_time) < 1 ) {
-    stop(paste0("Cannot find rate change times parameter named \"",time.name,"\" in time.trace"))
+    stop(paste0("Cannot find rate change times parameter named \"",time_name,"\" in time_trace"))
   }
 
   rate_log <- rate_log[,is_rate]
@@ -144,10 +144,10 @@ calculateShiftBayesFactor <- function(rate.trace,time.trace,rate.name,time.name,
 
   # Prior odds are 1 under a MRF model
   posterior_odds <- shift_prob / (1 - shift_prob)
-  prior_odds <- prior.prob / (1 - prior.prob)
+  prior_odds <- prior_prob / (1 - prior_prob)
   BF <- posterior_odds / prior_odds
 
-  if ( return.2lnBF == TRUE ) {
+  if ( return_2lnBF == TRUE ) {
     BF <- 2 * log(BF)
   }
 

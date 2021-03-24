@@ -74,7 +74,11 @@ readTrace <- function(paths, format = "simple",
 
   header <- vector("list", num_paths)
   for (i in 1:num_paths) {
-    header[[i]] <- colnames(utils::read.table(file = paths[i], header = TRUE, sep = delim, check.names = check.names, nrows=0))
+    header[[i]] <- colnames(utils::read.table(file = paths[i],
+                                              header = TRUE,
+                                              sep = delim,
+                                              check.names = check.names,
+                                              nrows = 0))
   }
 
   all_headers <- unique(unlist(header))

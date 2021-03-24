@@ -130,6 +130,6 @@ Plots a tree, such as an MCC or MAP tree
 }
 \details{
 Plots a single tree, such as an MCC or MAP tree, with
-the full set of functionality to be called by plotTree
+the full set of functionality to be called by plotTree()
 and plotFBDTree()
 }

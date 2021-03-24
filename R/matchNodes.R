@@ -1,6 +1,6 @@
 #' match Nodes
 #'
-#' @param phy tree in ape format
+#' @param phy (tree in ape format; no default) Tree on which to match nodes
 #'
 #' @return a data frame that translates ape node numbers to RevBayes node numbers
 #' @export
@@ -54,7 +54,6 @@ matchNodes <- function(phy) {
         }
       }
     }
-
   }
 
   return(node_map[,1:2])

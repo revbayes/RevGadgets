@@ -1,4 +1,4 @@
-#' Plot tree 2
+#' Plot tree
 #'
 #' Plots a single tree, such as an MCC or MAP tree.
 #'

@@ -1,12 +1,12 @@
 #' plot Anc States MAP
 #'
-#' Plots the MAP estimates of ancestral states. Can accomodate cladogenetic reconstructions
+#' Plots the MAP estimates of ancestral states. Can accommodate cladogenetic reconstructions
 #' by plotting on shoulders. Defaults to varying the symbols by color to indicate estimated
 #' ancestral state and varying the size of the symbol to indicate the posterior probability
-#' of that estimate, but symbol shape may also vary to accomodate black and white figures.
+#' of that estimate, but symbol shape may also vary to accommodate black and white figures.
 #' For more details on the aesthetics options, see parameter details below. For data with
-#' many character states (such as choromosome counts), vary the size of the symbol by estimated
-#' ancestral state, and vary the posterior probability of that esimate by a color gradient.
+#' many character states (such as chromosome counts), vary the size of the symbol by estimated
+#' ancestral state, and vary the posterior probability of that estimate by a color gradient.
 #' Text labels at nodes and tips are also available.
 #'
 #' @param t (treedata object; none) Output of processAncStates() function
@@ -436,11 +436,6 @@ plotAncStatesMAP <- function(t,
     #add axis title
     p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
                                          limits = c(-tree_height, tree_height/2))
-    #p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
-    #                                     expand = c(0, 0),
-    #                                     limits = c(-tree_height, tree_height/2),
-    #                                     breaks = -rev(seq(0,max_age+dx,interval)),
-    #                                     labels = rev(seq(0,max_age+dx,interval)))
     p <- ggtree::revts(p)
     # add ma ticks and labels
     xline <- pretty(c(0, max_age))[pretty(c(0, max_age)) < max_age]

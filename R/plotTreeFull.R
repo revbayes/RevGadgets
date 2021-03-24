@@ -3,7 +3,7 @@
 #' Plots a tree, such as an MCC or MAP tree
 #'
 #' Plots a single tree, such as an MCC or MAP tree, with
-#' the full set of functionality to be called by plotTree
+#' the full set of functionality to be called by plotTree()
 #' and plotFBDTree()
 #'
 #' @param tree (list of lists of treedata objects; no default) Name of a list of lists of
@@ -91,7 +91,7 @@
 #' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from tree.
 #'
 #' @return returns a single plot object.
-#'
+
 
 
 plotTreeFull <- function(tree,
@@ -284,7 +284,6 @@ plotTreeFull <- function(tree,
                                        center_end_labels = T,
                                        bord = c("right", "top", "bottom"),
                                        neg  = TRUE)
-
       }
     }
     #add axis title
@@ -360,7 +359,6 @@ plotTreeFull <- function(tree,
       tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
       tip_df <- dplyr::select(tip_df, node_id, min, max, y)
     }
-    #node_df <- dplyr::filter(bar_df, isTip == FALSE)
     if (is.null(age_bars_colored_by) == TRUE) {
 
       # plot age densities
@@ -368,13 +366,6 @@ plotTreeFull <- function(tree,
       bar_df <- dplyr::select(bar_df,  node_id, min, max, y)
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
                                        data=bar_df, color=age_bars_color, size=1.5, alpha=0.8)
-      #if (tip_age_bars == TRUE) {
-      # tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
-      # tip_df <- dplyr::select(tip_df, node_id, min, max, y)
-      #  pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
-      #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
-      #}
-
     } else if (is.null(age_bars_colored_by) == FALSE) {
       if ( length(age_bars_color) == 1 ) {
         age_bars_color <- colFun(2)[2:1]
@@ -396,15 +387,7 @@ plotTreeFull <- function(tree,
                                        data=bar_df, size=1.5, alpha=0.8) +
         ggplot2::scale_color_gradient(low = age_bars_color[1], high = age_bars_color[2],
                                       name = paste(.simpleCap(age_bars_colored_by)))
-      #if (tip_age_bars == TRUE) { # how to color tip bars if node age bars vary based on something not coded for tips, like PP?
-      # tip_df <- dplyr::left_join(tip_df, pp$data, by=c("node_id"="node"))
-      # tip_df <- dplyr::select(tip_df, node_id, min, max, y)
-      #  pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y),
-      #                                   data=tip_df, color = age_bars_color, size=1.5, alpha=0.8)
-      #}
-    }
-
-
+     }
   }
 
   # label sampled ancestors
@@ -477,7 +460,6 @@ plotTreeFull <- function(tree,
                                      hjust = 0, color = tip_labels_color,
                                      size = tip_labels_size, parse = TRUE)
       }
-
     } else {
       pp <- pp + ggtree::geom_tiplab(ggplot2::aes(subset = extant & isTip,
                                                   label = label),
@@ -490,9 +472,7 @@ plotTreeFull <- function(tree,
                                      hjust = 0, color = tip_labels_color,
                                      size = tip_labels_size)
       }
-
     }
-
   }
 
   # add node PP (symbols)
@@ -522,22 +502,13 @@ plotTreeFull <- function(tree,
     if (length(branch_color) != 2) {
       branch_color <- c("#005ac8", "#fa7850")
     }
-    #col_num <- which(colnames(phy@data) == color_branch_by)
-    #phy@data[,col_num] <- as.numeric(as.data.frame(phy@data)[,col_num]) #convert data to numeric
-    #name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
-    #pp <- pp +
-    #  ggplot2::aes(color=I(as.data.frame(phy@data)[,col_num])) +
-    #  ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
-    #                                name = name)
-
     col_num <- which(colnames(pp$data) == color_branch_by)
-    pp$data[,col_num] <- as.numeric(as.data.frame(pp$data)[,col_num]) #convert data to numeric
+    pp$data[,col_num] <- as.numeric(as.data.frame(pp$data)[,col_num])
     name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
     pp <- pp +
       ggplot2::aes(color=as.data.frame(pp$data)[,col_num]) +
       ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
                                     name = name)
-
   }
 
   # readjust axis for non-timeline plots
@@ -558,20 +529,6 @@ plotTreeFull <- function(tree,
     pp <- ggtree::revts(pp)
 
   }
-
-  #if (node_age_bars == FALSE & timeline == FALSE) {
-  #  # add extra space on plot for tip labels
-  #  tree_height <- max(phytools::nodeHeights(phy@phylo))
-  #  pp <- pp + ggtree::xlim(-tree_height, tree_height/2)
-  #  pp <- ggtree::revts(pp)
-  #} else if (node_age_bars == TRUE & timeline == FALSE & tip_labels == TRUE) {
-  #  tree_height <- max(phytools::nodeHeights(phy@phylo))
-  #  pp <- pp + ggtree::xlim(0, tree_height + tree_height/2)
-  #}
-
-  # adjust legend(s)
-
-  #pp <- pp+ ggplot2::theme(legend.position=c(legend_x, legend_y))
   return(pp)
 }
 

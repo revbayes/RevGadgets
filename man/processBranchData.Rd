@@ -40,14 +40,6 @@ tree <- readTrees(paths = treefile)[[1]][[1]]
 
 annotated_tree <- processBranchData(tree, branch_data, summary = "median")
 
-p <- ggtree(annotated_tree[[1]][[1]]) +
-  aes(colour = avg_lambda) +
-  theme(legend.position=c(0.2,0.80), legend.background=element_blank()) +
-  scale_color_continuous("Posterior median \nspeciation rate",
-                         low="blue", high="green")
-
-# OR
-
 p <- plotTree(tree = annotated_tree,
               node_age_bars = FALSE,
               node_pp = F,

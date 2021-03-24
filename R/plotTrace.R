@@ -26,8 +26,8 @@
 #' @param match (character; NULL) A string to match to a group of parameters. For example,
 #' match = "er" will plot the variables "er[1]", "er[2]", "er[3]", etc.. match
 #' will only work if your search string is followed by brackets in one or more of
-#'  the column names of the provided trace file. match = "er" will only return the
-#'  exchangeability parameters, but will not plot "Posterior".
+#' the column names of the provided trace file. match = "er" will only return the
+#' exchangeability parameters, but will not plot "Posterior".
 #'
 #' @return plotTrace() returns a list of the length of provided trace object, plus one
 #' combined trace. Each element of the list contains a ggplot object with plots of
@@ -176,18 +176,6 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
-        # old version with no differential fill for credible interval
-        #plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value,
-        #                                                     fill = variable,
-        #                                                     color = variable)) +
-        #              ggplot2::geom_density(alpha = 0.5) +
-        #              ggplot2::scale_fill_manual(values = colFun(length(vars_quant))) +
-        #              ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
-        #              ggthemes::theme_few() +
-        #              ggplot2::ggtitle(label = paste("Trace",i, sep = " ") ) +
-        #              ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-
       } else if (length(vars_quant) == 1) {
         t <- data.frame(value = trace[[i]][,vars_quant])
         q_low <- quantile(t$value, 0.025)
@@ -205,13 +193,6 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_quant)) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-        # old version with no differential fill for credible interval
-        #plots[[i]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
-        #  ggthemes::theme_few() +
-        #  ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_quant)) +
-        #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
       }
     }
     # add combined trace plots if multiple traces provided
@@ -251,20 +232,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           ggplot2::ggtitle(label = "Combined Trace:")  +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
-        # old version with no differential fill for credible interval
-        #plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value,
-        #                                                                     fill = variable,
-        #                                                                     color = variable)) +
-        #  ggplot2::geom_density(alpha = 0.5) +
-        #  ggplot2::scale_fill_manual(values = colFun(length(vars_quant))) +
-        #  ggplot2::scale_color_manual(values = colFun(length(vars_quant))) +
-        #  ggthemes::theme_few() +
-        #  ggplot2::ggtitle(label = "Combined Trace:") +
-        #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
       } else if (length(vars_quant) == 1) {
         t <- data.frame(value =  do.call("rbind", trace)[,vars_quant])
-        #t <- data.frame(value = trace[[i]][,vars_quant])
         q_low <- quantile(t$value, 0.025)
         q_high <- quantile(t$value, 0.975)
         tt <- data.frame(x = density(t$value)$x, y = density(t$value)$y)
@@ -280,15 +249,6 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           ggthemes::theme_few() +
           ggplot2::ggtitle(label = paste("Combined Trace")) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-
-        # old version with no differential fill for credible interval
-        #plots[[length(trace) + 1]] <- ggplot2::ggplot(data = t, ggplot2::aes(x = value)) +
-        #  ggplot2::geom_density(fill = colFun(1), color = colFun(1)) +
-        #  ggthemes::theme_few() +
-        #  ggplot2::ggtitle(label = paste("Combined Trace:", vars_quant)) +
-        #  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
       }
     }
     }
@@ -299,12 +259,12 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
     if (length(vars_qual > 0)) {
       for(i in 1:length(trace)){
         if (length(vars_qual) > 1) {
-          #subset trace by qualitative variables
+          # subset trace by qualitative variables
           t <- trace[[i]][,vars_qual]
-          #calculate state probabilities and the credible set for all variables
+          # calculate state probabilities and the credible set for all variables
           sp <- list()
           for (k in 1:length(vars_qual)) {
-            #add in catch case for when table only 1 state visited
+            # add in catch case for when table only 1 state visited
             table <- sort(table(t[,vars_qual[k]])/nrow(t), decreasing = TRUE)
             if (is.table(table) == FALSE) {
               sp[[k]] <- data.frame(Var1 = names(table),
@@ -315,20 +275,20 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
               sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
               cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
               cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
-              sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
+              sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq)
             }
           }
           state_probs <- do.call("rbind", sp)
           colnames(state_probs) <- c("state","probability","variable", "cred_set")
           state_probs$col <- state_probs$variable
-          state_probs$col[!state_probs$cred_set] <- "zzzzzzz"  #cheat so it's always last and will match up with the white hex code
-          #reorder
+          state_probs$col[!state_probs$cred_set] <- "zzzzzzz"
+          # reorder
           state_probs$variable <- factor(state_probs$variable,
                                          levels = unique(state_probs$variable))
           state_probs$col <- factor(state_probs$col,
                                          levels = c(levels(state_probs$variable), "zzzzzzz"))
           state_probs$state <- as.character(levels(state_probs$state))[state_probs$state]
-          #fill in 0 probabilities such that all variables have data for all states
+          # fill in 0 probabilities such that all variables have data for all states
           state_probs <- tidyr::complete(data = state_probs, state, variable,
                                   fill = list(probability = 0,
                                               cred_set = FALSE,
@@ -351,18 +311,15 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
         if (length(vars_qual) == 1) {
 
-          #subset trace by qual variable
+          # subset trace by qual variable
           t <- trace[[i]][,vars_qual]
 
-          #calculate credible set and rearrange data for plotting
+          # calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
           data_full <- data.frame(state_probs)
           colnames(data_full) <- c("state", "probability")
           data_full$state <- as.character(levels(data_full$state))[data_full$state]
           data_sig <- data_full[1:min(which((cumsum(data_full$probability) >= 0.95) == TRUE)),]
-          #data_sig <- data.frame(table(state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]))
-          #colnames(data_sig) <- c("probability", "state")
-          #data_sig$probability <- as.numeric(levels(data_sig$probability)[data_sig$probability])
 
           #plot
           plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
@@ -379,9 +336,9 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
       nplots <- length(plots)  #reset nplots
       if (length(trace) > 1){
         if (length(vars_qual) > 1) {
-          #subset trace by qualitative variables
+          # subset trace by qualitative variables
           t <- do.call("rbind", trace)[,vars_qual]
-          #calculate state probabilities and the credible set for all variables
+          # calculate state probabilities and the credible set for all variables
           sp <- list()
           for (k in 1:length(vars_qual)) {
             table <- sort(table(t[,vars_qual[k]])/nrow(t), decreasing = TRUE)
@@ -394,19 +351,15 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
               sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
               cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
               cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
-              sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
+              sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq)
             }
-            #sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
-            #cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
-            #cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
-            #sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq) # will this always work?
-          }
+           }
           state_probs <- do.call("rbind", sp)
           colnames(state_probs) <- c("state","probability","variable", "cred_set")
           state_probs$col <- state_probs$variable
-          state_probs$col[!state_probs$cred_set] <- "zzzzzzz"  #cheat so it's always last and will match up with the white hex code
+          state_probs$col[!state_probs$cred_set] <- "zzzzzzz"
           state_probs$state <- as.character(levels(state_probs$state))[state_probs$state]
-          #fill in 0 probabilities such that all variables have data for all states
+          # fill in 0 probabilities such that all variables have data for all states
           state_probs <- tidyr::complete(data = state_probs, state, variable,
                                          fill = list(probability = 0,
                                                      cred_set = FALSE,

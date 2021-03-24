@@ -5,21 +5,21 @@
 \title{Simulates a single Markov random field trajectory.}
 \usage{
 simulateMRF(
-  n.episodes,
+  n_episodes,
   model,
-  global.scale.hyperprior,
-  initial.value = NULL,
+  global_scale_hyperprior,
+  initial_value = NULL,
   exponentiate = TRUE
 )
 }
 \arguments{
-\item{n.episodes}{(numeric; no default) The number of episodes in the random field (the parameter vector will be this long).}
+\item{n_episodes}{(numeric; no default) The number of episodes in the random field (the parameter vector will be this long).}
 
 \item{model}{(character; no default) What model should the global scale parameter be set for? Options are "GMRF" and "HSMRF".}
 
-\item{global.scale.hyperprior}{(numeric; no default) The hyperprior on the global scale parameter.}
+\item{global_scale_hyperprior}{(numeric; no default) The hyperprior on the global scale parameter.}
 
-\item{initial.value}{(numeric; NULL) The first value in the MRF. If no value is specified, the field is assumed to start at 0 (if exponentiate=FALSE) or 1 (if exponentiate=TRUE).}
+\item{initial_value}{(numeric; NULL) The first value in the MRF. If no value is specified, the field is assumed to start at 0 (if exponentiate=FALSE) or 1 (if exponentiate=TRUE).}
 
 \item{exponentiate}{(logical; TRUE) If TRUE, the MRF model is taken to be on the log-scale and the values are returned on the real-scale (note this means that the specified initial value will be the log of the true initial value). If FALSE, the model is taken to be on the real scale.}
 }
@@ -34,7 +34,7 @@ The first value must be specified
 \examples{
 \dontrun{
 # Simulate a 100-episode HSMRF model for a speciation-rate through time
-trajectory <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=0.0021)
+trajectory <- simulateMRF(n_episodes=100,model="HSMRF",global_scale_hyperprior=0.0021)
 plot(1:100,rev(trajectory),type="l",xlab="time",ylab="speciation rate")
 }
 }

@@ -7,7 +7,7 @@
 matchNodes(phy)
 }
 \arguments{
-\item{phy}{tree in ape format}
+\item{phy}{(tree in ape format; no default) Tree on which to match nodes}
 }
 \value{
 a data frame that translates ape node numbers to RevBayes node numbers

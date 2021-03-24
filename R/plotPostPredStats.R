@@ -104,11 +104,6 @@ plotPostPredStats <- function(data,
         p_value <- 0.0
       } else {
         p_value <- mean(pdf(sim[,i]) <= dens)
-        # if ( obs[,i] < median(sim[,i]) ) {
-        #   p_value <- 2 * mean(sim[,i] <= obs[,i])
-        # } else {
-        #   p_value <- 2 * mean(sim[,i] >= obs[,i])
-        # }
       }
 
     } else if ( side == "left" ) {

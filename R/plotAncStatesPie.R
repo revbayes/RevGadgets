@@ -182,7 +182,6 @@ plotAncStatesPie <- function(t,
   state_labels <- as.factor(attributes(t)$state_labels)
 
   ##### calculate pie sizes #####
-  # multiply by 1.05? uniform padding of 5% on each side of plot
   node_pie_size <-  ((ntips * tree_height) / 15 ) * node_pie_size
   shoulder_pie_size <- ((ntips * tree_height) / 15 ) * shoulder_pie_size
   tip_pie_size <- ((ntips * tree_height) / 15 ) * tip_pie_size
@@ -312,11 +311,6 @@ plotAncStatesPie <- function(t,
     #add axis title
     p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
                                          limits = c(-tree_height, tree_height/2))
-    #p <- p + ggplot2::scale_x_continuous(name = "Age (Ma)",
-    #                                     expand = c(0, 0),
-    #                                     limits = c(-tree_height, tree_height/2),
-    #                                     breaks = -rev(seq(0,max_age+dx,interval)),
-    #                                     labels = rev(seq(0,max_age+dx,interval)))
     p <- ggtree::revts(p)
     # add ma ticks and labels
     xline <- pretty(c(0, max_age))[pretty(c(0, max_age)) < max_age]
@@ -372,8 +366,7 @@ plotAncStatesPie <- function(t,
     }
   }
 
-    # set up guides
-  # gotta do this for a legend!
+  # set up guides
   if (cladogenetic == TRUE) {
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_1), size=0),na.rm=TRUE, alpha=0.0)
     p <- p + ggtree::geom_nodepoint(ggtree::aes(colour=factor(end_state_2), size=0),na.rm=TRUE, alpha=0.0)
@@ -422,7 +415,7 @@ plotAncStatesPie <- function(t,
   p <- p + ggplot2::guides(colour = ggplot2::guide_legend("State", override.aes = list(size=4, alpha = 1.0)), order=1)
   p <- p + ggplot2::guides(size=FALSE)
 
-    # plot pies at nodes (and shoulders)
+  # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
     # create state matrices (matrix of nodes (rows) and all possible states (columns), values are pp. )
     state_probs <- .build_state_probs(t, state_labels, include_start_states = TRUE)
@@ -437,7 +430,7 @@ plotAncStatesPie <- function(t,
 
     # add pies to tree
 
-    # jitter anything that's 0
+    # change 0s to avoid dividing by zero when calculating coordinates
     zeros <- which(dplyr::pull(p$data,"x") == 0 )
     p$data[zeros, "x"] <- 0.0001
 

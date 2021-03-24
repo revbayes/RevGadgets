@@ -47,7 +47,6 @@
 # set custom state labels
 .assign_state_labels <- function(t, state_labels, include_start_states,
                                  labels_as_numbers, missing_to_NA, n_states=3) {
-  #recover()
   # what is the ancestral state name tag?
   if (include_start_states) {
     state_pos_str_base = c("start_state_", "end_state_")
@@ -625,8 +624,8 @@ new_data_frame <- function(x = list(), n = NULL) {
 }
 
 # Right tail probability of the horseshoe: integrates the density function via grid
-.pRightTailHorseshoeGrid <- function(x, gamma=1, grid.size=5000) {
-  quants <- seq(1e-10,1-1e-10,length.out=grid.size)
+.pRightTailHorseshoeGrid <- function(x, gamma=1, grid_size=5000) {
+  quants <- seq(1e-10,1-1e-10,length.out=grid_size)
   # Transform so we can look up quantiles under regular cauchy distribution
   quants <- 1.0 - (1.0 - quants)/2.0
   probs <- 1/length(quants) # we're using quantiles, each gamma is equally likely
@@ -919,14 +918,12 @@ new_data_frame <- function(x = list(), n = NULL) {
 }
 
 # Calculates global scale parameter for a Gaussian Markov random fielf from the prior mean number of "effective shifts" in the rate.
-.setHSMRFGlobalScaleExpectedNumberOfJumps <- function(n.episodes,prior.n.shifts=log(2),shift.size=2) {
+.setHSMRFGlobalScaleExpectedNumberOfJumps <- function(n_episodes,prior_n_shifts=log(2),shift_size=2) {
   # We treat the change between each grid cell as a Bernoulli RV, so the collection of changes becomes binomial
   # From this we can calculate the expected number of cells where a shift occurs
 
-  # recover()
-
   # Move to log-scale
-  shift <- log(shift.size)
+  shift <- log(shift_size)
 
   # Probability of a shift for a value of zeta
   # We average the conditional p(shift | gamma) over p(gamma)
@@ -942,12 +939,12 @@ new_data_frame <- function(x = list(), n = NULL) {
     gammas <- qcauchy(quants,0,zeta)
     # Number of expected shifts for each value of sigma
     num_expected_shifts <- sapply(gammas,function(x) {
-      p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid.size=2000)/0.5
-      return(p_shift_one_cell_this_gamma * (n.episodes-1))
+      p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid_size=2000)/0.5
+      return(p_shift_one_cell_this_gamma * (n_episodes-1))
     })
     # Average the per-sigma E(n_shifts) over p(sigma) to get overall expectation given zeta
     this_expected_num_shifts <- sum(probs * num_expected_shifts)
-    return( (log(this_expected_num_shifts) - log(prior.n.shifts))^2 ) # Distance to target
+    return( (log(this_expected_num_shifts) - log(prior_n_shifts))^2 ) # Distance to target
   }
 
   # Find best value of zeta
@@ -957,8 +954,8 @@ new_data_frame <- function(x = list(), n = NULL) {
   # Compute the prior on number of shifts for this zeta (to show user how well we approximated the target)
   gammas <- qcauchy(quants,0,zeta)
   num_expected_shifts <- sapply(gammas,function(x) {
-    p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid.size=2000)/0.5
-    return(p_shift_one_cell_this_gamma * (n.episodes-1))
+    p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid_size=2000)/0.5
+    return(p_shift_one_cell_this_gamma * (n_episodes-1))
   })
 
   # Estimate the error of our chosen global scale hyperprior
@@ -967,14 +964,12 @@ new_data_frame <- function(x = list(), n = NULL) {
 }
 
 # Calculates global scale parameter for a Gaussian Markov random fielf from the prior mean number of "effective shifts" in the rate.
-.setGMRFGlobalScaleExpectedNumberOfJumps <- function(n.episodes,prior.n.shifts=log(2),shift.size=2) {
+.setGMRFGlobalScaleExpectedNumberOfJumps <- function(n_episodes,prior_n_shifts=log(2),shift_size=2) {
   # We treat the change between each grid cell as a Bernoulli RV, so the collection of changes becomes binomial
   # From this we can calculate the expected number of cells where a shift occurs
 
-  # recover()
-
   # Move to log-scale
-  shift <- log(shift.size)
+  shift <- log(shift_size)
 
   # Probability of a shift for a value of zeta
   # We average the conditional p(shift | sigma) over p(sigma)
@@ -991,11 +986,11 @@ new_data_frame <- function(x = list(), n = NULL) {
     # Number of expected shifts for each value of sigma
     num_expected_shifts <- sapply(sigmas,function(x) {
       p_shift_one_cell_this_sigma <- pnorm(shift,0,x,lower.tail=FALSE)/0.5
-      return(p_shift_one_cell_this_sigma * (n.episodes-1))
+      return(p_shift_one_cell_this_sigma * (n_episodes-1))
     })
     # Average the per-sigma E(n_shifts) over p(sigma) to get overall expectation given zeta
     this_expected_num_shifts <- sum(probs * num_expected_shifts)
-    return( (log(this_expected_num_shifts) - log(prior.n.shifts))^2 ) # Distance to target
+    return( (log(this_expected_num_shifts) - log(prior_n_shifts))^2 ) # Distance to target
   }
 
   # Find best value of zeta
@@ -1006,7 +1001,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   sigmas <- qcauchy(quants,0,zeta)
   num_expected_shifts <- sapply(sigmas,function(x) {
     p_shift_one_cell_this_sigma <- pnorm(shift,0,x,lower.tail=FALSE)/0.5
-    return(p_shift_one_cell_this_sigma * (n.episodes-1))
+    return(p_shift_one_cell_this_sigma * (n_episodes-1))
   })
 
   # Estimate the error of our chosen global scale hyperprior

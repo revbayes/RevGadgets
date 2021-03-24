@@ -5,35 +5,35 @@
 \title{Bayes Factors in support of a shift in diversification rates over a given time interval.}
 \usage{
 calculateShiftBayesFactor(
-  rate.trace,
-  time.trace,
-  rate.name,
-  time.name,
+  rate_trace,
+  time_trace,
+  rate_name,
+  time_name,
   t1,
   t2,
-  prior.prob = 0.5,
+  prior_prob = 0.5,
   decrease = TRUE,
-  return.2lnBF = TRUE
+  return_2lnBF = TRUE
 )
 }
 \arguments{
-\item{rate.trace}{(list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).}
+\item{rate_trace}{(list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).}
 
-\item{time.trace}{(list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).}
+\item{time_trace}{(list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).}
 
-\item{rate.name}{(character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.}
+\item{rate_name}{(character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.}
 
-\item{time.name}{(character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.}
+\item{time_name}{(character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.}
 
 \item{t1}{(numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).}
 
 \item{t2}{(numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).}
 
-\item{prior.prob}{(numeric; 0.5) The prior probability of a shift over this interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).}
+\item{prior_prob}{(numeric; 0.5) The prior probability of a shift over this interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).}
 
 \item{decrease}{(logical; default TRUE) Should support be assessed for a decrease in the parameter (if TRUE) or an increase (if FALSE) between t1 and t2?}
 
-\item{return.2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
+\item{return_2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
 }
 \value{
 The Bayes Factor.

@@ -9,7 +9,7 @@
 #' corresponds to the present. Conversely, the first time parameter
 #' (i.e. interval_times[1]) corresponds to the first time interval after the present,
 #' moving backwards in time. processDivRates() relies on readTrace and produces a list
-#' object that can be read by plotDivRates() to vizualize the results. For now,
+#' object that can be read by plotDivRates() to visualize the results. For now,
 #' only one log file per parameter type is accepted (i.e. log files from multiple runs
 #' must be combined before reading into the function).
 #'

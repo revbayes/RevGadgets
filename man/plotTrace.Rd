@@ -21,8 +21,8 @@ to be summarized.}
 \item{match}{(character; NULL) A string to match to a group of parameters. For example,
 match = "er" will plot the variables "er[1]", "er[2]", "er[3]", etc.. match
 will only work if your search string is followed by brackets in one or more of
- the column names of the provided trace file. match = "er" will only return the
- exchangeability parameters, but will not plot "Posterior".}
+the column names of the provided trace file. match = "er" will only return the
+exchangeability parameters, but will not plot "Posterior".}
 }
 \value{
 plotTrace() returns a list of the length of provided trace object, plus one

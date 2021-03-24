@@ -32,7 +32,6 @@
 #'
 processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALSE,
                              missing_to_NA = TRUE) {
-   # recover()
     # read in tree
     tree <- readTrees(path)
     t <- tree[[1]][[1]]

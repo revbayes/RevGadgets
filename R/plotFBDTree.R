@@ -171,10 +171,8 @@ plotFBDTree <- function(tree,
 
                label_sampled_ancs = label_sampled_ancs,
 
-               # Turn of plotTree-specific aspects
+               # Turn off plotTree-specific aspects
                tree_layout = "rectangular"
-
   )
-
 }
 

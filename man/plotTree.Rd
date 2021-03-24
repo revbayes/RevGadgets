@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTree.R
 \name{plotTree}
 \alias{plotTree}
-\title{Plot tree 2}
+\title{Plot tree}
 \usage{
 plotTree(
   tree,

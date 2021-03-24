@@ -11,7 +11,7 @@ test_that("MRF simulation matches", {
   # }
   # x <- with_seed(42,simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=0.0021))
   set.seed(42)
-  x <- simulateMRF(n.episodes=100,model="HSMRF",global.scale.hyperprior=0.0021)
+  x <- simulateMRF(n_episodes=100,model="HSMRF",global_scale_hyperprior=0.0021)
   expect_equal(1.0351365237,mean(x))
   expect_equal(1.0628421716,median(x))
   expect_equal(1.0,x[1])
