@@ -41,7 +41,7 @@
 #' @param \dots further arguments to be passed to plot.
 #'
 #' @references This code is adapted from the \code{\link[phangorn]{densiTree}} function by Klaus Schliep \email{klaus.schliep@@gmail.com}.
-#' densiTree is inspired from the \href{https://www.cs.auckland.ac.nz/~remco/DensiTree}{DensiTree} program by Remco Bouckaert.
+#' densiTree is inspired from the \href{https://www.cs.auckland.ac.nz/~remco/DensiTree/}{DensiTree} program by Remco Bouckaert.
 #'
 #' Remco R. Bouckaert (2010) DensiTree: making sense of sets of phylogenetic
 #' trees \emph{Bioinformatics}, \bold{26 (10)}, 1372-1373.
