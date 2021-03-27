@@ -431,7 +431,7 @@
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getParent <- function(tr, node) {
-  if ( node == tidytree::rootnode(tr) )
+  if ( node == ggtree:::getRoot(tr) )
     return(0)
   edge <- tr[["edge"]]
   parent <- edge[,1]
@@ -451,7 +451,7 @@
   edge <- tr$edge
   parent <- edge[,1]
   child <- edge[,2]
-  root <- tidytree::rootnode(tr)
+  root <- ggtree:::getRoot(tr)
 
   len <- tr$edge.length
 
@@ -698,7 +698,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   # they appear in the newick string
 
   phylo <- ape::read.tree(text = tree2)
-  root <- tidytree::rootnode(phylo)
+  root <- ggtree:::getRoot(phylo)
   nnode <- phylo$Nnode
 
   tree_label <- c(phylo$tip.label, phylo$node.label)
