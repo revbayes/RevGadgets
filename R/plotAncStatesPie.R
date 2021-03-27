@@ -172,7 +172,7 @@ plotAncStatesPie <- function(t,
   ##### calculate helper variables #####
   tree <- attributes(t)$phylo
   tree_height <- max(phytools::nodeHeights(t@phylo))
-  n_node <- ggtree:::getNodeNum(tree)
+  n_node <- ape::Nnode(tree)
   ntips <- length(tree$tip.label)
   node_idx <- (ntips+1):n_node
   tip_idx <- 1:ntips

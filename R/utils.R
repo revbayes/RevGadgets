@@ -44,6 +44,19 @@
   return(p)
 }
 
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.add_pseudo_nodelabel <- function(phylo) {
+  if(is.null(phylo$node.label)) {
+    nnode <- phylo$Nnode
+    phylo$node.label <- paste("X", 1:nnode, sep="")
+  }
+  ## if tip.label contains () which will broken node name extraction
+  phylo$tip.label <- gsub("[\\(\\)]", "_", phylo$tip.label)
+
+  treetext <- ape::write.tree(phylo)
+  return(treetext)
+}
+
 # set custom state labels
 .assign_state_labels <- function(t, state_labels, include_start_states,
                                  labels_as_numbers, missing_to_NA, n_states=3) {
@@ -133,6 +146,23 @@
   attributes(t)$state_labels <- as.character(used_state_labels)
 
   return(t)
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.beast <- function(file, treetext, stats, phylo) {
+  stats$node <- gsub("\"*'*", "", stats$node)
+
+  phylo <- .remove_quote_in_tree_label(phylo)
+
+  obj <- methods::new("treedata",
+                      ## fields      = fields,
+                      treetext    = treetext,
+                      phylo       = phylo,
+                      data        = stats,
+                      file        = .filename(file)
+  )
+
+  return(obj)
 }
 
 .build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0) {
@@ -279,6 +309,17 @@
   return(labs)
 }
 
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.filename <- function(file) {
+  ## textConnection(text_string) will work just like a file
+  ## in this case, just set the filename as ""
+  file_name <- ""
+  if (is.character(file)) {
+    file_name <- file
+  }
+  return(file_name)
+}
+
 .findTreeLines <- function(lines) {
 
   # pull out tree block only
@@ -390,7 +431,7 @@
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getParent <- function(tr, node) {
-  if ( node == ggtree:::getRoot(tr) )
+  if ( node == tidytree::rootnode(tr) )
     return(0)
   edge <- tr[["edge"]]
   parent <- edge[,1]
@@ -410,11 +451,11 @@
   edge <- tr$edge
   parent <- edge[,1]
   child <- edge[,2]
-  root <- ggtree:::getRoot(tr)
+  root <- tidytree::rootnode(tr)
 
   len <- tr$edge.length
 
-  N <- ggtree:::getNodeNum(tr)
+  N <- ape::Nnode(tr)
   x <- numeric(N)
   x <- .getXcoord2(x, root, parent, child, len)
   return(x)
@@ -443,7 +484,7 @@
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getYcoord <- function(tr, step=1) {
   Ntip <- length(tr[["tip.label"]])
-  N <- ggtree:::getNodeNum(tr)
+  N <- ape::Nnode(tr)
 
   edge <- tr[["edge"]]
   parent <- edge[,1]
@@ -619,7 +660,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   # stats <- treeio:::read.stats_beast_internal( "", text )
   stats <- .read.stats_revbayes_internal( "", text )
   tree <- ape::read.tree(text = text)
-  obj <- treeio:::BEAST("", text, stats, tree )
+  obj <- .beast("", text, stats, tree )
   return(obj)
 }
 
@@ -636,7 +677,7 @@ new_data_frame <- function(x = list(), n = NULL) {
 .read.stats_revbayes_internal <- function(beast, tree) {
 
   phylo <- ape::read.tree(text = tree) # read the tree
-  tree2 <- treeio:::add_pseudo_nodelabel(phylo) # add nodelabels (if there aren't already any)
+  tree2 <- .add_pseudo_nodelabel(phylo) # add nodelabels (if there aren't already any)
 
   ## node name corresponding to stats
   nn <- unlist(strsplit(unlist(strsplit(tree2, split=",")), "\\)"))
@@ -917,6 +958,17 @@ new_data_frame <- function(x = list(), n = NULL) {
 
 }
 
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.remove_quote_in_tree_label <- function(phylo) {
+  if (!is.null(phylo$node.label)) {
+    phylo$node.label <- gsub("\"*'*", "", phylo$node.label)
+  }
+  if ( !is.null(phylo$tip.label)) {
+    phylo$tip.label <- gsub("\"*'*", "", phylo$tip.label)
+  }
+  return(phylo)
+}
+
 # Calculates global scale parameter for a Gaussian Markov random fielf from the prior mean number of "effective shifts" in the rate.
 .setHSMRFGlobalScaleExpectedNumberOfJumps <- function(n_episodes,prior_n_shifts=log(2),shift_size=2) {
   # We treat the change between each grid cell as a Bernoulli RV, so the collection of changes becomes binomial
@@ -1007,6 +1059,14 @@ new_data_frame <- function(x = list(), n = NULL) {
   # Estimate the error of our chosen global scale hyperprior
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
   return(list(hyperprior=zeta,E.n=computed_num_expected_shifts))
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.validTblTree <- function(object, cols = c("parent", "node", "label")) {
+  cc <- cols[!cols %in% colnames(object)]
+  if (length(cc) > 0) {
+    msg <- paste0("invalid tbl_tree object.\n  missing column:\n    ", paste(cc, collapse=","), ".")
+  }
 }
 
 ### Functions required by densiTreeWithBranchData

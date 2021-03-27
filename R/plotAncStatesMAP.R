@@ -249,7 +249,7 @@ plotAncStatesMAP <- function(t,
   p <- suppressWarnings(ggtree::ggtree(t, layout = tree_layout, ladderize = TRUE))
 
   # get dimensions
-  n_nodes <- ggtree:::getNodeNum(tree)
+  n_nodes <- ape::Nnode(tree)
   tree_height <- max(phytools::nodeHeights(t@phylo))
   ntips <- sum(p$data$isTip)
 
