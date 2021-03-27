@@ -455,7 +455,7 @@
 
   len <- tr$edge.length
 
-  N <- ape::Nnode(tr)
+  N <- ape::Nnode(tr, internal.only = FALSE)
   x <- numeric(N)
   x <- .getXcoord2(x, root, parent, child, len)
   return(x)
@@ -484,7 +484,7 @@
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getYcoord <- function(tr, step=1) {
   Ntip <- length(tr[["tip.label"]])
-  N <- ape::Nnode(tr)
+  N <- ape::Nnode(tr, internal.only = FALSE)
 
   edge <- tr[["edge"]]
   parent <- edge[,1]
