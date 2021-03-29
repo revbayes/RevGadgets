@@ -431,7 +431,7 @@
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getParent <- function(tr, node) {
-  if ( node == ggtree:::getRoot(tr) )
+  if ( node == .rootNode(tr) )
     return(0)
   edge <- tr[["edge"]]
   parent <- edge[,1]
@@ -451,7 +451,7 @@
   edge <- tr$edge
   parent <- edge[,1]
   child <- edge[,2]
-  root <- ggtree:::getRoot(tr)
+  root <- .rootNode(tr)
 
   len <- tr$edge.length
 
@@ -698,7 +698,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   # they appear in the newick string
 
   phylo <- ape::read.tree(text = tree2)
-  root <- ggtree:::getRoot(phylo)
+  root <- .rootNode(phylo)
   nnode <- phylo$Nnode
 
   tree_label <- c(phylo$tip.label, phylo$node.label)
@@ -967,6 +967,25 @@ new_data_frame <- function(x = list(), n = NULL) {
     phylo$tip.label <- gsub("\"*'*", "", phylo$tip.label)
   }
   return(phylo)
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# works for phylo objects, not tree data
+.rootNode <- function(.data, ...) {
+  edge <- .data[["edge"]]
+  ## 1st col is parent,
+  ## 2nd col is child,
+  if (!is.null(attr(.data, "order")) && attr(.data, "order") == "postorder")
+    return(edge[nrow(edge), 1])
+
+  parent <- unique(edge[,1])
+  child <- unique(edge[,2])
+  ## the node that has no parent should be the root
+  root <- parent[ ! parent %in% child ]
+  if (length(root) > 1) {
+    stop("multiple roots found...")
+  }
+  return(root)
 }
 
 # Calculates global scale parameter for a Gaussian Markov random fielf from the prior mean number of "effective shifts" in the rate.
