@@ -711,7 +711,8 @@ plotAncStatesMAP <- function(t,
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",                                      nudge_x = node_labels_offset, size = node_labels_size) +
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size) +
                  ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
                                    hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
       } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
