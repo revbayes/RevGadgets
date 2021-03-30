@@ -502,8 +502,57 @@ plotAncStatesPie <- function(t,
 
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
-    p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
+    # add clado plotting data for node labels
+    if (cladogenetic == TRUE) {
+      x <- .getXcoord(tree)
+      y <- .getYcoord(tree)
+      x_anc <- numeric(n_node)
+      node_index <- numeric(n_node)
+      for (i in 1:n_node) {
+        if (.getParent(tree, i) != 0) {
+          # if not the root, get the x coordinate for the parent node
+          x_anc[i] <- x[.getParent(tree, i)]
+          node_index[i] <- i
+        }
+      }
+      shoulder_data <- data.frame(node = node_index, x_anc = x_anc, y = y)
+      if (timeline == T) {
+        shoulder_data$x_anc <- shoulder_data$x_anc - tree_height
+      }
+      `%<+%` <- ggtree::`%<+%`
+      p <- p %<+% shoulder_data
+    }
+
+    if (node_labels_as == "state") {
+      if (cladogenetic == TRUE) {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size) +
+          ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
+                            hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+      } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1, subset = !isTip), hjust="left",
                                     nudge_x = node_labels_offset, size = node_labels_size)
+      } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
+      }
+    } else if (node_labels_as == "state_posterior") {
+      if (cladogenetic == TRUE) {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size) +
+          ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
+                            hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+      } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
+      } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
+      }
+    } else if (node_labels_as == "node_posterior") {
+      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
+                                    nudge_x = node_labels_offset, size = node_labels_size)
+    }
   }
 
   # add tip states labels (text)
