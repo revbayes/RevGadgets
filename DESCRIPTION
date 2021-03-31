@@ -20,7 +20,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Depends: R (>= 4.0.0)
-Imports: ape, phytools, ggtree, treeio, dplyr, tidytree (>= 0.3.4), methods, 
+Imports: ape, phytools, ggtree (>= 2.5.1), treeio, dplyr, tidytree (>= 0.3.4), methods, 
   ggplot2 (>= 3.0.0), reshape, ggthemes, tidyr, tibble, gginnards, 
   ggimage, ggplotify, png, rvcheck, stats, utils
 Suggests: testthat,
