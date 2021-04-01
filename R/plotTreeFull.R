@@ -217,7 +217,7 @@ plotTreeFull <- function(tree,
   }
 
   # get dimensions
-  n_nodes <- treeio::Nnode(phy)
+  n_node <- treeio::Nnode(phy)
   tree_height <- max(phytools::nodeHeights(phy@phylo))
   ntips <- sum(pp$data$isTip)
 

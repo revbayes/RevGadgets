@@ -249,7 +249,7 @@ plotAncStatesMAP <- function(t,
   p <- suppressWarnings(ggtree::ggtree(t, layout = tree_layout, ladderize = TRUE))
 
   # get dimensions
-  n_nodes <- ape::Nnode(tree, internal.only = FALSE)
+  n_node <- ape::Nnode(tree, internal.only = FALSE)
   tree_height <- max(phytools::nodeHeights(t@phylo))
   ntips <- sum(p$data$isTip)
 
@@ -369,9 +369,9 @@ plotAncStatesMAP <- function(t,
   if (cladogenetic == TRUE) {
     x <- .getXcoord(tree)
     y <- .getYcoord(tree)
-    x_anc <- numeric(n_nodes)
-    node_index <- numeric(n_nodes)
-    for (i in 1:n_nodes) {
+    x_anc <- numeric(n_node)
+    node_index <- numeric(n_node)
+    for (i in 1:n_node) {
       if (.getParent(tree, i) != 0) {
         # if not the root, get the x coordinate for the parent node
         x_anc[i] <- x[.getParent(tree, i)]
