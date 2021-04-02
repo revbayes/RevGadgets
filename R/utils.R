@@ -126,6 +126,7 @@
   # create list of ancestral state name tags
   state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
 
+
   # overwrite state labels
   for (m in state_pos_str_to_update)
   {
@@ -137,13 +138,20 @@
     x_state_tmp = unlist(sapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
     x_state[x_state_valid] = x_state_tmp
     x_state[x_state_invalid] = NA
+    if(labels_as_numbers) {
+      x_state <- factor(x_state, levels = as.character(sort(as.integer(unique(state_labels)))))
+    }
     attributes(t)$data[[m]] = x_state
   }
 
-  unique(c(as.matrix(t@data[, columns])))
+ # unique(c(as.matrix(t@data[, columns])))
   # Just add the USED state_labels here
   used_state_labels <-  na.omit(unique(c(as.matrix(t@data[, columns]))))
-  attributes(t)$state_labels <- as.character(used_state_labels)
+  if (labels_as_numbers) {
+    attributes(t)$state_labels <- factor(used_state_labels, levels = as.character(sort(as.integer(unique(state_labels)))))
+  } else {
+    attributes(t)$state_labels <- as.character(used_state_labels)
+  }
 
   return(t)
 }
