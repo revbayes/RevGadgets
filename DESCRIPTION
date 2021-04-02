@@ -20,12 +20,17 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Depends: R (>= 4.0.0)
-Imports: ape, phytools, ggtree, treeio, dplyr, tidytree (>= 0.3.4), methods, 
-  ggplot2 (>= 3.0.0), reshape, ggthemes, tidyr, tibble, gginnards, 
-  ggimage, ggplotify, png, rvcheck, stats, utils
+Imports: ape (>= 5.4), phytools (>= 0.7-70), ggtree (>= 2.5.1), 
+         treeio (>= 1.12.0), dplyr (>= 1.0.0), tidytree (>= 0.3.4),
+         methods (>= 4.0.1), ggplot2 (>= 3.0.0), reshape (>= 0.8.8), 
+         ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1), 
+         gginnards (>= 0.0.3), ggimage (>= 0.2.8), ggplotify (>= 0.0.5),
+         png (>= 0.1-7), rvcheck (>= 0.1.8), stats (>= 4.0.1), 
+         utils (>= 4.0.1)
 Suggests: testthat,
     knitr,
     rmarkdown,
     deeptime
-Remotes: YuLab-SMU/ggtree, willgearty/deeptime, YuLab-SMU/treeio, YuLab-SMU/tidytree
+Remotes: YuLab-SMU/ggtree, willgearty/deeptime, 
+         YuLab-SMU/treeio, YuLab-SMU/tidytree
 VignetteBuilder: knitr
