@@ -706,48 +706,47 @@ plotAncStatesMAP <- function(t,
       }
     }
   }
-
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust = 1,
                                     nudge_x = node_labels_offset, size = node_labels_size) +
                  ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
-                                   hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
-      } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1, subset = !isTip), hjust="left",
+                                   hjust = 0, nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+      } else if (cladogenetic == FALSE & state_pos_str_base[1] == "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1, subset = !isTip), hjust = 1,
                                     nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust = 1,
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "state_posterior") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust = 1,
                                     nudge_x = node_labels_offset, size = node_labels_size) +
           ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
-                            hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
-      } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust="left",
+                            hjust = 0, nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+      } else if (cladogenetic == FALSE & state_pos_str_base[1] == "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust = 1,
                                     nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust = 1,
                                     nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "node_posterior") {
-      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
+      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = 1,
                                     nudge_x = node_labels_offset, size = node_labels_size)
     }
   }
 
   # add tip states labels (text)
   if (tip_labels_states == TRUE) {
-    if (state_pos_str_base == "anc_state_") {
-      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = anc_state_1), hjust="left",
+    if (state_pos_str_base[1] == "anc_state_") {
+      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = anc_state_1), hjust = 1,
                                    offset = tip_labels_states_offset, size = tip_labels_states_size)
     } else {
-      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = end_state_1), hjust="left",
+      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = end_state_1), hjust = 1,
                                    offset = tip_labels_states_offset, size = tip_labels_states_size)
     }
   }
