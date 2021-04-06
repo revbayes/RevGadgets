@@ -18,6 +18,7 @@ plotAncStatesMAP(
   node_labels_as = NULL,
   node_labels_size = 2,
   node_labels_offset = 0.1,
+  node_labels_centered = FALSE,
   node_size_as = "state_posterior",
   node_color_as = "state",
   node_shape_as = NULL,
@@ -70,6 +71,9 @@ or NULL for not plotting any text at the nodes (default).}
 \item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels from nodes.
 Ignored if node_labels_as = NULL.}
 
+\item{node_labels_centered}{(logical; FALSE) Should node labels be centered over the nodes?
+Defaults to FALSE: adjusting node labels to the right of nodes and left of shoulders.}
+
 \item{node_size_as}{(character; "state_posterior") How to vary size of node symbols. Options
 are "state_posterior" (default) for posterior probabilities of the estimated ancestral state,
 "node_posterior" or the posterior probability of the node on the tree, "state" for vary size by the
@@ -88,7 +92,8 @@ to keep shape constant or "state" to vary shape by ancestral state.}
 with length of the number of states.}
 
 \item{node_color}{("character"; "default") Colors for node symbols. Defaults to default RevGadgets
-colors. If node_color_as = "state', provide a vector of length of the character states.
+colors. If node_color_as = "state', provide a vector of length of the character states. If
+your color vector is labeled with state labels, the legend will be displayed in the order of the labels.
 If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.}
 
 \item{node_size}{(numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
