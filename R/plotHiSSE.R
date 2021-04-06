@@ -4,6 +4,7 @@
 #'
 #' @return a ggplot object
 #' @examples
+#' \dontrun{
 #' hisse_file <- system.file("extdata", "sse/primates_HiSSE_2.log", package="RevGadgets")
 #' pdata <- processSSE(hisse_file)
 #' p <- plotHiSSE(pdata);p
@@ -15,7 +16,7 @@
 #' # change x-axis label
 #' library(ggplot2)
 #' p + xlab("Rate (events/Ma)")
-#'
+#' }
 #' @export
 plotHiSSE <- function(rates){
   if (is.data.frame(rates) == FALSE) stop("rates should be a data frame")
@@ -23,7 +24,7 @@ plotHiSSE <- function(rates){
     ggplot2::geom_density(alpha=0.8) +
     ggplot2::facet_grid(rate ~ hidden_state,
                         scales = "free",
-                        labeller = labeller(rate = .titleFormatLabeller)) +
+                        labeller = ggplot2::labeller(rate = .titleFormatLabeller)) +
     ggplot2::scale_fill_manual(values = colFun(length(unique(rates$observed_state))),
                                name = "Observed state") +
     ggplot2::xlab("Rate") +

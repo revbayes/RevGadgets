@@ -17,6 +17,7 @@ a ggplot object
 plotHiSSE
 }
 \examples{
+\dontrun{
 hisse_file <- system.file("extdata", "sse/primates_HiSSE_2.log", package="RevGadgets")
 pdata <- processSSE(hisse_file)
 p <- plotHiSSE(pdata);p
@@ -28,5 +29,5 @@ p + scale_fill_manual(values = c("red","green"))
 # change x-axis label
 library(ggplot2)
 p + xlab("Rate (events/Ma)")
-
+}
 }

@@ -5,7 +5,7 @@
 #'
 #' @return a ggplot object
 #' @examples
-#'
+#' \dontrun{
 #' bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.log", package="RevGadgets")
 #'
 #' pdata <- processSSE(bisse_file)
@@ -17,7 +17,7 @@
 #' # change x-axis label
 #' library(ggplot2)
 #' p + xlab("Rate (events/Ma)")
-#'
+#' }
 #' @export
 
 plotMuSSE <- function(rates){
@@ -29,7 +29,7 @@ plotMuSSE <- function(rates){
        ggplot2::facet_wrap( ~ rate,
                             scales = "free",
                             ncol = 1,
-                            labeller = labeller(rate = .titleFormatLabeller)) +
+                            labeller = ggplot2::labeller(rate = .titleFormatLabeller)) +
        ggplot2::xlab("Rate") +
        ggplot2::ylab("Posterior density") +
        ggplot2::theme_bw() +

@@ -9,10 +9,11 @@
 #'
 #' @return a data frame
 #' @examples
+#' \dontrun{
 #' bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.log", package="RevGadgets")
 #' pdata <- processSSE(bisse_file)
 #' head(pdata)
-#'
+#' }
 #' @export
 processSSE <- function(path,
                        speciation = "speciation",

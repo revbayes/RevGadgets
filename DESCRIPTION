@@ -1,10 +1,6 @@
 Package: RevGadgets
 Type: Package
-<<<<<<< HEAD
-Title: Visualize and Post-processing of RevBayes Analyses
-=======
 Title: Visualization and Post-Processing of RevBayes Analyses
->>>>>>> dev_carrie
 Version: 0.1.0
 Authors@R: c(
     person("Carrie", "Tribble", email = "ctribble09@gmail.com", role = c("aut", "cre")),
