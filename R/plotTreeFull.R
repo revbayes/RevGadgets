@@ -216,7 +216,7 @@ plotTreeFull <- function(tree,
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
   }
   # get dimensions
-  n_nodes <- treeio::Nnode(phy)
+  n_node <- treeio::Nnode(phy)
   tree_height <- max(phytools::nodeHeights(phy@phylo))
   ntips <- sum(pp$data$isTip)
 
