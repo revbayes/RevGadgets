@@ -216,11 +216,6 @@
   return(dictionary)
 }
 
-.capitalize <- function(string) {
-    substr(string, 1, 1) <- toupper(substr(string, 1, 1))
-    string
-}
-
 .collect_probable_states <- function(p, p_threshold = 0.005) {
   labels = c("end_state", "start_state")
   index = c(1,2,3)
@@ -1008,6 +1003,19 @@ new_data_frame <- function(x = list(), n = NULL) {
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
   return(list(hyperprior=zeta,E.n=computed_num_expected_shifts))
 }
+
+.titleFormatLabeller <- function(string) {
+  lapply(string, .titleFormat)
+}
+
+# capitalize and remove hyphens
+.titleFormat <- function(string) {
+  string <- gsub("-", " ", string)
+  substr(string, 1, 1) <- toupper(substr(string, 1, 1))
+  return(string)
+}
+
+
 
 ### Functions required by densiTreeWithBranchData
 # attribute colors to a vector based the value in a range

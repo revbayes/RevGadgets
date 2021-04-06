@@ -51,14 +51,21 @@ rates <- processDivRates(speciation_time_log = speciation_time_file,
 # then plot results:
 p <- plotDivRates(rates = rates);p
 
-# let's say we want to change the x-axis
-p <- p + ggplot2::xlab("Millions of years ago");p
+# change the x-axis
+library(ggplot2)
+p <- p + xlab("Thousands of years ago");p
+
+# change the colors
+library(ggplot2)
+p <- p + scale_fill_manual(values = c("red", "green", "yellow", "purple")) +
+  scale_color_manual(values = c("red", "green", "yellow", "purple"));p
 
 # let's say we don't want to plot relative-extinction rate,
 # and use the same y-axis for all three rates
+library(ggplot2)
 rates[grep("relative-extinction", names(rates))] <- NULL
 p2 <- plotDivRates(rates)
-p2 <- p2 + ggplot2::facet_wrap(ggplot2::vars(item), scale = "fixed");p2
+p2 <- p2 + facet_wrap(vars(item), scale = "fixed");p2
 }
 
 }

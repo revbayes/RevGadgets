@@ -215,7 +215,6 @@ plotTreeFull <- function(tree,
   if (node_age_bars == TRUE) {
     if(!"age_0.95_HPD" %in% colnames(phy@data)) stop("You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object.")
   }
-
   # get dimensions
   n_nodes <- treeio::Nnode(phy)
   tree_height <- max(phytools::nodeHeights(phy@phylo))
@@ -236,24 +235,23 @@ plotTreeFull <- function(tree,
 
   # add timeline
   if (timeline == TRUE) {
-
-    pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
-      if (any(is.null(z)) || any(is.na(z))) { return(c(NA,NA)) } else { return(as.numeric(z)) }
-    })
-    minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
+  warning("Plotting with default axis label (Age (Ma))")
     if (node_age_bars == FALSE) {
+      minmax <- phytools::nodeHeights(phy@phylo)
       max_age <- tree_height
     } else {
-      max_age <- max(minmax, na.rm =TRUE)
+      pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
+        if (any(is.null(z)) || any(is.na(z))) { return(c(NA,NA)) } else { return(as.numeric(z)) }
+      })
+      minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
     }
 
-    if (max_age > 100){
-      interval <- 50
-    } else {interval <- 10}
+    max_age <- max(minmax, na.rm =TRUE)
+
+    interval <- max_age/5
     dx <- max_age %% interval
-    # set coordinates
-    ### fix the xlim and ylims - if no error bars, should be a function of max age and n nodes, respectively
-    ### if error bars, -x lim should be as old as the max of the error bar
+
+    # add geo
     tick_height <- ntips/100
     if (geo == TRUE) {
       #determine whether to include quaternary
@@ -292,8 +290,8 @@ plotTreeFull <- function(tree,
                                            limits = c(-max(minmax, na.rm = T), tree_height/2),
                                            breaks = -rev(seq(0,max_age+dx,interval)),
                                            labels = rev(seq(0,max_age+dx,interval)))
-    #pp <- pp + ggtree::theme_tree2()
     pp <- ggtree::revts(pp)
+
     # add ma ticks and labels
     xline <- pretty(c(0, max_age))[pretty(c(0, max_age)) < max_age]
     df <- data.frame(x = -xline, y = rep(-tick_height*5, length(xline)),

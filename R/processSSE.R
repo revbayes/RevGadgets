@@ -1,25 +1,37 @@
 #' Title
 #'
-#' @param tr a trace object
-#' @param speciation revbayes variable name
-#' @param extinction revbayes variable name
-#' @param speciation_hidden revbayes variable name
-#' @param rates names of rates to be included in plot
+#' @param path (vector of character strings; no default) File path(s) to trace file.
+#' @param speciation (single character string; "speciation") RevBayes variable name
+#' @param extinction (single character string; "extinction") RevBayes variable name
+#' @param speciation_hidden (single character string; "speciation_hidden") RevBayes variable name
+#' @param rates (vector; c(speciation, extinction, "net-diversification")) names of rates to be included in plot
+#' @param ... additional arguments passed to readTrace()
 #'
 #' @return a data frame
-#' @examples bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.log", package="RevGadgets")
-#'
-#' tr <- readTrace(bisse_file)[[1]]
-#' pdata <- processSSE(tr)
+#' @examples
+#' bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.log", package="RevGadgets")
+#' pdata <- processSSE(bisse_file)
 #' head(pdata)
 #'
 #' @export
-processSSE <- function(tr,
+processSSE <- function(path,
                        speciation = "speciation",
                        extinction = "extinction",
                        speciation_hidden = "speciation_hidden",
-                       rates = c(speciation, extinction, "net-diversification")
-){
+                       rates = c(speciation, extinction, "net-diversification"),
+                       ...) {
+  # parameter compatibility checks
+  if (!is.character(speciation)) stop("speciation should be a single character string")
+  if (length(speciation) != 1) stop("speciation should be a single character string")
+  if (!is.character(extinction)) stop("extinction should be a single character string")
+  if (length(extinction) != 1) stop("extinction should be a single character string")
+  if (!is.character(speciation_hidden)) stop("speciation_hidden should be a single character string")
+  if (length(speciation_hidden) != 1) stop("speciation_hidden should be a single character string")
+
+  # read in trace
+  tr <- readTrace(paths = path, ...)[[1]]
+
+  # process trace
   n_hidden <- max(1, sum(grepl(paste0(speciation_hidden, "\\["), names(tr))))
   n_states <- sum(grepl(paste0(speciation, "\\["), names(tr))) / n_hidden
   n_rates <- n_hidden*n_states

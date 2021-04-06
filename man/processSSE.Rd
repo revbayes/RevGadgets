@@ -5,23 +5,26 @@
 \title{Title}
 \usage{
 processSSE(
-  tr,
+  path,
   speciation = "speciation",
   extinction = "extinction",
   speciation_hidden = "speciation_hidden",
-  rates = c(speciation, extinction, "net-diversification")
+  rates = c(speciation, extinction, "net-diversification"),
+  ...
 )
 }
 \arguments{
-\item{tr}{a trace object}
+\item{path}{(vector of character strings; no default) File path(s) to trace file.}
 
-\item{speciation}{revbayes variable name}
+\item{speciation}{(single character string; "speciation") RevBayes variable name}
 
-\item{extinction}{revbayes variable name}
+\item{extinction}{(single character string; "extinction") RevBayes variable name}
 
-\item{speciation_hidden}{revbayes variable name}
+\item{speciation_hidden}{(single character string; "speciation_hidden") RevBayes variable name}
 
-\item{rates}{names of rates to be included in plot}
+\item{rates}{(vector; c(speciation, extinction, "net-diversification")) names of rates to be included in plot}
+
+\item{...}{additional arguments passed to readTrace()}
 }
 \value{
 a data frame
@@ -31,9 +34,7 @@ Title
 }
 \examples{
 bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.log", package="RevGadgets")
-
-tr <- readTrace(bisse_file)[[1]]
-pdata <- processSSE(tr)
+pdata <- processSSE(bisse_file)
 head(pdata)
 
 }
