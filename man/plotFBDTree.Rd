@@ -11,7 +11,7 @@ plotFBDTree(
   geo_units = list("epochs", "periods"),
   time_bars = timeline,
   node_age_bars = TRUE,
-  tip_age_bars = FALSE,
+  tip_age_bars = TRUE,
   age_bars_color = "blue",
   age_bars_colored_by = NULL,
   node_labels = NULL,

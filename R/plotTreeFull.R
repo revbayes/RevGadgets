@@ -379,8 +379,12 @@ plotTreeFull <- function(tree,
       pp$data$olena <- c(sampled_tip_probs,
                          as.numeric(.convertAndRound(L = unlist(pp$data[pp$data$isTip == FALSE,
                                                                         age_bars_colored_by]))))
+
       bar_df <- dplyr::left_join(bar_df, pp$data, by=c("node_id"="node"))
-      bar_df <- dplyr::select(bar_df,  node_id, min, max, y, olena)
+      bar_df <- dplyr::select(bar_df,  node_id, min, max, y, olena, isTip = isTip.x)
+      if (tip_age_bars == FALSE) {
+        bar_df <- dplyr::filter(bar_df, isTip == FALSE)
+      }
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y, color = olena),
                                        data=bar_df, size=1.5, alpha=0.8) +
         ggplot2::scale_color_gradient(low = age_bars_color[1], high = age_bars_color[2],
@@ -441,6 +445,7 @@ plotTreeFull <- function(tree,
 
   # add tip labels (text)
   if (tip_labels == TRUE) {
+
     if (tip_age_bars == TRUE) {
       pp$data$extant <- !pp$data$node %in% tip_df$node_id
     } else {
