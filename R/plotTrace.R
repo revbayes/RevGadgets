@@ -141,31 +141,34 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
     }
 
     # make the quantitative plots
-    if (length(vars_quant > 0)) {
+    if (length(vars_quant) > 0) {
     for(i in 1:length(trace)){
       if (length(vars_quant) > 1) {
         # reshape data for plotting
         t <- trace[[i]][,vars_quant]
         t <- reshape::melt(t)
+        colnames(t) <- c("Variable", "value")
         dfs <- list()
         for (k in 1:length(vars_quant)) {
           den<- density(trace[[i]][,vars_quant[k]])
-          dfs[[k]] <- data.frame(variable=vars_quant[k], x = den$x, y = den$y)
+          dfs[[k]] <- data.frame(Variable=vars_quant[k], x = den$x, y = den$y)
         }
         tt <- do.call("rbind", dfs)
         # calculate quantiles for all variables
         q_lows <- numeric()
         q_highs <- numeric()
-        for (k in 1:length(vars_quant)) {q_lows[k] <- quantile(t[t$variable == vars_quant[k],"value"],0.025)}
-        for (k in 1:length(vars_quant)) {q_highs[k] <- quantile(t[t$variable == vars_quant[k],"value"],0.975)}
+        for (k in 1:length(vars_quant)) {q_lows[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.025)}
+        for (k in 1:length(vars_quant)) {q_highs[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.975)}
 
         # plot densities, filling in the 95% credible interval
         plots[[i]] <- ggplot2::ggplot(t) +
-          ggplot2::stat_density(ggplot2::aes(x = value, color = variable),
-                                geom="line", position = "identity")
+          ggplot2::stat_density(ggplot2::aes(x = value, color = Variable),
+                                geom="line", position = "identity") +
+          ggplot2::xlab("Parameter value") +
+          ggplot2::ylab("Density")
         for (k in 1:length(vars_quant)) {
           plots[[i]] <- plots[[i]] +
-            ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
+            ggplot2::geom_ribbon(data = subset(tt, Variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                         ggplot2::aes(x=x,ymax=y,ymin=0),
                                         fill = col_vec_quant[k], alpha=0.5)
         }
@@ -187,6 +190,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           ggplot2::stat_density(ggplot2::aes(x = value),
                                 position = "identity",
                                 color = col_vec_quant[1],geom="line") +
+          ggplot2::xlab("Parameter value") +
+          ggplot2::ylab("Density") +
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
                                fill = col_vec_quant[1]) +
@@ -202,26 +207,28 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
         dfs <- list()
         for (k in 1:length(vars_quant)) {
           den<- density(t[,vars_quant[k]])
-          dfs[[k]] <- data.frame(variable=vars_quant[k], x = den$x, y = den$y)
+          dfs[[k]] <- data.frame(Variable = vars_quant[k], x = den$x, y = den$y)
         }
         tt <- do.call("rbind", dfs)
         t <- reshape::melt(t)
-
+        colnames(t) <- c("Variable", "value")
         # calculate quantiles for all variables
         q_lows <- numeric()
         q_highs <- numeric()
-        for (k in 1:length(vars_quant)) {q_lows[k] <- quantile(t[t$variable == vars_quant[k],"value"],0.025)}
-        for (k in 1:length(vars_quant)) {q_highs[k] <- quantile(t[t$variable == vars_quant[k],"value"],0.975)}
+        for (k in 1:length(vars_quant)) {q_lows[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.025)}
+        for (k in 1:length(vars_quant)) {q_highs[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.975)}
 
         # plot densities, filling in the 95% credible interval
         plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
           ggplot2::stat_density(ggplot2::aes(x = value,
-                                             color = variable),
+                                             color = Variable),
                                 position = "identity",
-                                geom="line")
+                                geom="line") +
+          ggplot2::xlab("Parameter value") +
+          ggplot2::ylab("Density")
         for (k in 1:length(vars_quant)) {
           plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
-            ggplot2::geom_ribbon(data = subset(tt, variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
+            ggplot2::geom_ribbon(data = subset(tt, Variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                  ggplot2::aes(x=x,ymax=y,ymin=0),
                                  fill = col_vec_quant[k], alpha=0.5)
         }
@@ -246,8 +253,10 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           ggplot2::geom_ribbon(data = subset(tt, x > q_low & x < q_high),
                                ggplot2::aes(x=x,ymax=y,ymin=0),
                                fill = col_vec_quant[1]) +
+          ggplot2::xlab("Parameter value") +
+          ggplot2::ylab("Density") +
           ggthemes::theme_few() +
-          ggplot2::ggtitle(label = paste("Combined Trace")) +
+          ggplot2::ggtitle(label = paste0("Combined Trace: ", vars_quant)) +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
       }
     }
@@ -279,17 +288,17 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
             }
           }
           state_probs <- do.call("rbind", sp)
-          colnames(state_probs) <- c("state","probability","variable", "cred_set")
-          state_probs$col <- state_probs$variable
+          colnames(state_probs) <- c("State","Probability","Variable", "cred_set")
+          state_probs$col <- state_probs$Variable
           state_probs$col[!state_probs$cred_set] <- "zzzzzzz"
           # reorder
-          state_probs$variable <- factor(state_probs$variable,
-                                         levels = unique(state_probs$variable))
+          state_probs$Variable <- factor(state_probs$Variable,
+                                         levels = unique(state_probs$Variable))
           state_probs$col <- factor(state_probs$col,
-                                         levels = c(levels(state_probs$variable), "zzzzzzz"))
-          state_probs$state <- as.character(levels(state_probs$state))[state_probs$state]
+                                         levels = c(levels(state_probs$Variable), "zzzzzzz"))
+          state_probs$State <- as.character(levels(state_probs$State))[state_probs$State]
           # fill in 0 probabilities such that all variables have data for all states
-          state_probs <- tidyr::complete(data = state_probs, state, variable,
+          state_probs <- tidyr::complete(data = state_probs, State, Variable,
                                   fill = list(probability = 0,
                                               cred_set = FALSE,
                                               col = "zzzzzzz"))
@@ -297,8 +306,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           # plot the variables
           plots[[nplots + i]] <-
             ggplot2::ggplot(state_probs,
-                            ggplot2::aes(color = variable, fill = col,
-                                         y = probability, x = state)) +
+                            ggplot2::aes(color = Variable, fill = col,
+                                         y = Probability, x = State)) +
             ggplot2::geom_bar(position = ggplot2::position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
@@ -317,15 +326,15 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           # calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
           data_full <- data.frame(state_probs)
-          colnames(data_full) <- c("state", "probability")
-          data_full$state <- as.character(levels(data_full$state))[data_full$state]
-          data_sig <- data_full[1:min(which((cumsum(data_full$probability) >= 0.95) == TRUE)),]
+          colnames(data_full) <- c("State", "Probability")
+          data_full$State <- as.character(levels(data_full$State))[data_full$State]
+          data_sig <- data_full[1:min(which((cumsum(data_full$Probability) >= 0.95) == TRUE)),]
 
           #plot
-          plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
+          plots[[nplots + i]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = State, y = Probability)) +
                                 ggplot2::geom_bar(stat = "identity", color = col_vec_qual[1], fill = "white") +
                                 ggplot2::geom_bar(data = data_sig, stat = "identity",
-                                                  ggplot2::aes(x = state, y = probability),
+                                                  ggplot2::aes(x = State, y = Probability),
                                         color = col_vec_qual[1], fill = col_vec_qual[1]) +
                                 ggthemes::theme_few() +
                                 ggplot2::ggtitle(label = paste0("Trace ",i,": ",vars_qual)) +
@@ -355,20 +364,20 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
             }
            }
           state_probs <- do.call("rbind", sp)
-          colnames(state_probs) <- c("state","probability","variable", "cred_set")
-          state_probs$col <- state_probs$variable
+          colnames(state_probs) <- c("State","Probability","Variable", "cred_set")
+          state_probs$col <- state_probs$Variable
           state_probs$col[!state_probs$cred_set] <- "zzzzzzz"
-          state_probs$state <- as.character(levels(state_probs$state))[state_probs$state]
+          state_probs$State <- as.character(levels(state_probs$State))[state_probs$State]
           # fill in 0 probabilities such that all variables have data for all states
-          state_probs <- tidyr::complete(data = state_probs, state, variable,
-                                         fill = list(probability = 0,
+          state_probs <- tidyr::complete(data = state_probs, State, Variable,
+                                         fill = list(Probability = 0,
                                                      cred_set = FALSE,
                                                      col = "zzzzzzz"))
           # plot the variables
           plots[[nplots + 1]] <-
             ggplot2::ggplot(state_probs,
-                            ggplot2::aes(color = variable, fill = col,
-                                         y = probability, x = state)) +
+                            ggplot2::aes(color = Variable, fill = col,
+                                         y = Probability, x = State)) +
             ggplot2::geom_bar(position = ggplot2::position_dodge2(preserve = "single"),
                               stat = "identity") +
             ggthemes::theme_few() +
@@ -387,15 +396,15 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           #calculate credible set and rearrange data for plotting
           state_probs <- sort(table(t)/length(t), decreasing = TRUE)
           data_full <- data.frame(state_probs)
-          colnames(data_full) <- c("state", "probability")
-          data_full$state <- as.character(levels(data_full$state))[data_full$state]
-          data_sig <- data_full[1:min(which((cumsum(data_full$probability) >= 0.95) == TRUE)),]
+          colnames(data_full) <- c("State", "Probability")
+          data_full$State <- as.character(levels(data_full$State))[data_full$State]
+          data_sig <- data_full[1:min(which((cumsum(data_full$Probability) >= 0.95) == TRUE)),]
 
           #plot
-          plots[[nplots + 1]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = state, y = probability)) +
+          plots[[nplots + 1]] <- ggplot2::ggplot(data_full, ggplot2::aes(x = State, y = Probability)) +
             ggplot2::geom_bar(stat = "identity", color = col_vec_qual[1], fill = "white") +
             ggplot2::geom_bar(data = data_sig, stat = "identity",
-                              ggplot2::aes(x = state, y = probability),
+                              ggplot2::aes(x = State, y = Probability),
                               color = col_vec_qual[1], fill = col_vec_qual[1]) +
             ggthemes::theme_few() +
             ggplot2::ggtitle(label = paste0("Combined Trace: ",vars_qual)) +

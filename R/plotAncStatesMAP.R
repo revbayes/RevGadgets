@@ -30,6 +30,8 @@
 #' @param node_labels_size (numeric; 2) Size of node labels text. Ignored if node_labels_as = NULL.
 #' @param node_labels_offset (numeric; 0.1) Horizontal offset of node labels from nodes.
 #' Ignored if node_labels_as = NULL.
+#' @param node_labels_centered (logical; FALSE) Should node labels be centered over the nodes?
+#' Defaults to FALSE: adjusting node labels to the right of nodes and left of shoulders.
 #' @param node_size_as (character; "state_posterior") How to vary size of node symbols. Options
 #' are "state_posterior" (default) for posterior probabilities of the estimated ancestral state,
 #' "node_posterior" or the posterior probability of the node on the tree, "state" for vary size by the
@@ -44,7 +46,8 @@
 #' @param node_shape (integer; 19) Shape type for nodes. If node_shape_as = "state", provide a vector
 #' with length of the number of states.
 #' @param node_color ("character"; "default") Colors for node symbols. Defaults to default RevGadgets
-#' colors. If node_color_as = "state', provide a vector of length of the character states.
+#' colors. If node_color_as = "state', provide a vector of length of the character states. If
+#' your color vector is labeled with state labels, the legend will be displayed in the order of the labels.
 #' If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.
 #' @param node_size (numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
 #' If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
@@ -160,6 +163,7 @@ plotAncStatesMAP <- function(t,
                     node_labels_as = NULL,
                     node_labels_size = 2,
                     node_labels_offset = 0.1,
+                    node_labels_centered = FALSE,
 
                     # what to plot at nodes
                     node_size_as = "state_posterior",
@@ -200,6 +204,7 @@ plotAncStatesMAP <- function(t,
   }
   if (is.numeric(node_labels_size) == FALSE) stop("node_labels_size should be a number")
   if (is.numeric(node_labels_offset) == FALSE) stop("node_labels_offset should be a number")
+  if (is.logical(node_labels_centered) == FALSE) stop("node_labels_centered should be TRUE or FALSE")
   if (is.null(node_size_as) == FALSE) {
     node_size_as <- match.arg(node_size_as, choices = c("state", "state_posterior", "node_posterior"))
   }
@@ -242,19 +247,14 @@ plotAncStatesMAP <- function(t,
   tree <- attributes(t)$phylo
 
   ##### create basic tree plot #####
-  # supressing warning:
-  # Warning message:
-  #   `tbl_df()` is deprecated as of dplyr 1.0.0.
-  # Please use `tibble::as_tibble()` instead.
-  p <- suppressWarnings(ggtree::ggtree(t, layout = tree_layout, ladderize = TRUE))
+  p <- ggtree::ggtree(t, layout = tree_layout, ladderize = TRUE)
 
   # get dimensions
-  n_nodes <- ggtree:::getNodeNum(tree)
+  n_node <- ape::Nnode(tree, internal.only = FALSE)
   tree_height <- max(phytools::nodeHeights(t@phylo))
   ntips <- sum(p$data$isTip)
 
   ##### process column names #####
-
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
   } else if (cladogenetic == FALSE & "start_state_1" %in% colnames(p$data)) {
@@ -264,7 +264,13 @@ plotAncStatesMAP <- function(t,
   }
 
   if (is.null(node_color_as) == FALSE) {
-    if (node_color_as == "state") {p$data$node_color_as <- factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))}
+    if (node_color_as == "state") {
+      if (!is.factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))) {
+        p$data$node_color_as <- factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))
+      } else {
+        p$data$node_color_as <- dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))
+        }
+      }
     if (node_color_as == "node_posterior") {p$data$node_color_as <- as.numeric(p$data$posterior)}
     if (node_color_as == "state_posterior") {p$data$node_color_as <- as.numeric(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1", "_pp")))}
   }
@@ -283,7 +289,13 @@ plotAncStatesMAP <- function(t,
 
   if (cladogenetic == TRUE) {
     if (is.null(node_color_as) == FALSE) {
-      if (node_color_as == "state") {p$data$clado_node_color_as <- factor(dplyr::pull(p$data, paste0(state_pos_str_base[2], "1")))}
+      if (node_color_as == "state") {
+        if (!is.factor(dplyr::pull(p$data, paste0(state_pos_str_base[2], "1")))) {
+          p$data$clado_node_color_as <- factor(dplyr::pull(p$data, paste0(state_pos_str_base[2], "1")))
+        } else {
+          p$data$clado_node_color_as <- dplyr::pull(p$data, paste0(state_pos_str_base[2], "1"))
+        }
+      }
       if (node_color_as == "node_posterior") {p$data$clado_node_color_as <- 1}
       if (node_color_as == "state_posterior") {p$data$clado_node_color_as <- as.numeric(dplyr::pull(p$data, paste0(state_pos_str_base[2], "1", "_pp")))}
     }
@@ -325,7 +337,6 @@ plotAncStatesMAP <- function(t,
                   length(all_states), " states and you provide ", length(node_color), " colors."))
     }
   }
-
   # set default colors
   if (any(node_color == "default")) {
     if (is.null(node_color_as) == TRUE) {
@@ -361,17 +372,19 @@ plotAncStatesMAP <- function(t,
       node_size <- node_size[1]
     }
   }
-
   ##### reformat labels if necessary #####
   if (tip_labels_remove_underscore) {p$data$label <- gsub("_", " ", p$data$label)}
 
+  ##### get hjust values #####
+  if (node_labels_centered) {hjust_node <- 0.5; hjust_shoulder <- 0.5}
+  if (!node_labels_centered) {hjust_node <- 0; hjust_shoulder <- 1}
   ##### calculate cladogenetic plotting data #####
   if (cladogenetic == TRUE) {
     x <- .getXcoord(tree)
     y <- .getYcoord(tree)
-    x_anc <- numeric(n_nodes)
-    node_index <- numeric(n_nodes)
-    for (i in 1:n_nodes) {
+    x_anc <- numeric(n_node)
+    node_index <- numeric(n_node)
+    for (i in 1:n_node) {
       if (.getParent(tree, i) != 0) {
         # if not the root, get the x coordinate for the parent node
         x_anc[i] <- x[.getParent(tree, i)]
@@ -706,47 +719,47 @@ plotAncStatesMAP <- function(t,
       }
     }
   }
-
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",                                      nudge_x = node_labels_offset, size = node_labels_size) +
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust = hjust_node,
+                                    nudge_x = node_labels_offset, size = node_labels_size) +
                  ggtree::geom_text(ggplot2::aes(label = start_state_1, x = x_anc, y = y),
-                                   hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
-      } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1, subset = !isTip), hjust="left",
+                                   hjust = hjust_shoulder, nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+      } else if (cladogenetic == FALSE & state_pos_str_base[1] == "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = anc_state_1, subset = !isTip), hjust = hjust_node,
                                     nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = end_state_1, subset = !isTip), hjust = hjust_node,
                                       nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "state_posterior") {
       if (cladogenetic == TRUE) {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust = hjust_node,
                                     nudge_x = node_labels_offset, size = node_labels_size) +
           ggtree::geom_text(ggplot2::aes(label = .convertAndRound(start_state_1_pp), x = x_anc, y = y),
-                            hjust = "right", nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
-      } else if (cladogenetic == FALSE & state_pos_str_base == "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust="left",
+                            hjust = hjust_shoulder, nudge_x = node_labels_offset, size = node_labels_size, na.rm = TRUE)
+      } else if (cladogenetic == FALSE & state_pos_str_base[1] == "anc_state_") {
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(anc_state_1_pp), subset = !isTip), hjust = hjust_node,
                                     nudge_x = node_labels_offset, size = node_labels_size)
       } else if (cladogenetic == FALSE & state_pos_str_base != "anc_state_") {
-        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust="left",
+        p <- p + ggtree::geom_text2(ggplot2::aes(label = .convertAndRound(end_state_1_pp), subset = !isTip), hjust = hjust_node,
                                     nudge_x = node_labels_offset, size = node_labels_size)
       }
     } else if (node_labels_as == "node_posterior") {
-      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = "left",
+      p <- p + ggtree::geom_nodelab(ggplot2::aes(label = .convertAndRound(posterior) ), hjust = hjust_node,
                                     nudge_x = node_labels_offset, size = node_labels_size)
     }
   }
 
   # add tip states labels (text)
   if (tip_labels_states == TRUE) {
-    if (state_pos_str_base == "anc_state_") {
-      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = anc_state_1), hjust="left",
+    if (state_pos_str_base[1] == "anc_state_") {
+      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = anc_state_1), hjust = hjust_node,
                                    offset = tip_labels_states_offset, size = tip_labels_states_size)
     } else {
-      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = end_state_1), hjust="left",
+      p <- p + ggtree::geom_tiplab(ggplot2::aes(label = end_state_1), hjust = hjust_node,
                                    offset = tip_labels_states_offset, size = tip_labels_states_size)
     }
   }
@@ -757,9 +770,17 @@ plotAncStatesMAP <- function(t,
   }
   if (is.null(node_color_as) == FALSE) {
     if (node_color_as == "state") {
-      p <- p + ggplot2::scale_color_manual(values = colors,
-                                           na.translate = FALSE,
-                                           name = node_color_as)
+      if (is.null(names(colors))) {
+        p <- p + ggplot2::scale_color_manual(values = colors,
+                                             na.translate = FALSE,
+                                             name = node_color_as)
+      } else {
+        p <- p + ggplot2::scale_color_manual(values = colors,
+                                             na.translate = FALSE,
+                                             name = node_color_as,
+                                             breaks = names(colors))
+      }
+
     } else if (node_color_as == "state_posterior" | node_color_as == "node_posterior") {
       p <- p + ggplot2::scale_color_gradient(low = colors[1], high = colors[2], name = node_color_as)
     }

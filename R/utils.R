@@ -44,6 +44,19 @@
   return(p)
 }
 
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.add_pseudo_nodelabel <- function(phylo) {
+  if(is.null(phylo$node.label)) {
+    nnode <- phylo$Nnode
+    phylo$node.label <- paste("X", 1:nnode, sep="")
+  }
+  ## if tip.label contains () which will broken node name extraction
+  phylo$tip.label <- gsub("[\\(\\)]", "_", phylo$tip.label)
+
+  treetext <- ape::write.tree(phylo)
+  return(treetext)
+}
+
 # set custom state labels
 .assign_state_labels <- function(t, state_labels, include_start_states,
                                  labels_as_numbers, missing_to_NA, n_states=3) {
@@ -113,6 +126,7 @@
   # create list of ancestral state name tags
   state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
 
+
   # overwrite state labels
   for (m in state_pos_str_to_update)
   {
@@ -124,15 +138,39 @@
     x_state_tmp = unlist(sapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
     x_state[x_state_valid] = x_state_tmp
     x_state[x_state_invalid] = NA
+    if(labels_as_numbers) {
+      x_state <- factor(x_state, levels = as.character(sort(as.integer(unique(state_labels)))))
+    }
     attributes(t)$data[[m]] = x_state
   }
 
-  unique(c(as.matrix(t@data[, columns])))
+ # unique(c(as.matrix(t@data[, columns])))
   # Just add the USED state_labels here
   used_state_labels <-  na.omit(unique(c(as.matrix(t@data[, columns]))))
-  attributes(t)$state_labels <- as.character(used_state_labels)
+  if (labels_as_numbers) {
+    attributes(t)$state_labels <- factor(used_state_labels, levels = as.character(sort(as.integer(unique(state_labels)))))
+  } else {
+    attributes(t)$state_labels <- as.character(used_state_labels)
+  }
 
   return(t)
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.beast <- function(file, treetext, stats, phylo) {
+  stats$node <- gsub("\"*'*", "", stats$node)
+
+  phylo <- .remove_quote_in_tree_label(phylo)
+
+  obj <- methods::new("treedata",
+                      ## fields      = fields,
+                      treetext    = treetext,
+                      phylo       = phylo,
+                      data        = stats,
+                      file        = .filename(file)
+  )
+
+  return(obj)
 }
 
 .build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0) {
@@ -216,11 +254,6 @@
   return(dictionary)
 }
 
-.capitalize <- function(string) {
-    substr(string, 1, 1) <- toupper(substr(string, 1, 1))
-    string
-}
-
 .collect_probable_states <- function(p, p_threshold = 0.005) {
   labels = c("end_state", "start_state")
   index = c(1,2,3)
@@ -277,6 +310,17 @@
     labs <- L
   }
   return(labs)
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.filename <- function(file) {
+  ## textConnection(text_string) will work just like a file
+  ## in this case, just set the filename as ""
+  file_name <- ""
+  if (is.character(file)) {
+    file_name <- file
+  }
+  return(file_name)
 }
 
 .findTreeLines <- function(lines) {
@@ -390,7 +434,7 @@
 
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getParent <- function(tr, node) {
-  if ( node == ggtree:::getRoot(tr) )
+  if ( node == .rootNode(tr) )
     return(0)
   edge <- tr[["edge"]]
   parent <- edge[,1]
@@ -410,11 +454,11 @@
   edge <- tr$edge
   parent <- edge[,1]
   child <- edge[,2]
-  root <- ggtree:::getRoot(tr)
+  root <- .rootNode(tr)
 
   len <- tr$edge.length
 
-  N <- ggtree:::getNodeNum(tr)
+  N <- ape::Nnode(tr, internal.only = FALSE)
   x <- numeric(N)
   x <- .getXcoord2(x, root, parent, child, len)
   return(x)
@@ -443,7 +487,7 @@
 # modified from https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getYcoord <- function(tr, step=1) {
   Ntip <- length(tr[["tip.label"]])
-  N <- ggtree:::getNodeNum(tr)
+  N <- ape::Nnode(tr, internal.only = FALSE)
 
   edge <- tr[["edge"]]
   parent <- edge[,1]
@@ -619,7 +663,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   # stats <- treeio:::read.stats_beast_internal( "", text )
   stats <- .read.stats_revbayes_internal( "", text )
   tree <- ape::read.tree(text = text)
-  obj <- treeio:::BEAST("", text, stats, tree )
+  obj <- .beast("", text, stats, tree )
   return(obj)
 }
 
@@ -636,7 +680,7 @@ new_data_frame <- function(x = list(), n = NULL) {
 .read.stats_revbayes_internal <- function(beast, tree) {
 
   phylo <- ape::read.tree(text = tree) # read the tree
-  tree2 <- treeio:::add_pseudo_nodelabel(phylo) # add nodelabels (if there aren't already any)
+  tree2 <- .add_pseudo_nodelabel(phylo) # add nodelabels (if there aren't already any)
 
   ## node name corresponding to stats
   nn <- unlist(strsplit(unlist(strsplit(tree2, split=",")), "\\)"))
@@ -657,7 +701,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   # they appear in the newick string
 
   phylo <- ape::read.tree(text = tree2)
-  root <- tidytree::rootnode(phylo)
+  root <- .rootNode(phylo)
   nnode <- phylo$Nnode
 
   tree_label <- c(phylo$tip.label, phylo$node.label)
@@ -917,6 +961,36 @@ new_data_frame <- function(x = list(), n = NULL) {
 
 }
 
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.remove_quote_in_tree_label <- function(phylo) {
+  if (!is.null(phylo$node.label)) {
+    phylo$node.label <- gsub("\"*'*", "", phylo$node.label)
+  }
+  if ( !is.null(phylo$tip.label)) {
+    phylo$tip.label <- gsub("\"*'*", "", phylo$tip.label)
+  }
+  return(phylo)
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# works for phylo objects, not tree data
+.rootNode <- function(.data, ...) {
+  edge <- .data[["edge"]]
+  ## 1st col is parent,
+  ## 2nd col is child,
+  if (!is.null(attr(.data, "order")) && attr(.data, "order") == "postorder")
+    return(edge[nrow(edge), 1])
+
+  parent <- unique(edge[,1])
+  child <- unique(edge[,2])
+  ## the node that has no parent should be the root
+  root <- parent[ ! parent %in% child ]
+  if (length(root) > 1) {
+    stop("multiple roots found...")
+  }
+  return(root)
+}
+
 # Calculates global scale parameter for a Gaussian Markov random fielf from the prior mean number of "effective shifts" in the rate.
 .setHSMRFGlobalScaleExpectedNumberOfJumps <- function(n_episodes,prior_n_shifts=log(2),shift_size=2) {
   # We treat the change between each grid cell as a Bernoulli RV, so the collection of changes becomes binomial
@@ -1008,6 +1082,26 @@ new_data_frame <- function(x = list(), n = NULL) {
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
   return(list(hyperprior=zeta,E.n=computed_num_expected_shifts))
 }
+
+.titleFormatLabeller <- function(string) {
+  lapply(string, .titleFormat)
+}
+
+# capitalize and remove hyphens
+.titleFormat <- function(string) {
+  string <- gsub("-", " ", string)
+  substr(string, 1, 1) <- toupper(substr(string, 1, 1))
+  return(string)
+}
+
+# stolen from treeio: https://github.com/YuLab-SMU/treeio
+.validTblTree <- function(object, cols = c("parent", "node", "label")) {
+  cc <- cols[!cols %in% colnames(object)]
+  if (length(cc) > 0) {
+    msg <- paste0("invalid tbl_tree object.\n  missing column:\n    ", paste(cc, collapse=","), ".")
+  }
+}
+
 
 ### Functions required by densiTreeWithBranchData
 # attribute colors to a vector based the value in a range

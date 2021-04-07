@@ -91,7 +91,7 @@
 #' \dontrun{
 #' file <- system.file("extdata", "fbd/bears.mcc.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' plot <- plotFBDTree2(tree = tree, timeline = T, tip_labels_italics = F,
+#' plot <- plotFBDTree(tree = tree, timeline = T, tip_labels_italics = F,
 #'                     tip_labels_remove_underscore = T,
 #'                     node_age_bars = T, age_bars_colored_by = "posterior",
 #'                     age_bars_color = rev(colFun(2))) +
@@ -108,7 +108,7 @@ plotFBDTree <- function(tree,
                          time_bars = timeline,
 
                          node_age_bars = TRUE,
-                         tip_age_bars = FALSE,
+                         tip_age_bars = TRUE,
                          age_bars_color = "blue",
                          age_bars_colored_by = NULL,
 

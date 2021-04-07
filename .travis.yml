@@ -8,7 +8,9 @@ r_check_args: --no-build-vignettes --no_manual --timings
 
 
 r_github_packages:
- - GuangchuangYu/ggtree
+ - YuLab-SMU/ggtree
+ - YuLab-SMU/treeio
+ - YuLab-SMU/tidytree
  - willgearty/deeptime
 
 addons:

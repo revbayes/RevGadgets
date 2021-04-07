@@ -43,19 +43,27 @@
 #' # then plot results:
 #' p <- plotDivRates(rates = rates);p
 #'
-#' # let's say we want to change the x-axis
-#' p <- p + ggplot2::xlab("Millions of years ago");p
+#' # change the x-axis
+#' library(ggplot2)
+#' p <- p + xlab("Thousands of years ago");p
+#'
+#' # change the colors
+#' library(ggplot2)
+#' p <- p + scale_fill_manual(values = c("red", "green", "yellow", "purple")) +
+#'   scale_color_manual(values = c("red", "green", "yellow", "purple"));p
 #'
 #' # let's say we don't want to plot relative-extinction rate,
 #' # and use the same y-axis for all three rates
+#' library(ggplot2)
 #' rates[grep("relative-extinction", names(rates))] <- NULL
 #' p2 <- plotDivRates(rates)
-#' p2 <- p2 + ggplot2::facet_wrap(ggplot2::vars(item), scale = "fixed");p2
+#' p2 <- p2 + facet_wrap(vars(item), scale = "fixed");p2
 #' }
 #'
 #' @export
 
 plotDivRates <- function(rates, facet = TRUE){
+  warning("Using default time units in x-axis label: Age (Ma)")
   rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
   `%>%` <- dplyr::`%>%`
 
@@ -72,8 +80,8 @@ plotDivRates <- function(rates, facet = TRUE){
                     alpha = 0.4,
                     color = NA) +
     ggplot2::scale_x_reverse() +
-    ggplot2::xlab("time") +
-    ggplot2::ylab("rate") +
+    ggplot2::xlab("Age (Ma)") +
+    ggplot2::ylab("Rate") +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.title = ggplot2::element_blank(),
                    legend.position = "none",
@@ -84,7 +92,7 @@ plotDivRates <- function(rates, facet = TRUE){
     ggplot2::scale_fill_manual(values = colFun(length(rates_to_plot)))
 
     if (facet){
-      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y", labeller = ggplot2::labeller(item = .capitalize))
+      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y", labeller = ggplot2::labeller(item = .titleFormatLabeller))
     }
 
 
