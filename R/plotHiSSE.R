@@ -5,7 +5,7 @@
 #' @return a ggplot object
 #' @examples
 #' \dontrun{
-#' hisse_file <- system.file("extdata", "sse/primates_HiSSE_2.log", package="RevGadgets")
+#' hisse_file <- system.file("extdata", "sse/primates_HiSSE_2.p", package="RevGadgets")
 #' pdata <- processSSE(hisse_file)
 #' p <- plotHiSSE(pdata);p
 #'

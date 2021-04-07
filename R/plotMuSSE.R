@@ -6,7 +6,7 @@
 #' @return a ggplot object
 #' @examples
 #' \dontrun{
-#' bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.log", package="RevGadgets")
+#' bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.p", package="RevGadgets")
 #'
 #' pdata <- processSSE(bisse_file)
 #' p <- plotMuSSE(pdata);p

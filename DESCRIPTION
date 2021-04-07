@@ -17,7 +17,6 @@ Maintainer: Carrie Tribble <ctribble09@gmail.com>
 Description: Processes and visualizes the output of complex phylogenetic analyses from the RevBayes phylogenetic graphical modeling software.
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.1.1
 Depends: R (>= 4.0.0)
 Imports: ape (>= 5.4), phytools (>= 0.7-70), ggtree (>= 2.5.1), 
