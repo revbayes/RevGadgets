@@ -128,8 +128,7 @@
 
 
   # overwrite state labels
-  for (m in state_pos_str_to_update)
-  {
+  for (m in state_pos_str_to_update) {
     # get the states
     x_state = attributes(t)$data[[m]]
     x_state = as.vector(x_state)
@@ -236,19 +235,27 @@
   tree_block <- lines[start_tree_block : end_tree_block]
 
   # look for translate block
-
   start_translations <- grep("translate", tree_block, ignore.case = TRUE)
   end_translations <- grep(";", tree_block[start_translations:length(tree_block)])[1] + start_translations -  1
   translations <- tree_block[start_translations : end_translations]
-  translations <- gsub("\\\t","", translations)
-  translations <- gsub(",", "", translations)
 
   # grab only the numbers and taxa names
   translations <- translations[grep("[1-9]", translations)]
-  translations_split <- lapply(translations, strsplit, split = " ")
-  dictionary <- as.data.frame(matrix(unlist(translations_split),
-                                     ncol = 2, byrow = TRUE),
-                              stringsAsFactors = FALSE)
+
+  # remove commas
+  translations <- gsub(",", "", translations)
+
+  # replace tabs with space
+  translations <- gsub("\\\t"," ", translations)
+
+  # split at white space
+  translations_split <- strsplit(translations, " ")
+
+  # strip out empty elements
+  translation_table <- do.call(rbind, lapply(translations_split, function(x) x[x != ""]))
+
+  # create the data frame
+  dictionary <- as.data.frame(translation_table, stringsAsFactors = FALSE)
   colnames(dictionary) <- c("number","taxon")
 
   return(dictionary)
@@ -868,6 +875,7 @@ new_data_frame <- function(x = list(), n = NULL) {
 }
 
 .readNexusTrees <- function(path, burnin, verbose) {
+
   # read the lines
   lines <- readLines(path)
 
