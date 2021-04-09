@@ -6,22 +6,27 @@
 \usage{
 processBranchData(
   tree,
-  df,
+  dat,
   burnin = 0.25,
   parnames = c("avg_lambda", "avg_mu", "num_shifts"),
-  summary = "median"
+  summary = "median",
+  net_div = FALSE
 )
 }
 \arguments{
-\item{tree}{a phylogenetic tree in the treedata format}
+\item{tree}{(treedata object; no default) a phylogenetic tree in the treedata format,
+or a list of lists of a single tree data object, such as the output of readTrees().}
 
-\item{df}{data frame with branch specific data}
+\item{dat}{(data.frame or list; no default) a data frame, or a list (of length 1) of a data frame,
+with branch specific data, such as the output of readTrace().}
 
-\item{burnin}{fraction of the markov-chain to discard}
+\item{burnin}{(numeric; 0.25) fraction of the markov-chain to discard}
 
-\item{parnames}{defaults to c("avg_lambda", "avg_mu", "num_shifts")}
+\item{parnames}{(character vector; c("avg_lambda", "avg_mu", "num_shifts")) Names of parameters to process}
 
-\item{summary}{function to summarize the continuous parameter. Typically mean or median}
+\item{summary}{(character; "median") function to summarize the continuous parameter. Typically mean or median}
+
+\item{net_div}{(logical; FALSE) Calculate net diversification?}
 }
 \value{
 a treedata file with attached branch-specific data
