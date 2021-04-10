@@ -411,7 +411,11 @@ plotAncStatesPie <- function(t,
     }
   }
 
-  p <- p + ggplot2::scale_color_manual(values = colors, breaks = levels(state_labels))
+  if (is.null(names(colors))) {
+    breaks <- levels(state_labels)
+  } else (breaks <- names(colors))
+
+  p <- p + ggplot2::scale_color_manual(values = colors, breaks = breaks)
   p <- p + ggplot2::guides(colour = ggplot2::guide_legend("State", override.aes = list(size=4, alpha = 1.0)), order=1)
   p <- p + ggplot2::guides(size=FALSE)
 
