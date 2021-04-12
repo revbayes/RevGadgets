@@ -2,6 +2,7 @@
 
 export(calculateShiftBayesFactor)
 export(colFun)
+export(combineTraces)
 export(densiTreeWithBranchData)
 export(getMAP)
 export(matchNodes)
