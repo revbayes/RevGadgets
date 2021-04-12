@@ -71,7 +71,6 @@ readTrace <- function(paths, format = "simple",
   num_paths <- length(paths)
 
   # check that the file headings match for all traces
-
   header <- vector("list", num_paths)
   for (i in 1:num_paths) {
     header[[i]] <- colnames(utils::read.table(file = paths[i],
@@ -88,9 +87,7 @@ readTrace <- function(paths, format = "simple",
     }
   }
 
-
   # read in the traces
-
   if (format == "simple") {
     output <- vector("list", num_paths)
     for (i in 1:num_paths) {

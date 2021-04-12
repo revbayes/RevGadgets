@@ -68,7 +68,7 @@ summarizeTrace <- function(trace, vars) {
   output <- list()
   # pass through vars and summarize each
   for (i in 1:length(vars)) {
-    output[[i]] <-list()
+    output[[i]] <- list()
     for (j in 1:length(trace)) {
     col <- trace[[j]][,vars[i]]
     if (class(col) == "numeric"){
@@ -81,13 +81,21 @@ summarizeTrace <- function(trace, vars) {
                             MAP = getMAP(col),
                             quantile_2.5 = q_2.5,
                             quantile_97.5 = q_97.5)
-      names(output[[i]])[j] <- paste0("trace_", j)
+      if ( is.null(names(trace)[[j]]) == FALSE ) {
+        names(output[[i]])[j] <- names(trace)[[j]]
+      } else {
+        names(output[[i]])[j] <- paste0("trace_", j)
+      }
     } else if (class(col) == "integer" | class(col) == "character" ){
       credible_set <- col
       state_probs <- sort(table(credible_set)/length(credible_set), decreasing = TRUE)
       cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
       output[[i]][[j]] <- cred_set
-      names(output[[i]])[j] <- paste0("trace_", j)
+      if ( is.null(names(trace)[[j]]) == FALSE ) {
+        names(output[[i]])[j] <- names(trace)[[j]]
+      } else {
+        names(output[[i]])[j] <- paste0("trace_", j)
+      }
 
     }
     }
