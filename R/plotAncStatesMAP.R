@@ -766,27 +766,27 @@ plotAncStatesMAP <- function(t,
 
   # add custom colors, shapes, and sizes
   if (is.null(node_size_as) == FALSE) {
-    p <- p + ggplot2::scale_size(range = node_size, name = node_size_as)
+    p <- p + ggplot2::scale_size(range = node_size, name = .titleFormat(node_size_as))
   }
   if (is.null(node_color_as) == FALSE) {
     if (node_color_as == "state") {
       if (is.null(names(colors))) {
         p <- p + ggplot2::scale_color_manual(values = colors,
                                              na.translate = FALSE,
-                                             name = node_color_as)
+                                             name = .titleFormat(node_color_as))
       } else {
         p <- p + ggplot2::scale_color_manual(values = colors,
                                              na.translate = FALSE,
-                                             name = node_color_as,
+                                             name = .titleFormat(node_color_as),
                                              breaks = names(colors))
       }
 
     } else if (node_color_as == "state_posterior" | node_color_as == "node_posterior") {
-      p <- p + ggplot2::scale_color_gradient(low = colors[1], high = colors[2], name = node_color_as)
+      p <- p + ggplot2::scale_color_gradient(low = colors[1], high = colors[2], name = .titleFormat(node_color_as))
     }
   }
   if (is.null(node_shape_as) == FALSE) {
-    p <- p + ggplot2::scale_shape_manual(values = node_shape, name = node_shape_as)
+    p <- p + ggplot2::scale_shape_manual(values = node_shape, name = .titleFormat(node_shape_as))
   }
 
   # add space on x axis for tip labels

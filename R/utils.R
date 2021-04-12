@@ -1098,6 +1098,7 @@ new_data_frame <- function(x = list(), n = NULL) {
 # capitalize and remove hyphens
 .titleFormat <- function(string) {
   string <- gsub("-", " ", string)
+  string <- gsub("_", " ", string)
   substr(string, 1, 1) <- toupper(substr(string, 1, 1))
   return(string)
 }
