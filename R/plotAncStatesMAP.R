@@ -269,7 +269,9 @@ plotAncStatesMAP <- function(t,
         p$data$node_color_as <- factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))
       } else {
         p$data$node_color_as <- dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))
-        }
+      }
+      # double check levels are alphabetical
+      levels(p$data$node_color_as) <- sort(levels(p$data$node_color_as))
       }
     if (node_color_as == "node_posterior") {p$data$node_color_as <- as.numeric(p$data$posterior)}
     if (node_color_as == "state_posterior") {p$data$node_color_as <- as.numeric(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1", "_pp")))}
@@ -344,7 +346,8 @@ plotAncStatesMAP <- function(t,
     } else if (node_color_as == "state") {
       nstates <- length(all_states)
       colors <- colFun(nstates)
-      names(colors) <- all_states
+      # name colors if unnamed
+      names(colors) <- sort(all_states)
     } else if (node_color_as == "node_posterior" |
                node_color_as == "state_posterior") {
       colors <- colFun(2)
@@ -352,6 +355,7 @@ plotAncStatesMAP <- function(t,
   } else {
     colors <- node_color
   }
+
 
   ##### adjust aesthetics lengths if needed #####
   # shape
