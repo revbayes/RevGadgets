@@ -213,6 +213,11 @@ plotAncStatesPie <- function(t,
                 length(pie_colors), " colors."))
   }
 
+  # add names to colors if none present
+  if (is.null(names(pie_colors))) {
+    names(pie_colors) <- state_labels
+  }
+
   # set colors, add "other" if necessary
   otherpp <- as.numeric(dplyr::pull(p$data,
                                     var = paste0(state_pos_str_base[1],
