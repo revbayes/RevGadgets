@@ -166,7 +166,7 @@ plotAncStatesPie <- function(t,
   if (state_transparency < 0 || state_transparency > 1) stop("state_transparency should be a number between 0 - 1")
   if (is.logical(timeline) == FALSE) stop("timeline should be TRUE or FALSE")
 
-    ##### create basic tree plot #####
+  ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ladderize = TRUE)
 
   ##### calculate helper variables #####
@@ -177,6 +177,11 @@ plotAncStatesPie <- function(t,
   node_idx <- (ntips+1):n_node
   tip_idx <- 1:ntips
   all_idx <- 1:n_node
+
+  ##### transform nudge parameter #####
+  tip_pie_nudge_x <- -tip_pie_nudge_x
+  node_pie_nudge_x <- -node_pie_nudge_x
+  shoulder_pie_nudge_x <- -shoulder_pie_nudge_x
 
   ##### reorder labels #####
   state_labels <- as.factor(attributes(t)$state_labels)
