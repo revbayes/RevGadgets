@@ -149,7 +149,7 @@
   if (labels_as_numbers) {
     attributes(t)$state_labels <- factor(used_state_labels, levels = as.character(sort(as.integer(unique(state_labels)))))
   } else {
-    attributes(t)$state_labels <- as.character(used_state_labels)
+    attributes(t)$state_labels <- sort(as.character(used_state_labels))
   }
 
   return(t)
