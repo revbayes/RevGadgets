@@ -202,13 +202,12 @@ plotAncStatesPie <- function(t,
   ##### color and label processing #####
 
   # check if number of states exceeds default color palette options
-  if (pie_colors[1] == "default" & length(state_labels) > 12) {
-    if ( "colors" %in% names(t@info) ) {
-      pie_colors <- t@info$colors
+  if (pie_colors[1] == "default") {
+    nstates <- length(state_labels)
+    if ( nstates <= 12 ) {
+      pie_colors <- colFun(nstates)
     } else {
-      stop(paste0(length(state_labels),
-                  " states in dataset; please provide colors
-                (default can only provide up to 12)"))
+      pie_colors <- colorRampPalette(colFun(12))(nstates)
     }
   }
 
@@ -230,6 +229,7 @@ plotAncStatesPie <- function(t,
                                     var = paste0(state_pos_str_base[1],
                                                  "other_pp")))
   if (sum(otherpp, na.rm = TRUE) == 0) {
+
     # set default colors
     if (any(pie_colors == "default")) {
       nstates <- length(state_labels)
@@ -265,6 +265,7 @@ plotAncStatesPie <- function(t,
     } else {
       colors <- pie_colors
     }
+
   }
 
   ##### reformat labels if necessary #####

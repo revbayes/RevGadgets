@@ -325,8 +325,13 @@ plotAncStatesMAP <- function(t,
     ##### color processing and checks #####
   # check if number of states exceeds default color palette options
   if (!is.null(node_color_as) && node_color_as == "states") {
-    if (node_color[1] == "default" & length(all_states) > 12) {
-      stop(paste0(length(all_states), " states in dataset; please provide colors (default only can provide up to 12"))
+    if (node_color[1] == "default") {
+      nstates <- length(all_states)
+      if ( nstates <= 12 ) {
+        pie_colors <- colFun(nstates)
+      } else {
+        pie_colors <- colorRampPalette(colFun(12))(nstates)
+      }
     }
 
     # check if number of states not equal to provided colors
