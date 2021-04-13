@@ -52,6 +52,14 @@ processAncStates <- function(path, state_labels = NULL, labels_as_numbers = FALS
     # add range for pp factors
     t <- .set_pp_factor_range(t, include_start_states)
 
+    # add default colors
+    if ( is.null(t@state_labels) == FALSE ) {
+        colors <- colorRampPalette(colFun(12))(length(t@state_labels))
+        names(colors) <- t@state_labels
+        t@info$colors <- colors
+    }
+
     # return processed TreeIO object
     return(t)
+
 }

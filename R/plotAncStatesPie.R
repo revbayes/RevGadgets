@@ -202,16 +202,18 @@ plotAncStatesPie <- function(t,
   ##### color and label processing #####
 
   # check if number of states exceeds default color palette options
-  if (pie_colors[1] == "default" &
-      length(state_labels) > 12) {
-    stop(paste0(length(state_labels),
-                " states in dataset; please provide colors
-                (default only can provide up to 12)"))
+  if (pie_colors[1] == "default" & length(state_labels) > 12) {
+    if ( "colors" %in% names(t@info) ) {
+      pie_colors <- t@info$colors
+    } else {
+      stop(paste0(length(state_labels),
+                  " states in dataset; please provide colors
+                (default can only provide up to 12)"))
+    }
   }
 
   # check if number of states not equal to provided colors
-  if (pie_colors[1] != "default" &
-      length(pie_colors) < length(state_labels)) {
+  if (pie_colors[1] != "default" & length(pie_colors) < length(state_labels)) {
     stop(paste0("You provided fewer colors in node_color
                 than states in your dataset. There are ",
                 length(state_labels), " states and you provide ",
