@@ -791,7 +791,15 @@ plotAncStatesMAP <- function(t,
       }
 
     } else if (node_color_as == "state_posterior" | node_color_as == "node_posterior") {
-      p <- p + ggplot2::scale_color_gradient(low = colors[1], high = colors[2], name = .titleFormat(node_color_as))
+
+      if (cladogenetic) {
+        prettify <- c(p$data$node_color_as, p$data$clado_node_color_as)
+      } else {
+        prettify <- p$data$node_color_as}
+      p <- p + ggplot2::scale_color_gradient(low = colors[1],
+                                             high = colors[2],
+                                             breaks = pretty(prettify),
+                                             name = .titleFormat(node_color_as))
     }
   }
   if (is.null(node_shape_as) == FALSE) {

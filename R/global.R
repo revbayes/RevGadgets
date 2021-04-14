@@ -7,6 +7,6 @@ utils::globalVariables(c("anc_state_1", "anc_state_1_pp", "anc_state_2",
                          "end_state_2", "end_state_3", "end_state_other",
                          "extant", "isTip", "isTip.x", "item", "kula", "label",
                          "lower", "node_id", "observed_state", "olena", "posterior",
-                         "probability", "rate.name", "start_state_1",
+                         "Probability", "rate.name", "start_state_1",
                          "start_state_1_pp", "start_state_2", "start_state_3",
-                         "state", "upper", "value", "variable", "vx", "vy", "x", "y"))
+                         "State", "upper", "value", "Variable", "vx", "vy", "x", "y"))

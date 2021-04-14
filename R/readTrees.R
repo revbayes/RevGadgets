@@ -90,7 +90,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
       if (!"index" %in% colnames(trees[[i]][[j]]@data)) {
         t <- trees[[i]][[j]]
         if (!"node" %in% colnames(t@data) || length(t@data$node) == 0) {
-          trees[[i]][[j]]@data <- tibble(node = trees[[i]][[j]]@phylo$edge[,2])
+          trees[[i]][[j]]@data <- dplyr::tibble(node = trees[[i]][[j]]@phylo$edge[,2])
         }
         node_matches <- dplyr::as_tibble(matchNodes(t@phylo))
         colnames(node_matches) <- c("node", "index")

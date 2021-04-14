@@ -387,8 +387,10 @@ plotTreeFull <- function(tree,
       }
       pp <- pp + ggplot2::geom_segment(ggplot2::aes(x=-min, y=y, xend=-max, yend=y, color = olena),
                                        data=bar_df, size=1.5, alpha=0.8) +
-        ggplot2::scale_color_gradient(low = age_bars_color[1], high = age_bars_color[2],
-                                      name = paste(.simpleCap(age_bars_colored_by)))
+        ggplot2::scale_color_gradient(low = age_bars_color[1],
+                                      high = age_bars_color[2],
+                                      name = .titleFormat(age_bars_colored_by),
+                                      breaks = pretty(pp$data$olena))
      }
   }
 
@@ -494,7 +496,9 @@ plotTreeFull <- function(tree,
                                         ggplot2::aes(color = posterior),
                                         shape = node_pp_shape) +
         ggplot2::scale_color_gradient(name="Posterior",
-                                      low = node_pp_color[1], high = node_pp_color[2])
+                                      low = node_pp_color[1],
+                                      high = node_pp_color[2],
+                                      breaks = pretty(pp$data$posterior))
     }
   }
 
@@ -507,10 +511,12 @@ plotTreeFull <- function(tree,
     }
     col_num <- which(colnames(pp$data) == color_branch_by)
     pp$data[,col_num] <- as.numeric(as.data.frame(pp$data)[,col_num])
-    name <- .simpleCap(sub(pattern = "_", replacement = " ", color_branch_by))
+    name <- .titleFormat(color_branch_by)
     pp <- pp +
       ggplot2::aes(color=as.data.frame(pp$data)[,col_num]) +
-      ggplot2::scale_color_gradient(low = branch_color[1], high = branch_color[2],
+      ggplot2::scale_color_gradient(low = branch_color[1],
+                                    high = branch_color[2],
+                                    breaks = pretty(as.data.frame(pp$data)[,col_num]),
                                     name = name)
   }
 
