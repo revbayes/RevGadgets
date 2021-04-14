@@ -52,10 +52,10 @@ plotPostPredStats <- function(data,
   if ( "observed" %in% names(data) == FALSE )        stop("Argument data must be a contain an element called observed.")
   if ( is.data.frame(data$simulated) == FALSE )      stop("data$simulated must be a data.frame.")
   if ( is.data.frame(data$observed) == FALSE )       stop("data$observed must be a data.frame.")
-  if ( side %in% c("both","left","right") == FALSE ) stop("Invalide side argument.")
+  if ( side %in% c("both","left","right") == FALSE ) stop("Invalid side argument.")
 
   if ( is.null(col) ) {
-    col = grDevices::colorRampPalette( c("blue","red") )(length(prob))
+    col <- grDevices::colorRampPalette( colFun(2) )(length(prob))
   }
   if ( length(col) != length(prob) ) stop("Number of colors does not match the number of quantiles.")
 
