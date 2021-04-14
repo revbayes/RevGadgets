@@ -207,7 +207,7 @@ plotAncStatesPie <- function(t,
     if ( nstates <= 12 ) {
       pie_colors <- colFun(nstates)
     } else {
-      pie_colors <- colorRampPalette(colFun(12))(nstates)
+      pie_colors <- grDevices::colorRampPalette(colFun(12))(nstates)
     }
   }
 

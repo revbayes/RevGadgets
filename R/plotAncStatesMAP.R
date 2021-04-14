@@ -330,7 +330,7 @@ plotAncStatesMAP <- function(t,
       if ( nstates <= 12 ) {
         node_color <- colFun(nstates)
       } else {
-        node_color <- colorRampPalette(colFun(12))(nstates)
+        node_color <- grDevices::colorRampPalette(colFun(12))(nstates)
       }
     }
 
