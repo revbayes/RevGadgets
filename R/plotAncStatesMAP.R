@@ -328,9 +328,9 @@ plotAncStatesMAP <- function(t,
     if (node_color[1] == "default") {
       nstates <- length(all_states)
       if ( nstates <= 12 ) {
-        pie_colors <- colFun(nstates)
+        node_color <- colFun(nstates)
       } else {
-        pie_colors <- colorRampPalette(colFun(12))(nstates)
+        node_color <- colorRampPalette(colFun(12))(nstates)
       }
     }
 
