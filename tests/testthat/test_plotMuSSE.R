@@ -4,7 +4,7 @@ test_that("plot MuSSE", {
 
   # read in and process file
   bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.p", package="RevGadgets")
-  pdata <- processSSE(bisse_file)
+  pdata <- processSSE(bisse_file, burnin = 0)
   plot_new <- plotMuSSE(pdata)
 
   plot_file <- system.file("extdata", "graphs/plotMuSSE.rds", package="RevGadgets")

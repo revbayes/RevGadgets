@@ -5,7 +5,7 @@ test_that("plot pi traces", {
   file_1 <- system.file("extdata",
                         "sub_models/primates_cytb_GTR.p",
                         package="RevGadgets")
-  one_trace <- readTrace(path = file_1)
+  one_trace <- readTrace(path = file_1, burnin = 0)
   # produce the plot pi parameters object
   plot_new <- plotTrace(trace = one_trace,
                      vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
