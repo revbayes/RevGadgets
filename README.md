@@ -13,25 +13,10 @@ Then, install the devtools R-package:
 install.packages("devtools")
 ```
 
-Load the devtools package:
-
-```R
-library(devtools)
-```
-
 Install RevGadgets directly from GitHub:
 
 ```R
-install_github("cmt2/RevGadgets")
-```
-
-### Note about ggtree dependency:
-
-RevGadgets requires ggtree version 1.5.14 or greater.
-This can be installed directly from GitHub:
-
-```R
-install_github("GuangchuangYu/ggtree")
+devtools::install_github("cmt2/RevGadgets")
 ```
 
 ### Note about magick dependency:
