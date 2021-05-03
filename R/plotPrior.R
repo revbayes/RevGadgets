@@ -1,11 +1,9 @@
 #' @export
 plotPrior <- function(distribution, col) {
 
-  # change v to c
+  # transform Rev vectors to R vectors
   string <- distribution
   distribution <- gsub("v(", "c(", distribution, fixed=TRUE)
-
-  # change [] to ()
   distribution <- gsub("[", "c(", distribution, fixed=TRUE)
   distribution <- gsub("]", ")", distribution, fixed=TRUE)
 
@@ -35,20 +33,25 @@ plotPrior <- function(distribution, col) {
     }
   }
 
+  # limits
+  pp <- pp + ggplot2::xlim(distn$min, distn$max) + ggplot2::theme_bw()
+
   # style
-  pp <- pp + ggplot2::xlim(distn$min, distn$max) +
-    ggplot2::theme_bw() +
-    ggplot2::labs(x = "x", y = "prior probability of x", title = string) +
-    ggplot2::theme(plot.title = element_text(hjust = 0.5))
+  pp <- pp + ggplot2::theme_bw()
+
+  # axis
+  if ( length(distn$fun) > 1 ) {
+    pp <- pp + ggplot2::labs(x = "x[i]", y = "prior probability of x[i]", title = string)
+  } else {
+    pp <- pp + ggplot2::labs(x = "x", y = "prior probability of x", title = string)
+  }
+  pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5))
 
   # return the plot
   return(pp)
 
 }
 
-
-
-#' @export
 .getPrior <- function(distribution) {
 
   # parse the distribution string
@@ -147,11 +150,13 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
   min <- quantiles[1]
   max <- quantiles[2]
 
-  # compute the HDI
+  # create a density object
   x <- seq(min, max, length.out = 1001)
   y <- fun(x)
   dens <- list(x = x, y = y)
   class(dens) <- "density"
+
+  # create the HPDs
   hdi <- hdi(dens, allowSplit=TRUE)
 
   # make the object
@@ -169,24 +174,34 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
 
 dnDirichlet <- function(alpha) {
 
+  # range of plot
   min <- 0
   max <- 1
+
+  # the sum of all alpha values
   total_alpha <- sum(alpha)
+
+  # the density functions
   fun <- lapply(1:length(alpha), function(i) {
     this_alpha <- alpha[i]
     this_beta  <- total_alpha - this_alpha
     function(x) dbeta(x, this_alpha, this_beta)
   })
+
+  # the HPDs
   hpd <- lapply(1:length(alpha), function(i) {
     this_alpha <- alpha[i]
     this_beta  <- total_alpha - this_alpha
     qbeta(c(0.025,0.975), this_alpha, this_beta)
   })
+
+  # make the object
   dist <- list(min = min,
                max = max,
                hpd = hpd,
                fun = fun)
   return(dist)
+
 }
 
 
