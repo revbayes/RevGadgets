@@ -10,31 +10,59 @@ plotPrior <- function(distribution, col) {
   # get the distribution
   distn <- .getPrior(distribution)
 
-  # get colors
-  if ( missing(col) ) {
-    col <- colFun(length(distn$fun))
-  } else {
-    # TODO: check the length of the provided color vector
-  }
+  if ( distn$type == "continuous"  ) {
 
-  # plot the distribution
-  pp <- ggplot2::ggplot(data.frame())
-  for(i in 1:length(distn$fun)) {
-    pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], col = col[i], n=1001)
-  }
+    # plot continuous distributions this way
 
-  # add the HPDs
-  for(i in 1:length(distn$hpd)) {
-    this_interval <- distn$hpd[[i]]
-    if ( length(distn$fun) > 1 ) {
-      pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], xlim = this_interval, geom="area", fill=col[i], alpha=0.5, n=1001)
+    # get colors
+    if ( missing(col) ) {
+      col <- colFun(length(distn$fun))
     } else {
-      pp <- pp + ggplot2::stat_function(fun = distn$fun[[1]], xlim = this_interval, geom="area", fill=col, alpha=0.5, n=1001)
+      # TODO: check the length of the provided color vector
     }
-  }
 
-  # limits
-  pp <- pp + ggplot2::xlim(distn$min, distn$max) + ggplot2::theme_bw()
+    # make the plots
+    pp <- ggplot2::ggplot(data.frame())
+    for(i in 1:length(distn$fun)) {
+      pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], col = col[i], n=1001)
+    }
+
+    # add the HPDs
+    for(i in 1:length(distn$hpd)) {
+      this_interval <- distn$hpd[[i]]
+      if ( length(distn$fun) > 1 ) {
+        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], xlim = this_interval, geom="area", fill=col[i], alpha=0.5, n=1001)
+      } else {
+        pp <- pp + ggplot2::stat_function(fun = distn$fun[[1]], xlim = this_interval, geom="area", fill=col, alpha=0.5, n=1001)
+      }
+    }
+
+    # limits
+    pp <- pp + ggplot2::xlim(distn$min, distn$max)
+
+  } else if ( distn$type == "discrete" ) {
+
+    # plot discrete distributions this way
+
+    # get colors
+    if ( missing(col) ) {
+      col <- colFun(1)
+    } else {
+      # TODO: check the length of the provided color vector
+    }
+
+    # make the plots
+    pp <- ggplot(distn$probs, aes(x = x, y = y, fill = is_credible)) + geom_bar(stat="identity", color = col)
+
+    # fill the credible set
+    pp <- pp + scale_fill_manual(values = alpha(c("TRUE" = col, "FALSE" = NA), 0.5))
+
+    # scale the x axis
+    pp <- pp + scale_x_continuous(breaks = pretty(distn$probs$x))
+
+  } else {
+    stop("invalid distribution type")
+  }
 
   # style
   pp <- pp + ggplot2::theme_bw()
@@ -45,7 +73,7 @@ plotPrior <- function(distribution, col) {
   } else {
     pp <- pp + ggplot2::labs(x = "x", y = "prior probability of x", title = string)
   }
-  pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5))
+  pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
 
   # return the plot
   return(pp)
@@ -67,6 +95,30 @@ plotPrior <- function(distribution, col) {
 
 ln <- log
 
+###########################
+# chi-square distribution #
+###########################
+
+dnChisq <- function(df) {
+
+  min  <- 0
+  max  <- qchisq(0.999, df = df)
+  fun  <- function(x) dchisq(x, df = df)
+
+  # create the HPDs
+  hpd <- hdi(qchisq, df=df)
+
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hpd),
+               fun  = list(fun),
+               type = "continuous")
+
+  return(dist)
+
+}
+
+
 ############################
 # exponential distribution #
 ############################
@@ -77,19 +129,15 @@ dnExponential <- function(rate = 1, offset = 0) {
   max  <- offset + qexp(0.999, rate = rate)
   fun  <- function(x) dexp(x - offset, rate = rate)
 
-  # create a density object
-  x <- seq(min, max, length.out = 1001)
-  y <- fun(x)
-  dens <- list(x = x, y = y)
-  class(dens) <- "density"
-
   # create the HPDs
-  hpd <- hdi(dens, allowSplit=TRUE)
+  hpd <- hdi(qexp, rate=rate)
 
-  dist <- list(min = min,
-               max = max,
-               hpd = list(hpd),
-               fun = list(fun))
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hpd),
+               fun  = list(fun),
+               type = "continuous")
+
   return(dist)
 
 }
@@ -106,19 +154,15 @@ dnGamma <- function(shape = 1, rate = 1) {
   max  <- qgamma(0.999, shape = shape, rate = rate)
   fun  <- function(x) dgamma(x, shape = shape, rate = rate)
 
-  # create a density object
-  x <- seq(min, max, length.out = 1001)
-  y <- fun(x)
-  dens <- list(x = x, y = y)
-  class(dens) <- "density"
-
   # create the HPDs
-  hpd <- hdi(dens, allowSplit=TRUE)
+  hpd <- hdi(qgamma, shape = shape, rate = rate)
 
-  dist <- list(min = min,
-               max = max,
-               hpd = list(hpd),
-               fun = list(fun))
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hpd),
+               fun  = list(fun),
+               type = "continuous")
+
   return(dist)
 
 }
@@ -133,19 +177,15 @@ dnLognormal <- function(mean = 0, sd = 1, offset = 0) {
   max  <- offset + qlnorm(0.999, mean = mean, sd = sd)
   fun  <- function(x) dlnorm(x - offset, mean = mean, sd = sd)
 
-  # create a density object
-  x <- seq(min, max, length.out = 1001)
-  y <- fun(x)
-  dens <- list(x = x, y = y)
-  class(dens) <- "density"
-
   # create the HPDs
-  hpd <- hdi(dens, allowSplit=TRUE)
+  hpd <- hdi(qlnorm, mean = mean, sd = sd) + offset
 
-  dist <- list(min = min,
-               max = max,
-               hpd = list(hpd),
-               fun = list(fun))
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hpd),
+               fun  = list(fun),
+               type = "continuous")
+
   return(dist)
 
 }
@@ -157,18 +197,44 @@ dnLnorm <- dnLognormal
 #######################
 
 dnNormal <- function(mean = 0, sd = 1, offset = 0) {
+
   min  <- offset + qnorm(0.001, mean = mean, sd = sd)
   max  <- offset + qnorm(0.999, mean = mean, sd = sd)
   hpd  <- offset + qnorm(c(0.025, 0.975), mean = mean, sd = sd)
   fun  <- function(x) dnorm(x - offset, mean = mean, sd = sd)
-  dist <- list(min = min,
-               max = max,
-               hpd = list(hpd),
-               fun = list(fun))
+
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hpd),
+               fun  = list(fun),
+               type = "continuous")
+
   return(dist)
+
 }
 
 dnNorm <- dnNormal
+
+#######################
+# cauchy distribution #
+#######################
+
+dnCauchy <- function(location, scale) {
+
+  min  <- qcauchy(0.01, location = location, scale = scale)
+  max  <- qcauchy(0.99, location = location, scale = scale)
+  hpd  <- qcauchy(c(0.025, 0.975), location = location, scale = scale)
+  fun  <- function(x) dcauchy(x, location = location, scale = scale)
+
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hpd),
+               fun  = list(fun),
+               type = "continuous")
+
+  return(dist)
+
+}
 
 ###############################
 # normal mixture distribution #
@@ -195,10 +261,12 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
   hdi <- hdi(dens, allowSplit=TRUE)
 
   # make the object
-  dist <- list(min = min,
-               max = max,
-               hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
-               fun = list(fun))
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = lapply(1:nrow(hdi), function(x) hdi[x,]),
+               fun  = list(fun),
+               type = "continuous")
+
   return(dist)
 
 }
@@ -236,10 +304,11 @@ dnSoftBoundUniformNormal <- function(min, max, sd, p) {
   hdi <- hdi(dens, allowSplit=TRUE)
 
   # make the object
-  dist <- list(min = bottom,
-               max = top,
-               hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
-               fun = list(fun))
+  dist <- list(min  = bottom,
+               max  = top,
+               hpd  = lapply(1:nrow(hdi), function(x) hdi[x,]),
+               fun  = list(fun),
+               type = "continuous")
   return(dist)
 
 }
@@ -257,20 +326,16 @@ dnBeta <- function(alpha, beta) {
   # the density of function
   fun <- function(x) dbeta(x, shape1 = alpha, shape2 = beta)
 
-  # create a density object
-  x <- seq(min, max, length.out = 1001)
-  y <- fun(x)
-  dens <- list(x = x, y = y)
-  class(dens) <- "density"
-
   # create the HPDs
-  hdi <- hdi(dens, allowSplit=TRUE)
+  hdi <- hdi(qbeta, shape1 = alpha, shape2 = beta)
 
   # make the object
-  dist <- list(min = min,
-               max = max,
-               hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
-               fun = list(fun))
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hdi),
+               fun  = list(fun),
+               type = "continuous")
+
   return(dist)
 
 }
@@ -301,31 +366,145 @@ dnDirichlet <- function(alpha) {
     this_alpha <- alpha[i]
     this_beta  <- total_alpha - this_alpha
 
-    # create a density object
-    x <- seq(min, max, length.out = 1001)
-    y <- fun[[i]](x)
-    dens <- list(x = x, y = y)
-    class(dens) <- "density"
-
     # create the HPDs
-    hdi(dens, allowSplit=TRUE)
+    hdi(qbeta, shape1 = this_alpha, shape2 = this_beta)
 
   })
 
   # make the object
-  dist <- list(min = min,
-               max = max,
-               hpd = hpd,
-               fun = fun)
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = hpd,
+               fun  = fun,
+               type = "continuous")
   return(dist)
 
 }
 
 
+#########################
+# binomial distribution #
+#########################
+
+.getDiscreteCredibleSet <- function(probs, cutoff = 0.95) {
+  sort_probs <- sort(probs, decreasing=TRUE)
+  cutoff <- min(which(cumsum(sort_probs) > cutoff))
+  if (cutoff > length(sort_probs)) {
+    cutoff <- length(sort_probs)
+  }
+  is_credible <- probs >= sort_probs[cutoff]
+  return(is_credible)
+}
+
+dnBinomial <- function(p, n) {
+
+  # the limits
+  min  <- qbinom(0.001, size = n, prob = p)
+  max  <- qbinom(0.999, size = n, prob = p)
+
+  # the range
+  range <- min:max
+  probs <- dbinom(range, size = n, prob = p)
+
+  # in credible set
+  is_credible <- .getDiscreteCredibleSet(probs)
+
+  # make the object
+  dist <- list(min   = min,
+               max   = max,
+               probs = data.frame(x = range, y = probs, is_credible = is_credible),
+               type  = "discrete")
+
+  return(dist)
+
+}
 
 
+########################
+# poisson distribution #
+########################
+
+dnPoisson <- function(lambda) {
+
+  # the limits
+  min  <- qpois(0.001, lambda = lambda)
+  max  <- qpois(0.999, lambda = lambda)
+
+  # the range
+  range <- min:max
+  probs <- dpois(range, lambda = lambda)
+
+  # in credible set
+  is_credible <- .getDiscreteCredibleSet(probs)
+
+  # make the object
+  dist <- list(min   = min,
+               max   = max,
+               probs = data.frame(x = range, y = probs, is_credible = is_credible),
+               type  = "discrete")
+
+  return(dist)
+
+}
+
+dnPois <- dnPoisson
 
 
+##########################
+# geometric distribution #
+##########################
+
+dnGeometric <- function(p) {
+
+  # the limits
+  min  <- 0
+  max  <- qgeom(0.999, prob = p)
+
+  # the range
+  range <- min:max
+  probs <- dgeom(range, prob = p)
+
+  # in credible set
+  is_credible <- .getDiscreteCredibleSet(probs)
+
+  # make the object
+  dist <- list(min   = min,
+               max   = max,
+               probs = data.frame(x = range, y = probs, is_credible = is_credible),
+               type  = "discrete")
+
+  return(dist)
+
+}
+
+dnGeom <- dnGeometric
+
+##################################
+# negative binomial distribution #
+##################################
+
+dnNbinomial <- function(r, p) {
+
+  # the limits
+  min  <- qnbinom(0.001, size = r, prob = p)
+  max  <- qnbinom(0.999, size = r, prob = p)
+
+  # the range
+  range <- min:max
+  probs <- dnbinom(range, size = r, prob = p)
+
+  # in credible set
+  is_credible <- .getDiscreteCredibleSet(probs)
+
+  # make the object
+  dist <- list(min   = min,
+               max   = max,
+               probs = data.frame(x = range, y = probs, is_credible = is_credible),
+               type  = "discrete")
+
+  return(dist)
+
+}
 
 
 
