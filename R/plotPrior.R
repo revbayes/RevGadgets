@@ -65,6 +65,8 @@ plotPrior <- function(distribution, col) {
 
 }
 
+ln <- log
+
 ############################
 # exponential distribution #
 ############################
