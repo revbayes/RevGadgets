@@ -20,16 +20,16 @@ plotPrior <- function(distribution, col) {
   # plot the distribution
   pp <- ggplot2::ggplot(data.frame())
   for(i in 1:length(distn$fun)) {
-    pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], col = col[i])
+    pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], col = col[i], n=1001)
   }
 
   # add the HPDs
   for(i in 1:length(distn$hpd)) {
     this_interval <- distn$hpd[[i]]
     if ( length(distn$fun) > 1 ) {
-      pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], xlim = this_interval, geom="area", fill=col[i], alpha=0.5)
+      pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], xlim = this_interval, geom="area", fill=col[i], alpha=0.5, n=1001)
     } else {
-      pp <- pp + ggplot2::stat_function(fun = distn$fun[[1]], xlim = this_interval, geom="area", fill=col, alpha=0.5)
+      pp <- pp + ggplot2::stat_function(fun = distn$fun[[1]], xlim = this_interval, geom="area", fill=col, alpha=0.5, n=1001)
     }
   }
 
@@ -70,15 +70,26 @@ plotPrior <- function(distribution, col) {
 ############################
 
 dnExponential <- function(rate = 1, offset = 0) {
+
   min  <- offset + 0
   max  <- offset + qexp(0.999, rate = rate)
-  hpd  <- offset + qexp(c(0.025, 0.975), rate = rate)
   fun  <- function(x) dexp(x - offset, rate = rate)
+
+  # create a density object
+  x <- seq(min, max, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+
+  # create the HPDs
+  hpd <- hdi(dens, allowSplit=TRUE)
+
   dist <- list(min = min,
                max = max,
                hpd = list(hpd),
                fun = list(fun))
   return(dist)
+
 }
 
 dnExp <- dnExponential
@@ -88,15 +99,26 @@ dnExp <- dnExponential
 ######################
 
 dnGamma <- function(shape = 1, rate = 1) {
+
   min  <- 0
   max  <- qgamma(0.999, shape = shape, rate = rate)
-  hpd  <- qgamma(c(0.025, 0.975), shape = shape, rate = rate)
   fun  <- function(x) dgamma(x, shape = shape, rate = rate)
+
+  # create a density object
+  x <- seq(min, max, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+
+  # create the HPDs
+  hpd <- hdi(dens, allowSplit=TRUE)
+
   dist <- list(min = min,
                max = max,
                hpd = list(hpd),
                fun = list(fun))
   return(dist)
+
 }
 
 ##########################
@@ -104,15 +126,26 @@ dnGamma <- function(shape = 1, rate = 1) {
 ##########################
 
 dnLognormal <- function(mean = 0, sd = 1, offset = 0) {
+
   min  <- offset + 0
   max  <- offset + qlnorm(0.999, mean = mean, sd = sd)
-  hpd  <- offset + qlnorm(c(0.025, 0.975), mean = mean, sd = sd)
   fun  <- function(x) dlnorm(x - offset, mean = mean, sd = sd)
+
+  # create a density object
+  x <- seq(min, max, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+
+  # create the HPDs
+  hpd <- hdi(dens, allowSplit=TRUE)
+
   dist <- list(min = min,
                max = max,
                hpd = list(hpd),
                fun = list(fun))
   return(dist)
+
 }
 
 dnLnorm <- dnLognormal
@@ -162,6 +195,47 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
   # make the object
   dist <- list(min = min,
                max = max,
+               hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
+               fun = list(fun))
+  return(dist)
+
+}
+
+########################
+# soft-bounded uniform #
+########################
+
+dnSoftBoundUniformNormal <- function(min, max, sd, p) {
+
+  # create the function
+  lm <- min
+  lx <- max
+  s  <- sd
+  lp <- p
+  fun <- function(x) {
+    probs <- numeric(length(x))
+    probs[x < lm] <- (1 - lp) * 0.5 * dnorm(x[x < lm] - lm, sd = s)
+    probs[x > lx] <- (1 - lp) * 0.5 * dnorm(x[x > lx] - lx, sd = s)
+    probs[x >= lm & x <= lx] <- lp * dunif(x[x >= lm & x <= lx], lm, lx)
+    return(probs)
+  }
+
+  # compute the quantiles
+  bottom <- min - 5 * sd
+  top    <- max + 5 * sd
+
+  # create a density object
+  x <- seq(bottom, top, length.out = 10001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+
+  # create the HPDs
+  hdi <- hdi(dens, allowSplit=TRUE)
+
+  # make the object
+  dist <- list(min = bottom,
+               max = top,
                hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
                fun = list(fun))
   return(dist)
