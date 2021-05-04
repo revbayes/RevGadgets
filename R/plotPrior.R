@@ -221,11 +221,11 @@ dnSoftBoundUniformNormal <- function(min, max, sd, p) {
   }
 
   # compute the quantiles
-  bottom <- min - 5 * sd
-  top    <- max + 5 * sd
+  bottom <- min + qnorm(0.001, 0, sd)
+  top    <- max + qnorm(0.999, 0, sd)
 
   # create a density object
-  x <- seq(bottom, top, length.out = 10001)
+  x <- seq(bottom, top, length.out = 1001)
   y <- fun(x)
   dens <- list(x = x, y = y)
   class(dens) <- "density"
@@ -236,6 +236,37 @@ dnSoftBoundUniformNormal <- function(min, max, sd, p) {
   # make the object
   dist <- list(min = bottom,
                max = top,
+               hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
+               fun = list(fun))
+  return(dist)
+
+}
+
+#####################
+# beta distribution #
+#####################
+
+dnBeta <- function(alpha, beta) {
+
+  # range of plot
+  min <- 0
+  max <- 1
+
+  # the density of function
+  fun <- function(x) dbeta(x, shape1 = alpha, shape2 = beta)
+
+  # create a density object
+  x <- seq(min, max, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+
+  # create the HPDs
+  hdi <- hdi(dens, allowSplit=TRUE)
+
+  # make the object
+  dist <- list(min = min,
+               max = max,
                hpd = lapply(1:nrow(hdi), function(x) hdi[x,]),
                fun = list(fun))
   return(dist)
@@ -264,9 +295,19 @@ dnDirichlet <- function(alpha) {
 
   # the HPDs
   hpd <- lapply(1:length(alpha), function(i) {
+
     this_alpha <- alpha[i]
     this_beta  <- total_alpha - this_alpha
-    qbeta(c(0.025,0.975), this_alpha, this_beta)
+
+    # create a density object
+    x <- seq(min, max, length.out = 1001)
+    y <- fun[[i]](x)
+    dens <- list(x = x, y = y)
+    class(dens) <- "density"
+
+    # create the HPDs
+    hdi(dens, allowSplit=TRUE)
+
   })
 
   # make the object
