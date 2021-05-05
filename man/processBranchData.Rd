@@ -40,8 +40,8 @@ processBranchData
 treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
 logfile <- system.file("extdata", "bds/primates_BDS_rates_truncated.p", package="RevGadgets")
 
-branch_data <- readTrace(logfile)[[1]]
-tree <- readTrees(paths = treefile)[[1]][[1]]
+branch_data <- readTrace(logfile)
+tree <- readTrees(paths = treefile)
 
 annotated_tree <- processBranchData(tree, branch_data, summary = "median")
 
