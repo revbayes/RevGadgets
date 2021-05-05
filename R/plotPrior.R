@@ -1,6 +1,18 @@
 #' @export
 plotPrior <- function(distribution, col) {
 
+  # check for a variable name
+  if ( grepl("~", distribution) ) {
+    title        <- distribution
+    split        <- strsplit(distribution, "~")[[1]]
+    param_name   <- split[1]
+    param_name   <- gsub(" ", "", param_name)
+    distribution <- tail(split, n=1)
+  } else {
+    title      <- paste0("x ~ ", distribution)
+    param_name <- "x"
+  }
+
   # transform Rev vectors to R vectors
   string <- distribution
   distribution <- gsub("v(", "c(", distribution, fixed=TRUE)
@@ -22,9 +34,13 @@ plotPrior <- function(distribution, col) {
     }
 
     # make the plots
-    pp <- ggplot2::ggplot(data.frame())
+    pp <- ggplot2::ggplot(NULL)
     for(i in 1:length(distn$fun)) {
-      pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], col = col[i], n=1001)
+      if (length(distn$fun) > 1) {
+        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], color = col[i], aes(color = paste0(param_name,"[",i,"]")), n=1001)
+      } else {
+        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], color = col[i], aes(color = param_name), n=1001)
+      }
     }
 
     # add the HPDs
@@ -52,13 +68,13 @@ plotPrior <- function(distribution, col) {
     }
 
     # make the plots
-    pp <- ggplot(distn$probs, aes(x = x, y = y, fill = is_credible)) + geom_bar(stat="identity", color = col)
+    pp <- ggplot2::ggplot(distn$probs, aes(x = x, y = y, fill = is_credible)) + ggplot2::geom_bar(stat="identity", color = col)
 
     # fill the credible set
-    pp <- pp + scale_fill_manual(values = alpha(c("TRUE" = col, "FALSE" = NA), 0.5))
+    pp <- pp + ggplot2::scale_fill_manual(values = alpha(c("TRUE" = col, "FALSE" = NA), 0.5))
 
     # scale the x axis
-    pp <- pp + scale_x_continuous(breaks = pretty(distn$probs$x))
+    pp <- pp + ggplot2::scale_x_continuous(breaks = pretty(distn$probs$x))
 
   } else {
     stop("invalid distribution type")
@@ -67,13 +83,19 @@ plotPrior <- function(distribution, col) {
   # style
   pp <- pp + ggplot2::theme_bw()
 
-  # axis
+  # axis labels
   if ( length(distn$fun) > 1 ) {
-    pp <- pp + ggplot2::labs(x = "x[i]", y = "prior probability of x[i]", title = string)
+    pp <- pp + ggplot2::labs(x = paste0(param_name, "[i]"), y = paste0("prior probability of ", param_name, "[i]"), title = title)
   } else {
-    pp <- pp + ggplot2::labs(x = "x", y = "prior probability of x", title = string)
+    pp <- pp + ggplot2::labs(x = param_name, y = paste0("prior probability of ", param_name), title = title)
   }
-  pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+
+  # title and legend, if necessary
+  if ( distn$type == "continuous" ) {
+    pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "right")
+  } else {
+    pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  }
 
   # return the plot
   return(pp)
@@ -106,7 +128,7 @@ dnChisq <- function(df) {
   fun  <- function(x) dchisq(x, df = df)
 
   # create the HPDs
-  hpd <- hdi(qchisq, df=df)
+  hpd <- HDInterval::hdi(qchisq, df=df)
 
   dist <- list(min  = min,
                max  = max,
@@ -130,7 +152,7 @@ dnExponential <- function(rate = 1, offset = 0) {
   fun  <- function(x) dexp(x - offset, rate = rate)
 
   # create the HPDs
-  hpd <- hdi(qexp, rate=rate)
+  hpd <- HDInterval::hdi(qexp, rate=rate)
 
   dist <- list(min  = min,
                max  = max,
@@ -155,7 +177,7 @@ dnGamma <- function(shape = 1, rate = 1) {
   fun  <- function(x) dgamma(x, shape = shape, rate = rate)
 
   # create the HPDs
-  hpd <- hdi(qgamma, shape = shape, rate = rate)
+  hpd <- HDInterval::hdi(qgamma, shape = shape, rate = rate)
 
   dist <- list(min  = min,
                max  = max,
@@ -178,7 +200,7 @@ dnLognormal <- function(mean = 0, sd = 1, offset = 0) {
   fun  <- function(x) dlnorm(x - offset, mean = mean, sd = sd)
 
   # create the HPDs
-  hpd <- hdi(qlnorm, mean = mean, sd = sd) + offset
+  hpd <- HDInterval::hdi(qlnorm, mean = mean, sd = sd) + offset
 
   dist <- list(min  = min,
                max  = max,
@@ -247,7 +269,7 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
 
   # compute the quantiles
   cdf <- function(x) probability * pnorm(x, mean = mean1, sd = sd1) + (1 - probability) * pnorm(x, mean = mean2, sd = sd2)
-  quantiles <- inverseCDF(c(0.001, 0.999), cdf)
+  quantiles <- HDInterval::inverseCDF(c(0.001, 0.999), cdf)
   min <- quantiles[1]
   max <- quantiles[2]
 
@@ -258,7 +280,7 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
   class(dens) <- "density"
 
   # create the HPDs
-  hdi <- hdi(dens, allowSplit=TRUE)
+  hdi <- HDInterval::hdi(dens, allowSplit=TRUE)
 
   # make the object
   dist <- list(min  = min,
@@ -301,7 +323,7 @@ dnSoftBoundUniformNormal <- function(min, max, sd, p) {
   class(dens) <- "density"
 
   # create the HPDs
-  hdi <- hdi(dens, allowSplit=TRUE)
+  hdi <- HDInterval::hdi(dens, allowSplit=TRUE)
 
   # make the object
   dist <- list(min  = bottom,
@@ -327,7 +349,7 @@ dnBeta <- function(alpha, beta) {
   fun <- function(x) dbeta(x, shape1 = alpha, shape2 = beta)
 
   # create the HPDs
-  hdi <- hdi(qbeta, shape1 = alpha, shape2 = beta)
+  hdi <- HDInterval::hdi(qbeta, shape1 = alpha, shape2 = beta)
 
   # make the object
   dist <- list(min  = min,
@@ -367,7 +389,7 @@ dnDirichlet <- function(alpha) {
     this_beta  <- total_alpha - this_alpha
 
     # create the HPDs
-    hdi(qbeta, shape1 = this_alpha, shape2 = this_beta)
+    HDInterval::hdi(qbeta, shape1 = this_alpha, shape2 = this_beta)
 
   })
 
@@ -506,6 +528,7 @@ dnNbinomial <- function(r, p) {
 
 }
 
+dnNbinom <- dnNbinomial
 
 
 
