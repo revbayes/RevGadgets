@@ -1,5 +1,5 @@
 #' @export
-plotPrior <- function(distribution, col) {
+plotPrior <- function(distribution, col, n_points=1001) {
 
   # check for a variable name
   if ( grepl("~", distribution) ) {
@@ -33,23 +33,27 @@ plotPrior <- function(distribution, col) {
       # TODO: check the length of the provided color vector
     }
 
-    # make the plots
-    pp <- ggplot2::ggplot(NULL)
-    for(i in 1:length(distn$fun)) {
-      if (length(distn$fun) > 1) {
-        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], color = col[i], aes(color = paste0(param_name,"[",i,"]")), n=1001)
-      } else {
-        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], color = col[i], aes(color = param_name), n=1001)
-      }
+    # create names for each variable (if there is more than one)
+    if (length(distn$fun) > 1) {
+      param_names <- paste0(param_name,"[",1:length(distn$fun),"]")
+    } else {
+      param_names <- param_name
     }
+
+    # make the plots
+    pp <- ggplot(data.frame(x = c(0,1)), aes(x = x))
+    pp <- pp + lapply(1:length(distn$fun), function(i) ggplot2::stat_function(fun = distn$fun[[i]], aes(color = param_names[i]), n=n_points) )
+
+    # color the curves
+    pp <- pp + ggplot2::scale_colour_manual("variable", values = col)
 
     # add the HPDs
     for(i in 1:length(distn$hpd)) {
       this_interval <- distn$hpd[[i]]
       if ( length(distn$fun) > 1 ) {
-        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], xlim = this_interval, geom="area", fill=col[i], alpha=0.5, n=1001)
+        pp <- pp + ggplot2::stat_function(fun = distn$fun[[i]], xlim = this_interval, geom="area", fill=col[i], alpha=0.5, n=n_points)
       } else {
-        pp <- pp + ggplot2::stat_function(fun = distn$fun[[1]], xlim = this_interval, geom="area", fill=col, alpha=0.5, n=1001)
+        pp <- pp + ggplot2::stat_function(fun = distn$fun[[1]], xlim = this_interval, geom="area", fill=col, alpha=0.5, n=n_points)
       }
     }
 
@@ -92,7 +96,11 @@ plotPrior <- function(distribution, col) {
 
   # title and legend, if necessary
   if ( distn$type == "continuous" ) {
-    pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "right")
+    if ( length(distn$fun) > 1 ) {
+      pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "right")
+    } else {
+      pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+    }
   } else {
     pp <- pp + ggplot2::theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
   }
