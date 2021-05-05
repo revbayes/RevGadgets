@@ -78,7 +78,12 @@ plotPrior <- function(distribution, col, n_points=1001) {
     pp <- pp + ggplot2::scale_fill_manual(values = alpha(c("TRUE" = col, "FALSE" = NA), 0.5))
 
     # scale the x axis
-    pp <- pp + ggplot2::scale_x_continuous(breaks = pretty(distn$probs$x))
+    if ( length(distn$probs$x) <= 5) {
+      pp <- pp + ggplot2::scale_x_continuous(breaks = distn$probs$x)
+    } else {
+      pp <- pp + ggplot2::scale_x_continuous(breaks = pretty(distn$probs$x, n=pmin(length(distn$probs$x), 5), min.n=0))
+    }
+
 
   } else {
     stop("invalid distribution type")
@@ -266,6 +271,34 @@ dnCauchy <- function(location, scale) {
 
 }
 
+###########################
+# loguniform distribution #
+###########################
+
+dnLoguniform <- function(min, max) {
+
+  # boundaries
+  lower <- min
+  upper <- max
+
+  # the density function
+  fun <- function(x) dunif(log(x), log(lower), log(upper)) / x
+
+  # create the HPDs
+  x <- seq(lower, upper, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+  hdi <- HDInterval::hdi(dens, allowSplit=TRUE)
+
+  dist <- list(min  = lower,
+               max  = upper,
+               hpd  = list(hdi),
+               fun  = list(fun),
+               type = "continuous")
+
+}
+
 ###############################
 # normal mixture distribution #
 ###############################
@@ -277,6 +310,41 @@ dnBimodalNormal <- function(mean1, mean2, sd1, sd2, probability) {
 
   # compute the quantiles
   cdf <- function(x) probability * pnorm(x, mean = mean1, sd = sd1) + (1 - probability) * pnorm(x, mean = mean2, sd = sd2)
+  quantiles <- HDInterval::inverseCDF(c(0.001, 0.999), cdf)
+  min <- quantiles[1]
+  max <- quantiles[2]
+
+  # create a density object
+  x <- seq(min, max, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+
+  # create the HPDs
+  hdi <- HDInterval::hdi(dens, allowSplit=TRUE)
+
+  # make the object
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = lapply(1:nrow(hdi), function(x) hdi[x,]),
+               fun  = list(fun),
+               type = "continuous")
+
+  return(dist)
+
+}
+
+##################################
+# lognormal mixture distribution #
+##################################
+
+dnBimodalLognormal <- function(mean1, mean2, sd1, sd2, probability) {
+
+  # create the function
+  fun <- function(x) probability * dlnorm(x, mean = mean1, sd = sd1) + (1 - probability) * dlnorm(x, mean = mean2, sd = sd2)
+
+  # compute the quantiles
+  cdf <- function(x) probability * plnorm(x, mean = mean1, sd = sd1) + (1 - probability) * plnorm(x, mean = mean2, sd = sd2)
   quantiles <- HDInterval::inverseCDF(c(0.001, 0.999), cdf)
   min <- quantiles[1]
   max <- quantiles[2]
@@ -435,6 +503,33 @@ dnBinomial <- function(p, n) {
   # the range
   range <- min:max
   probs <- dbinom(range, size = n, prob = p)
+
+  # in credible set
+  is_credible <- .getDiscreteCredibleSet(probs)
+
+  # make the object
+  dist <- list(min   = min,
+               max   = max,
+               probs = data.frame(x = range, y = probs, is_credible = is_credible),
+               type  = "discrete")
+
+  return(dist)
+
+}
+
+##########################
+# bernoulli distribution #
+##########################
+
+dnBernoulli <- function(p) {
+
+  # the limits
+  min  <- 0
+  max  <- 1
+
+  # the range
+  range <- min:max
+  probs <- dbinom(range, size = 1, prob = p)
 
   # in credible set
   is_credible <- .getDiscreteCredibleSet(probs)
