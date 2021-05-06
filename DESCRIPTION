@@ -31,5 +31,5 @@ Suggests: testthat,
     rmarkdown
 Remotes: YuLab-SMU/ggtree, willgearty/deeptime, 
          YuLab-SMU/treeio, YuLab-SMU/tidytree,
-         cran/dplry@1.0.5
+         cran/dplyr@1.0.5
 VignetteBuilder: knitr
