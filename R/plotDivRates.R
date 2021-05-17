@@ -63,7 +63,7 @@
 #' @export
 
 plotDivRates <- function(rates, facet = TRUE){
-  warning("Using default time units in x-axis label: Age (Ma)")
+  message("Using default time units in x-axis label: Age (Ma)")
   rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
   `%>%` <- dplyr::`%>%`
 
