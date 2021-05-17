@@ -69,8 +69,8 @@ plotDivRates <- function(rates, facet = TRUE){
 
     p <- rates %>%
     subset(grepl("rate", item)) %>%
-    ggplot2::ggplot(ggplot2::aes(time, mean, color = item))  +
-    ggplot2::geom_step(ggplot2::aes(time, mean),
+    ggplot2::ggplot(ggplot2::aes(time, value, color = item))  +
+    ggplot2::geom_step(ggplot2::aes(time, value),
                        direction = "vh") +
     geom_stepribbon(ggplot2::aes(x = time,
                                  ymin = lower,

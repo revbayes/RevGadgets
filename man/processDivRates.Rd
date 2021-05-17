@@ -12,7 +12,8 @@ processDivRates(
   fossilization_time_log = "",
   fossilization_rate_log = "",
   burnin = 0.25,
-  probs = c(0.025, 0.975)
+  probs = c(0.025, 0.975),
+  summary = "mean"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ value provided is greater than 1). Passed to readTrace().}
 
 \item{probs}{(numeric vector; c(0.025, 0.975)) a vector of length two
 containing the upper and lower bounds for the confidence intervals.}
+
+\item{summary}{typically "mean" or "median"; the metric to summarize the posterior distribution. Defaults to "Mean"}
 }
 \value{
 List object with processed rate and time parameters.
