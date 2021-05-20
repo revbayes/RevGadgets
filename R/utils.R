@@ -280,20 +280,21 @@
   return(codes)
 }
 
-.computeMeanInterval <- function(item, rates, probs){
+.computeInterval <- function(item, rates, probs, summary = "mean"){
   interval_times <- unlist(rates[["speciation time"]][1,grepl("interval_times", names(rates$`speciation time`))])
   interval_times <- sort(interval_times) # For some reason these are ordered differently than rate vectors
 
   rate <- rates[[item]]
   rate <- rate[, grep("[0-9]", colnames(rate))]
 
-  mean_rate <- colMeans(rate)
+  #mean_rate <- colMeans(rate)
+  summary_rate <- apply(rate, 2, summary)
   quantiles <- apply(rate, 2,
                      quantile,
                      probs = probs)
 
-  df <- dplyr::tibble(.rows = length(mean_rate))
-  df["mean"] <- mean_rate
+  df <- dplyr::tibble(.rows = length(summary_rate))
+  df["value"] <- summary_rate
   df["lower"] <- quantiles[1,]
   df["upper"] <- quantiles[2,]
   df$time <- interval_times
@@ -595,9 +596,9 @@
                     node_names_op = node_names_op))
 }
 
-.makePlotData <- function(rates, probs){
+.makePlotData <- function(rates, probs, summary){
   rates <- .removeNull(rates)
-  res <- lapply(names(rates), function(e) .computeMeanInterval(e, rates = rates, probs = probs))
+  res <- lapply(names(rates), function(e) .computeInterval(e, rates = rates, probs = probs, summary = summary))
   plotdata <- do.call(rbind, res)
   plotdata$item <- factor(plotdata$item,
                           levels = c("speciation rate", "extinction rate", "speciation time", "extinction time",
