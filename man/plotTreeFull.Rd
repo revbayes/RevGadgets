@@ -119,7 +119,7 @@ treedata object to color branches, such as a rate.}
 \item{line_width}{(numeric; 1) Change line width for branches}
 
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed to ggtree(). Options
-are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
+are 'rectangular', 'cladogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'.}
 }
 \value{

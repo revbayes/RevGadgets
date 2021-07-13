@@ -83,7 +83,7 @@
 #'
 #' # added in from plotTree
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
-#' are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
+#' are 'rectangular', 'cladogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
 #' 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'.
 #'
 #' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from nodes.
@@ -176,7 +176,7 @@ plotTreeFull <- function(tree,
   }
   if (is.numeric(tip_labels_offset) == FALSE) stop ("tip_labels_offset should be a number")
   if (is.numeric(node_labels_offset) == FALSE) stop ("node_labels_offset should be a number")
-  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'ellipse',
+  tree_layout <- match.arg(tree_layout, choices = c('rectangular', 'slanted', 'ellipse', 'cladogram',
                                                     'roundrect', 'fan', 'circular', 'inward_circular',
                                                     'radial', 'equal_angle', 'daylight', 'ape'))
   if (tree_layout != "rectangular") {
@@ -193,17 +193,28 @@ plotTreeFull <- function(tree,
     phy@data$node <- as.character(node_map[match(as.numeric(phy@data$index), node_map$Rev),]$R)
   }
 
+  ### set up tree layout ###
+
+  if (tree_layout == "cladogram") {
+    tree_layout <- "rectangular"
+    BL <- "none"
+  } else {
+    BL <- "branch.length"
+  }
+
   # initiate plot
   if (is.null(color_branch_by)) {
     pp <- ggtree::ggtree(phy,
                          right = F,
                          size = line_width,
                          color = branch_color,
+                         branch.length = BL,
                          layout = tree_layout)
   } else if (!is.null(color_branch_by)) {
     pp <- ggtree::ggtree(phy,
                          right = F,
                          size = line_width,
+                         branch.length = BL,
                          layout = tree_layout)
   }
 
@@ -521,7 +532,7 @@ plotTreeFull <- function(tree,
   }
 
   # readjust axis for non-timeline plots
-  if (timeline == FALSE) {
+  if (timeline == FALSE & BL != "none") {
 
     if (node_age_bars == FALSE) {
       xlim_min <- -tree_height
@@ -538,6 +549,23 @@ plotTreeFull <- function(tree,
     pp <- ggtree::revts(pp)
 
   }
+
+  # readjust axis for cladograms
+  if (timeline == FALSE & BL == "none") {
+
+    xlim_min <- range(pp$data$x)[1]
+
+    if (tip_labels == T) {
+      xlim_max <- range(pp$data$x)[2]*1.5
+    } else {
+      xlim_max <- range(pp$data$x)[2]
+    }
+
+
+    pp <- pp + ggtree::xlim(xlim_min, xlim_max)
+
+  }
+
   return(pp)
 }
 

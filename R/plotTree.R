@@ -79,8 +79,8 @@
 #' @param line_width (numeric; 1) Change line width for branches
 #'
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
-#' are 'rectangular', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
-#' 'inward_circular', 'radial', 'equal_angle', 'daylight' or 'ape'.
+#' are 'rectangular', 'cladogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
+#' 'inward_circular', 'radial', 'equal_angle', 'daylight', or 'ape'.
 #'
 #' @return returns a single plot object.
 #'
