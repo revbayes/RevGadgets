@@ -1,8 +1,8 @@
 # Non-exported utility functions for RevGadgets
 .add_epoch_times <- function( p, max_age, dy_bars, dy_text ) {
 
-  max_x = max(p$data$x)
-  max_y = max(p$data$y)
+  max_x <- max(p$data$x)
+  max_y <- max(p$data$y)
 
   epoch_names <- rev(c("Holocene", "Pleistocene", "Pliocene",
                    "Miocene", "Oligocene", "Eocene", "Paleocene",
@@ -21,22 +21,22 @@
     x_pos <- max_x - c(max_age, period_ages)
   } else x_pos <- max_x - c(max_age, epoch_ages)
 
-  y_pos = rep(max_y, length(x_pos))
-  x_pos_mid = ( x_pos[1:(length(x_pos)-1)] + x_pos[2:length(x_pos)] ) / 2
+  y_pos <- rep(max_y, length(x_pos))
+  x_pos_mid <- ( x_pos[1:(length(x_pos)-1)] + x_pos[2:length(x_pos)] ) / 2
 
   for (k in 2:(length(x_pos))) {
-    box_col = "gray92"
-    if (k %% 2 == 0) box_col = "white"
-    box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=dy_bars, ymax=y_pos[k], fill=box_col )
-    p = gginnards::append_layers(p, box, position = "bottom")
+    box_col <- "gray92"
+    if (k %% 2 == 0) box_col <- "white"
+    box <- ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=dy_bars, ymax=y_pos[k], fill=box_col )
+    p <- gginnards::append_layers(p, box, position = "bottom")
   }
   if (max_age > 140) {
-    for (k in 1:length(period_names)) {
+    for (k in seq_len(length(period_names))) {
       p <- p + ggplot2::annotate( geom="text", label=period_names[k], angle = 90,
                                   x=x_pos_mid[k], y=dy_text, hjust=0, size=3.25)
     }
   } else {
-    for (k in 1:length(epoch_names)) {
+    for (k in seq_len(length(epoch_names))) {
       p <- p + ggplot2::annotate( geom="text", label=epoch_names[k], angle = 90,
                                   x=x_pos_mid[k], y=dy_text, hjust=0, size=3.25)
     }
@@ -63,9 +63,9 @@
 
   # what is the ancestral state name tag?
   if (include_start_states) {
-    state_pos_str_base = c("start_state_", "end_state_")
+    state_pos_str_base <- c("start_state_", "end_state_")
   } else {
-    state_pos_str_base = c("anc_state_")
+    state_pos_str_base <- c("anc_state_")
   }
 
   # send error if state_labels are provided without names
@@ -85,10 +85,10 @@
   # change ? to NA
   if (missing_to_NA == TRUE) {
     for (c in columns){
-      x_state = attributes(t)$data[[c]]
-      x_state = as.vector(x_state)
+      x_state <- attributes(t)$data[[c]]
+      x_state <- as.vector(x_state)
       x_state[x_state == "?"] <- "NA"
-      attributes(t)$data[[c]] = x_state
+      attributes(t)$data[[c]] <- x_state
     }
   }
 
@@ -110,8 +110,8 @@
     states <- states[!states == "NA"]
     states <- states[order(states)]
     state_labels <- list()
-    for(i in 1:length(states) ) {
-      state_labels[as.character(states[i])] = LETTERS[i]
+    for(i in seq_len(length(states))) {
+      state_labels[as.character(states[i])] <- LETTERS[i]
     }
     state_labels["other"] <- "other"
   }
@@ -124,23 +124,22 @@
   }
 
   # create list of ancestral state name tags
-  state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
-
+  state_pos_str_to_update <- c(unlist(lapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")})))
 
   # overwrite state labels
   for (m in state_pos_str_to_update) {
     # get the states
-    x_state = attributes(t)$data[[m]]
-    x_state = as.vector(x_state)
-    x_state_valid = which( x_state != "NA" )
-    x_state_invalid = which( x_state == "NA" )
-    x_state_tmp = unlist(sapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
-    x_state[x_state_valid] = x_state_tmp
-    x_state[x_state_invalid] = NA
+    x_state <- attributes(t)$data[[m]]
+    x_state <- as.vector(x_state)
+    x_state_valid <- which( x_state != "NA" )
+    x_state_invalid <- which( x_state == "NA" )
+    x_state_tmp <- unlist(lapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
+    x_state[x_state_valid] <- x_state_tmp
+    x_state[x_state_invalid] <- NA
     if(labels_as_numbers) {
       x_state <- factor(x_state, levels = as.character(sort(as.integer(unique(state_labels)))))
     }
-    attributes(t)$data[[m]] = x_state
+    attributes(t)$data[[m]] <- x_state
   }
 
  # unique(c(as.matrix(t@data[, columns])))
@@ -173,57 +172,57 @@
 }
 
 .build_state_probs <- function(t, state_labels, include_start_states, p_threshold = 0) {
-  n_states = length(state_labels)
-  n_tips = length(attributes(t)$phylo$tip.label)
-  n_node = 2 * n_tips - 1
+  n_states <- length(state_labels)
+  n_tips <- length(attributes(t)$phylo$tip.label)
+  n_node <- 2 * n_tips - 1
 
-  dat = list()
+  dat <- list()
 
   if (include_start_states == TRUE) {
-    state_tags = c("end","start")
+    state_tags <- c("end","start")
   } else if (include_start_states == FALSE & "anc_state_1" %in% colnames(t@data)) {
-    state_tags = c("anc")
+    state_tags <- c("anc")
   } else if (include_start_states == FALSE & "end_state_1" %in% colnames(t@data)) {
-    state_tags = c("end")
+    state_tags <- c("end")
   }
 
   for (s in state_tags) {
-    dat[[s]] = data.frame( matrix(0, nrow=n_node, ncol=n_states) )
+    dat[[s]] <- data.frame( matrix(0, nrow=n_node, ncol=n_states) )
     #dat[[s]] = cbind(node=1:n_node, dat[[s]])
 
     for (i in 1:3)
     {
-      m = paste(s,"_state_",i,sep="")
-      pp_str = paste(m,"_pp",sep="")
-      n_tmp = as.numeric(as.vector(attributes(t)$data$node)) # node index
-      x_tmp = as.vector(attributes(t)$data[[m]])
-      pp_tmp = as.numeric(as.vector(attributes(t)$data[[pp_str]]))
+      m <- paste(s,"_state_",i,sep="")
+      pp_str <- paste(m,"_pp",sep="")
+      n_tmp <- as.numeric(as.vector(attributes(t)$data$node)) # node index
+      x_tmp <- as.vector(attributes(t)$data[[m]])
+      pp_tmp <- as.numeric(as.vector(attributes(t)$data[[pp_str]]))
 
-      for (j in 1:length(x_tmp))
+      for (j in seq_len(length(x_tmp)))
       {
         if (!is.na(x_tmp[j])) {
 
           if (pp_tmp[j] > p_threshold) {
-            k = which(x_tmp[j]==state_labels)
-            dat[[s]][n_tmp[j], k] = pp_tmp[j]
+            k <- which(x_tmp[j]==state_labels)
+            dat[[s]][n_tmp[j], k] <- pp_tmp[j]
           }
         }
       }
     }
 
     # format column names
-    colnames(dat[[s]])=as.vector(unlist(state_labels))
+    colnames(dat[[s]]) <- as.vector(unlist(state_labels))
 
     # add probs for >3rd state under "other" label
-    rem_prob = c()
-    for (i in 1:nrow(dat[[s]])) {
-      rem_prob[i] = 1
-      for (j in 1:length(dat[[s]][i,])) {
-        rem_prob[i] = rem_prob[i] - dat[[s]][i,j]
+    rem_prob <- c()
+    for (i in seq_len(nrow(dat[[s]]))) {
+      rem_prob[i] <- 1
+      for (j in seq_len(length(dat[[s]][i,]))) {
+        rem_prob[i] <- rem_prob[i] - dat[[s]][i,j]
       }
     }
-    dat[[s]]$"other" = rem_prob
-    dat[[s]]$node = 1:n_node
+    dat[[s]]$"other" <- rem_prob
+    dat[[s]]$node <- 1:n_node
   }
   return(dat)
 }
@@ -262,21 +261,21 @@
 }
 
 .collect_probable_states <- function(p, p_threshold = 0.005) {
-  labels = c("end_state", "start_state")
-  index = c(1,2,3)
+  labels <- c("end_state", "start_state")
+  index <- c(1,2,3)
 
-  codes = c()
-  labels_pp = c()
+  codes <- c()
+  labels_pp <- c()
   for (l in labels) {
     for (i in index) {
-      label_index = paste(l,"_",i,sep="")
-      label_index_pp = paste(l,"_",i,"_pp",sep="")
-      index_threshold = p$data[[ label_index_pp ]] > p_threshold
-      codes = c(codes, unique( p$data[[label_index]][ index_threshold ] ))
+      label_index <- paste(l,"_",i,sep="")
+      label_index_pp <- paste(l,"_",i,"_pp",sep="")
+      index_threshold <- p$data[[ label_index_pp ]] > p_threshold
+      codes <- c(codes, unique( p$data[[label_index]][ index_threshold ] ))
     }
   }
-  codes = unique(codes)
-  codes = c(codes, "other")
+  codes <- unique(codes)
+  codes <- c(codes, "other")
   return(codes)
 }
 
@@ -418,7 +417,7 @@
   # a good long-term solution
 
    results <- list()
-     for (i in 1:nrow(data)){
+     for (i in seq_len(nrow(data))) {
        ggplot2::ggsave(".temp.png",
                        plot = data$subview[[i]],
                        bg = "transparent",
@@ -518,13 +517,13 @@
     ##
     ## child %in% currentNode %>% which %>% parent[.] %>% unique
     ## idx <- sapply(pNode, function(i) all(child[parent == i] %in% currentNode))
-    idx <- sapply(pNode, function(i) all(child_list[[i]] %in% currentNode))
+    idx <- unlist(lapply(pNode, function(i) all(child_list[[i]] %in% currentNode)))
     newNode <- pNode[idx]
 
-    y[newNode] <- sapply(newNode, function(i) {
+    y[newNode] <- unlist(lapply(newNode, function(i) {
       mean(y[child_list[[i]]], na.rm=TRUE)
       ##child[parent == i] %>% y[.] %>% mean(na.rm=TRUE)
-    })
+    }))
 
     currentNode <- c(currentNode[!currentNode %in% unlist(child_list[newNode])], newNode)
     ## currentNode <- c(currentNode[!currentNode %in% child[parent %in% newNode]], newNode)
@@ -580,13 +579,13 @@
 .makeNodeNames <- function(tree) {
   pr <- ape::prop.part(tree)
   labels <- attributes(pr)$labels
-  names(labels) <- 1:length(labels)
-  nodes <- lapply(pr[1:length(pr)], dplyr::recode, !!!labels)
+  names(labels) <- seq_len(length(labels))
+  nodes <- lapply(pr[seq_len(length(pr))], dplyr::recode, !!!labels)
   nodes <- append(attributes(pr)$labels, nodes)
 
   node_names <- numeric()
   node_names_op <- numeric()
-  for (i in 1:length(nodes)) {
+  for (i in seq_len(length(nodes))) {
     node_names[i] <- paste(as.numeric(sort(tree$tip.label) %in% nodes[[i]]),
                            sep = "", collapse = "")
     node_names_op[i] <- paste(as.numeric(!sort(tree$tip.label) %in% nodes[[i]]),
@@ -612,17 +611,17 @@
   range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
 
   # get area names
-  area_names <- unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
+  area_names <- unlist(lapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
 
   # get state labels
   state_descriptions <- read.csv(label_fn, header=T, sep=",", colClasses="character")
 
   # map presence-absence ranges to area names
-  range_labels <- sapply(state_descriptions$range[2:nrow(state_descriptions)],
+  range_labels <- unlist(lapply(state_descriptions$range[2:nrow(state_descriptions)],
                          function(x) {
-                           present = as.vector(gregexpr(pattern="1", x)[[1]])
+                           present <- as.vector(gregexpr(pattern="1", x)[[1]])
                            paste( area_names[present], collapse="")
-                         })
+                         }))
 
   # map labels to colors
   range_colors <- range_color_list$color[ match(range_labels, range_color_list$range) ]
@@ -1021,10 +1020,10 @@ new_data_frame <- function(x = list(), n = NULL) {
     # Grid of gammas
     gammas <- qcauchy(quants,0,zeta)
     # Number of expected shifts for each value of sigma
-    num_expected_shifts <- sapply(gammas,function(x) {
+    num_expected_shifts <- unlist(lapply(gammas,function(x) {
       p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid_size=2000)/0.5
       return(p_shift_one_cell_this_gamma * (n_episodes-1))
-    })
+    }))
     # Average the per-sigma E(n_shifts) over p(sigma) to get overall expectation given zeta
     this_expected_num_shifts <- sum(probs * num_expected_shifts)
     return( (log(this_expected_num_shifts) - log(prior_n_shifts))^2 ) # Distance to target
@@ -1036,10 +1035,10 @@ new_data_frame <- function(x = list(), n = NULL) {
 
   # Compute the prior on number of shifts for this zeta (to show user how well we approximated the target)
   gammas <- qcauchy(quants,0,zeta)
-  num_expected_shifts <- sapply(gammas,function(x) {
+  num_expected_shifts <- unlist(lapply(gammas,function(x) {
     p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid_size=2000)/0.5
     return(p_shift_one_cell_this_gamma * (n_episodes-1))
-  })
+  }))
 
   # Estimate the error of our chosen global scale hyperprior
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
@@ -1067,10 +1066,10 @@ new_data_frame <- function(x = list(), n = NULL) {
     # Grid of sigmas
     sigmas <- qcauchy(quants,0,zeta)
     # Number of expected shifts for each value of sigma
-    num_expected_shifts <- sapply(sigmas,function(x) {
+    num_expected_shifts <- unlist(lapply(sigmas,function(x) {
       p_shift_one_cell_this_sigma <- pnorm(shift,0,x,lower.tail=FALSE)/0.5
       return(p_shift_one_cell_this_sigma * (n_episodes-1))
-    })
+    }))
     # Average the per-sigma E(n_shifts) over p(sigma) to get overall expectation given zeta
     this_expected_num_shifts <- sum(probs * num_expected_shifts)
     return( (log(this_expected_num_shifts) - log(prior_n_shifts))^2 ) # Distance to target
@@ -1082,10 +1081,10 @@ new_data_frame <- function(x = list(), n = NULL) {
 
   # Compute the prior on number of shifts for this zeta (to show user how well we approximated the target)
   sigmas <- qcauchy(quants,0,zeta)
-  num_expected_shifts <- sapply(sigmas,function(x) {
+  num_expected_shifts <- unlist(lapply(sigmas,function(x) {
     p_shift_one_cell_this_sigma <- pnorm(shift,0,x,lower.tail=FALSE)/0.5
     return(p_shift_one_cell_this_sigma * (n_episodes-1))
-  })
+  }))
 
   # Estimate the error of our chosen global scale hyperprior
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
@@ -1219,7 +1218,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
 ## End functions required by densiTreeWithBranchData
 
 .removeNull <- function(x){
-  res <- x[which(!sapply(x, is.null))]
+  res <- x[which(!unlist(lapply(x, is.null)))]
 }
 
 # set prob factors
@@ -1227,20 +1226,20 @@ reorder_treedata <- function(tdObject, order = "postorder") {
 
   # what is the ancestral state name tag?
   if (include_start_states) {
-    state_pos_str_base = c("start_state_", "end_state_")
+    state_pos_str_base <- c("start_state_", "end_state_")
   } else {
-    state_pos_str_base = c("anc_state_")
+    state_pos_str_base <- c("anc_state_")
   }
 
   # create list of ancestral state name tags
-  state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,"_pp",sep="")}))
+  state_pos_str_to_update <- c(unlist(lapply(1:n_states, function(x) { paste(state_pos_str_base,x,"_pp",sep="")})))
 
   # overwrite state labels
   for (m in state_pos_str_to_update)
   {
-    x_state = attributes(t)$data[[m]]
+    x_state <- attributes(t)$data[[m]]
     #levels(x_state) = c(levels(x_state))
-    attributes(t)$data[[m]] = x_state
+    attributes(t)$data[[m]] <- x_state
   }
   return(t)
 }
@@ -1254,69 +1253,69 @@ reorder_treedata <- function(tdObject, order = "postorder") {
 .matchNodesTreeData <- function(treedata, phy) {
 
   # get some useful info
-  num_sampled_anc = sum(phy$node.label != "")
-  num_tips        = length(phy$tip.label)
-  num_nodes       = phy$Nnode
-  sampled_ancs    = which(tabulate(phy$edge[,1]) == 1)
-  tip_indexes     = 1:(num_tips + num_sampled_anc)
-  node_indexes    = (num_tips + num_sampled_anc) + num_nodes:1
+  num_sampled_anc <- sum(phy$node.label != "")
+  num_tips        <- length(phy$tip.label)
+  num_nodes       <- phy$Nnode
+  sampled_ancs    <- which(tabulate(phy$edge[,1]) == 1)
+  tip_indexes     <- 1:(num_tips + num_sampled_anc)
+  node_indexes    <- (num_tips + num_sampled_anc) + num_nodes:1
 
-  node_map     = data.frame(R=1:(num_tips + num_nodes), Rev=NA, visits=0)
-  current_node = num_tips + 1
-  k = 1
-  t = 1
+  node_map     <- data.frame(R=1:(num_tips + num_nodes), Rev=NA, visits=0)
+  current_node <- num_tips + 1
+  k <- 1
+  t <- 1
 
   while(TRUE) {
 
     # compute the number of descendants of this tip
-    current_num_descendants = sum(phy$edge[,1] == current_node)
+    current_num_descendants <- sum(phy$edge[,1] == current_node)
 
     if ( current_node <= num_tips ) {
 
-      treedata_node = which(as.character(treedata@data$node) == current_node)
-      node_map$Rev[node_map$R == current_node] = as.numeric(treedata@data[treedata_node,]$index)
-      current_node = phy$edge[phy$edge[,2] == current_node,1]
-      t = t + 1
+      treedata_node <- which(as.character(treedata@data$node) == current_node)
+      node_map$Rev[node_map$R == current_node] <- as.numeric(treedata@data[treedata_node,]$index)
+      current_node <- phy$edge[phy$edge[,2] == current_node,1]
+      t <- t + 1
 
     } else if ( current_node %in% sampled_ancs ) {
 
       if ( node_map$visits[node_map$R == current_node] == 0 ) {
-        node_map$Rev[node_map$R == current_node] = node_indexes[k]
-        k = k + 1
+        node_map$Rev[node_map$R == current_node] <- node_indexes[k]
+        k <- k + 1
       }
-      node_map$visits[node_map$R == current_node] = node_map$visits[node_map$R == current_node] + 1
+      node_map$visits[node_map$R == current_node] <- node_map$visits[node_map$R == current_node] + 1
 
       if ( node_map$visits[node_map$R == current_node] == 1 ) {
         # go left
-        current_node = phy$edge[phy$edge[,1] == current_node,2][1]
+        current_node <- phy$edge[phy$edge[,1] == current_node,2][1]
       } else if ( node_map$visits[node_map$R == current_node] == 2 ) {
         # go down
         if (current_node == num_tips + 1) {
           break
         } else {
-          current_node = phy$edge[phy$edge[,2] == current_node,1]
+          current_node <- phy$edge[phy$edge[,2] == current_node,1]
         }
       }
 
     } else {
 
       if ( node_map$visits[node_map$R == current_node] == 0 ) {
-        node_map$Rev[node_map$R == current_node] = node_indexes[k]
-        k = k + 1
+        node_map$Rev[node_map$R == current_node] <- node_indexes[k]
+        k <- k + 1
       }
-      node_map$visits[node_map$R == current_node] = node_map$visits[node_map$R == current_node] + 1
+      node_map$visits[node_map$R == current_node] <- node_map$visits[node_map$R == current_node] + 1
 
-      num_visits = node_map$visits[node_map$R == current_node]
+      num_visits <- node_map$visits[node_map$R == current_node]
 
       if ( num_visits <= current_num_descendants ) {
         # go to next descendant
-        current_node = phy$edge[phy$edge[,1] == current_node,2][current_num_descendants - num_visits + 1]
+        current_node <- phy$edge[phy$edge[,1] == current_node,2][current_num_descendants - num_visits + 1]
       } else if ( num_visits > current_num_descendants ) {
         # go down
         if (current_node == num_tips + 1) {
           break
         } else {
-          current_node = phy$edge[phy$edge[,2] == current_node,1]
+          current_node <- phy$edge[phy$edge[,2] == current_node,1]
         }
       }
 

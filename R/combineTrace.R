@@ -18,7 +18,7 @@
 #' @examples
 #'
 #' \dontrun{
-#' # continuous character example, multiple runs
+#' # continuous parameter example, multiple runs
 #' file_1 <- system.file("extdata",
 #'     "sub_models/primates_cytb_GTR_run_1.p", package="RevGadgets")
 #' file_2 <- system.file("extdata",
@@ -87,9 +87,9 @@ combineTraces <- function(traces, burnin = 0.0) {
   output <- do.call(rbind, post_burnin_samples)
 
   # re-index the generations
-  rownames(output) <- 1:nrow(output)
+  rownames(output) <- seq_len(nrow(output))
   if ( "Iteration" %in% all_headers ) {
-    output$Iteration <- 1:nrow(output)
+    output$Iteration <- seq_len(nrow(output))
   }
 
   # return

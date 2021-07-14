@@ -434,8 +434,8 @@ plotAncStatesMAP <- function(t,
       # add deep timescale
       if (length(geo_units) == 1){
         p <- p + deeptime::coord_geo(dat  = geo_units,
-                                     pos  = lapply(1:length(geo_units), function(x) "bottom"),
-                                     size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                     pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
+                                     size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
                                      xlim = c(-tree_height*1.1, tree_height/2),
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      height = grid::unit(4, "line"),
@@ -447,8 +447,8 @@ plotAncStatesMAP <- function(t,
                                      neg  = TRUE)
       } else if (length(geo_units) == 2) {
         p <- p + deeptime::coord_geo(dat  = geo_units,
-                                     pos  = lapply(1:length(geo_units), function(x) "bottom"),
-                                     size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                     pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
+                                     size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
                                      xlim = c(-tree_height * 1.05, tree_height/2),
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      skip = skipit,
@@ -487,9 +487,9 @@ plotAncStatesMAP <- function(t,
         x_pos <- -rev(xline)
       }
       for (k in 2:(length(x_pos))) {
-        box_col = "gray92"
-        if (k %% 2 == 1) box_col = "white"
-        box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
+        box_col <- "gray92"
+        if (k %% 2 == 1) box_col <- "white"
+        box <- ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
         p <- gginnards::append_layers(p, box, position = "bottom")
       }
     }

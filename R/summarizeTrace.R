@@ -67,9 +67,9 @@ summarizeTrace <- function(trace, vars) {
   # subset to desired characters
   output <- list()
   # pass through vars and summarize each
-  for (i in 1:length(vars)) {
+  for (i in seq_len(length(vars))) {
     output[[i]] <- list()
-    for (j in 1:length(trace)) {
+    for (j in seq_len(length(trace))) {
     col <- trace[[j]][,vars[i]]
     if (class(col) == "numeric"){
       q_2.5 <- quantile(col, prob = c(0.025,0.975))[1]

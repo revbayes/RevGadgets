@@ -33,7 +33,7 @@ removeBurnin <- function(trace, burnin) {
   if (is.numeric(burnin) == FALSE) stop("burnin must be a single numeric value")
   if (burnin < 0) stop("burnin must be a positive value")
 
-  for (i in 1:length(trace)) {
+  for (i in seq_len(length(trace))) {
 
     if (burnin >= nrow(trace[[i]])) stop("Burnin larger than provided trace file")
 

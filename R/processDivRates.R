@@ -195,7 +195,7 @@ processDivRates <- function(speciation_time_log = "",
 
       colnames(net_diversification_rate) <- paste(rep("net_div", times = ncol(net_diversification_rate)),
                                                    rep("[", times = ncol(net_diversification_rate)),
-                                                   1:ncol(net_diversification_rate),
+                                                   seq_len(ncol(net_diversification_rate)),
                                                    rep("]", times = ncol(net_diversification_rate)), sep = "")
 
       relative_extinction_rate <- as.matrix(extinction_rate[,grepl("extinction", colnames(extinction_rate))]) /
@@ -203,7 +203,7 @@ processDivRates <- function(speciation_time_log = "",
 
       colnames(relative_extinction_rate) <- paste(rep("rel_ext", times = ncol(relative_extinction_rate)),
                                                    rep("[", times = ncol(relative_extinction_rate)),
-                                                   1:ncol(relative_extinction_rate),
+                                                   seq_len(ncol(relative_extinction_rate)),
                                                    rep("]", times = ncol(relative_extinction_rate)), sep = "")
 
         # return a list of processed data frames

@@ -81,7 +81,7 @@ readTrace <- function(paths, format = "simple",
   }
 
   all_headers <- unique(unlist(header))
-  for (i in 1:length(header)) {
+  for (i in seq_len(length(header))) {
     if (setequal(all_headers, header[[i]]) == FALSE) {
       stop("Not all headers of trace files match")
     }

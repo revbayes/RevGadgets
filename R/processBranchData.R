@@ -47,8 +47,8 @@ processBranchData <- function(tree, dat, burnin = 0.25,
   tree_tbl <- tibble::as_tibble(tree)
   map <- matchNodes(tree@phylo)
 
-  for (item in parnames){
-    parameter <- unname(sapply(dat[,grepl(item, colnames(dat))], summary))[map$Rev]
+  for (item in parnames) {
+    parameter <- unname(unlist(lapply(dat[,grepl(item, colnames(dat))], summary)))[map$Rev]
     tree_tbl[[item]] <- parameter
   }
 
@@ -57,7 +57,7 @@ processBranchData <- function(tree, dat, burnin = 0.25,
       lambdas <- as.matrix(dat[,grepl("avg_lambda", colnames(dat))])
       mus <- as.matrix(dat[,grepl("avg_mu", colnames(dat))])
       net_divs <- as.data.frame(lambdas - mus)
-      tree_tbl[["net_div"]] <- unname(sapply(net_divs, summary))[map$Rev]
+      tree_tbl[["net_div"]] <- unname(unlist(lapply(net_divs, summary)))[map$Rev]
     } else {stop("You set net_div = TRUE. Cannot calculate net_div without 'avg_lambda and avg_mu' in parnames")}
   }
   tree2 <- tidytree::as.treedata(tree_tbl)
