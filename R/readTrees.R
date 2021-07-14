@@ -66,8 +66,10 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
     nexus <- .isNexusFile(paths[i])
     newick_single <- .isSingleNewick(paths[i])
     if (!newick_single & !nexus){
-      newick_trace <- T
-    } else {newick_trace <- F}
+      newick_trace <- TRUE
+    } else {
+      newick_trace <- FALSE
+    }
 
     if (nexus & !newick_single & !newick_trace){
 

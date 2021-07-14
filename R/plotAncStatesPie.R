@@ -539,7 +539,7 @@ plotAncStatesPie <- function(t,
         }
       }
       shoulder_data <- data.frame(node = node_index, x_anc = x_anc, y = y)
-      if (timeline == T) {
+      if (timeline == TRUE) {
         shoulder_data$x_anc <- shoulder_data$x_anc - tree_height
       }
       `%<+%` <- ggtree::`%<+%`

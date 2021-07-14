@@ -183,7 +183,8 @@ plotTree <- function(tree,
                tree_layout = tree_layout,
 
                # Turn off FBD-specific aspects
-               label_sampled_ancs = FALSE, tip_age_bars = F
+               label_sampled_ancs = FALSE,
+               tip_age_bars = FALSE
   )
 
 }

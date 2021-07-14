@@ -608,13 +608,13 @@
 .makeStates <- function(label_fn, color_fn) {
 
   # generate colors for ranges
-  range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
+  range_color_list <- read.csv(color_fn, header=TRUE, sep=",", colClasses="character")
 
   # get area names
   area_names <- unlist(lapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
 
   # get state labels
-  state_descriptions <- read.csv(label_fn, header=T, sep=",", colClasses="character")
+  state_descriptions <- read.csv(label_fn, header=TRUE, sep=",", colClasses="character")
 
   # map presence-absence ranges to area names
   range_labels <- unlist(lapply(state_descriptions$range[2:nrow(state_descriptions)],
