@@ -44,14 +44,17 @@
 #' @param node_shape_as (character; NULL) Option to vary node symbol by shape. Options are NULL
 #' to keep shape constant or "state" to vary shape by ancestral state.
 #' @param node_shape (integer; 19) Shape type for nodes. If node_shape_as = "state", provide a vector
-#' with length of the number of states.
+#' with length of the number of states. See ggplot2 documentation for details:
+#' \url{https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#point}
 #' @param node_color ("character"; "default") Colors for node symbols. Defaults to default RevGadgets
 #' colors. If node_color_as = "state', provide a vector of length of the character states. If
 #' your color vector is labeled with state labels, the legend will be displayed in the order of the labels.
 #' If node_color_as = "posterior", provide a vector of length 2 to generate a color gradient.
 #' @param node_size (numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
 #' If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
-#' If node_size_as = NULL, numeric vector of length one.
+#' If node_size_as = NULL, numeric vector of length one. Size regulates the area of the symbol,
+#' following ggplot2 best practices:
+#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
 #' @param tip_states (logical; TRUE) Plot states of taxa at tips?
 #' @param tip_states_size (numeric; node_size) Size for tip symbols. Defaults to the same
 #' size as node symbols.

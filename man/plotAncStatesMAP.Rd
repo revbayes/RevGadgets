@@ -89,7 +89,8 @@ or NULL to set all as one color.}
 to keep shape constant or "state" to vary shape by ancestral state.}
 
 \item{node_shape}{(integer; 19) Shape type for nodes. If node_shape_as = "state", provide a vector
-with length of the number of states.}
+with length of the number of states. See ggplot2 documentation for details:
+\url{https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#point}}
 
 \item{node_color}{("character"; "default") Colors for node symbols. Defaults to default RevGadgets
 colors. If node_color_as = "state', provide a vector of length of the character states. If
@@ -98,7 +99,9 @@ If node_color_as = "posterior", provide a vector of length 2 to generate a color
 
 \item{node_size}{(numeric; c(2, 6)) Range of sizes, or fixed size, for node symbols.
 If node_size_as = "state_posterior", "node_posterior", or "state", numeric vector of length two.
-If node_size_as = NULL, numeric vector of length one.}
+If node_size_as = NULL, numeric vector of length one. Size regulates the area of the symbol,
+following ggplot2 best practices:
+\url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
 
 \item{tip_states}{(logical; TRUE) Plot states of taxa at tips?}
 
