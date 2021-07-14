@@ -152,10 +152,10 @@ example <- processAncStates(file,
                                              "3" = "Cool!"))
 
 # have states vary by color and indicate state pp with size (default)
-plotAncStatesMAP(t = example, tip_labels_italics = T)
+plotAncStatesMAP(t = example, tip_labels_italics = TRUE)
 
 # have states vary by color and indicate state pp with size , and add a timeline
-plotAncStatesMAP(t = example, tip_labels_italics = T, timeline = T)
+plotAncStatesMAP(t = example, tip_labels_italics = TRUE, timeline = TRUE)
 
 # have states vary by color and symbol, label nodes with pp of states
 plotAncStatesMAP(t = example,  node_shape_as = "state",

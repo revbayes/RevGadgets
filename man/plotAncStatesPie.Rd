@@ -144,7 +144,7 @@ names(colors) <- dec_example@state_labels
 
 # plot
 plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-        cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
+        cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = TRUE) +
         ggplot2::theme(legend.position = c(0.1, 0.75))
 }
 
