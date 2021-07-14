@@ -279,11 +279,11 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
               sp[[k]] <- data.frame(Var1 = names(table),
                                     Freq = 1,
                                     var = vars_qual[k],
-                                    cred_set = T)
+                                    cred_set = TRUE)
             } else {
-              sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
+              sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = FALSE)
               cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
-              cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
+              cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = FALSE)
               sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq)
             }
           }
@@ -355,11 +355,11 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
               sp[[k]] <- data.frame(Var1 = names(table),
                                     Freq = 1,
                                     var = vars_qual[k],
-                                    cred_set = T)
+                                    cred_set = TRUE)
             } else {
-              sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = F)
+              sp_df <- data.frame(table, var = vars_qual[k], stringsAsFactors = FALSE)
               cs_table <- as.table(table[1:min(which((cumsum(table) >= 0.95) == TRUE))])
-              cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = F)
+              cs_df <- data.frame(cs_table,var = vars_qual[k], stringsAsFactors = FALSE)
               sp[[k]] <- data.frame(sp_df, cred_set = sp_df$Freq %in% cs_df$Freq)
             }
            }

@@ -306,7 +306,7 @@
   #sometimes there will be NAs before forcing to convert - got to remove nas before doing this test!
   k <- L[!is.na(L)]
   if (any(is.na(as.numeric(k))) == FALSE) { # if integer or numeric
-    if (sum(as.numeric(L) %% 1, na.rm = T) == 0) { # if integer
+    if (sum(as.numeric(L) %% 1, na.rm = TRUE) == 0) { # if integer
       labs <- L
       labs[labs == "1.000000"] <- "1" # catch case of all posterios of 1
     } else { # if numeric

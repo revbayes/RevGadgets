@@ -76,7 +76,7 @@
 #'
 #' # plot
 #' plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-#'         cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = T) +
+#'         cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = TRUE) +
 #'         ggplot2::theme(legend.position = c(0.1, 0.75))
 #' }
 #'
@@ -303,9 +303,9 @@ plotAncStatesPie <- function(t,
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      height = grid::unit(4, "line"),
                                      skip = skipit,
-                                     abbrv = F,
+                                     abbrv= FALSE,
                                      rot = 90,
-                                     center_end_labels = T,
+                                     center_end_labels = TRUE,
                                      bord = c("right", "top", "bottom"),
                                      neg  = TRUE)
       } else if (length(geo_units) == 2) {
@@ -315,7 +315,7 @@ plotAncStatesPie <- function(t,
                                      xlim = c(-tree_height, tree_height/2),
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      skip = skipit,
-                                     center_end_labels = T,
+                                     center_end_labels = TRUE,
                                      bord = c("right", "top", "bottom"),
                                      neg  = TRUE)
 

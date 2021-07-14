@@ -86,10 +86,10 @@
 #'                                              "3" = "Cool!"))
 #'
 #' # have states vary by color and indicate state pp with size (default)
-#' plotAncStatesMAP(t = example, tip_labels_italics = T)
+#' plotAncStatesMAP(t = example, tip_labels_italics = TRUE)
 #'
 #' # have states vary by color and indicate state pp with size , and add a timeline
-#' plotAncStatesMAP(t = example, tip_labels_italics = T, timeline = T)
+#' plotAncStatesMAP(t = example, tip_labels_italics = TRUE, timeline = TRUE)
 #'
 #' # have states vary by color and symbol, label nodes with pp of states
 #' plotAncStatesMAP(t = example,  node_shape_as = "state",
@@ -437,9 +437,9 @@ plotAncStatesMAP <- function(t,
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      height = grid::unit(4, "line"),
                                      skip = skipit,
-                                     abbrv = F,
+                                     abbrv = FALSE,
                                      rot = 90,
-                                     center_end_labels = T,
+                                     center_end_labels = TRUE,
                                      bord = c("right", "top", "bottom"),
                                      neg  = TRUE)
       } else if (length(geo_units) == 2) {
@@ -449,7 +449,7 @@ plotAncStatesMAP <- function(t,
                                      xlim = c(-tree_height * 1.05, tree_height/2),
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      skip = skipit,
-                                     center_end_labels = T,
+                                     center_end_labels = TRUE,
                                      bord = c("right", "top", "bottom"),
                                      neg  = TRUE)
 

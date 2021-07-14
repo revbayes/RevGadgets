@@ -205,14 +205,14 @@ plotTreeFull <- function(tree,
   # initiate plot
   if (is.null(color_branch_by)) {
     pp <- ggtree::ggtree(phy,
-                         right = F,
+                         right = FALSE,
                          size = line_width,
                          color = branch_color,
                          branch.length = BL,
                          layout = tree_layout)
   } else if (!is.null(color_branch_by)) {
     pp <- ggtree::ggtree(phy,
-                         right = F,
+                         right = FALSE,
                          size = line_width,
                          branch.length = BL,
                          layout = tree_layout)
@@ -274,23 +274,23 @@ plotTreeFull <- function(tree,
         pp <- pp + deeptime::coord_geo(dat  = geo_units,
                                        pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
                                        size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
-                                       xlim = c(-max(minmax, na.rm = T), tree_height/2),
+                                       xlim = c(-max(minmax, na.rm = TRUE), tree_height/2),
                                        ylim = c(-tick_height*5, ntips*1.1),
                                        height = grid::unit(4, "line"),
                                        skip = skipit,
-                                       abbrv = F,
+                                       abbrv = FALSE,
                                        rot = 90,
-                                       center_end_labels = T,
+                                       center_end_labels = TRUE,
                                        bord = c("right", "top", "bottom"),
                                        neg  = TRUE)
       } else if (length(geo_units) == 2) {
         pp <- pp + deeptime::coord_geo(dat  = geo_units,
                                        pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
                                        size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
-                                       xlim = c(-max(minmax, na.rm = T), tree_height/2),
+                                       xlim = c(-max(minmax, na.rm = TRUE), tree_height/2),
                                        ylim = c(-tick_height*5, ntips*1.1),
                                        skip = skipit,
-                                       center_end_labels = T,
+                                       center_end_labels = TRUE,
                                        bord = c("right", "top", "bottom"),
                                        neg  = TRUE)
       }
@@ -298,7 +298,7 @@ plotTreeFull <- function(tree,
     #add axis title
     pp <- pp + ggplot2::scale_x_continuous(name = "Age (Ma)",
                                            expand = c(0, 0),
-                                           limits = c(-max(minmax, na.rm = T), tree_height/2),
+                                           limits = c(-max(minmax, na.rm = TRUE), tree_height/2),
                                            breaks = -rev(seq(0,max_age+dx,interval)),
                                            labels = rev(seq(0,max_age+dx,interval)))
     pp <- ggtree::revts(pp)
@@ -381,7 +381,7 @@ plotTreeFull <- function(tree,
       }
 
       if ( "sampled_ancestor" %in% colnames(pp$data) == TRUE ) {
-        sampled_tip_probs <- 1 - as.numeric(pp$data$sampled_ancestor[pp$data$isTip == T])
+        sampled_tip_probs <- 1 - as.numeric(pp$data$sampled_ancestor[pp$data$isTip == TRUE])
         sampled_tip_probs[is.na(sampled_tip_probs)] <- 0
       } else {
         sampled_tip_probs <- rep(1, sum(pp$data$isTip) )
@@ -538,7 +538,7 @@ plotTreeFull <- function(tree,
       xlim_min <- -tree_height
     } else {
       xlim_min <- -max(t(matrix(unlist(pp$data$age_0.95_HPD),
-                                nrow = 2)),na.rm = T)
+                                nrow = 2)),na.rm = TRUE)
     }
 
     if (tip_labels == TRUE) {
@@ -555,7 +555,7 @@ plotTreeFull <- function(tree,
 
     xlim_min <- range(pp$data$x)[1]
 
-    if (tip_labels == T) {
+    if (tip_labels == TRUE) {
       xlim_max <- range(pp$data$x)[2]*1.5
     } else {
       xlim_max <- range(pp$data$x)[2]

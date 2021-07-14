@@ -100,8 +100,8 @@
 #' # Example of coloring branches by rate
 #' file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = F,
-#'                  tip_labels_remove_underscore = T, tip_labels_italics = F,
+#' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = FALSE,
+#'                  tip_labels_remove_underscore = TRUE, tip_labels_italics = FALSE,
 #'                  color_branch_by = "branch_thetas", line_width = 1.7) +
 #'        ggplot2::theme(legend.position=c(.1, .9))
 #' }
@@ -177,7 +177,7 @@ plotTree <- function(tree,
                tree_layout = tree_layout,
 
                # Turn off FBD-specific aspects
-               label_sampled_ancs = F, tip_age_bars = F
+               label_sampled_ancs = FALSE, tip_age_bars = F
   )
 
 }
