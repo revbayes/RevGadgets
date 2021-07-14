@@ -124,8 +124,7 @@
   }
 
   # create list of ancestral state name tags
-  state_pos_str_to_update = c(sapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")}))
-
+  state_pos_str_to_update = c(unlist(lapply(1:n_states, function(x) { paste(state_pos_str_base,x,sep="")})))
 
   # overwrite state labels
   for (m in state_pos_str_to_update) {

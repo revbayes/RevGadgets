@@ -108,7 +108,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
   # find matching column names if using match
   if (!is.null(match)) {
-    colnames <- sapply(strsplit(colnames(trace[[1]]), "\\["), function(x) x[1])
+    colnames <- unlist(lapply(strsplit(colnames(trace[[1]]), "\\["), function(x) x[1]))
     vars <- colnames(trace[[1]])[colnames %in% match]
     if (length(vars) == 0) {stop("match did not correspond to any column names in provided trace")}
   }
