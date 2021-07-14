@@ -27,10 +27,16 @@
 #' the default RevGadgets colors. Provide a character vector of hex codes or other R-readible
 #' colors the same length of the number of character states. Names of the vector should
 #' correspond to state labels.
-#' @param node_pie_size (numeric; 2) Size of the pies at nodes.
-#' @param tip_pie_size (numeric; 1) Size of the pies at tips.
+#' @param node_pie_size (numeric; 2) Size of the pies at nodes. Size regulates the area of the symbol,
+#' following ggplot2 best practices:
+#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
+#' @param tip_pie_size (numeric; 1) Size of the pies at tips. Size regulates the area of the symbol,
+#' following ggplot2 best practices:
+#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
 #' @param shoulder_pie_size (numeric; node_pie_size) Size of the pies at shoulders for
-#' cladogenetic plots.
+#' cladogenetic plots. Size regulates the area of the symbol,
+#' following ggplot2 best practices:
+#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
 #' @param tip_pies (logical; TRUE) Plot pies tips?
 #' @param node_pie_nudge_x (numeric; 0) If pies aren't centered, ajust by nudging
 #' @param node_pie_nudge_y (numeric; 0) If pies aren't centered, ajust by nudging

@@ -57,6 +57,8 @@
 #' symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.
 #'
 #' @param node_pp_shape (integer; 1) Integer corresponding to point shape (value between 0-25).
+#' See ggplot2 documentation for details:
+#' \url{https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#point}
 #'
 #' @param node_pp_color (character; "black") Color for node_pp symbols, either as valid R color name(s)
 #' or hex code(s). Can be a single character string specifying a single color, or a vector of
@@ -65,7 +67,9 @@
 #'
 #' @param node_pp_size (numeric or character; 1) Size for node_pp symbols. If numeric, the size will
 #' be fixed at the specified value. If a character, it should specify "variable", indicating that
-#' size should be scaled by the posterior value.
+#' size should be scaled by the posterior value. Size regulates the area of the shape,
+#' following ggplot2 best practices:
+#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
 #'
 #' @param tip_age_bars (logical; FALSE) Plot node age bars for the tips as well? Useful for plotting
 #' serial sampled analyses or fossilized birth-death analyses, or any cases where some tip ages are
