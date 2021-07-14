@@ -328,9 +328,9 @@ plotTreeFull <- function(tree,
         x_pos <- -rev(xline)
       }
       for (k in 2:(length(x_pos))) {
-        box_col = "gray92"
-        if (k %% 2 == 1) box_col = "white"
-        box = ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
+        box_col <- "gray92"
+        if (k %% 2 == 1) box_col <- "white"
+        box <- ggplot2::geom_rect( xmin=x_pos[k-1], xmax=x_pos[k], ymin=-tick_height*5, ymax=ntips, fill=box_col)
         pp <- gginnards::append_layers(pp, box, position = "bottom")
       }
     }
