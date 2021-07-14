@@ -117,7 +117,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
     plots <- list()
     #identify type of vars and split by quantitative vs. qualitative
     classes <- character()
-    for (i in 1:length(vars)) {
+    for (i in seq_len(length(vars))) {
       classes[i] <- class(trace[[1]][,vars[i]])
     }
     vars_quant <- vars[classes == "numeric"]
@@ -142,14 +142,14 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
     # make the quantitative plots
     if (length(vars_quant) > 0) {
-    for(i in 1:length(trace)){
+    for(i in seq_len(length(trace))) {
       if (length(vars_quant) > 1) {
         # reshape data for plotting
         t <- trace[[i]][,vars_quant]
         t <- reshape::melt(t)
         colnames(t) <- c("Variable", "value")
         dfs <- list()
-        for (k in 1:length(vars_quant)) {
+        for (k in seq_len(length(vars_quant))) {
           den<- density(trace[[i]][,vars_quant[k]])
           dfs[[k]] <- data.frame(Variable=vars_quant[k], x = den$x, y = den$y)
         }
@@ -157,8 +157,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
         # calculate quantiles for all variables
         q_lows <- numeric()
         q_highs <- numeric()
-        for (k in 1:length(vars_quant)) {q_lows[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.025)}
-        for (k in 1:length(vars_quant)) {q_highs[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.975)}
+        for (k in seq_len(length(vars_quant))) {q_lows[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.025)}
+        for (k in seq_len(length(vars_quant))) {q_highs[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.975)}
 
         # plot densities, filling in the 95% credible interval
         plots[[i]] <- ggplot2::ggplot(t) +
@@ -166,7 +166,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
                                 geom="line", position = "identity") +
           ggplot2::xlab("Parameter value") +
           ggplot2::ylab("Density")
-        for (k in 1:length(vars_quant)) {
+        for (k in seq_len(length(vars_quant))) {
           plots[[i]] <- plots[[i]] +
             ggplot2::geom_ribbon(data = subset(tt, Variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                         ggplot2::aes(x=x,ymax=y,ymin=0),
@@ -205,7 +205,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
       if (length(vars_quant) > 1) {
         t <- do.call("rbind", trace)[,vars_quant]
         dfs <- list()
-        for (k in 1:length(vars_quant)) {
+        for (k in seq_len(length(vars_quant))) {
           den<- density(t[,vars_quant[k]])
           dfs[[k]] <- data.frame(Variable = vars_quant[k], x = den$x, y = den$y)
         }
@@ -215,8 +215,8 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
         # calculate quantiles for all variables
         q_lows <- numeric()
         q_highs <- numeric()
-        for (k in 1:length(vars_quant)) {q_lows[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.025)}
-        for (k in 1:length(vars_quant)) {q_highs[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.975)}
+        for (k in seq_len(length(vars_quant))) {q_lows[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.025)}
+        for (k in seq_len(length(vars_quant))) {q_highs[k] <- quantile(t[t$Variable == vars_quant[k],"value"],0.975)}
 
         # plot densities, filling in the 95% credible interval
         plots[[length(trace) + 1]] <- ggplot2::ggplot(t) +
@@ -226,7 +226,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
                                 geom="line") +
           ggplot2::xlab("Parameter value") +
           ggplot2::ylab("Density")
-        for (k in 1:length(vars_quant)) {
+        for (k in seq_len(length(vars_quant))) {
           plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
             ggplot2::geom_ribbon(data = subset(tt, Variable == vars_quant[k] & x > q_lows[k] & x < q_highs[k]),
                                  ggplot2::aes(x=x,ymax=y,ymin=0),
@@ -266,13 +266,13 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
 
     # make the qualitative plots
     if (length(vars_qual > 0)) {
-      for(i in 1:length(trace)){
+      for(i in seq_len(length(trace))) {
         if (length(vars_qual) > 1) {
           # subset trace by qualitative variables
           t <- trace[[i]][,vars_qual]
           # calculate state probabilities and the credible set for all variables
           sp <- list()
-          for (k in 1:length(vars_qual)) {
+          for (k in seq_len(length(vars_qual))) {
             # add in catch case for when table only 1 state visited
             table <- sort(table(t[,vars_qual[k]])/nrow(t), decreasing = TRUE)
             if (is.table(table) == FALSE) {
@@ -349,7 +349,7 @@ plotTrace <- function(trace, color = "default", vars = NULL, match = NULL) {
           t <- do.call("rbind", trace)[,vars_qual]
           # calculate state probabilities and the credible set for all variables
           sp <- list()
-          for (k in 1:length(vars_qual)) {
+          for (k in seq_len(length(vars_qual))) {
             table <- sort(table(t[,vars_qual[k]])/nrow(t), decreasing = TRUE)
             if (is.table(table) == FALSE) {
               sp[[k]] <- data.frame(Var1 = names(table),

@@ -62,7 +62,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
 
   n_paths  <- length(paths)
   trees    <- vector("list", n_paths)
-  for (i in 1:length(paths)){
+  for (i in seq_len(length(paths))) {
     nexus <- .isNexusFile(paths[i])
     newick_single <- .isSingleNewick(paths[i])
     if (!newick_single & !nexus){
@@ -86,7 +86,7 @@ readTrees <- function(paths, tree_name =  "psi", burnin = 0, n_cores = 1L, verbo
     } else {stop("tree file format unrecognized")}
 
     # add index if missing (for trees not output by RevBayes)
-    for (j in 1:length(trees[[i]])){
+    for (j in seq_len(length(trees[[i]]))) {
       if (!"index" %in% colnames(trees[[i]][[j]]@data)) {
         t <- trees[[i]][[j]]
         if (!"node" %in% colnames(t@data) || length(t@data$node) == 0) {

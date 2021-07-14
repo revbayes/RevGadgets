@@ -272,8 +272,8 @@ plotTreeFull <- function(tree,
       # add deep timescale
       if (length(geo_units) == 1){
         pp <- pp + deeptime::coord_geo(dat  = geo_units,
-                                       pos  = lapply(1:length(geo_units), function(x) "bottom"),
-                                       size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                       pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
+                                       size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
                                        xlim = c(-max(minmax, na.rm = T), tree_height/2),
                                        ylim = c(-tick_height*5, ntips*1.1),
                                        height = grid::unit(4, "line"),
@@ -285,8 +285,8 @@ plotTreeFull <- function(tree,
                                        neg  = TRUE)
       } else if (length(geo_units) == 2) {
         pp <- pp + deeptime::coord_geo(dat  = geo_units,
-                                       pos  = lapply(1:length(geo_units), function(x) "bottom"),
-                                       size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                       pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
+                                       size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
                                        xlim = c(-max(minmax, na.rm = T), tree_height/2),
                                        ylim = c(-tick_height*5, ntips*1.1),
                                        skip = skipit,
@@ -411,21 +411,21 @@ plotTreeFull <- function(tree,
     space_labels <- ntips/30
     if (tip_labels_italics == TRUE) {
       pp <- pp + ggplot2::annotate("text", x = sampled_ancs$x, y = sampled_ancs$y,
-                                   label = 1:nrow(sampled_ancs), vjust = -.5,
+                                   label = seq_len(nrow(sampled_ancs)), vjust = -.5,
                                    size = tip_labels_size, color = tip_labels_color) +
         ggplot2::annotate("text", x = rep(-max(unlist(pp$data$age_0.95_HPD), na.rm=T),
                                           times = nrow(sampled_ancs)),
                           y = seq(from = ntips-space_labels, by = -space_labels, length.out = nrow(sampled_ancs)),
-                          label = paste0(1:nrow(sampled_ancs),": italic(`", sampled_ancs$label, "`)"),
+                          label = paste0(seq_len(nrow(sampled_ancs)),": italic(`", sampled_ancs$label, "`)"),
                           size = tip_labels_size, color = tip_labels_color, hjust = 0, parse = TRUE)
     } else {
       pp <- pp + ggplot2::annotate("text", x = sampled_ancs$x, y = sampled_ancs$y,
-                                   label = 1:nrow(sampled_ancs), vjust = -.5,
+                                   label = seq_len(nrow(sampled_ancs)), vjust = -.5,
                                    size = tip_labels_size, color = tip_labels_color) +
         ggplot2::annotate("text", x = rep(-max(unlist(pp$data$age_0.95_HPD), na.rm=T),
                                           times = nrow(sampled_ancs)),
                           y = seq(from = ntips-space_labels, by = -space_labels, length.out = nrow(sampled_ancs)),
-                          label = paste0(1:nrow(sampled_ancs),": ", sampled_ancs$label),
+                          label = paste0(seq_len(nrow(sampled_ancs)),": ", sampled_ancs$label),
                           size = tip_labels_size, color = tip_labels_color, hjust = 0)
     }
 

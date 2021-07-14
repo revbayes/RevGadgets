@@ -42,8 +42,8 @@ rerootPhylo <- function(tree, outgroup) {
   if (length(outgroup) > 2)
     stop("outgroup should contain 1 or 2 taxa names")
 
-  for (i in 1:length(tree)) {
-    for (j in 1:length(tree[[i]])) {
+  for (i in seq_len(length(tree))) {
+    for (j in seq_len(length(tree[[i]]))) {
 
       # Make tips names for tree and add to data object
       node_name <- .makeNodeNames(tree = tree[[i]][[j]]@phylo)
@@ -51,7 +51,7 @@ rerootPhylo <- function(tree, outgroup) {
       tree[[i]][[j]]@data$node_name <- node_name$node_names
 
       # Check that outgroups are in tree
-      for (k in 1:length(outgroup)) {
+      for (k in seq_len(length(outgroup))) {
         if (outgroup[k] %in% tree[[i]][[j]]@phylo$tip.label == FALSE) {
           stop(paste0("Outgroup ", outgroup[k],
               " not found in tree. Check spelling and underscores."))

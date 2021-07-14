@@ -81,7 +81,7 @@ plotPostPredStats <- function(data,
 
   # containers for plots
   plots <- vector("list", length(names))
-  for (i in 1:length(names)) {
+  for (i in seq_len(length(names))) {
 
     # xlim values
     min_value <- min(sim[,i], obs[[i]])
@@ -122,7 +122,7 @@ plotPostPredStats <- function(data,
 
     # plot
     p <- ggplot2::ggplot(df, ggplot2::aes(x, y))
-    for(q in 1:length(prob)) {
+    for(q in seq_len(length(prob))) {
       this_q <- prob[q]
       if ( side == "left" ) {
         l <- 1 - this_q

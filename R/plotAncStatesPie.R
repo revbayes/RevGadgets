@@ -297,8 +297,8 @@ plotAncStatesPie <- function(t,
       # add deep timescale
       if (length(geo_units) == 1){
         p <- p + deeptime::coord_geo(dat  = geo_units,
-                                     pos  = lapply(1:length(geo_units), function(x) "bottom"),
-                                     size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                     pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
+                                     size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
                                      xlim = c(-tree_height, tree_height/2),
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      height = grid::unit(4, "line"),
@@ -310,8 +310,8 @@ plotAncStatesPie <- function(t,
                                      neg  = TRUE)
       } else if (length(geo_units) == 2) {
         p <- p + deeptime::coord_geo(dat  = geo_units,
-                                     pos  = lapply(1:length(geo_units), function(x) "bottom"),
-                                     size = lapply(1:length(geo_units), function(x) tip_labels_size),
+                                     pos  = lapply(seq_len(length(geo_units)), function(x) "bottom"),
+                                     size = lapply(seq_len(length(geo_units)), function(x) tip_labels_size),
                                      xlim = c(-tree_height, tree_height/2),
                                      ylim = c(-tick_height*5, ntips*1.1),
                                      skip = skipit,

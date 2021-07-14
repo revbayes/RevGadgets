@@ -31,12 +31,12 @@
     p <- gginnards::append_layers(p, box, position = "bottom")
   }
   if (max_age > 140) {
-    for (k in 1:length(period_names)) {
+    for (k in seq_len(length(period_names))) {
       p <- p + ggplot2::annotate( geom="text", label=period_names[k], angle = 90,
                                   x=x_pos_mid[k], y=dy_text, hjust=0, size=3.25)
     }
   } else {
-    for (k in 1:length(epoch_names)) {
+    for (k in seq_len(length(epoch_names))) {
       p <- p + ggplot2::annotate( geom="text", label=epoch_names[k], angle = 90,
                                   x=x_pos_mid[k], y=dy_text, hjust=0, size=3.25)
     }
@@ -110,7 +110,7 @@
     states <- states[!states == "NA"]
     states <- states[order(states)]
     state_labels <- list()
-    for(i in 1:length(states) ) {
+    for(i in seq_len(length(states))) {
       state_labels[as.character(states[i])] <- LETTERS[i]
     }
     state_labels["other"] <- "other"
@@ -133,7 +133,7 @@
     x_state <- as.vector(x_state)
     x_state_valid <- which( x_state != "NA" )
     x_state_invalid <- which( x_state == "NA" )
-    x_state_tmp <- unlist(sapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
+    x_state_tmp <- unlist(lapply(x_state, function(z) { state_labels[ names(state_labels)==z ] }))
     x_state[x_state_valid] <- x_state_tmp
     x_state[x_state_invalid] <- NA
     if(labels_as_numbers) {
@@ -198,7 +198,7 @@
       x_tmp <- as.vector(attributes(t)$data[[m]])
       pp_tmp <- as.numeric(as.vector(attributes(t)$data[[pp_str]]))
 
-      for (j in 1:length(x_tmp))
+      for (j in seq_len(length(x_tmp)))
       {
         if (!is.na(x_tmp[j])) {
 
@@ -215,9 +215,9 @@
 
     # add probs for >3rd state under "other" label
     rem_prob <- c()
-    for (i in 1:nrow(dat[[s]])) {
+    for (i in seq_len(nrow(dat[[s]]))) {
       rem_prob[i] <- 1
-      for (j in 1:length(dat[[s]][i,])) {
+      for (j in seq_len(length(dat[[s]][i,]))) {
         rem_prob[i] <- rem_prob[i] - dat[[s]][i,j]
       }
     }
@@ -417,7 +417,7 @@
   # a good long-term solution
 
    results <- list()
-     for (i in 1:nrow(data)){
+     for (i in seq_len(nrow(data))) {
        ggplot2::ggsave(".temp.png",
                        plot = data$subview[[i]],
                        bg = "transparent",
@@ -517,13 +517,13 @@
     ##
     ## child %in% currentNode %>% which %>% parent[.] %>% unique
     ## idx <- sapply(pNode, function(i) all(child[parent == i] %in% currentNode))
-    idx <- sapply(pNode, function(i) all(child_list[[i]] %in% currentNode))
+    idx <- unlist(lapply(pNode, function(i) all(child_list[[i]] %in% currentNode)))
     newNode <- pNode[idx]
 
-    y[newNode] <- sapply(newNode, function(i) {
+    y[newNode] <- unlist(lapply(newNode, function(i) {
       mean(y[child_list[[i]]], na.rm=TRUE)
       ##child[parent == i] %>% y[.] %>% mean(na.rm=TRUE)
-    })
+    }))
 
     currentNode <- c(currentNode[!currentNode %in% unlist(child_list[newNode])], newNode)
     ## currentNode <- c(currentNode[!currentNode %in% child[parent %in% newNode]], newNode)
@@ -579,13 +579,13 @@
 .makeNodeNames <- function(tree) {
   pr <- ape::prop.part(tree)
   labels <- attributes(pr)$labels
-  names(labels) <- 1:length(labels)
-  nodes <- lapply(pr[1:length(pr)], dplyr::recode, !!!labels)
+  names(labels) <- seq_len(length(labels))
+  nodes <- lapply(pr[seq_len(length(pr))], dplyr::recode, !!!labels)
   nodes <- append(attributes(pr)$labels, nodes)
 
   node_names <- numeric()
   node_names_op <- numeric()
-  for (i in 1:length(nodes)) {
+  for (i in seq_len(length(nodes))) {
     node_names[i] <- paste(as.numeric(sort(tree$tip.label) %in% nodes[[i]]),
                            sep = "", collapse = "")
     node_names_op[i] <- paste(as.numeric(!sort(tree$tip.label) %in% nodes[[i]]),
@@ -611,17 +611,17 @@
   range_color_list <- read.csv(color_fn, header=T, sep=",", colClasses="character")
 
   # get area names
-  area_names <- unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
+  area_names <- unlist(lapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
 
   # get state labels
   state_descriptions <- read.csv(label_fn, header=T, sep=",", colClasses="character")
 
   # map presence-absence ranges to area names
-  range_labels <- sapply(state_descriptions$range[2:nrow(state_descriptions)],
+  range_labels <- unlist(lapply(state_descriptions$range[2:nrow(state_descriptions)],
                          function(x) {
                            present <- as.vector(gregexpr(pattern="1", x)[[1]])
                            paste( area_names[present], collapse="")
-                         })
+                         }))
 
   # map labels to colors
   range_colors <- range_color_list$color[ match(range_labels, range_color_list$range) ]
@@ -1020,10 +1020,10 @@ new_data_frame <- function(x = list(), n = NULL) {
     # Grid of gammas
     gammas <- qcauchy(quants,0,zeta)
     # Number of expected shifts for each value of sigma
-    num_expected_shifts <- sapply(gammas,function(x) {
+    num_expected_shifts <- unlist(lapply(gammas,function(x) {
       p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid_size=2000)/0.5
       return(p_shift_one_cell_this_gamma * (n_episodes-1))
-    })
+    }))
     # Average the per-sigma E(n_shifts) over p(sigma) to get overall expectation given zeta
     this_expected_num_shifts <- sum(probs * num_expected_shifts)
     return( (log(this_expected_num_shifts) - log(prior_n_shifts))^2 ) # Distance to target
@@ -1035,10 +1035,10 @@ new_data_frame <- function(x = list(), n = NULL) {
 
   # Compute the prior on number of shifts for this zeta (to show user how well we approximated the target)
   gammas <- qcauchy(quants,0,zeta)
-  num_expected_shifts <- sapply(gammas,function(x) {
+  num_expected_shifts <- unlist(lapply(gammas,function(x) {
     p_shift_one_cell_this_gamma <- .pRightTailHorseshoeGrid(shift,x,grid_size=2000)/0.5
     return(p_shift_one_cell_this_gamma * (n_episodes-1))
-  })
+  }))
 
   # Estimate the error of our chosen global scale hyperprior
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
@@ -1066,10 +1066,10 @@ new_data_frame <- function(x = list(), n = NULL) {
     # Grid of sigmas
     sigmas <- qcauchy(quants,0,zeta)
     # Number of expected shifts for each value of sigma
-    num_expected_shifts <- sapply(sigmas,function(x) {
+    num_expected_shifts <- unlist(lapply(sigmas,function(x) {
       p_shift_one_cell_this_sigma <- pnorm(shift,0,x,lower.tail=FALSE)/0.5
       return(p_shift_one_cell_this_sigma * (n_episodes-1))
-    })
+    }))
     # Average the per-sigma E(n_shifts) over p(sigma) to get overall expectation given zeta
     this_expected_num_shifts <- sum(probs * num_expected_shifts)
     return( (log(this_expected_num_shifts) - log(prior_n_shifts))^2 ) # Distance to target
@@ -1081,10 +1081,10 @@ new_data_frame <- function(x = list(), n = NULL) {
 
   # Compute the prior on number of shifts for this zeta (to show user how well we approximated the target)
   sigmas <- qcauchy(quants,0,zeta)
-  num_expected_shifts <- sapply(sigmas,function(x) {
+  num_expected_shifts <- unlist(lapply(sigmas,function(x) {
     p_shift_one_cell_this_sigma <- pnorm(shift,0,x,lower.tail=FALSE)/0.5
     return(p_shift_one_cell_this_sigma * (n_episodes-1))
-  })
+  }))
 
   # Estimate the error of our chosen global scale hyperprior
   computed_num_expected_shifts <- sum(probs * num_expected_shifts)
@@ -1218,7 +1218,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
 ## End functions required by densiTreeWithBranchData
 
 .removeNull <- function(x){
-  res <- x[which(!sapply(x, is.null))]
+  res <- x[which(!unlist(lapply(x, is.null)))]
 }
 
 # set prob factors
