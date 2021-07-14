@@ -271,6 +271,35 @@ dnCauchy <- function(location, scale) {
 
 }
 
+############################
+# half-cauchy distribution #
+############################
+
+dnHalfCauchy <- function(location, scale) {
+
+  min  <- location
+  max  <- location + qcauchy(0.99, location = 0, scale = scale)
+  fun  <- function(x) ifelse( x < location, 0, 2 * dcauchy(x - location, location = 0, scale = scale) )
+
+  # create the HPDs
+  x <- seq(min, max, length.out = 1001)
+  y <- fun(x)
+  dens <- list(x = x, y = y)
+  class(dens) <- "density"
+  hdi <- HDInterval::hdi(dens, allowSplit=TRUE)
+
+  dist <- list(min  = min,
+               max  = max,
+               hpd  = list(hdi),
+               fun  = list(fun),
+               type = "continuous")
+
+  return(dist)
+
+}
+
+dnCauchyPlus <- dnHalfCauchy
+
 ###########################
 # loguniform distribution #
 ###########################
@@ -633,10 +662,39 @@ dnNbinomial <- function(r, p) {
 
 dnNbinom <- dnNbinomial
 
+############################
+# categorical distribution #
+############################
 
+simplex <- function(...) {
+  x <- unlist(list(...))
+  x / sum(x)
+}
 
+dnCategorical <- function(p) {
 
+  # the limits
+  min  <- 1
+  max  <- length(p)
 
+  # the range
+  range <- min:max
+  probs <- p
+
+  # in credible set
+  is_credible <- .getDiscreteCredibleSet(probs)
+
+  # make the object
+  dist <- list(min   = min,
+               max   = max,
+               probs = data.frame(x = range, y = probs, is_credible = is_credible),
+               type  = "discrete")
+
+  return(dist)
+
+}
+
+dnCat <- dnCategorical
 
 
 
