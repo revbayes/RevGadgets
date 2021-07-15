@@ -24,4 +24,17 @@ test_that("compare expected calculations from documentation example", {
       decrease = FALSE
     )
   )
+
+  expect_error(
+    calculateShiftBayesFactor(
+      speciation_rate,
+      speciation_times,
+      "fossilization",
+      "interval_times",
+      0.0,
+      40.0,
+      decrease = FALSE
+    )
+  )
+
 })

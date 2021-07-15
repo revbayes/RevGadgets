@@ -26,7 +26,8 @@ Numeric vector of parameters with names (to avoid rate/scale and
 var/sd confusion).
 }
 \description{
-Turn posterior samples collected by MCMC into a parametric prior distribution.
+Turn posterior samples collected by MCMC into a parametric prior
+distribution.
 }
 \details{
 The distributions are fit by the method of moments.

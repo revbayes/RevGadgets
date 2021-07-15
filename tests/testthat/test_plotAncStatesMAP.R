@@ -30,3 +30,22 @@ test_that("plots MAP of ancestral states", {
   expect_equal(plot_new$data, plot_orig$data)
 
 })
+
+test_that("error messages behave as expected", {
+  # get files
+  tree_file <-
+    system.file("extdata",
+                "comp_method_disc/ase_freeK.tree",
+                package = "RevGadgets")
+
+  # make a new plot
+  example <-
+    processAncStates(tree_file,
+                     state_labels = c("1" = "Awesome",
+                                      "2" = "Beautiful",
+                                      "3" = "Cool!"))
+  expect_error(plotAncStatesMAP(t = example,
+                                geo_units =
+                                  list('epochs','periods','years')))
+
+})
