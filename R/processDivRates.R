@@ -146,7 +146,8 @@ processDivRates <- function(speciation_time_log = "",
       cat(
         "Some fossilization_time_log files do not exist:",
         paste0("\t",
-               fossilization_time_log[do_fossilization_time_log_exist == FALSE]),
+               fossilization_time_log[do_fossilization_time_log_exist ==
+                                        FALSE]),
         sep = "\n"
       )
       stop()
@@ -162,7 +163,8 @@ processDivRates <- function(speciation_time_log = "",
       cat(
         "Some fossilization_rate_log files do not exist:",
         paste0("\t",
-               fossilization_rate_log[do_fossilization_rate_log_exist == FALSE]),
+               fossilization_rate_log[do_fossilization_rate_log_exist ==
+                                        FALSE]),
         sep = "\n"
       )
       stop()

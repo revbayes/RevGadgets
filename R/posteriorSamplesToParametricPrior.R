@@ -1,7 +1,8 @@
 #' Priors from MCMC samples
 #'
 #'
-#' Turn posterior samples collected by MCMC into a parametric prior distribution.
+#' Turn posterior samples collected by MCMC into a parametric prior
+#' distribution.
 #'
 #' The distributions are fit by the method of moments.
 #' The function allows inflating the prior variance relative to the posterior
