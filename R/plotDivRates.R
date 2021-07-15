@@ -2,13 +2,14 @@
 #'
 #' Plots the output of an episodic diversification rate analysis
 #'
-#' Plots the output of episodic diversification rate analyses. Takes as input the
-#' output of processDivRates() and plotting parameters. For now, only variable names
-#' (under "item") that contain the word "rate" are included in the plot.
+#' Plots the output of episodic diversification rate analyses. Takes as
+#' input the output of processDivRates() and plotting parameters.
+#' For now, only variable names (under "item") that contain the word "rate" are
+#' included in the plot.
 #'
-#' The return object can be manipulated. For example, you can change the axis labels,
-#' the color palette, whether the axes are to be linked, or the overall plotting style/theme,
-#' just as with any ggplot object.
+#' The return object can be manipulated. For example, you can change the
+#' axis labels, the color palette, whether the axes are to be linked, or the
+#' overall plotting style/theme, just as with any ggplot object.
 #'
 #'
 #' @param rates (list of dataframes; no default) A list of dataframes,
@@ -92,7 +93,11 @@ plotDivRates <- function(rates, facet = TRUE){
     ggplot2::scale_fill_manual(values = colFun(length(rates_to_plot)))
 
     if (facet){
-      p <- p + ggplot2::facet_wrap(dplyr::vars(item), scales = "free_y", labeller = ggplot2::labeller(item = .titleFormatLabeller))
+      p <- p +
+        ggplot2::facet_wrap(dplyr::vars(item),
+                            scales = "free_y",
+                            labeller =
+                              ggplot2::labeller(item = .titleFormatLabeller))
     }
 
 

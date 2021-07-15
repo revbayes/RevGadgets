@@ -7,8 +7,9 @@
 plotHiSSE(rates)
 }
 \arguments{
-\item{rates}{(data.frame; no default) a data frame containing columns "value", "rate",
-"hidden_state", "observed_state" (such as the output of processSSE())}
+\item{rates}{(data.frame; no default) a data frame containing columns
+"value", "rate", "hidden_state", "observed_state" (such as the output
+of processSSE())}
 }
 \value{
 a ggplot object
@@ -18,7 +19,9 @@ plotHiSSE
 }
 \examples{
 \dontrun{
-hisse_file <- system.file("extdata", "sse/primates_HiSSE_2.p", package="RevGadgets")
+hisse_file <- system.file("extdata",
+                          "sse/primates_HiSSE_2.p",
+                          package="RevGadgets")
 pdata <- processSSE(hisse_file)
 p <- plotHiSSE(pdata);p
 

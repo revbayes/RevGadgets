@@ -7,11 +7,11 @@
 processPostPredStats(path_sim, path_emp)
 }
 \arguments{
-\item{path_sim}{(character string; no default) Path to the .csv file containing
-the simulated data results}
+\item{path_sim}{(character string; no default) Path to the .csv file
+containing the simulated data results}
 
-\item{path_emp}{(character string; no default) Path to the .csv file containing
-the empirical values}
+\item{path_emp}{(character string; no default) Path to the .csv file
+containing the empirical values}
 }
 \value{
 A list of data frames

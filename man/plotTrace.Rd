@@ -9,25 +9,27 @@ plotTrace(trace, color = "default", vars = NULL, match = NULL)
 \arguments{
 \item{trace}{(list of data frames; no default) Name of a list of data frames,
 such as produced by readTrace(). If the readTrace() output
-contains multiple traces (such as from multiple runs), summarizeTrace() will provide
-summaries for each trace individually, as well as the combined trace.}
+contains multiple traces (such as from multiple runs), summarizeTrace() will
+provide summaries for each trace individually, as well as the combined trace.}
 
-\item{color}{("character"; "default") Colors for parameters. Defaults to default RevGadgets
-colors. For non-default colors, provide a named vector of length of the number of parameters.}
+\item{color}{("character"; "default") Colors for parameters. Defaults to
+default RevGadgets colors. For non-default colors, provide a named vector of
+length of the number of parameters.}
 
-\item{vars}{(character or character vector; NULL) The specific name(s) of the variable(s)
-to be summarized.}
+\item{vars}{(character or character vector; NULL) The specific name(s) of
+the variable(s) to be summarized.}
 
-\item{match}{(character; NULL) A string to match to a group of parameters. For example,
-match = "er" will plot the variables "er[1]", "er[2]", "er[3]", etc.. match
-will only work if your search string is followed by brackets in one or more of
-the column names of the provided trace file. match = "er" will only return the
-exchangeability parameters, but will not plot "Posterior".}
+\item{match}{(character; NULL) A string to match to a group of parameters.
+For example, match = "er" will plot the variables "er[1]", "er[2]", "er[3]",
+etc.. match will only work if your search string is followed by brackets in
+one or more of the column names of the provided trace file. match = "er" will
+only return the exchangeability parameters, but will not plot "Posterior".}
 }
 \value{
-plotTrace() returns a list of the length of provided trace object, plus one
-combined trace. Each element of the list contains a ggplot object with plots of
-the provided parameters. These plots may be modified in typical ggplot fashion.
+plotTrace() returns a list of the length of provided trace object,
+plus one combined trace. Each element of the list contains a ggplot object
+with plots of the provided parameters. These plots may be modified in
+typical ggplot fashion.
 }
 \description{
 Plots the posterior distributions of variables from trace file.
@@ -36,10 +38,10 @@ Plots the posterior distributions of variables from trace file.
 Plots the posterior distributions of continuous variables from one or
 multiple traces (as in, from multiple runs). Shaded regions under the curve
 represent the 95\% credible interval.  If multiple traces are provided,
-plotTrace() will plot each run independently as well as plot the combined output.
-Note that for variables ith very different distributions, overlaying the
-plots may result in illegible figures. In these cases, we recommend plotting
-each parameter separately.
+plotTrace() will plot each run independently as well as plot the combined
+output. Note that for variables ith very different distributions, overlaying
+the plots may result in illegible figures. In these cases, we recommend
+ plotting each parameter separately.
 }
 \examples{
 
@@ -55,14 +57,19 @@ plots[[1]]
 # add custom colors
 plots <- plotTrace(trace = one_trace,
                    vars = c("pi[3]","pi[4]","pi[1]","pi[2]"),
-                   color = c("pi[1]" = "green","pi[2]"= "red","pi[3]"= "blue","pi[4]"= "orange"))
+                   color = c("pi[1]" = "green",
+                             "pi[2]"= "red",
+                             "pi[3]"= "blue",
+                             "pi[4]"= "orange"))
 plots[[1]]
 
 # make the same plot, using match
 plots <- plotTrace(trace = one_trace, match = "pi")
 
 # plot some qualitative variables
-file <- system.file("extdata", "comp_method_disc/freeK_RJ.p", package = "RevGadgets")
+file <- system.file("extdata",
+                    "comp_method_disc/freeK_RJ.p",
+                    package = "RevGadgets")
 trace <- readTrace(path = file)
 
 plots <- plotTrace(trace = trace,
@@ -74,8 +81,10 @@ plots[[1]]
 plots <- plotTrace(trace = trace,
                    vars = c("prob_rate_12", "prob_rate_13",
                             "prob_rate_31", "prob_rate_32"),
-                   color = c("prob_rate_12" = "green","prob_rate_13" = "red",
-                             "prob_rate_31"= "blue","prob_rate_32" = "orange"))
+                   color = c("prob_rate_12" = "green",
+                             "prob_rate_13" = "red",
+                             "prob_rate_31"= "blue",
+                             "prob_rate_32" = "orange"))
 plots[[1]]
 }
 

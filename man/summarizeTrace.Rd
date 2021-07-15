@@ -9,16 +9,17 @@ summarizeTrace(trace, vars)
 \arguments{
 \item{trace}{(list of data frames; no default) Name of a list of data frames,
 such as produced by readTrace(). If the readTrace() output
-contains multiple traces (such as from multiple runs), summarizeTrace() will provide
-summaries for each trace individually, as well as the combined trace.}
+contains multiple traces (such as from multiple runs), summarizeTrace() will
+provide summaries for each trace individually, as well as the combined trace.}
 
-\item{vars}{(character or character vector; no default) The name of the variable(s)
-to be summarized.}
+\item{vars}{(character or character vector; no default) The name of the
+variable(s) to be summarized.}
 }
 \value{
-summarizeTrace() returns a list of the length of provided variables. For quantitative
-variables, it returns the mean and 95% credible interval. For discrete variables, it returns
-the 95% credible set of states and their associated probabilities.
+summarizeTrace() returns a list of the length of provided variables.
+For quantitative variables, it returns the mean and 95% credible interval.
+For discrete variables, it returns the 95% credible set of states and their
+associated probabilities.
 }
 \description{
 Summarizes trace file(s) that have been read into memory
@@ -50,7 +51,9 @@ trace_sum_multi <- summarizeTrace(trace = multi_trace,
                                   vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 
 # discrete character example
-file <- system.file("extdata", "comp_method_disc/freeK_RJ.p", package = "RevGadgets")
+file <- system.file("extdata",
+                    "comp_method_disc/freeK_RJ.p",
+                    package = "RevGadgets")
 trace <- readTrace(path = file)
 summarizeTrace(trace = trace,
                 vars = c("prob_rate_12", "prob_rate_13",

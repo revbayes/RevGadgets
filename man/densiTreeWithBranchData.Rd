@@ -33,26 +33,36 @@ densiTreeWithBranchData(
 )
 }
 \arguments{
-\item{tree_files}{vector of tree files in NEXUS format with data attached to the branches/nodes of the tree. All trees should have the same tip labels (the order can change).
-Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.}
+\item{tree_files}{vector of tree files in NEXUS format with data attached
+to the branches/nodes of the tree. All trees should have the same tip
+labels (the order can change). Either \code{tree_files} or both
+\code{trees} and \code{data} have to be specified.}
 
-\item{burnin}{fraction of samples to discard from the tree files as burn-in. Default 0.1.}
+\item{burnin}{fraction of samples to discard from the tree files as burn-in.
+Default 0.1.}
 
-\item{trees}{multiPhylo object or list of trees in phylo format. All trees should have the same tip labels (the order can change).
-Either \code{tree_files} or both \code{trees} and \code{data} have to be specified.}
+\item{trees}{multiPhylo object or list of trees in phylo format.
+All trees should have the same tip labels (the order can change). Either
+\code{tree_files} or both \code{trees} and \code{data} have to be specified.}
 
-\item{data}{data to be plotted on the tree - expected to be a list of vectors in the same order as the trees,
-each vector in the order of the tips and nodes of the corresponding tree}
+\item{data}{data to be plotted on the tree - expected to be a list of
+vectors in the same order as the trees, each vector in the order of the
+tips and nodes of the corresponding tree}
 
-\item{data_name}{Only used when reading from \code{tree_files}. Name of the data to be plotted, if multiple are present.}
+\item{data_name}{Only used when reading from \code{tree_files}.
+Name of the data to be plotted, if multiple are present.}
 
-\item{type}{character string specifying the type of phylogeny. Options are "cladogram" (default) or "phylogram".}
+\item{type}{character string specifying the type of phylogeny.
+Options are "cladogram" (default) or "phylogram".}
 
-\item{consensus}{A tree or character vector which is used to define the order of the tip labels. If NULL will be calculated from the trees.}
+\item{consensus}{A tree or character vector which is used to define
+the order of the tip labels. If NULL will be calculated from the trees.}
 
-\item{direction}{a character string specifying the direction of the tree. Options are "rightwards" (default), "leftwards", "upwards" and "downwards".}
+\item{direction}{a character string specifying the direction of the tree.
+Options are "rightwards" (default), "leftwards", "upwards" and "downwards".}
 
-\item{scaleX}{whether to scale trees to have identical heights. Default FALSE.}
+\item{scaleX}{whether to scale trees to have identical heights.
+Default FALSE.}
 
 \item{width}{width of the tree edges.}
 
@@ -60,60 +70,81 @@ each vector in the order of the tips and nodes of the corresponding tree}
 
 \item{cex}{a numeric value giving the factor scaling of the tip labels.}
 
-\item{font}{an integer specifying the type of font for the labels: 1 (plain text), 2 (bold), 3 (italic, the default), or 4 (bold italic).}
+\item{font}{an integer specifying the type of font for the labels: 1
+(plain text), 2 (bold), 3 (italic, the default), or 4 (bold italic).}
 
 \item{tip.color}{color of the tip labels.}
 
-\item{adj}{a numeric specifying the justification of the text strings of the tip labels: 0 (left-justification), 0.5 (centering), or 1 (right-justification).}
+\item{adj}{a numeric specifying the justification of the text strings of
+the tip labels: 0 (left-justification), 0.5 (centering), or 1
+(right-justification).}
 
 \item{srt}{a numeric giving how much the labels are rotated in degrees.}
 
-\item{keep_underscores}{whether the underscores in tip labels should be written as spaces (the default) or left as they are (if TRUE).}
+\item{keep_underscores}{whether the underscores in tip labels should be
+written as spaces (the default) or left as they are (if TRUE).}
 
-\item{label_offset}{a numeric giving the space between the nodes and the tips of the phylogeny and their corresponding labels.}
+\item{label_offset}{a numeric giving the space between the nodes and the
+tips of the phylogeny and their corresponding labels.}
 
 \item{scale_bar}{whether to add a scale bar to the plot. Default TRUE.}
 
-\item{jitter}{controls whether to shift trees. a list with two arguments: the amount of jitter and random or equally spaced (see details below)}
+\item{jitter}{controls whether to shift trees. a list with two arguments:
+the amount of jitter and random or equally spaced (see details below)}
 
-\item{color_gradient}{range of colors to be used for the data, in order of increasing values. Defaults to red to yellow to green.}
+\item{color_gradient}{range of colors to be used for the data, in order of
+increasing values. Defaults to red to yellow to green.}
 
-\item{alpha}{transparency parameter for tree colors. If NULL will be set based on the number of trees.}
+\item{alpha}{transparency parameter for tree colors. If NULL will be set
+based on the number of trees.}
 
-\item{bias}{bias applied to the color gradient. See \code{\link[grDevices]{colorRampPalette}} for more details.}
+\item{bias}{bias applied to the color gradient. See
+\code{\link[grDevices]{colorRampPalette}} for more details.}
 
-\item{data_intervals}{value intervals used for the color gradient. Can be given as a vector of interval boundaries or min and max values.
-If NULL will be set based on the data.}
+\item{data_intervals}{value intervals used for the color gradient.
+Can be given as a vector of interval boundaries or min and max values.If
+NULL will be set based on the data.}
 
 \item{\dots}{further arguments to be passed to plot.}
 }
 \description{
-This function plots a distribution of trees (e.g obtained from an MCMC inference) with branch-specific rates or other data.
-The plot is similar to those produced by DensiTree, i.e all the trees are overlapped with each other.
-The data is expected to be given per node, and will be associated with the branch above its corresponding node. Its values are plotted as a color gradient.
+This function plots a distribution of trees (e.g obtained from an
+MCMC inference) with branch-specific rates or other data.
+The plot is similar to those produced by DensiTree, i.e all the trees are
+overlapped with each other. The data is expected to be given per node,
+and will be associated with the branch above its corresponding node.
+Its values are plotted as a color gradient.
 }
 \details{
-If no consensus tree is provided, a consensus tree will be computed. This should avoid too many unnecessary crossings of edges.
+If no consensus tree is provided, a consensus tree will be computed.
+This should avoid too many unnecessary crossings of edges.
 Trees should be rooted, other wise the output may not be visually pleasing.
-The \code{jitter} parameter controls whether to shift trees so that they are not exactly on top of each other.
-If \code{amount = 0}, no jitter is applied. If \code{random = TRUE}, the applied jitter is calculated as \code{runif(n, -amount, amount)},
-otherwise \code{seq(-amount, amount, length=n)}, where \code{n} is the number of trees.
+The \code{jitter} parameter controls whether to shift trees so that
+they are not exactly on top of each other.
+If \code{amount = 0}, no jitter is applied. If \code{random = TRUE},
+the applied jitter is calculated as \code{runif(n, -amount, amount)},
+otherwise \code{seq(-amount, amount, length=n)}, where \code{n}
+is the number of trees.
 }
 \examples{
 # generate random trees & data
-trees = lapply(1:5, function(x) ape::rcoal(5))
-data = lapply(1:5, function(x) stats::runif(9, 1, 10))
+trees <- lapply(1:5, function(x) ape::rcoal(5))
+data <- lapply(1:5, function(x) stats::runif(9, 1, 10))
 
 # densiTree plot
 densiTreeWithBranchData(trees = trees, data = data, width = 2)
 
 # densiTree plot with different colors
-densiTreeWithBranchData(trees = trees, data = data, color_gradient = c("green", "blue"), width = 2)
+densiTreeWithBranchData(trees = trees, data = data,
+                        color_gradient = c("green", "blue"), width = 2)
 
 }
 \references{
-This code is adapted from the \code{\link[phangorn]{densiTree}} function by Klaus Schliep \email{klaus.schliep@gmail.com}.
-densiTree is inspired from the \href{https://www.cs.auckland.ac.nz/~remco/DensiTree/}{DensiTree} program by Remco Bouckaert.
+This code is adapted from the \code{\link[phangorn]{densiTree}}
+function by Klaus Schliep \email{klaus.schliep@gmail.com}.
+densiTree is inspired from the
+\href{https://www.cs.auckland.ac.nz/~remco/DensiTree/}{DensiTree}
+program by Remco Bouckaert.
 
 Remco R. Bouckaert (2010) DensiTree: making sense of sets of phylogenetic
 trees \emph{Bioinformatics}, \bold{26 (10)}, 1372-1373.

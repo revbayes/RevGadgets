@@ -7,16 +7,17 @@
 combineTraces(traces, burnin = 0)
 }
 \arguments{
-\item{traces}{(list of data frames; no default) Name of a list of data frames,
-such as produced by readTrace().}
+\item{traces}{(list of data frames; no default) Name of a list of data
+frames, such as produced by readTrace().}
 
-\item{burnin}{(single numeric value; default = 0.0) Fraction of generations to
-discard (if value provided is between 0 and 1) or number of generations to discard (if
-value provided is greater than 1) before combining the samples.}
+\item{burnin}{(single numeric value; default = 0.0) Fraction of generations
+to discard (if value provided is between 0 and 1) or number of generations
+to discard (if value provided is greater than 1) before combining the
+samples.}
 }
 \value{
-combineTraces() returns a list of data frames of length 1, corresponding
-to the combination of the provided samples.
+combineTraces() returns a list of data frames of length 1,
+corresponding to the combination of the provided samples.
 }
 \description{
 Combine traces into one trace file

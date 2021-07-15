@@ -11,17 +11,20 @@ plotPostPredStats(data, prob = c(0.9, 0.95), col = NULL, side = "both")
 of the empirical and simulated values, such as the output of
 processPostPredStats.R}
 
-\item{prob}{(vector of numerics; default c(0.9, 0.95)) The posterior-predictive intervals to shade.}
+\item{prob}{(vector of numerics; default c(0.9, 0.95)) The
+posterior-predictive intervals to shade.}
 
-\item{col}{(vector of colors; default NULL) The colors for each quantile. Defaults to blue and red.}
+\item{col}{(vector of colors; default NULL) The colors for each quantile.
+Defaults to blue and red.}
 
-\item{side}{(character; default "both") Whether the intervals are on "both" sides, the "left" side, or the "right" side of the distribution.}
+\item{side}{(character; default "both") Whether the intervals are on "both"
+sides, the "left" side, or the "right" side of the distribution.}
 }
 \value{
-A list of ggplot objects, where each plot contains a density distribution
-of the predicted values and a dashed line of the empirical value. The blue
-shaded region of the density plot corresponds to the 5\% two-sided quantile and
-the red corresponds to the 2\% two-sided quantile.
+A list of ggplot objects, where each plot contains a density
+distribution of the predicted values and a dashed line of the empirical v
+alue. The blue shaded region of the density plot corresponds to the 5\%
+two-sided quantile and the red corresponds to the 2\% two-sided quantile.
 }
 \description{
 Plots the posterior predictive statistics data
@@ -32,13 +35,14 @@ to plot the results of the RevBayes tutorial:
 Assessing Phylogenetic Reliability Using RevBayes and P3
 Model adequacy testing using posterior prediction (Data Version).
 
-Each plot shows the rejection region for the provided quantiles, as well as a p-value
-for the observed statistic. If side="left" (/"right"), then the p-value is the fraction of simulated
-statistics that are less than (/greater than) or equal to the observed statistic. If
-side="both", then the p-value is calculated by first fitting a KDE to the samples, then
-computing the fraction of simulated statistics with density lower than the density of
-the observed statistic; in this sense, the "both" option computes the size of HPD defined
-by the observed statistic.
+Each plot shows the rejection region for the provided quantiles,
+as well as a p-value for the observed statistic. If side="left" (/"right"),
+then the p-value is the fraction of simulated statistics that are less than
+(/greater than) or equal to the observed statistic. If side="both", then
+the p-value is calculated by first fitting a KDE to the samples, then
+computing the fraction of simulated statistics with density lower than the
+density of he observed statistic; in this sense, the "both" option computes
+the size of HPD defined by the observed statistic.
 }
 \examples{
 

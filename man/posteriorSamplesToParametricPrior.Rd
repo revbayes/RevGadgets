@@ -11,23 +11,27 @@ posteriorSamplesToParametricPrior(
 )
 }
 \arguments{
-\item{samples}{(numeric vector; no default) MCMC samples for a single parameter.}
+\item{samples}{(numeric vector; no default) MCMC samples for a single
+parameter.}
 
-\item{distribution}{(character; no default) The distribution to fit. Options are gamma for strictly positive
+\item{distribution}{(character; no default) The distribution to fit. Options
+are gamma for strictly positive
 parameters and normal for unbounded parameters.}
 
-\item{variance_inflation_factor}{(single numeric value; default = 2.0) Makes the prior variance larger than the
-variance of the posterior}
+\item{variance_inflation_factor}{(single numeric value; default = 2.0) Makes
+the prior variance larger than the variance of the posterior}
 }
 \value{
-Numeric vector of parameters with names (to avoid rate/scale and var/sd confusion).
+Numeric vector of parameters with names (to avoid rate/scale and
+var/sd confusion).
 }
 \description{
 Turn posterior samples collected by MCMC into a parametric prior distribution.
 }
 \details{
 The distributions are fit by the method of moments.
-The function allows inflating the prior variance relative to the posterior being supplied.
+The function allows inflating the prior variance relative to the posterior
+being supplied.
 }
 \examples{
 
@@ -48,8 +52,11 @@ primates <- processDivRates(speciation_time_log = speciation_time_file,
                             extinction_rate_log = extinction_rate_file,
                             burnin = 0.25)
 
-speciation_rates <- dplyr::pull(primates[which(primates$item == "speciation rate"),], "mean")
-speciation_1_gamma_prior <- posteriorSamplesToParametricPrior(speciation_rates,"gamma")
+speciation_rates <-
+       dplyr::pull(primates[which(primates$item == "speciation rate"),],
+                  "mean")
+speciation_1_gamma_prior <-
+          posteriorSamplesToParametricPrior(speciation_rates,"gamma")
 
 }
 

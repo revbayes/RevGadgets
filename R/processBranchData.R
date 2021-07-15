@@ -1,12 +1,16 @@
 #' processBranchData
 #'
-#' @param tree (treedata object; no default) a phylogenetic tree in the treedata format,
-#' or a list of lists of a single tree data object, such as the output of readTrees().
-#' @param dat (data.frame or list; no default) a data frame, or a list (of length 1) of a data frame,
-#'  with branch specific data, such as the output of readTrace().
+#' @param tree (treedata object; no default) a phylogenetic tree in the
+#' treedata format, or a list of lists of a single tree data object, such as the
+#' output of readTrees().
+#' @param dat (data.frame or list; no default) a data frame, or a list
+#' (of length 1) of a data frame, with branch specific data, such as the output
+#' of readTrace().
 #' @param burnin (numeric; 0.25) fraction of the markov-chain to discard
-#' @param parnames (character vector; c("avg_lambda", "avg_mu", "num_shifts")) Names of parameters to process
-#' @param summary (character; "median") function to summarize the continuous parameter. Typically mean or median
+#' @param parnames (character vector; c("avg_lambda", "avg_mu", "num_shifts"))
+#' Names of parameters to process
+#' @param summary (character; "median") function to summarize the continuous
+#' parameter. Typically mean or median
 #' @param net_div (logical; FALSE) Calculate net diversification?
 #'
 #' @return a treedata file with attached branch-specific data
@@ -15,8 +19,12 @@
 #' @examples
 #' \dontrun{
 #'
-#' treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
-#' logfile <- system.file("extdata", "bds/primates_BDS_rates_truncated.p", package="RevGadgets")
+#' treefile <- system.file("extdata",
+#'                         "bds/primates.tre",
+#'                         package="RevGadgets")
+#' logfile <- system.file("extdata",
+#'                        "bds/primates_BDS_rates_truncated.p",
+#'                        package="RevGadgets")
 #'
 #' branch_data <- readTrace(logfile)
 #' tree <- readTrees(paths = treefile)
@@ -33,35 +41,52 @@
 #'      ggplot2::theme(legend.position=c(.1, .9))
 #'
 #' }
-processBranchData <- function(tree, dat, burnin = 0.25,
-                              parnames = c("avg_lambda", "avg_mu", "num_shifts"),
+processBranchData <- function(tree,
+                              dat,
+                              burnin = 0.25,
+                              parnames = c("avg_lambda",
+                                           "avg_mu",
+                                           "num_shifts"),
                               summary = "median",
-                              net_div = FALSE){
-  if (class(dat) == "list") {dat <- dat[[1]]}
-  if (class(tree) == "list") {tree <- tree[[1]][[1]]}
+                              net_div = FALSE) {
+  if (class(dat) == "list") {
+    dat <- dat[[1]]
+  }
+  if (class(tree) == "list") {
+    tree <- tree[[1]][[1]]
+  }
 
-  if (!"data.frame" %in% class(dat)) stop("dat must be a data.frame or a single list of a data.frame")
-  if (!"treedata" %in% class(tree)) stop("tree must be a treedata object or a list of lists of treedata objects")
+  if (!"data.frame" %in% class(dat))
+    stop("dat must be a data.frame or a single list of a data.frame")
+  if (!"treedata" %in% class(tree))
+    stop("tree must be a treedata object or a list of lists of treedata objects")
 
-  dat <- dat[floor(nrow(dat)*burnin):nrow(dat),]
+  dat <- dat[floor(nrow(dat) * burnin):nrow(dat), ]
   tree_tbl <- tibble::as_tibble(tree)
   map <- matchNodes(tree@phylo)
 
   for (item in parnames) {
-    parameter <- unname(unlist(lapply(dat[,grepl(item, colnames(dat))], summary)))[map$Rev]
+    parameter <-
+      unname(unlist(lapply(dat[, grepl(item,
+                                       colnames(dat))],
+                           summary)))[map$Rev]
     tree_tbl[[item]] <- parameter
   }
 
-  if (net_div){
-    if ("avg_lambda" %in% parnames & "avg_mu" %in% parnames){
-      lambdas <- as.matrix(dat[,grepl("avg_lambda", colnames(dat))])
-      mus <- as.matrix(dat[,grepl("avg_mu", colnames(dat))])
+  if (net_div) {
+    if ("avg_lambda" %in% parnames & "avg_mu" %in% parnames) {
+      lambdas <- as.matrix(dat[, grepl("avg_lambda", colnames(dat))])
+      mus <- as.matrix(dat[, grepl("avg_mu", colnames(dat))])
       net_divs <- as.data.frame(lambdas - mus)
-      tree_tbl[["net_div"]] <- unname(unlist(lapply(net_divs, summary)))[map$Rev]
-    } else {stop("You set net_div = TRUE. Cannot calculate net_div without 'avg_lambda and avg_mu' in parnames")}
+      tree_tbl[["net_div"]] <-
+        unname(unlist(lapply(net_divs, summary)))[map$Rev]
+    } else {
+      stop(
+        "You set net_div = TRUE. Cannot calculate net_div without 'avg_lambda and avg_mu' in parnames"
+      )
+    }
   }
   tree2 <- tidytree::as.treedata(tree_tbl)
 
   return(list(list(tree2)))
 }
-

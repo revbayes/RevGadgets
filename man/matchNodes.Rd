@@ -10,7 +10,8 @@ matchNodes(phy)
 \item{phy}{(tree in ape format; no default) Tree on which to match nodes}
 }
 \value{
-a data frame that translates ape node numbers to RevBayes node numbers
+a data frame that translates ape node numbers to RevBayes node
+numbers
 }
 \description{
 match Nodes

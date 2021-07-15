@@ -8,16 +8,17 @@
 #'
 #' @param trace (list of data frames; no default) Name of a list of data frames,
 #' such as produced by readTrace(). If the readTrace() output
-#' contains multiple traces (such as from multiple runs), summarizeTrace() will provide
-#' summaries for each trace individually, as well as the combined trace.
+#' contains multiple traces (such as from multiple runs), summarizeTrace() will
+#' provide summaries for each trace individually, as well as the combined trace.
 #'
-#' @param vars (character or character vector; no default) The name of the variable(s)
-#' to be summarized.
+#' @param vars (character or character vector; no default) The name of the
+#' variable(s) to be summarized.
 #'
 #'
-#' @return summarizeTrace() returns a list of the length of provided variables. For quantitative
-#' variables, it returns the mean and 95% credible interval. For discrete variables, it returns
-#' the 95% credible set of states and their associated probabilities.
+#' @return summarizeTrace() returns a list of the length of provided variables.
+#' For quantitative variables, it returns the mean and 95% credible interval.
+#' For discrete variables, it returns the 95% credible set of states and their
+#' associated probabilities.
 #'
 #' @examples
 #'
@@ -41,7 +42,9 @@
 #'                                   vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 #'
 #' # discrete character example
-#' file <- system.file("extdata", "comp_method_disc/freeK_RJ.p", package = "RevGadgets")
+#' file <- system.file("extdata",
+#'                     "comp_method_disc/freeK_RJ.p",
+#'                     package = "RevGadgets")
 #' trace <- readTrace(path = file)
 #' summarizeTrace(trace = trace,
 #'                 vars = c("prob_rate_12", "prob_rate_13",
@@ -51,16 +54,21 @@
 #' @export
 
 summarizeTrace <- function(trace, vars) {
-
   # enforce argument matching
-  if (is.list(trace) == FALSE) stop("trace should be a list of data frames")
-  if (is.data.frame(trace[[1]]) == FALSE) stop("trace should be a list of data frames")
-  if (is.character(vars) == FALSE) stop("vars should be a character vector")
+  if (is.list(trace) == FALSE)
+    stop("trace should be a list of data frames")
+  if (is.data.frame(trace[[1]]) == FALSE)
+    stop("trace should be a list of data frames")
+  if (is.character(vars) == FALSE)
+    stop("vars should be a character vector")
 
   # ensure variable names present in data frame
   if (any(vars %in% colnames(trace[[1]]) == FALSE) == TRUE) {
-    cat("The following variables you provided are not present in trace file:",
-        paste0("\t", vars[!vars %in% colnames(trace[[1]])]), sep = "\n")
+    cat(
+      "The following variables you provided are not present in trace file:",
+      paste0("\t", vars[!vars %in% colnames(trace[[1]])]),
+      sep = "\n"
+    )
     stop("oops!")
   }
 
@@ -70,59 +78,75 @@ summarizeTrace <- function(trace, vars) {
   for (i in seq_len(length(vars))) {
     output[[i]] <- list()
     for (j in seq_len(length(trace))) {
-    col <- trace[[j]][,vars[i]]
-    if (class(col) == "numeric"){
-      q_2.5 <- quantile(col, prob = c(0.025,0.975))[1]
-      q_97.5 <- quantile(col, prob = c(0.025,0.975))[2]
-      names(q_2.5) <- NULL
-      names(q_97.5) <- NULL
-      output[[i]][[j]] <- c(mean = mean(col),
-                            median = stats::median(col),
-                            MAP = getMAP(col),
-                            quantile_2.5 = q_2.5,
-                            quantile_97.5 = q_97.5)
-      if ( is.null(names(trace)[[j]]) == FALSE ) {
-        names(output[[i]])[j] <- names(trace)[[j]]
-      } else {
-        names(output[[i]])[j] <- paste0("trace_", j)
-      }
-    } else if (class(col) == "integer" | class(col) == "character" ){
-      credible_set <- col
-      state_probs <- sort(table(credible_set)/length(credible_set), decreasing = TRUE)
-      cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
-      output[[i]][[j]] <- cred_set
-      if ( is.null(names(trace)[[j]]) == FALSE ) {
-        names(output[[i]])[j] <- names(trace)[[j]]
-      } else {
-        names(output[[i]])[j] <- paste0("trace_", j)
-      }
+      col <- trace[[j]][, vars[i]]
+      if (class(col) == "numeric") {
+        q_2.5 <- quantile(col, prob = c(0.025, 0.975))[1]
+        q_97.5 <- quantile(col, prob = c(0.025, 0.975))[2]
+        names(q_2.5) <- NULL
+        names(q_97.5) <- NULL
+        output[[i]][[j]] <- c(
+          mean = mean(col),
+          median = stats::median(col),
+          MAP = getMAP(col),
+          quantile_2.5 = q_2.5,
+          quantile_97.5 = q_97.5
+        )
+        if (is.null(names(trace)[[j]]) == FALSE) {
+          names(output[[i]])[j] <- names(trace)[[j]]
+        } else {
+          names(output[[i]])[j] <- paste0("trace_", j)
+        }
+      } else if (class(col) == "integer" |
+                 class(col) == "character") {
+        credible_set <- col
+        state_probs <-
+          sort(table(credible_set) / length(credible_set),
+               decreasing = TRUE)
+        cred_set <-
+          state_probs[1:min(which((cumsum(
+            state_probs
+          ) >= 0.95) == TRUE))]
+        output[[i]][[j]] <- cred_set
+        if (is.null(names(trace)[[j]]) == FALSE) {
+          names(output[[i]])[j] <- names(trace)[[j]]
+        } else {
+          names(output[[i]])[j] <- paste0("trace_", j)
+        }
 
-    }
+      }
     }
     #for multiple traces, combine and then summarize
     if (length(trace) > 1) {
       combined_trace <- do.call("rbind", trace)
-      col <- combined_trace[,vars[i]]
+      col <- combined_trace[, vars[i]]
       num_traces <- length(trace)
-      if (class(col) == "numeric"){
-        q_2.5 <- quantile(col, prob = c(0.025,0.975))[1]
-        q_97.5 <- quantile(col, prob = c(0.025,0.975))[2]
+      if (class(col) == "numeric") {
+        q_2.5 <- quantile(col, prob = c(0.025, 0.975))[1]
+        q_97.5 <- quantile(col, prob = c(0.025, 0.975))[2]
         names(q_2.5) <- NULL
         names(q_97.5) <- NULL
-        output[[i]][[num_traces + 1]] <- c(mean = mean(col),
-                                           median = stats::median(col),
-                                           MAP = getMAP(col),
-                                           quantile_2.5 = q_2.5,
-                                           quantile_97.5 = q_97.5)
+        output[[i]][[num_traces + 1]] <- c(
+          mean = mean(col),
+          median = stats::median(col),
+          MAP = getMAP(col),
+          quantile_2.5 = q_2.5,
+          quantile_97.5 = q_97.5
+        )
         names(output[[i]])[num_traces + 1] <- "Combined"
-      } else if (class(col) == "integer" | class(col) == "character" ){
+      } else if (class(col) == "integer" |
+                 class(col) == "character") {
         credible_set <- col
-        state_probs <- sort(table(credible_set)/length(credible_set), decreasing = TRUE)
-        cred_set <- state_probs[1:min(which((cumsum(state_probs) >= 0.95) == TRUE))]
+        state_probs <-
+          sort(table(credible_set) / length(credible_set),
+               decreasing = TRUE)
+        cred_set <-
+          state_probs[1:min(which((cumsum(
+            state_probs
+          ) >= 0.95) == TRUE))]
         output[[i]][[num_traces + 1]] <- cred_set
         names(output[[i]])[num_traces + 1] <- "Combined"
       }
-      }
+    }
   }
   names(output) <- vars
   return(output)

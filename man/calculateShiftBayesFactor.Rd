@@ -2,7 +2,8 @@
 % Please edit documentation in R/calculateShiftBayesFactor.R
 \name{calculateShiftBayesFactor}
 \alias{calculateShiftBayesFactor}
-\title{Bayes Factors in support of a shift in diversification rates over a given time interval.}
+\title{Bayes Factors in support of a shift in diversification rates over a given
+time interval.}
 \usage{
 calculateShiftBayesFactor(
   rate_trace,
@@ -17,30 +18,43 @@ calculateShiftBayesFactor(
 )
 }
 \arguments{
-\item{rate_trace}{(list; no default) The processed Rev output of the rate of interest throught time for computation (output of readTrace()).}
+\item{rate_trace}{(list; no default) The processed Rev output of the rate
+of interest throught time for computation (output of readTrace()).}
 
-\item{time_trace}{(list; no default) The processed Rev output of the change/interval times of the rate of interest throught time for computation (output of readTrace()).}
+\item{time_trace}{(list; no default) The processed Rev output of the
+change/interval times of the rate of interest throught time for computation
+(output of readTrace()).}
 
-\item{rate_name}{(character; no default) The name of the parameter (e.g. "speciation") for which Bayes Factor is to be calculated.}
+\item{rate_name}{(character; no default) The name of the parameter
+(e.g. "speciation") for which Bayes Factor is to be calculated.}
 
-\item{time_name}{(character; no default) The name of the interval times (e.g. "interval_times) for the rate change times.}
+\item{time_name}{(character; no default) The name of the interval times
+(e.g. "interval_times) for the rate change times.}
 
-\item{t1}{(numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).}
+\item{t1}{(numeric; no default) Support will be assesed for a shift between
+time t1 and time t2 (t1 < t2).}
 
-\item{t2}{(numeric; no default) Support will be assesed for a shift between time t1 and time t2 (t1 < t2).}
+\item{t2}{(numeric; no default) Support will be assesed for a shift between
+time t1 and time t2 (t1 < t2).}
 
-\item{prior_prob}{(numeric; 0.5) The prior probability of a shift over this interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).}
+\item{prior_prob}{(numeric; 0.5) The prior probability of a shift over this
+interval (default of 0.5 applies to standard HSMRF- and GMRF-based models).}
 
-\item{decrease}{(logical; default TRUE) Should support be assessed for a decrease in the parameter (if TRUE) or an increase (if FALSE) between t1 and t2?}
+\item{decrease}{(logical; default TRUE) Should support be assessed for a
+decrease in the parameter (if TRUE) or an increase (if FALSE) between
+t1 and t2?}
 
-\item{return_2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
+\item{return_2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned
+(if TRUE) or simply the BF (if FALSE)?}
 }
 \value{
 The Bayes Factor.
 }
 \description{
-This function computes the Bayes Factor in favor of a rate-shift between time t1 and t2 (t1 < t2).
-The default assumption (suitable to standard HSMRF and GMRF models) is that the prior probability of a shift is 0.5.
+This function computes the Bayes Factor in favor of a rate-shift between
+time t1 and t2 (t1 < t2).
+The default assumption (suitable to standard HSMRF and GMRF models) is
+that the prior probability of a shift is 0.5.
 }
 \examples{
 \dontrun{

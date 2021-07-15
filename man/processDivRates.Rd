@@ -17,17 +17,23 @@ processDivRates(
 )
 }
 \arguments{
-\item{speciation_time_log}{(vector of character strings or single character string; "") Path to speciation times log file(s)}
+\item{speciation_time_log}{(vector of character strings or
+single character string; "") Path to speciation times log file(s)}
 
-\item{speciation_rate_log}{(vector of character strings or single character string; "") Path to speciation rates log file(s)}
+\item{speciation_rate_log}{(vector of character strings or
+single character string; "") Path to speciation rates log file(s)}
 
-\item{extinction_time_log}{(vector of character strings or single character string; "") Path to extinction times log file(s)}
+\item{extinction_time_log}{(vector of character strings or
+single character string; "") Path to extinction times log file(s)}
 
-\item{extinction_rate_log}{(vector of character strings or single character string; "") Path to extinction rates log file(s)}
+\item{extinction_rate_log}{(vector of character strings or
+single character string; "") Path to extinction rates log file(s)}
 
-\item{fossilization_time_log}{(vector of character strings or single character string; "") Path to fossilization times log file(s)}
+\item{fossilization_time_log}{(vector of character strings or
+single character string; "") Path to fossilization times log file(s)}
 
-\item{fossilization_rate_log}{(vector of character strings or single character string; "") Path to fossilization rates log file(s)}
+\item{fossilization_rate_log}{(vector of character strings or
+single character string; "") Path to fossilization rates log file(s)}
 
 \item{burnin}{(single numeric value; default = 0) Fraction of generations to
 discard (if value provided is between 0 and 1) or number of generations (if
@@ -36,24 +42,27 @@ value provided is greater than 1). Passed to readTrace().}
 \item{probs}{(numeric vector; c(0.025, 0.975)) a vector of length two
 containing the upper and lower bounds for the confidence intervals.}
 
-\item{summary}{typically "mean" or "median"; the metric to summarize the posterior distribution. Defaults to "Mean"}
+\item{summary}{typically "mean" or "median"; the metric to summarize the
+posterior distribution. Defaults to "Mean"}
 }
 \value{
 List object with processed rate and time parameters.
 }
 \description{
-Processing the output of a episodic diversification rate analysis with mass-extinction events.
+Processing the output of a episodic diversification rate analysis with
+mass-extinction events.
 }
 \details{
-For processing the output of an episodic diversification rate analysis. processDivRates()
-assumes that the epochs are fixed rather than inferred. Additionally, it assumes
-that times correspond to rates such that the first rate parameter (i.e. speciation[1])
-corresponds to the present. Conversely, the first time parameter
-(i.e. interval_times[1]) corresponds to the first time interval after the present,
-moving backwards in time. processDivRates() relies on readTrace and produces a list
-object that can be read by plotDivRates() to visualize the results. For now,
-only one log file per parameter type is accepted (i.e. log files from multiple runs
-must be combined before reading into the function).
+For processing the output of an episodic diversification rate analysis.
+processDivRates() assumes that the epochs are fixed rather than inferred.
+Additionally, it assumes that times correspond to rates such that the first
+rate parameter (i.e. speciation[1]) corresponds to the present. Conversely,
+the first time parameter (i.e. interval_times[1]) corresponds to the first
+time interval after the present, moving backwards in time. processDivRates()
+relies on readTrace and produces a list object that can be read by
+plotDivRates() to visualize the results. For now, only one log file per
+parameter type is accepted (i.e. log files from multiple runs must be
+combined before reading into the function).
 }
 \examples{
 

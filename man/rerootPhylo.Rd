@@ -7,13 +7,13 @@
 rerootPhylo(tree, outgroup)
 }
 \arguments{
-\item{tree}{(list of lists of treedata objects; no default) Name of a list of lists of
-treedata objects, such as produced by readTrees().}
+\item{tree}{(list of lists of treedata objects; no default) Name of a list of
+lists of treedata objects, such as produced by readTrees().}
 
-\item{outgroup}{(character, no default) Name of the outgroup(s). Either a single taxon
-name or a character vector of length two to specify a clade; in this case the root
-will be placed at the midpoint of the branch subtending the two taxa's MRCA. Modified
-from phytools::reroot().}
+\item{outgroup}{(character, no default) Name of the outgroup(s). Either a
+single taxon name or a character vector of length two to specify a clade;
+in this case the root will be placed at the midpoint of the branch subtending
+the two taxa's MRCA. Modified from phytools::reroot().}
 }
 \value{
 returns a list of list of treedata objects, with the trees rooted.
@@ -29,7 +29,9 @@ contains multiple trees, all trees will be rerooted.
 }
 \examples{
 \dontrun{
-file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
+file <- system.file("extdata",
+                    "sub_models/primates_cytb_GTR_MAP.tre",
+                    package="RevGadgets")
 tree <- readTrees(paths = file)
 # root with one taxon
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")

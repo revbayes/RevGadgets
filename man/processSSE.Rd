@@ -14,15 +14,20 @@ processSSE(
 )
 }
 \arguments{
-\item{path}{(vector of character strings; no default) File path(s) to trace file.}
+\item{path}{(vector of character strings; no default) File path(s) to
+trace file.}
 
-\item{speciation}{(single character string; "speciation") RevBayes variable name}
+\item{speciation}{(single character string; "speciation") RevBayes variable
+name}
 
-\item{extinction}{(single character string; "extinction") RevBayes variable name}
+\item{extinction}{(single character string; "extinction") RevBayes variable
+name}
 
-\item{speciation_hidden}{(single character string; "speciation_hidden") RevBayes variable name}
+\item{speciation_hidden}{(single character string; "speciation_hidden")
+RevBayes variable name}
 
-\item{rates}{(vector; c(speciation, extinction, "net-diversification")) names of rates to be included in plot}
+\item{rates}{(vector; c(speciation, extinction, "net-diversification"))
+names of rates to be included in plot}
 
 \item{...}{additional arguments passed to readTrace()}
 }
@@ -34,7 +39,9 @@ Title
 }
 \examples{
 \dontrun{
-bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.p", package="RevGadgets")
+bisse_file <- system.file("extdata",
+                          "sse/primates_BiSSE_activity_period.p",
+                          package="RevGadgets")
 pdata <- processSSE(bisse_file)
 head(pdata)
 }

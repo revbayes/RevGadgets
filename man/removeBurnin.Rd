@@ -21,8 +21,8 @@ List of dataframes (of length 1 if only 1 log file provided).
 Removes burnin from MCMC trace
 }
 \details{
-Removes burnin from an MCMC trace, such as the output of readTrace(). If multiple
-traces are provided, this function will remove the burnin from each.
+Removes burnin from an MCMC trace, such as the output of readTrace(). If
+multiple traces are provided, this function will remove the burnin from each.
 }
 \examples{
 

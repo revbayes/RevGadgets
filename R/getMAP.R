@@ -1,10 +1,12 @@
 #' get MAP
 #'
-#' Calculates the Maximum a Posteriori estimate for the trace of a quantitative variable
+#' Calculates the Maximum a Posteriori estimate for the trace of a
+#' quantitative variable
 #'
 #' Uses the SANN method of the optim() function to approximate the MAP estimate
 #'
-#' @param var (numeric vector; no default) Vector of the samples from the trace of a quantitative variable
+#' @param var (numeric vector; no default) Vector of the samples from the
+#' trace of a quantitative variable
 #'
 #' @return the MAP estimate
 #'
@@ -22,6 +24,11 @@
 getMAP <- function(var) {
   d <- density(var)
   f <- approxfun(d$x, d$y)
-  op <- stats::optim(par = mean(var), fn = f, method = "SANN", control = list(fnscale = -1))
+  op <- stats::optim(
+    par = mean(var),
+    fn = f,
+    method = "SANN",
+    control = list(fnscale = -1)
+  )
   return(op$par)
 }

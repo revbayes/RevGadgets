@@ -38,75 +38,87 @@ plotAncStatesPie(
 \item{t}{(treedata object; none) Output of processAncStates() function
 containing tree and ancestral states.}
 
-\item{cladogenetic}{(logical; FALSE) Plot shoulder pies of cladogenetic analyses?}
+\item{cladogenetic}{(logical; FALSE) Plot shoulder pies of cladogenetic
+analyses?}
 
 \item{tip_labels}{(logical; TRUE) Label taxa labels at tips?}
 
 \item{tip_labels_size}{(numeric; 2) Size of tip labels.}
 
-\item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from tree.}
+\item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from
+tree.}
 
 \item{tip_labels_italics}{(logical; FALSE) Italicize tip labels?}
 
-\item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores from tip labels?}
+\item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores from
+tip labels?}
 
-\item{tip_labels_states}{(logical; FALSE) Optional plotting of text at tips in addition
-to taxa labels. Will plot the MAP state label.}
+\item{tip_labels_states}{(logical; FALSE) Optional plotting of text at tips
+in addition to taxa labels. Will plot the MAP state label.}
 
-\item{tip_labels_states_size}{(numeric; 2) Size of state labels at tips. Ignored if
-tip_labels_states is FALSE.}
+\item{tip_labels_states_size}{(numeric; 2) Size of state labels at tips.
+Ignored if tip_labels_states is FALSE.}
 
-\item{tip_labels_states_offset}{(numeric; 0.1) Horizontal offset of tip state labels.
-Ignored if tip_labels_states = NULL.}
+\item{tip_labels_states_offset}{(numeric; 0.1) Horizontal offset of tip
+state labels. Ignored if tip_labels_states = NULL.}
 
-\item{node_labels_as}{(character; NULL) Optional plotting of text at nodes. Possible
-values are "state" for the MAP ancestral states, "node_posterior" for the posterior
-probability of the node on the tree, or NULL for not plotting any text at the nodes (default).}
+\item{node_labels_as}{(character; NULL) Optional plotting of text at nodes.
+Possible values are "state" for the MAP ancestral states, "node_posterior"
+for the posterior probability of the node on the tree, or NULL for not
+plotting any text at the nodes (default).}
 
 \item{node_labels_size}{(numeric; 2) Size of node labels text. Ignored if
 node_labels_as = NULL.}
 
-\item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels from nodes.
-Ignored if node_labels_as = NULL.}
+\item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels
+from nodes. Ignored if node_labels_as = NULL.}
 
-\item{pie_colors}{("character"; "default") Colors for states in pies. If "default", plots
-the default RevGadgets colors. Provide a character vector of hex codes or other R-readible
-colors the same length of the number of character states. Names of the vector should
-correspond to state labels.}
+\item{pie_colors}{("character"; "default") Colors for states in pies.
+If "default", plots the default RevGadgets colors. Provide a character
+vector of hex codes or other R-readible colors the same length of the number
+of character states. Names of the vector should correspond to state labels.}
 
-\item{node_pie_size}{(numeric; 2) Size of the pies at nodes. Size regulates the area of the symbol,
-following ggplot2 best practices:
+\item{node_pie_size}{(numeric; 2) Size of the pies at nodes. Size regulates
+the area of the symbol, following ggplot2 best practices:
 \url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
 
-\item{shoulder_pie_size}{(numeric; node_pie_size) Size of the pies at shoulders for
-cladogenetic plots. Size regulates the area of the symbol,
+\item{shoulder_pie_size}{(numeric; node_pie_size) Size of the pies at
+shoulders for cladogenetic plots. Size regulates the area of the symbol,
 following ggplot2 best practices:
 \url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
 
 \item{tip_pies}{(logical; TRUE) Plot pies tips?}
 
-\item{tip_pie_size}{(numeric; 1) Size of the pies at tips. Size regulates the area of the symbol,
-following ggplot2 best practices:
+\item{tip_pie_size}{(numeric; 1) Size of the pies at tips. Size regulates
+the area of the symbol, following ggplot2 best practices:
 \url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
 
-\item{node_pie_nudge_x}{(numeric; 0) If pies aren't centered, ajust by nudging}
+\item{node_pie_nudge_x}{(numeric; 0) If pies aren't centered, adjust by
+nudging}
 
-\item{node_pie_nudge_y}{(numeric; 0) If pies aren't centered, ajust by nudging}
+\item{node_pie_nudge_y}{(numeric; 0) If pies aren't centered, adjust by
+nudging}
 
-\item{tip_pie_nudge_x}{(numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging}
+\item{tip_pie_nudge_x}{(numeric; node_pie_nudge_x) If pies aren't centered,
+adjust by nudging}
 
-\item{tip_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging}
+\item{tip_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't centered,
+adjust by nudging}
 
-\item{shoulder_pie_nudge_x}{(numeric; node_pie_nudge_x) If pies aren't centered, ajust by nudging}
+\item{shoulder_pie_nudge_x}{(numeric; node_pie_nudge_x) If pies aren't
+centered, adjust by nudging}
 
-\item{shoulder_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't centered, ajust by nudging}
+\item{shoulder_pie_nudge_y}{(numeric; node_pie_nudge_y) If pies aren't
+centered, adjust by nudging}
 
-\item{state_transparency}{(integer; 0.75) Alpha (transparency) of state symbols- varies from
-0 to 1.}
+\item{state_transparency}{(integer; 0.75) Alpha (transparency) of state
+symbols- varies from 0 to 1.}
 
-\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with timescale in MYA.}
+\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with t
+imescale in MYA.}
 
-\item{time_bars}{(logical; timeline) Add vertical gray bars to indicate time intervals (in MYA).}
+\item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
+time intervals (in MYA).}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.
@@ -118,7 +130,9 @@ Plot character states and posterior probabilities as pies on nodes.
 # Standard ancestral state reconstruction example
 
 # process file and assign state labels
-file <- system.file("extdata", "comp_method_disc/ase_freeK.tree", package="RevGadgets")
+file <- system.file("extdata",
+                    "comp_method_disc/ase_freeK.tree",
+                    package="RevGadgets")
 example <- processAncStates(file,
                             state_labels = c("1" = "Awesome",
                                              "2" = "Beautiful",
@@ -134,9 +148,10 @@ file <- system.file("extdata", "dec/simple.ase.tre", package="RevGadgets")
 # labels that correspond to each region/ possible combination of regions
 labs <- c("1" = "K", "2" = "O", "3" = "M", "4" = "H", "5" = "KO",
           "6" = "KM", "7" = "OM", "8" = "KH", "9" = "OH", "10" = "MH",
-          "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH", "15" = "KOMH")
+          "11" = "KOM", "12" = "KOH", "13" = "KMH", "14" = "OMH",
+          "15" = "KOMH")
 dec_example  <- processAncStates(file , state_labels = labs)
-# Use the state_labels in the returned tidytree object to define color palette
+# Use the state_labels in returned tidytree object to define color palette
 # These state_labels may be a subset of the labels you provided
 # (not all possible regions may be sampled in the dataset)
 colors <- colorRampPalette(colFun(12))(length(dec_example@state_labels))

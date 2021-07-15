@@ -6,87 +6,101 @@
 #' optionally labeled posterior probabilities at nodes, a
 #' timescale plotted on the x - axis, and 95\% CI for node ages.
 #'
-#' @param tree (list of lists of treedata objects; no default) Name of a list of lists of
-#' treedata objects, such as produced by readTrees(). This object should only contain
-#' only one summary tree from one trace file. If it contains multiple trees or multiple
-#' traces, only the first will be used.
+#' @param tree (list of lists of treedata objects; no default) Name of a list of
+#' lists of treedata objects, such as produced by readTrees(). This object
+#' should only contain only one summary tree from one trace file. If it contains
+#' multiple trees or multiple traces, only the first will be used.
 #'
-#' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with timescale in MYA.
-#'#'
-#' @param geo (logical; timeline) Add a geological timeline? Defaults to the same as timeline.
+#' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with
+#' timescale in MYA.
 #'
-#' @param time_bars (logical; timeline) Add vertical gray bars to indicate gelogical timeline units
-#' if geo == TRUE or regular time intervals (in MYA) if geo == FALSE.
+#' @param geo (logical; timeline) Add a geological timeline? Defaults to the
+#' same as timeline.
 #'
-#' @param geo_units (list; list("epochs", "periods")) Which geological units to include in the geo timescale.
+#' @param time_bars (logical; timeline) Add vertical gray bars to indicate
+#' geological timeline units if geo == TRUE or regular time intervals (in MYA)
+#' if geo == FALSE.
+#'
+#' @param geo_units (list; list("epochs", "periods")) Which geological units to
+#' include in the geo timescale.
 #'
 #' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
 #'
-#' @param age_bars_colored_by (character; NULL) Specify column to color node age bars by,
-#' such as "posterior". If null, all node age bars plotted the same color, specified by
-#' age_bars_color
+#' @param age_bars_colored_by (character; NULL) Specify column to color node age
+#' bars by, such as "posterior". If null, all node age bars plotted the same
+#' color, specified by age_bars_color
 #'
-#' @param age_bars_color (character; "blue") Color for node age bars. If age_bars_colored_by
-#' specifies a variable (not NULL), you must provide two colors, low and high values for a gradient. Colors must be either
+#' @param age_bars_color (character; "blue") Color for node age bars. If
+#' age_bars_colored_by pecifies a variable (not NULL), you must provide two
+#' colors, low and high values for a gradient. Colors must be either
 #' R valid color names or valid hex codes.
 #'
-#' @param node_labels (character; NULL) Plot text labels at nodes, specified by the name of the
-#' corresponding column in the tidytree object. If NULL, no text is plotted.
+#' @param node_labels (character; NULL) Plot text labels at nodes, specified by
+#' the name of the corresponding column in the tidytree object. If NULL, no
+#' text is plotted.
 #'
-#' @param node_labels_color (character; "black") Color to plot node_labels, either as a valid
-#' R color name or a valid hex code.
+#' @param node_labels_color (character; "black") Color to plot node_labels,
+#' either as a valid R color name or a valid hex code.
 #'
 #' @param node_labels_size (numeric; 3) Size of node labels
 #'
-#' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from nodes.
+#' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from
+#' nodes.
 #'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
 #' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
 #'
-#' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip labels?
+#' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip
+#' labels?
 #'
-#' @param tip_labels_color (character; "black") Color to plot tip labels, either as a valid
-#' R color name or a valid hex code.
+#' @param tip_labels_color (character; "black") Color to plot tip labels, either
+#' as a valid R color name or a valid hex code.
 #'
 #' @param tip_labels_size (numeric; 3) Size of tip labels
 #'
-#' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from tree.
+#' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from
+#' tree.
 #'
-#' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at nodes? Specify
-#' symbol aesthetics with node_pp_shape, node_pp_color, and node_pp_size.
+#' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at
+#' nodes? Specify symbol aesthetics with node_pp_shape, node_pp_color, and
+#' node_pp_size.
 #'
-#' @param node_pp_shape (integer; 1) Integer corresponding to point shape (value between 0-25).
-#' See ggplot2 documentation for details:
+#' @param node_pp_shape (integer; 1) Integer corresponding to point shape
+#' (value between 0-25). See ggplot2 documentation for details:
 #' \url{https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#point}
 #'
 #'
-#' @param node_pp_color (character; "black") Color for node_pp symbols, either as valid R color name(s)
-#' or hex code(s). Can be a single character string specifying a single color, or a vector of
-#' length two specifying two colors to form a gradient. In this case, posterior probabilities
-#' will be indicated by color along the specified gradient.
+#' @param node_pp_color (character; "black") Color for node_pp symbols, either
+#' as valid R color name(s) or hex code(s). Can be a single character string
+#' specifying a single color, or a vector of length two specifying two colors
+#' to form a gradient. In this case, posterior probabilities will be indicated
+#' by color along the specified gradient.
 #'
-#' @param node_pp_size (numeric or character; 1) Size for node_pp symbols. If numeric, the size will
-#' be fixed at the specified value. If a character, it should specify "variable", indicating that
-#' size should be scaled by the posterior value. Size regulates the area of the shape,
-#' following ggplot2 best practices:
+#' @param node_pp_size (numeric or character; 1) Size for node_pp symbols.
+#' If numeric, the size will be fixed at the specified value. If a character,
+#' it should specify "variable", indicating that size should be scaled by the
+#' posterior value. Size regulates the area of the shape, following ggplot2
+#' best practices:
 #' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
 #'
 #'
-#' @param branch_color (character; "black") A single character string specifying the color (R color
-#' name or hex code) for all branches OR a vector of length 2 specifying two colors for a gradient,
-#' used to color the branches according to the variable specified in color_branch_by.
-#' If only 1 color is provided and you specify color_branch_by, default colorswill be chosen
-#' (low = "#005ac8", high = "#fa7850").
+#' @param branch_color (character; "black") A single character string
+#' specifying the color (R color name or hex code) for all branches OR a
+#' vector of length 2 specifying two colors for a gradient, used to color the
+#' branches according to the variable specified in color_branch_by. If only 1
+#' color is provided and you specify color_branch_by, default colors will be
+#' chosen (low = "#005ac8", high = "#fa7850").
 #'
-#' @param color_branch_by (character; NULL ) Optional name of one quantitative variable in the
-#' treedata object to color branches, such as a rate.
+#' @param color_branch_by (character; NULL ) Optional name of one quantitative
+#' variable in the treedata object to color branches, such as a rate.
 #'
 #' @param line_width (numeric; 1) Change line width for branches
 #'
-#' @param tree_layout (character; "rectangular") Tree shape layout, passed to ggtree(). Options
-#' are 'rectangular', 'cladogram', 'slanted', 'ellipse', 'roundrect', 'fan', 'circular',
-#' 'inward_circular', 'radial', 'equal_angle', 'daylight', or 'ape'.
+#' @param tree_layout (character; "rectangular") Tree shape layout, passed
+#' to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
+#' 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
+#' 'daylight', or 'ape'.
 #'
 #' @return returns a single plot object.
 #'
@@ -94,7 +108,9 @@
 #' \dontrun{
 #' # Example of standard tree plot
 #'
-#' file <- system.file("extdata", "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
+#' file <- system.file("extdata",
+#'                     "sub_models/primates_cytb_GTR_MAP.tre",
+#'                     package="RevGadgets")
 #' tree <- readTrees(paths = file)
 #' # Reroot tree before plotting
 #' tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
@@ -104,11 +120,17 @@
 #' plot + ggtree::geom_treescale(x = -0.35, y = -1)
 #'
 #' # Example of coloring branches by rate
-#' file <- system.file("extdata", "relaxed_ou/relaxed_OU_MAP.tre", package="RevGadgets")
+#' file <- system.file("extdata",
+#'                     "relaxed_ou/relaxed_OU_MAP.tre",
+#'                     package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' plot <- plotTree(tree = tree, node_age_bars = FALSE, node_pp = FALSE,
-#'                  tip_labels_remove_underscore = TRUE, tip_labels_italics = FALSE,
-#'                  color_branch_by = "branch_thetas", line_width = 1.7) +
+#' plot <- plotTree(tree = tree,
+#'                  node_age_bars = FALSE,
+#'                  node_pp = FALSE,
+#'                  tip_labels_remove_underscore = TRUE,
+#'                  tip_labels_italics = FALSE,
+#'                  color_branch_by = "branch_thetas",
+#'                  line_width = 1.7) +
 #'        ggplot2::theme(legend.position=c(.1, .9))
 #' }
 #' @export

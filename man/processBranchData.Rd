@@ -14,17 +14,21 @@ processBranchData(
 )
 }
 \arguments{
-\item{tree}{(treedata object; no default) a phylogenetic tree in the treedata format,
-or a list of lists of a single tree data object, such as the output of readTrees().}
+\item{tree}{(treedata object; no default) a phylogenetic tree in the
+treedata format, or a list of lists of a single tree data object, such as the
+output of readTrees().}
 
-\item{dat}{(data.frame or list; no default) a data frame, or a list (of length 1) of a data frame,
-with branch specific data, such as the output of readTrace().}
+\item{dat}{(data.frame or list; no default) a data frame, or a list
+(of length 1) of a data frame, with branch specific data, such as the output
+of readTrace().}
 
 \item{burnin}{(numeric; 0.25) fraction of the markov-chain to discard}
 
-\item{parnames}{(character vector; c("avg_lambda", "avg_mu", "num_shifts")) Names of parameters to process}
+\item{parnames}{(character vector; c("avg_lambda", "avg_mu", "num_shifts"))
+Names of parameters to process}
 
-\item{summary}{(character; "median") function to summarize the continuous parameter. Typically mean or median}
+\item{summary}{(character; "median") function to summarize the continuous
+parameter. Typically mean or median}
 
 \item{net_div}{(logical; FALSE) Calculate net diversification?}
 }
@@ -37,8 +41,12 @@ processBranchData
 \examples{
 \dontrun{
 
-treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
-logfile <- system.file("extdata", "bds/primates_BDS_rates_truncated.p", package="RevGadgets")
+treefile <- system.file("extdata",
+                        "bds/primates.tre",
+                        package="RevGadgets")
+logfile <- system.file("extdata",
+                       "bds/primates_BDS_rates_truncated.p",
+                       package="RevGadgets")
 
 branch_data <- readTrace(logfile)
 tree <- readTrees(paths = treefile)

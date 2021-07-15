@@ -7,13 +7,15 @@
 getMAP(var)
 }
 \arguments{
-\item{var}{(numeric vector; no default) Vector of the samples from the trace of a quantitative variable}
+\item{var}{(numeric vector; no default) Vector of the samples from the
+trace of a quantitative variable}
 }
 \value{
 the MAP estimate
 }
 \description{
-Calculates the Maximum a Posteriori estimate for the trace of a quantitative variable
+Calculates the Maximum a Posteriori estimate for the trace of a
+quantitative variable
 }
 \details{
 Uses the SANN method of the optim() function to approximate the MAP estimate

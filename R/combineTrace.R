@@ -5,15 +5,16 @@
 #' Combines multiple traces from independent MCMC replicates
 #' into one trace file.
 #'
-#' @param traces (list of data frames; no default) Name of a list of data frames,
-#' such as produced by readTrace().
+#' @param traces (list of data frames; no default) Name of a list of data
+#' frames, such as produced by readTrace().
 #'
-#' @param burnin (single numeric value; default = 0.0) Fraction of generations to
-#' discard (if value provided is between 0 and 1) or number of generations to discard (if
-#' value provided is greater than 1) before combining the samples.
+#' @param burnin (single numeric value; default = 0.0) Fraction of generations
+#' to discard (if value provided is between 0 and 1) or number of generations
+#' to discard (if value provided is greater than 1) before combining the
+#' samples.
 #'
-#' @return combineTraces() returns a list of data frames of length 1, corresponding
-#' to the combination of the provided samples.
+#' @return combineTraces() returns a list of data frames of length 1,
+#' corresponding to the combination of the provided samples.
 #'
 #' @examples
 #'
@@ -34,16 +35,19 @@
 #'
 #' @export
 
-combineTraces <- function(traces, burnin = 0.0) {
 
+combineTraces <- function(traces, burnin = 0.0) {
   # enforce argument matching
-  if (is.list(traces) == FALSE) stop("trace should be a list of data frames")
-  if (is.data.frame(traces[[1]]) == FALSE) stop("trace should be a list of data frames")
-  if (burnin < 0) stop("burnin must be a positive value")
+  if (is.list(traces) == FALSE)
+    stop("trace should be a list of data frames")
+  if (is.data.frame(traces[[1]]) == FALSE)
+    stop("trace should be a list of data frames")
+  if (burnin < 0)
+    stop("burnin must be a positive value")
 
   # only combine if there are multiple traces
   num_traces <- length(traces)
-  if ( num_traces < 2 ) {
+  if (num_traces < 2) {
     stop("Provided a list of 1 trace; can only combine multiple traces")
   }
 
@@ -62,19 +66,20 @@ combineTraces <- function(traces, burnin = 0.0) {
   # order columns, discard burnin
   post_burnin_samples <- vector("list", num_traces)
   for (i in 1:num_traces) {
-
     # get the trace
     this_trace <- traces[[i]]
 
     # order the trace
-    this_trace <- this_trace[,all_headers]
+    this_trace <- this_trace[, all_headers]
 
     # discard burnin
     if (burnin >= 1) {
-      post_burnin_samples[[i]] <- this_trace[(burnin+1):nrow(this_trace), ]
+      post_burnin_samples[[i]] <-
+        this_trace[(burnin + 1):nrow(this_trace),]
     } else if (burnin < 1 & burnin > 0) {
-      discard <- ceiling(burnin*nrow(this_trace))
-      post_burnin_samples[[i]] <- this_trace[(discard+1):nrow(this_trace), ]
+      discard <- ceiling(burnin * nrow(this_trace))
+      post_burnin_samples[[i]] <-
+        this_trace[(discard + 1):nrow(this_trace),]
     } else if (burnin == 0) {
       post_burnin_samples[[i]] <- this_trace
     } else {
@@ -88,7 +93,7 @@ combineTraces <- function(traces, burnin = 0.0) {
 
   # re-index the generations
   rownames(output) <- seq_len(nrow(output))
-  if ( "Iteration" %in% all_headers ) {
+  if ("Iteration" %in% all_headers) {
     output$Iteration <- seq_len(nrow(output))
   }
 

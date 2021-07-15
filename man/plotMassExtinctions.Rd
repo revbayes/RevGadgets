@@ -13,15 +13,22 @@ plotMassExtinctions(
 )
 }
 \arguments{
-\item{mass_extinction_trace}{(list; no default) The processed Rev output of the mass extinction probabilities (output of readTrace()).}
+\item{mass_extinction_trace}{(list; no default) The processed Rev output of
+the mass extinction probabilities (output of readTrace()).}
 
-\item{mass_extinction_times}{(numeric; no default) Vector of the fixed grid of times at which mass extinctions were allowed to occur.}
+\item{mass_extinction_times}{(numeric; no default) Vector of the fixed grid
+of times at which mass extinctions were allowed to occur.}
 
-\item{mass_extinction_name}{(character; no default) The name of the mass extinction probability parameter (e.g. "mass_extinction_probabilities") for which support is to be calculated/plotted.}
+\item{mass_extinction_name}{(character; no default) The name of the mass
+extinction probability parameter (e.g. "mass_extinction_probabilities")
+for which support is to be calculated/plotted.}
 
-\item{prior_prob}{(numeric; no default) The per-interval prior probability of a mass extinction (one minus the p parameter in RevBayes' dnReversibleJumpMixture()).}
+\item{prior_prob}{(numeric; no default) The per-interval prior probability
+of a mass extinction (one minus the p parameter in RevBayes'
+dnReversibleJumpMixture()).}
 
-\item{return_2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE) or simply the BF (if FALSE)?}
+\item{return_2lnBF}{(logical; TRUE) Should the 2ln(BF) be returned (if TRUE)
+or simply the BF (if FALSE)?}
 }
 \value{
 A ggplot object
@@ -32,9 +39,9 @@ Plots the support (as 2ln Bayes factors) for mass extinctions.
 \details{
 Works only for analyses with a fixed grid where mass extinctions may occur.
 
-The return object can be manipulated. For example, you can change the axis labels,
-the color palette, whether the axes are to be linked, or the overall plotting style/theme,
-just as with any ggplot object.
+The return object can be manipulated. For example, you can change the axis l
+abels, the color palette, whether the axes are to be linked, or the overall
+plotting style/theme, just as with any ggplot object.
 }
 \examples{
 \dontrun{
@@ -43,7 +50,8 @@ mass_extinction_probability_file <- system.file("extdata",
     "mass_extinction/crocs_mass_extinction_probabilities.p",
     package="RevGadgets")
 
-mass_extinction_probabilities <- readTrace(mass_extinction_probability_file,burnin = 0.25)
+mass_extinction_probabilities <-
+              readTrace(mass_extinction_probability_file,burnin = 0.25)
 
 # prior probability of mass extinction at any time
 prior_n_expected <- 0.1
@@ -52,12 +60,14 @@ prior_prob <- prior_n_expected/(n_intervals-1)
 
 # times when mass extinctions were allowed
 tree_age <- 243.5
-interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
+interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1) /
+                                                   n_intervals,1/n_intervals)
 
 # then plot results:
 p <- plotMassExtinctions(mass_extinction_trace=mass_extinction_probabilities,
                          mass_extinction_times=interval_times,
-                         mass_extinction_name="mass_extinction_probabilities",prior_prob);p
+                         mass_extinction_name="mass_extinction_probabilities"
+                         ,prior_prob);p
 }
 
 }

@@ -2,8 +2,8 @@
 #'
 #' Removes burnin from MCMC trace
 #'
-#' Removes burnin from an MCMC trace, such as the output of readTrace(). If multiple
-#' traces are provided, this function will remove the burnin from each.
+#' Removes burnin from an MCMC trace, such as the output of readTrace(). If
+#' multiple traces are provided, this function will remove the burnin from each.
 #'
 #' @param trace (list of data frames; no default) Name of a list of data frames,
 #' such as produced by readTrace().
@@ -27,21 +27,24 @@
 #'
 
 removeBurnin <- function(trace, burnin) {
-
-  if (is.list(trace) == FALSE) stop("trace should be a list of data frames")
-  if (is.data.frame(trace[[1]]) == FALSE) stop("trace should be a list of data frames")
-  if (is.numeric(burnin) == FALSE) stop("burnin must be a single numeric value")
-  if (burnin < 0) stop("burnin must be a positive value")
+  if (is.list(trace) == FALSE)
+    stop("trace should be a list of data frames")
+  if (is.data.frame(trace[[1]]) == FALSE)
+    stop("trace should be a list of data frames")
+  if (is.numeric(burnin) == FALSE)
+    stop("burnin must be a single numeric value")
+  if (burnin < 0)
+    stop("burnin must be a positive value")
 
   for (i in seq_len(length(trace))) {
-
-    if (burnin >= nrow(trace[[i]])) stop("Burnin larger than provided trace file")
+    if (burnin >= nrow(trace[[i]]))
+      stop("Burnin larger than provided trace file")
 
     if (burnin >= 1) {
-      trace[[i]] <- trace[[i]][(burnin+1):nrow(trace[[i]]), ]
+      trace[[i]] <- trace[[i]][(burnin + 1):nrow(trace[[i]]),]
     } else if (burnin < 1 & burnin > 0) {
-      discard <- ceiling(burnin*nrow(trace[[i]]))
-      trace[[i]] <- trace[[i]][(discard+1):nrow(trace[[i]]), ]
+      discard <- ceiling(burnin * nrow(trace[[i]]))
+      trace[[i]] <- trace[[i]][(discard + 1):nrow(trace[[i]]),]
     } else if (burnin == 0) {
       trace[[i]] <- trace[[i]]
     }

@@ -75,10 +75,12 @@ huron <- data.frame(year = 1875:1972, level = as.vector(LakeHuron))
 
 h <- ggplot2::ggplot(huron, ggplot2::aes(year))
 
-h + geom_stepribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1), fill = "grey70") +
+h + geom_stepribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1),
+                    fill = "grey70") +
     ggplot2::geom_step(ggplot2::aes(y = level))
 
-h + ggplot2::geom_ribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1), fill = "grey70") +
+h + ggplot2::geom_ribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1),
+                         fill = "grey70") +
     ggplot2::geom_line(ggplot2::aes(y = level))
 }
 }

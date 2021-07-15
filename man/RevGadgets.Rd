@@ -5,5 +5,6 @@
 \alias{RevGadgets}
 \title{RevGadgets}
 \description{
-This package provides functions to process and plot the output of RevBayes analyses.
+This package provides functions to process and plot the output of RevBayes
+analyses.
 }

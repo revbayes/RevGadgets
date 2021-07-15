@@ -7,13 +7,14 @@
 readTrees(paths, tree_name = "psi", burnin = 0, n_cores = 1L, verbose = TRUE)
 }
 \arguments{
-\item{paths}{(vector of character strings; no default) File path(s) to tree(s).}
+\item{paths}{(vector of character strings; no default) File path(s) to
+tree(s).}
 
 \item{tree_name}{(character string; default psi) Name of the tree variable.}
 
-\item{burnin}{(single numeric value; default = 0.1) Fraction of generations to
-discard (if value provided is between 0 and 1) or number of generations (if
-value provided is greater than 1).}
+\item{burnin}{(single numeric value; default = 0.1) Fraction of generations
+to discard (if value provided is between 0 and 1) or number of generations
+(if value provided is greater than 1).}
 
 \item{n_cores}{(integer; default 1) Number of cores for parallelizing.}
 
@@ -26,11 +27,12 @@ A list (across runs) of lists (across samples) of treedata objects.
 Reads in a tree file containing one or multiple trees
 }
 \details{
-Reads in a tree file in either nexus or newick format, and containing a single tree
-or multiple trees (as in the results of a Bayesian analysis). For reading in annotated
-tree files of continuous character evolution, the parameter must be considered a node
-parameter rather than branch parameter. Set isNodeParameter = TRUE in the extended
-newick monitor (mnExtNewick)
+Reads in a tree file in either nexus or newick format, and containing a
+single tree or multiple trees (as in the results of a Bayesian analysis).
+For reading in annotated tree files of continuous character evolution,
+the parameter must be considered a node parameter rather than branch
+parameter. Set isNodeParameter = TRUE in the extended newick monitor
+(mnExtNewick)
 }
 \examples{
 
@@ -46,7 +48,9 @@ file <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
 tree_new <- readTrees(path = file)
 
 # read in a tree trace (may take a few seconds)
-file <- system.file("extdata", "sub_models/primates_cytb_GTR.trees", package="RevGadgets")
+file <- system.file("extdata",
+                    "sub_models/primates_cytb_GTR.trees",
+                    package="RevGadgets")
 tree_multi <- readTrees(path = file)
 
 }
