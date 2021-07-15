@@ -31,7 +31,8 @@ plotFBDTree(
   branch_color = "black",
   color_branch_by = NULL,
   line_width = 1,
-  label_sampled_ancs = FALSE
+  label_sampled_ancs = FALSE,
+  ...
 )
 }
 \arguments{
@@ -131,6 +132,8 @@ variable in the treedata object to color branches, such as a rate.}
 
 \item{label_sampled_ancs}{(logical; FALSE) Label any sampled ancestors?
 Will inherent tip labels aesthetics for size and color.}
+
+\item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
 \value{
 returns a single plot object.

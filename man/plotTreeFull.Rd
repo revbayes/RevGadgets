@@ -32,7 +32,8 @@ plotTreeFull(
   branch_color,
   color_branch_by,
   line_width,
-  tree_layout
+  tree_layout,
+  ...
 )
 }
 \arguments{
@@ -140,6 +141,8 @@ variable in the treedata object to color branches, such as a rate.}
 ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
 'daylight' or 'ape'.}
+
+\item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
 \value{
 returns a single plot object.

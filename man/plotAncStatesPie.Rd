@@ -31,7 +31,8 @@ plotAncStatesPie(
   shoulder_pie_nudge_y = node_pie_nudge_y,
   state_transparency = 0.75,
   timeline = FALSE,
-  time_bars = timeline
+  time_bars = timeline,
+  ...
 )
 }
 \arguments{
@@ -119,6 +120,8 @@ imescale in MYA.}
 
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
 time intervals (in MYA).}
+
+\item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
 \description{
 Plot character states and posterior probabilities as pies on nodes.

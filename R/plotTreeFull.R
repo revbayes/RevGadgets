@@ -109,6 +109,8 @@
 #' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from
 #' tree.
 #'
+#' @param ... (various) Additional arguments passed to ggtree::ggtree().
+#'
 #' @return returns a single plot object.
 
 
@@ -148,7 +150,8 @@ plotTreeFull <- function(tree,
                          color_branch_by,
                          line_width,
 
-                         tree_layout) {
+                         tree_layout,
+                         ...) {
   # enforce argument matching
   if (!is.list(tree))
     stop("tree should be a list of lists of treedata objects")
@@ -292,7 +295,8 @@ plotTreeFull <- function(tree,
       size = line_width,
       color = branch_color,
       branch.length = BL,
-      layout = tree_layout
+      layout = tree_layout,
+      ...
     )
   } else if (!is.null(color_branch_by)) {
     pp <- ggtree::ggtree(
@@ -300,7 +304,8 @@ plotTreeFull <- function(tree,
       right = FALSE,
       size = line_width,
       branch.length = BL,
-      layout = tree_layout
+      layout = tree_layout,
+      ...
     )
   }
 

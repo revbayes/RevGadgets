@@ -101,6 +101,7 @@
 #' to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
 #' 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
 #' 'daylight', or 'ape'.
+#' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @return returns a single plot object.
 #'
@@ -115,7 +116,14 @@
 #' # Reroot tree before plotting
 #' tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 #' # Plot
-#' plot <- plotTree(tree = tree_rooted, node_labels = "posterior")
+#' plot <- plotTree(tree = tree_rooted,
+#'                  node_labels = "posterior")
+#'
+#' # Plot unladderized tree
+#' plot <- plotTree(tree = tree_rooted,
+#'                  node_labels = "posterior",
+#'                  ladderize = FALSE)
+#'
 #' # We can add a scale bar:
 #' plot + ggtree::geom_treescale(x = -0.35, y = -1)
 #'
@@ -167,7 +175,8 @@ plotTree <- function(tree,
                      color_branch_by = NULL,
                      line_width = 1,
 
-                     tree_layout = "rectangular") {
+                     tree_layout = "rectangular",
+                     ...) {
 
   # call plotTreeFull as appropriate
   plotTreeFull(tree = tree,
@@ -206,7 +215,8 @@ plotTree <- function(tree,
 
                # Turn off FBD-specific aspects
                label_sampled_ancs = FALSE,
-               tip_age_bars = FALSE
+               tip_age_bars = FALSE,
+               ...
   )
 
 }

@@ -33,7 +33,8 @@ plotAncStatesMAP(
   timeline = FALSE,
   geo = timeline,
   geo_units = list("epochs", "periods"),
-  time_bars = timeline
+  time_bars = timeline,
+  ...
 )
 }
 \arguments{
@@ -148,6 +149,8 @@ to include in the geo timescale.}
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
 geological timeline units if geo == TRUE or regular time intervals (in MYA)
 if geo == FALSE.}
+
+\item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
 \description{
 Plots the MAP estimates of ancestral states. Can accommodate cladogenetic

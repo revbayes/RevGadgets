@@ -85,19 +85,16 @@
 #' 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle', 'daylight'
 #' or 'ape'. When cladogenetic = TRUE, only "rectangular" and 'circular' are
 #' available.
-#'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with
 #' timescale in MYA.
-#'
 #' @param geo (logical; timeline) Add a geological timeline? Defaults to the
 #' same as timeline.
-#'
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
 #' geological timeline units if geo == TRUE or regular time intervals (in MYA)
 #' if geo == FALSE.
-#'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units
 #' to include in the geo timescale.
+#' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @examples
 #'
@@ -224,7 +221,9 @@ plotAncStatesMAP <- function(t,
                              timeline = FALSE,
                              geo = timeline,
                              geo_units = list("epochs", "periods"),
-                             time_bars = timeline) {
+                             time_bars = timeline,
+
+                             ...) {
   ##### parameter compatability checks! #####
   if (class(t) != "treedata")
     stop("t should be a treedata objects")
@@ -349,7 +348,7 @@ plotAncStatesMAP <- function(t,
   tree <- attributes(t)$phylo
 
   ##### create basic tree plot #####
-  p <- ggtree::ggtree(t, layout = tree_layout, ladderize = TRUE)
+  p <- ggtree::ggtree(t, layout = tree_layout, ...)
 
   # get dimensions
   n_node <- ape::Nnode(tree, internal.only = FALSE)

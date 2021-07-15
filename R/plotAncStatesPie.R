@@ -60,6 +60,7 @@
 #' imescale in MYA.
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
 #' time intervals (in MYA).
+#' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @examples
 #'
@@ -145,7 +146,8 @@ plotAncStatesPie <- function(t,
                              # geo scale currently not working for pies
                              #geo = timeline,
                              #geo_units = list("epochs", "periods"),
-                             time_bars = timeline) {
+                             time_bars = timeline,
+                             ...) {
   ##### parameter compatibility checks #####
   if (class(t) != "treedata")
     stop("t should be a treedata object")
@@ -226,7 +228,7 @@ plotAncStatesPie <- function(t,
     stop("timeline should be TRUE or FALSE")
 
   ##### create basic tree plot #####
-  p <- ggtree::ggtree(t, ladderize = TRUE)
+  p <- ggtree::ggtree(t, ...)
 
   ##### calculate helper variables #####
   tree <- attributes(t)$phylo

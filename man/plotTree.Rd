@@ -30,7 +30,8 @@ plotTree(
   branch_color = "black",
   color_branch_by = NULL,
   line_width = 1,
-  tree_layout = "rectangular"
+  tree_layout = "rectangular",
+  ...
 )
 }
 \arguments{
@@ -127,6 +128,8 @@ variable in the treedata object to color branches, such as a rate.}
 to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
 'daylight', or 'ape'.}
+
+\item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
 \value{
 returns a single plot object.
@@ -150,7 +153,14 @@ tree <- readTrees(paths = file)
 # Reroot tree before plotting
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 # Plot
-plot <- plotTree(tree = tree_rooted, node_labels = "posterior")
+plot <- plotTree(tree = tree_rooted,
+                 node_labels = "posterior")
+
+# Plot unladderized tree
+plot <- plotTree(tree = tree_rooted,
+                 node_labels = "posterior",
+                 ladderize = FALSE)
+
 # We can add a scale bar:
 plot + ggtree::geom_treescale(x = -0.35, y = -1)
 

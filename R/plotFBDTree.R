@@ -102,6 +102,8 @@
 #' @param label_sampled_ancs (logical; FALSE) Label any sampled ancestors?
 #' Will inherent tip labels aesthetics for size and color.
 #'
+#' @param ... (various) Additional arguments passed to ggtree::ggtree().
+#'
 #' @return returns a single plot object.
 #'
 #' @examples
@@ -117,41 +119,42 @@
 #' @export
 
 
-plotFBDTree <- function(tree,
+plotFBDTree <- function(
+                        tree,
+                        timeline = FALSE,
+                        geo = timeline,
+                        geo_units = list("epochs", "periods"),
+                        time_bars = timeline,
 
-                         timeline = FALSE,
-                         geo = timeline,
-                         geo_units = list("epochs", "periods"),
-                         time_bars = timeline,
+                        node_age_bars = TRUE,
+                        tip_age_bars = TRUE,
+                        age_bars_color = "blue",
+                        age_bars_colored_by = NULL,
 
-                         node_age_bars = TRUE,
-                         tip_age_bars = TRUE,
-                         age_bars_color = "blue",
-                         age_bars_colored_by = NULL,
+                        node_labels = NULL,
+                        node_labels_color = "black",
+                        node_labels_size = 3,
+                        node_labels_offset = 0,
 
-                         node_labels = NULL,
-                         node_labels_color = "black",
-                         node_labels_size = 3,
-                         node_labels_offset = 0,
+                        tip_labels = TRUE,
+                        tip_labels_italics = TRUE,
+                        tip_labels_remove_underscore = TRUE,
+                        tip_labels_color = "black",
+                        tip_labels_size = 3,
+                        tip_labels_offset = 0,
 
-                         tip_labels = TRUE,
-                         tip_labels_italics = TRUE,
-                         tip_labels_remove_underscore = TRUE,
-                         tip_labels_color = "black",
-                         tip_labels_size = 3,
-                         tip_labels_offset = 0,
+                        node_pp = FALSE,
+                        node_pp_shape = 16,
+                        node_pp_color = "black",
+                        node_pp_size = "variable",
 
-                         node_pp = FALSE,
-                         node_pp_shape = 16,
-                         node_pp_color = "black",
-                         node_pp_size = "variable",
+                        branch_color = "black",
+                        color_branch_by = NULL,
+                        line_width = 1,
 
-                         branch_color = "black",
-                         color_branch_by = NULL,
-                         line_width = 1,
-
-                         label_sampled_ancs = FALSE
-                         ) {
+                        label_sampled_ancs = FALSE,
+                        ...
+                        ) {
 
   plotTreeFull(tree = tree,
 
@@ -189,7 +192,8 @@ plotFBDTree <- function(tree,
                label_sampled_ancs = label_sampled_ancs,
 
                # Turn off plotTree-specific aspects
-               tree_layout = "rectangular"
+               tree_layout = "rectangular",
+               ...
   )
 }
 
