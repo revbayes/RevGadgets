@@ -3,7 +3,7 @@ context("tests the removeBurnin function")
 test_that("removes burnin", {
   # load in the trace file
   file <- system.file("extdata",
-      "sub_models/primates_cytb_GTR.p", package="RevGadgets")
+                      "sub_models/primates_cytb_GTR.p", package = "RevGadgets")
 
   one_trace <- readTrace(paths = file, burnin = 0)
 

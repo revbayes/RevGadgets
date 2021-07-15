@@ -1,13 +1,15 @@
 context("Tests plotPostPredStats function")
 
 test_that("compare processed output from documentation example", {
-
   file_sim <- system.file("extdata",
-                          "PPS/simulated_data_pps_example.csv", package="RevGadgets")
+                          "PPS/simulated_data_pps_example.csv", package =
+                            "RevGadgets")
   file_emp <- system.file("extdata",
-                          "PPS/empirical_data_pps_example.csv", package="RevGadgets")
+                          "PPS/empirical_data_pps_example.csv", package =
+                            "RevGadgets")
   file_old_plot <- system.file("extdata",
-                               "graphs/plotPostPredStats.rds", package="RevGadgets")
+                               "graphs/plotPostPredStats.rds", package =
+                                 "RevGadgets")
   t <- processPostPredStats(path_sim = file_sim,
                             path_emp = file_emp)
 
@@ -25,4 +27,3 @@ test_that("compare processed output from documentation example", {
 
 
 })
-

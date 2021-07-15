@@ -12,7 +12,7 @@ test_that("plot basic, not-yet-rooted phylogeny", {
   # load the saved plot for comparison
   file_2 <- system.file("extdata",
                         "graphs/plotTree_basic.rds",
-                        package="RevGadgets")
+                        package = "RevGadgets")
   plot_orig <- readRDS(file_2) # loads an object called 'plot'
 
   # test for errors in plot_new

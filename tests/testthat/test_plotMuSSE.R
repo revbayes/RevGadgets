@@ -1,13 +1,16 @@
 context("tests the plotMuSSE function")
 
 test_that("plot MuSSE", {
-
   # read in and process file
-  bisse_file <- system.file("extdata", "sse/primates_BiSSE_activity_period.p", package="RevGadgets")
+  bisse_file <-
+    system.file("extdata",
+                "sse/primates_BiSSE_activity_period.p",
+                package = "RevGadgets")
   pdata <- processSSE(bisse_file, burnin = 0)
   plot_new <- plotMuSSE(pdata)
 
-  plot_file <- system.file("extdata", "graphs/plotMuSSE.rds", package="RevGadgets")
+  plot_file <-
+    system.file("extdata", "graphs/plotMuSSE.rds", package = "RevGadgets")
   plot_orig <- readRDS(plot_file)
 
   # test for errors in plot_new

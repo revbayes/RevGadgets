@@ -1,29 +1,40 @@
 context("tests the plotMassExtinctions function")
 
 test_that("tests mass extinctions example", {
-
   # get files
-  mass_extinction_probability_file <- system.file("extdata",
-      "mass_extinction/crocs_mass_extinction_probabilities.p",
-      package="RevGadgets")
+  mass_extinction_probability_file <-
+    system.file("extdata",
+                "mass_extinction/crocs_mass_extinction_probabilities.p",
+                package = "RevGadgets")
 
-  plot_file <- system.file("extdata", "graphs/plotMassExtinctions.rds", package="RevGadgets")
+  plot_file <-
+    system.file("extdata",
+                "graphs/plotMassExtinctions.rds",
+                package = "RevGadgets")
 
-  mass_extinction_probabilities <- readTrace(mass_extinction_probability_file,burnin = 0.25)
+  mass_extinction_probabilities <-
+    readTrace(mass_extinction_probability_file, burnin = 0.25)
 
   # prior probability of mass extinction at any time
   prior_n_expected <- 0.1
   n_intervals <- 100
-  prior_prob <- prior_n_expected/(n_intervals-1)
+  prior_prob <- prior_n_expected / (n_intervals - 1)
 
   # times when mass extinctions were allowed
   tree_age <- 243.5
-  interval_times <- tree_age * seq(1/n_intervals,(n_intervals-1)/n_intervals,1/n_intervals)
+  interval_times <-
+    tree_age * seq(1 / n_intervals,
+                   (n_intervals - 1) / n_intervals,
+                   1 / n_intervals)
 
   # then plot results:
-  plot_new <- plotMassExtinctions(mass_extinction_trace=mass_extinction_probabilities,
-                                  mass_extinction_times=interval_times,
-                                  mass_extinction_name="mass_extinction_probabilities",prior_prob)
+  plot_new <-
+    plotMassExtinctions(
+      mass_extinction_trace = mass_extinction_probabilities,
+      mass_extinction_times = interval_times,
+      mass_extinction_name = "mass_extinction_probabilities",
+      prior_prob
+    )
 
 
   # read original plot object
