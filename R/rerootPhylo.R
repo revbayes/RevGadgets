@@ -18,6 +18,8 @@
 #'
 #' @return returns a list of list of treedata objects, with the trees rooted.
 #'
+#' @seealso phytools: \link[phytools]{reroot}.
+#'
 #' @examples
 #' \dontrun{
 #' file <- system.file("extdata",

@@ -41,3 +41,6 @@ tree_rooted <- rerootPhylo(tree = tree,
                                         "Propithecus_coquereli"))
 }
 }
+\seealso{
+phytools: \link[phytools]{reroot}.
+}
