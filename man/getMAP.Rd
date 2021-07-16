@@ -22,10 +22,12 @@ Uses the SANN method of the optim() function to approximate the MAP estimate
 }
 \examples{
 
+\donttest{
 file <- system.file("extdata",
     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 trace <- readTrace(paths = file)
-MAP <- getMAP(trace[[1]]$"pi[1]")
+MAP <- getMAP(trace[[1]]$"pi[1]", "errorintentional")
+}
 
 }
 \seealso{
