@@ -1,108 +1,7 @@
 # Non-exported utility functions for RevGadgets
-.add_epoch_times <- function(p, max_age, dy_bars, dy_text) {
-  max_x <- max(p$data$x)
-  max_y <- max(p$data$y)
 
-  epoch_names <- rev(
-    c(
-      "Holocene",
-      "Pleistocene",
-      "Pliocene",
-      "Miocene",
-      "Oligocene",
-      "Eocene",
-      "Paleocene",
-      "Upper\nCretaceous",
-      "Lower\nCretaceous"
-    )
-  )
-  epoch_ages <- rev(c(0, 0.117, 2.588, 5.332, 23.03,
-                      33.9, 55.8, 65.5, 99.6))
-  period_names <- rev(
-    c(
-      "Quaternary",
-      "Neogene",
-      "Paleogene",
-      "Cretaceous",
-      "Jurassic",
-      "Triassic",
-      "Permian",
-      "Carboniferous",
-      "Devonian",
-      "Silurian",
-      "Ordovician",
-      "Cambrian"
-    )
-  )
-
-  period_ages <- rev(c(
-    0,
-    2.588,
-    23.03,
-    65.5,
-    145.5,
-    199.6,
-    251,
-    299,
-    359.2,
-    416,
-    443.7,
-    488.3
-  ))
-  if (max_age > 140) {
-    x_pos <- max_x - c(max_age, period_ages)
-  } else
-    x_pos <- max_x - c(max_age, epoch_ages)
-
-  y_pos <- rep(max_y, length(x_pos))
-  x_pos_mid <-
-    (x_pos[1:(length(x_pos) - 1)] + x_pos[2:length(x_pos)]) / 2
-
-  for (k in 2:(length(x_pos))) {
-    box_col <- "gray92"
-    if (k %% 2 == 0)
-      box_col <- "white"
-    box <-
-      ggplot2::geom_rect(
-        xmin = x_pos[k - 1],
-        xmax = x_pos[k],
-        ymin = dy_bars,
-        ymax = y_pos[k],
-        fill = box_col
-      )
-    p <- gginnards::append_layers(p, box, position = "bottom")
-  }
-  if (max_age > 140) {
-    for (k in seq_len(length(period_names))) {
-      p <-
-        p + ggplot2::annotate(
-          geom = "text",
-          label = period_names[k],
-          angle = 90,
-          x = x_pos_mid[k],
-          y = dy_text,
-          hjust = 0,
-          size = 3.25
-        )
-    }
-  } else {
-    for (k in seq_len(length(epoch_names))) {
-      p <-
-        p + ggplot2::annotate(
-          geom = "text",
-          label = epoch_names[k],
-          angle = 90,
-          x = x_pos_mid[k],
-          y = dy_text,
-          hjust = 0,
-          size = 3.25
-        )
-    }
-  }
-  return(p)
-}
-
-# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# unexported treeio function add_pseudo_nodelabel: h
+# ttps://github.com/YuLab-SMU/treeio
 .add_pseudo_nodelabel <- function(phylo) {
   if (is.null(phylo$node.label)) {
     nnode <- phylo$Nnode
@@ -238,7 +137,8 @@
     return(t)
   }
 
-# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# unexported treeio function BEAST:
+# https://github.com/YuLab-SMU/treeio
 .beast <- function(file, treetext, stats, phylo) {
   stats$node <- gsub("\"*'*", "", stats$node)
 
@@ -429,7 +329,8 @@
   return(labs)
 }
 
-# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# unexported treeio function filename:
+# https://github.com/YuLab-SMU/treeio
 .filename <- function(file) {
   ## textConnection(text_string) will work just like a file
   ## in this case, just set the filename as ""
@@ -575,7 +476,7 @@
     #})
   }
 
-# modified from:
+# unexported old ggtree function, no longer found:
 # https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getParent <- function(tr, node) {
   if (node == .rootNode(tr))
@@ -593,7 +494,7 @@
   return(res)
 }
 
-# modified from:
+# unexported ggtree function getXcoord:
 # https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getXcoord <- function(tr) {
   edge <- tr$edge
@@ -609,8 +510,8 @@
   return(x)
 }
 
-# modified from:
-#https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
+# unexported ggtree function getXcoord2:
+# https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getXcoord2 <-
   function(x,
            root,
@@ -637,7 +538,7 @@
     return(x)
   }
 
-# modified from:
+# unexported ggtree function getYcoord:
 # https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
 .getYcoord <- function(tr, step = 1) {
   Ntip <- length(tr[["tip.label"]])
@@ -850,8 +751,8 @@
 
 # Fast data.frame constructor and indexing
 # No checking, recycling etc. unless asked for
-# Stolen from ggplot2
-new_data_frame <- function(x = list(), n = NULL) {
+# unexported ggplot2 function new_data_frame
+.new_data_frame <- function(x = list(), n = NULL) {
   if (length(x) != 0 && is.null(names(x))) {
     stop("Elements must be named")
   }
@@ -900,6 +801,8 @@ new_data_frame <- function(x = list(), n = NULL) {
   sum(pnorm(x, 0, sigmas, lower.tail = FALSE) * probs)
 }
 
+# modified for revbayes
+# from unexported treeio function read.stats_beast_internal
 .read.stats_revbayes_internal <- function(beast, tree) {
   phylo <- ape::read.tree(text = tree) # read the tree
   tree2 <-
@@ -1197,7 +1100,8 @@ new_data_frame <- function(x = list(), n = NULL) {
 
 }
 
-# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# unexported treeio function remove_quote_in_tree_label:
+# https://github.com/YuLab-SMU/treeio
 .remove_quote_in_tree_label <- function(phylo) {
   if (!is.null(phylo$node.label)) {
     phylo$node.label <- gsub("\"*'*", "", phylo$node.label)
@@ -1208,7 +1112,8 @@ new_data_frame <- function(x = list(), n = NULL) {
   return(phylo)
 }
 
-# stolen from treeio: https://github.com/YuLab-SMU/treeio
+# Unexported treeio function rootnode.phylo:
+# https://github.com/YuLab-SMU/treeio
 # works for phylo objects, not tree data
 .rootNode <- function(.data, ...) {
   edge <- .data[["edge"]]
@@ -1356,19 +1261,6 @@ new_data_frame <- function(x = list(), n = NULL) {
   return(string)
 }
 
-# stolen from treeio: https://github.com/YuLab-SMU/treeio
-.validTblTree <-
-  function(object, cols = c("parent", "node", "label")) {
-    cc <- cols[!cols %in% colnames(object)]
-    if (length(cc) > 0) {
-      msg <-
-        paste0("invalid tbl_tree object.\n  missing column:\n    ",
-               paste(cc, collapse = ","),
-               ".")
-    }
-  }
-
-
 ### Functions required by densiTreeWithBranchData
 # attribute colors to a vector based the value in a range
 color_gradient <-
@@ -1486,6 +1378,7 @@ add_tiplabels <-
   }
 
 # adapted from treeplyr (package no longer available on CRAN)
+# treeplyr::reorder (but not equivalent)
 reorder_treedata <- function(tdObject, order = "postorder") {
   dat.attr <- attributes(tdObject@data)
   phy <- tdObject@phylo
