@@ -44,7 +44,7 @@ abels, the color palette, whether the axes are to be linked, or the overall
 plotting style/theme, just as with any ggplot object.
 }
 \examples{
-\dontrun{
+\donttest{
 
 mass_extinction_probability_file <- system.file("extdata",
     "mass_extinction/crocs_mass_extinction_probabilities.p",

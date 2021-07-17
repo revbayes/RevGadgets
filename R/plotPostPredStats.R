@@ -20,7 +20,7 @@
 #' @return A list of ggplot objects, where each plot contains a density
 #' distribution of the predicted values and a dashed line of the empirical v
 #' alue. The blue shaded region of the density plot corresponds to the 5\%
-#' two-sided quantile and the red corresponds to the 2\% two-sided quantile.
+#' two-sided quantile and the orange corresponds to the 2\% two-sided quantile.
 #'
 #' @details Each plot shows the rejection region for the provided quantiles,
 #' as well as a p-value for the observed statistic. If side="left" (/"right"),
@@ -33,7 +33,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #' file_sim <- system.file("extdata",
 #'     "PPS/simulated_data_pps_example.csv", package="RevGadgets")
 #' file_emp <- system.file("extdata",
@@ -41,6 +41,7 @@
 #' t <- processPostPredStats(path_sim = file_sim,
 #'                          path_emp = file_emp)
 #' plots <- plotPostPredStats(data = t)
+#' plots[[1]]
 #'
 #' }
 #'

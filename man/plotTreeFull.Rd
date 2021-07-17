@@ -155,3 +155,7 @@ Plots a single tree, such as an MCC or MAP tree, with
 the full set of functionality to be called by plotTree()
 and plotFBDTree()
 }
+\seealso{
+called by \link[RevGadgets]{plotTree} and
+\link[RevGadgets]{plotFBDTree}
+}

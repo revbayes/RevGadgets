@@ -17,7 +17,7 @@
 #' @seealso treeio: \link[treeio]{drop.tip} and ape: \link[ape]{drop.tip}.
 #'
 #' @examples
-#' \dontrun{
+#'
 #' file <- system.file("extdata",
 #'                     "sub_models/primates_cytb_GTR_MAP.tre",
 #'                     package="RevGadgets")
@@ -26,7 +26,7 @@
 #' tree <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 #' tree_dropped <- dropTip(tree, "Otolemur_crassicaudatus")
 #'
-#' }
+#'
 #' @export
 
 dropTip <- function(tree, tips) {

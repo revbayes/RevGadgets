@@ -66,8 +66,6 @@ combined before reading into the function).
 }
 \examples{
 
-\dontrun{
-
 speciation_time_file <- system.file("extdata",
     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
 speciation_rate_file <- system.file("extdata",
@@ -82,6 +80,5 @@ primates <- processDivRates(speciation_time_log = speciation_time_file,
                             extinction_time_log = extinction_time_file,
                             extinction_rate_log = extinction_rate_file,
                             burnin = 0.25)
-}
 
 }

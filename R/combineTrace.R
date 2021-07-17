@@ -18,7 +18,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' # continuous parameter example, multiple runs
 #' file_1 <- system.file("extdata",
 #'     "sub_models/primates_cytb_GTR_run_1.p", package="RevGadgets")
@@ -31,7 +30,7 @@
 #' # combine samples after discarding 10% burnin
 #' combined_trace <- combineTraces(trace = multi_trace,
 #'                                 burnin = 0.1)
-#' }
+#'
 #'
 #' @export
 

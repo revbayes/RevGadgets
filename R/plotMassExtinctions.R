@@ -29,7 +29,7 @@
 #' \emph{JASA}, \bold{90 (430)}, 773-795.
 #'
 #' @examples
-#'\dontrun{
+#'\donttest{
 #'
 #' mass_extinction_probability_file <- system.file("extdata",
 #'     "mass_extinction/crocs_mass_extinction_probabilities.p",
@@ -112,7 +112,8 @@ plotMassExtinctions <- function(mass_extinction_trace,
   bfdf <- data.frame(bf = BF, time = mass_extinction_times)
 
   p <-
-    ggplot2::ggplot(data = bfdf, mapping = ggplot2::aes(x = time, y = bf)) +
+    ggplot2::ggplot(data = bfdf,
+                    mapping = ggplot2::aes(x = time, y = bf)) +
     ggplot2::geom_rect(mapping = ggplot2::aes(
       ymin = -Inf,
       ymax = 2,
@@ -134,7 +135,8 @@ plotMassExtinctions <- function(mass_extinction_trace,
       xmax = Inf
     ),
     fill = "grey90") +
-    ggplot2::geom_col(ggplot2::aes(fill = "red")) +
+    #ggplot2::geom_col(ggplot2::aes(fill = "red")) +
+    ggplot2::geom_col(fill = colFun(2)[2]) +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
     ggplot2::scale_x_reverse() +
     ggplot2::xlab("million years ago") +

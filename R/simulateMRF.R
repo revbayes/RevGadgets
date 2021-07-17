@@ -32,7 +32,7 @@
 #' \emph{Bayesian analysis}, \bold{13 (1)}, 225.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Simulate a 100-episode HSMRF model for a speciation-rate through time
 #' trajectory <- simulateMRF(n_episodes = 100,
 #'                           model = "HSMRF",

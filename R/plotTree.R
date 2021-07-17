@@ -106,7 +106,7 @@
 #' @return returns a single plot object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Example of standard tree plot
 #'
 #' file <- system.file("extdata",
@@ -116,30 +116,29 @@
 #' # Reroot tree before plotting
 #' tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 #' # Plot
-#' plot <- plotTree(tree = tree_rooted,
-#'                  node_labels = "posterior")
+#' p <- plotTree(tree = tree_rooted, node_labels = "posterior");p
 #'
 #' # Plot unladderized tree
-#' plot <- plotTree(tree = tree_rooted,
-#'                  node_labels = "posterior",
-#'                  ladderize = FALSE)
+#' p <- plotTree(tree = tree_rooted,
+#'               node_labels = "posterior",
+#'               ladderize = FALSE);p
 #'
 #' # We can add a scale bar:
-#' plot + ggtree::geom_treescale(x = -0.35, y = -1)
+#' p + ggtree::geom_treescale(x = -0.35, y = -1)
 #'
 #' # Example of coloring branches by rate
 #' file <- system.file("extdata",
 #'                     "relaxed_ou/relaxed_OU_MAP.tre",
 #'                     package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' plot <- plotTree(tree = tree,
-#'                  node_age_bars = FALSE,
-#'                  node_pp = FALSE,
-#'                  tip_labels_remove_underscore = TRUE,
-#'                  tip_labels_italics = FALSE,
-#'                  color_branch_by = "branch_thetas",
-#'                  line_width = 1.7) +
-#'        ggplot2::theme(legend.position=c(.1, .9))
+#' p <- plotTree(tree = tree,
+#'               node_age_bars = FALSE,
+#'               node_pp = FALSE,
+#'               tip_labels_remove_underscore = TRUE,
+#'               tip_labels_italics = FALSE,
+#'               color_branch_by = "branch_thetas",
+#'               line_width = 1.7) +
+#'        ggplot2::theme(legend.position=c(.1, .9));p
 #' }
 #' @export
 #'

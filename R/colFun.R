@@ -11,9 +11,8 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' my_colors <- colFun(2)
-#' }
+#'
 #' @export
 #'
 

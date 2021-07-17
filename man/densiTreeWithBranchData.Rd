@@ -127,6 +127,8 @@ otherwise \code{seq(-amount, amount, length=n)}, where \code{n}
 is the number of trees.
 }
 \examples{
+
+\donttest{
 # generate random trees & data
 trees <- lapply(1:5, function(x) ape::rcoal(5))
 data <- lapply(1:5, function(x) stats::runif(9, 1, 10))
@@ -137,6 +139,7 @@ densiTreeWithBranchData(trees = trees, data = data, width = 2)
 # densiTree plot with different colors
 densiTreeWithBranchData(trees = trees, data = data,
                         color_gradient = c("green", "blue"), width = 2)
+}
 
 }
 \references{

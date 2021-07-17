@@ -37,7 +37,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #'
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
@@ -57,6 +57,7 @@
 #'
 #' # make the same plot, using match
 #' plots <- plotTrace(trace = one_trace, match = "pi")
+#' plots[[1]]
 #'
 #' # plot some qualitative variables
 #' file <- system.file("extdata",

@@ -28,7 +28,6 @@ into one trace file.
 }
 \examples{
 
-\dontrun{
 # continuous parameter example, multiple runs
 file_1 <- system.file("extdata",
     "sub_models/primates_cytb_GTR_run_1.p", package="RevGadgets")
@@ -41,6 +40,6 @@ multi_trace <- readTrace(path = c(file_1, file_2), burnin = 0.0)
 # combine samples after discarding 10\% burnin
 combined_trace <- combineTraces(trace = multi_trace,
                                 burnin = 0.1)
-}
+
 
 }

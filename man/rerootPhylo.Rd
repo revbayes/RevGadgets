@@ -28,7 +28,7 @@ of the branch subtending the outgroup. If the input
 contains multiple trees, all trees will be rerooted.
 }
 \examples{
-\dontrun{
+
 file <- system.file("extdata",
                     "sub_models/primates_cytb_GTR_MAP.tre",
                     package="RevGadgets")
@@ -39,7 +39,7 @@ tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 tree_rooted <- rerootPhylo(tree = tree,
                            outgroup = c("Varecia_variegata_variegata",
                                         "Propithecus_coquereli"))
-}
+
 }
 \seealso{
 phytools: \link[phytools]{reroot}.

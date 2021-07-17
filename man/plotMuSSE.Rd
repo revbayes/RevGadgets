@@ -18,7 +18,7 @@ a ggplot object
 plotMuSSE
 }
 \examples{
-\dontrun{
+\donttest{
 bisse_file <- system.file("extdata",
                           "sse/primates_BiSSE_activity_period.p",
                           package="RevGadgets")
@@ -27,10 +27,9 @@ pdata <- processSSE(bisse_file)
 p <- plotMuSSE(pdata);p
 
 # change colors:
-p + scale_fill_manual(values = c("red","green"))
+p + ggplot2::scale_fill_manual(values = c("red","green"))
 
 # change x-axis label
-library(ggplot2)
-p + xlab("Rate (events/Ma)")
+p + ggplot2::xlab("Rate (events/Ma)")
 }
 }

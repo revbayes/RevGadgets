@@ -17,10 +17,9 @@ numbers
 match Nodes
 }
 \examples{
-\dontrun{
+
 treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
 tree <- readTrees(treefile)
 map <- matchNodes(tree[[1]][[1]]@phylo)
-}
 
 }

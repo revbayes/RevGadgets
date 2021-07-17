@@ -17,7 +17,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' treefile <- system.file("extdata",
 #'                         "bds/primates.tre",
@@ -31,14 +31,15 @@
 #'
 #' annotated_tree <- processBranchData(tree, branch_data, summary = "median")
 #'
+#' # you can plot this output
 #' p <- plotTree(tree = annotated_tree,
 #'               node_age_bars = FALSE,
-#'               node_pp = F,
+#'               node_pp = FALSE,
 #'               tip_labels = FALSE,
 #'               color_branch_by = "avg_lambda",
 #'               line_width = 0.8,
 #'               branch_color = c("blue","green")) +
-#'      ggplot2::theme(legend.position=c(.1, .9))
+#'      ggplot2::theme(legend.position=c(.1, .9));p
 #'
 #' }
 processBranchData <- function(tree,

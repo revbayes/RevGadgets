@@ -128,7 +128,7 @@ Plot character states and posterior probabilities as pies on nodes.
 }
 \examples{
 
-\dontrun{
+\donttest{
 
 # Standard ancestral state reconstruction example
 
@@ -140,7 +140,7 @@ example <- processAncStates(file,
                             state_labels = c("1" = "Awesome",
                                              "2" = "Beautiful",
                                              "3" = "Cool!"))
-# plot
+# plot (this may take a while)
 plotAncStatesPie(t = example)
 
 # DEC Biogeographic range evolution example (with timeline)

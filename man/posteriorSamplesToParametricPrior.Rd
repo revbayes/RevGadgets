@@ -36,8 +36,6 @@ being supplied.
 }
 \examples{
 
-\dontrun{
-
 speciation_time_file <- system.file("extdata",
     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
 speciation_rate_file <- system.file("extdata",
@@ -55,10 +53,8 @@ primates <- processDivRates(speciation_time_log = speciation_time_file,
 
 speciation_rates <-
        dplyr::pull(primates[which(primates$item == "speciation rate"),],
-                  "mean")
+                  "value")
 speciation_1_gamma_prior <-
           posteriorSamplesToParametricPrior(speciation_rates,"gamma")
-
-}
 
 }

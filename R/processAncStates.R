@@ -15,8 +15,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#'
 #' # standard ancestral state estimation example
 #' file <- system.file("extdata",
 #'                     "comp_method_disc/ase_freeK.tree",
@@ -31,7 +29,6 @@
 #'                     "chromo/ChromEvol_simple_final.tree",
 #'                     package="RevGadgets")
 #' chromo_example <- processAncStates(file, labels_as_numbers = TRUE)
-#' }
 #'
 #' @export
 #'

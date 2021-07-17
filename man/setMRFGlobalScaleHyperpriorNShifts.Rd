@@ -43,7 +43,7 @@ Finding these values for a HSMRF model can take several seconds for large
 values of n_episodes because of the required numerical integration.
 }
 \examples{
-\dontrun{
+\donttest{
 # Get global scale for a HSMRF model with 100 episodes.
 gs <- setMRFGlobalScaleHyperpriorNShifts(100, "HSMRF")
 

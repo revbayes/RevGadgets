@@ -98,7 +98,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #' # Standard ancestral state reconstruction example with various aesthetics
 #'
 #' # process file

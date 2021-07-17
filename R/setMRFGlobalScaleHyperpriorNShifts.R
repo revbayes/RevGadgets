@@ -30,7 +30,7 @@
 #' doi: https://doi.org/10.1101/853960
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Get global scale for a HSMRF model with 100 episodes.
 #' gs <- setMRFGlobalScaleHyperpriorNShifts(100, "HSMRF")
 #'

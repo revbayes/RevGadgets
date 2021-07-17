@@ -64,7 +64,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #'
 #' # Standard ancestral state reconstruction example
 #'
@@ -76,7 +76,7 @@
 #'                             state_labels = c("1" = "Awesome",
 #'                                              "2" = "Beautiful",
 #'                                              "3" = "Cool!"))
-#' # plot
+#' # plot (this may take a while)
 #' plotAncStatesPie(t = example)
 #'
 #' # DEC Biogeographic range evolution example (with timeline)

@@ -30,8 +30,6 @@ Process data for ancestral states plotting
 }
 \examples{
 
-\dontrun{
-
 # standard ancestral state estimation example
 file <- system.file("extdata",
                     "comp_method_disc/ase_freeK.tree",
@@ -46,6 +44,5 @@ file <- system.file("extdata",
                     "chromo/ChromEvol_simple_final.tree",
                     package="RevGadgets")
 chromo_example <- processAncStates(file, labels_as_numbers = TRUE)
-}
 
 }

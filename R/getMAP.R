@@ -14,12 +14,11 @@
 #'
 #' @examples
 #'
-#' \donttest{
+#'
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 #' trace <- readTrace(paths = file)
-#' MAP <- getMAP(trace[[1]]$"pi[1]", "errorintentional")
-#' }
+#' MAP <- getMAP(trace[[1]]$"pi[1]")
 #'
 #' @export
 

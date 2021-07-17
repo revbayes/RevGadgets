@@ -107,13 +107,13 @@
 #' @return returns a single plot object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' file <- system.file("extdata", "fbd/bears.mcc.tre", package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' plot <- plotFBDTree(tree = tree, timeline = T, tip_labels_italics = F,
-#'                     tip_labels_remove_underscore = T,
-#'                     node_age_bars = T, age_bars_colored_by = "posterior",
-#'                     age_bars_color = rev(colFun(2))) +
+#' plotFBDTree(tree = tree, timeline = TRUE, tip_labels_italics = FALSE,
+#'             tip_labels_remove_underscore = TRUE,
+#'             node_age_bars = TRUE, age_bars_colored_by = "posterior",
+#'             age_bars_color = rev(colFun(2))) +
 #'   ggplot2::theme(legend.position=c(.25, .85))
 #' }
 #' @export

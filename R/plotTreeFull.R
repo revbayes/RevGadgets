@@ -111,6 +111,9 @@
 #'
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
+#' @seealso called by \link[RevGadgets]{plotTree} and
+#' \link[RevGadgets]{plotFBDTree}
+#'
 #' @return returns a single plot object.
 
 

@@ -48,7 +48,6 @@ rather than as numeric vectors.
 }
 \examples{
 
-\dontrun{
 file <- system.file("extdata",
     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 one_trace <- readTrace(paths = file)
@@ -60,5 +59,4 @@ file_2 <- system.file("extdata",
 
 multi_trace <- readTrace(path = c(file_1, file_2))
 
-}
 }

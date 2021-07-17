@@ -4,15 +4,15 @@
 #'
 #' @return a data frame that translates ape node numbers to RevBayes node
 #' numbers
-#' @export
 #'
 #' @examples
-#' \dontrun{
+#'
 #' treefile <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
 #' tree <- readTrees(treefile)
 #' map <- matchNodes(tree[[1]][[1]]@phylo)
-#' }
 #'
+#' @export
+
 matchNodes <- function(phy) {
   # get some useful info
   num_tips <- length(phy$tip.label)

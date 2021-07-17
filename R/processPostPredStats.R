@@ -11,14 +11,12 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' file_sim <- system.file("extdata",
 #'     "PPS/simulated_data_pps_example.csv", package="RevGadgets")
 #' file_emp <- system.file("extdata",
 #'     "PPS/empirical_data_pps_example.csv", package="RevGadgets")
 #' t <- processPostPredStats(path_sim = file_sim,
-#'                                           path_emp = file_emp)
-#' }
+#'                           path_emp = file_emp)
 #'
 #' @export
 

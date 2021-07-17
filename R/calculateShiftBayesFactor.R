@@ -35,7 +35,6 @@
 #' \emph{JASA}, \bold{90 (430)}, 773-795.
 #'
 #' @examples
-#'\dontrun{
 #'
 #' speciation_time_file <- system.file("extdata",
 #'     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
@@ -51,7 +50,6 @@
 #'                           "interval_times",
 #'                           0.0,40.0,
 #'                           decrease=FALSE)
-#'}
 #'
 #' @export
 

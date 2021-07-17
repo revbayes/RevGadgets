@@ -21,14 +21,13 @@
 #' associated probabilities.
 #'
 #' @examples
-#'
-#' \dontrun{
 #' # continuous character only example, one run
 #' file <- system.file("extdata",
 #'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
 #' one_trace <- readTrace(paths = file)
 #' trace_sum <- summarizeTrace(trace = one_trace,
 #'                             vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
+#' trace_sum[["pi[1]"]]
 #'
 #' # continuous character example, multiple runs
 #' file_1 <- system.file("extdata",
@@ -40,16 +39,19 @@
 #'
 #' trace_sum_multi <- summarizeTrace(trace = multi_trace,
 #'                                   vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
+#' trace_sum_multi[["pi[1]"]]
 #'
 #' # discrete character example
 #' file <- system.file("extdata",
 #'                     "comp_method_disc/freeK_RJ.p",
 #'                     package = "RevGadgets")
 #' trace <- readTrace(path = file)
-#' summarizeTrace(trace = trace,
-#'                 vars = c("prob_rate_12", "prob_rate_13",
-#'                          "prob_rate_31", "prob_rate_32"))
-#' }
+#' trace_sum_discrete <- summarizeTrace(trace = trace,
+#'                                      vars = c("prob_rate_12",
+#'                                               "prob_rate_13",
+#'                                               "prob_rate_31",
+#'                                               "prob_rate_32"))
+#' trace_sum_discrete[["prob_rate_12"]]
 #'
 #' @export
 

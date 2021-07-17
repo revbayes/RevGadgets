@@ -18,7 +18,7 @@ a ggplot object
 plotHiSSE
 }
 \examples{
-\dontrun{
+\donttest{
 hisse_file <- system.file("extdata",
                           "sse/primates_HiSSE_2.p",
                           package="RevGadgets")
@@ -26,11 +26,9 @@ pdata <- processSSE(hisse_file)
 p <- plotHiSSE(pdata);p
 
 # change colors:
-library(ggplot2)
-p + scale_fill_manual(values = c("red","green"))
+p + ggplot2::scale_fill_manual(values = c("red","green"))
 
 # change x-axis label
-library(ggplot2)
-p + xlab("Rate (events/Ma)")
+p + ggplot2::xlab("Rate (events/Ma)")
 }
 }

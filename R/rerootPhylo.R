@@ -21,7 +21,7 @@
 #' @seealso phytools: \link[phytools]{reroot}.
 #'
 #' @examples
-#' \dontrun{
+#'
 #' file <- system.file("extdata",
 #'                     "sub_models/primates_cytb_GTR_MAP.tre",
 #'                     package="RevGadgets")
@@ -32,7 +32,7 @@
 #' tree_rooted <- rerootPhylo(tree = tree,
 #'                            outgroup = c("Varecia_variegata_variegata",
 #'                                         "Propithecus_coquereli"))
-#' }
+#'
 #' @export
 
 rerootPhylo <- function(tree, outgroup) {

@@ -24,7 +24,7 @@ sides, the "left" side, or the "right" side of the distribution.}
 A list of ggplot objects, where each plot contains a density
 distribution of the predicted values and a dashed line of the empirical v
 alue. The blue shaded region of the density plot corresponds to the 5\%
-two-sided quantile and the red corresponds to the 2\% two-sided quantile.
+two-sided quantile and the orange corresponds to the 2\% two-sided quantile.
 }
 \description{
 Plots the posterior predictive statistics data
@@ -46,7 +46,7 @@ the size of HPD defined by the observed statistic.
 }
 \examples{
 
-\dontrun{
+\donttest{
 file_sim <- system.file("extdata",
     "PPS/simulated_data_pps_example.csv", package="RevGadgets")
 file_emp <- system.file("extdata",
@@ -54,6 +54,7 @@ file_emp <- system.file("extdata",
 t <- processPostPredStats(path_sim = file_sim,
                          path_emp = file_emp)
 plots <- plotPostPredStats(data = t)
+plots[[1]]
 
 }
 

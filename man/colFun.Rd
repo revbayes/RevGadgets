@@ -21,7 +21,6 @@ of length given by n, maximum of 12 colors.
 }
 \examples{
 
-\dontrun{
 my_colors <- colFun(2)
-}
+
 }

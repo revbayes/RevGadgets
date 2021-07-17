@@ -42,7 +42,7 @@ log-scale (such as for a birth rate) or the real-scale. The first value
 must be specified
 }
 \examples{
-\dontrun{
+\donttest{
 # Simulate a 100-episode HSMRF model for a speciation-rate through time
 trajectory <- simulateMRF(n_episodes = 100,
                           model = "HSMRF",

@@ -57,7 +57,6 @@ The default assumption (suitable to standard HSMRF and GMRF models) is
 that the prior probability of a shift is 0.5.
 }
 \examples{
-\dontrun{
 
 speciation_time_file <- system.file("extdata",
     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
@@ -73,7 +72,6 @@ calculateShiftBayesFactor(speciation_rate,
                           "interval_times",
                           0.0,40.0,
                           decrease=FALSE)
-}
 
 }
 \references{

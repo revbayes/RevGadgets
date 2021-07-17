@@ -45,7 +45,7 @@ the plots may result in illegible figures. In these cases, we recommend
 }
 \examples{
 
-\dontrun{
+\donttest{
 
 file <- system.file("extdata",
     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
@@ -65,6 +65,7 @@ plots[[1]]
 
 # make the same plot, using match
 plots <- plotTrace(trace = one_trace, match = "pi")
+plots[[1]]
 
 # plot some qualitative variables
 file <- system.file("extdata",
