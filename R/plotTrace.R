@@ -572,8 +572,8 @@ plotTrace <-
                                        guide = FALSE) +
             ggplot2::guides(color =
                               ggplot2::guide_legend(override.aes =
-                                                            list(fill =
-                                                                   col_vec_qual))) +
+                                                       list(fill =
+                                                              col_vec_qual))) +
             ggplot2::ggtitle(label = paste0("Combined Trace")) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
