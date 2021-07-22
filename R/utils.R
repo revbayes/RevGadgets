@@ -375,6 +375,8 @@
 
 }
 
+# modified from
+# https://github.com/GuangchuangYu/ggimage/blob/master/R/geom_subview.R
 .geom_subview_revgadgets <-
   function (mapping = NULL,
             data = NULL,
@@ -476,22 +478,14 @@
     #})
   }
 
-# unexported old ggtree function, no longer found:
-# https://github.com/GuangchuangYu/ggtree/blob/master/R/tree-utilities.R
-.getParent <- function(tr, node) {
-  if (node == .rootNode(tr))
+# identify parent of a node
+.getParent <- function(phylo, node) {
+  if (.getRoot(phylo) == node) {
     return(0)
-  edge <- tr[["edge"]]
-  parent <- edge[, 1]
-  child <- edge[, 2]
-  res <- parent[child == node]
-  if (length(res) == 0) {
-    stop("cannot find parent node...")
+  } else {
+    parent <- phylo$edge[phylo$edge[,2] == node,1]
+    return(parent)
   }
-  if (length(res) > 1) {
-    stop("multiple parents found...")
-  }
-  return(res)
 }
 
 # unexported ggtree function getXcoord:
@@ -588,6 +582,8 @@
   return(y)
 }
 
+# modified from
+#https://github.com/YuLab-SMU/ggtree/blob/0681b23fe6afb510e5a6041a7cbf50c3b18473e8/R/inset.R
 .inset.revgadgets <-
   function (tree_view,
             insets,
@@ -619,7 +615,6 @@
       height <- rep(height, length(insets))
     }
 
-    # old way
     tree_view <- tree_view +
       .geom_subview_revgadgets(
         subview = insets,
@@ -1112,6 +1107,16 @@
   return(phylo)
 }
 
+# functionally the same as .rootNode, but our own function
+# (not modified from treeio)
+# currently called by getParent()
+.getRoot <- function(phylo) {
+  edge1 <- phylo$edge[,1]
+  edge2 <- phylo$edge[,2]
+  root <- unique(edge1)[!unique(edge1) %in% unique(edge2)]
+  return(root)
+}
+
 # Unexported treeio function rootnode.phylo:
 # https://github.com/YuLab-SMU/treeio
 # works for phylo objects, not tree data
@@ -1377,7 +1382,8 @@ add_tiplabels <-
     )
   }
 
-# adapted from treeplyr (package no longer available on CRAN)
+# adapted from treeplyr
+# https://github.com/uyedaj/treeplyr/blob/master/R/treeplyr_functions.R
 # treeplyr::reorder (but not equivalent)
 reorder_treedata <- function(tdObject, order = "postorder") {
   dat.attr <- attributes(tdObject@data)
