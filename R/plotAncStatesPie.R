@@ -640,8 +640,7 @@ plotAncStatesPie <- function(t,
 
   if (is.null(names(colors))) {
     breaks <- levels(state_labels)
-  } else
-    (breaks <- names(colors))
+  } else {breaks <- names(colors)}
 
   p <-
     p + ggplot2::scale_color_manual(values = colors, breaks = breaks)
@@ -651,7 +650,7 @@ plotAncStatesPie <- function(t,
                                                 override.aes =
                                                   list(size = 4, alpha = 1.0)),
                         order = 1)
-  p <- p + ggplot2::guides(size = FALSE)
+  p <- p + ggplot2::guides(size = "none")
 
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
