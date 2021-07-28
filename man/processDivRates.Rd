@@ -66,19 +66,43 @@ combined before reading into the function).
 }
 \examples{
 
-speciation_time_file <- system.file("extdata",
-    "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
-speciation_rate_file <- system.file("extdata",
-    "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")
-extinction_time_file <- system.file("extdata",
-    "epi_bd/primates_EBD_extinction_times.p", package="RevGadgets")
-extinction_rate_file <- system.file("extdata",
-    "epi_bd/primates_EBD_extinction_rates.p", package="RevGadgets")
+# download the example datasets to working directory
 
-primates <- processDivRates(speciation_time_log = speciation_time_file,
-                            speciation_rate_log = speciation_rate_file,
-                            extinction_time_log = extinction_time_file,
-                            extinction_rate_log = extinction_rate_file,
-                            burnin = 0.25)
+url_ex_times <-
+   "https://revbayes.github.io/tutorials/intro/data/primates_EBD_extinction_times.log"
+dest_path_ex_times <- "primates_EBD_extinction_times.log"
+download.file(url_ex_times, dest_path_ex_times)
 
+url_ex_rates <-
+   "https://revbayes.github.io/tutorials/intro/data/primates_EBD_extinction_rates.log"
+dest_path_ex_rates <- "primates_EBD_extinction_rates.log"
+download.file(url_ex_rates, dest_path_ex_rates)
+
+url_sp_times <-
+   "https://revbayes.github.io/tutorials/intro/data/primates_EBD_speciation_times.log"
+dest_path_sp_times <- "primates_EBD_speciation_times.log"
+download.file(url_sp_times, dest_path_sp_times)
+
+url_sp_rates <-
+   "https://revbayes.github.io/tutorials/intro/data/primates_EBD_speciation_rates.log"
+dest_path_sp_rates <- "primates_EBD_speciation_rates.log"
+download.file(url_sp_rates, dest_path_sp_rates)
+
+# to run on your own data, change this to the path to your data file
+speciation_time_file <- dest_path_sp_times
+speciation_rate_file <- dest_path_sp_rates
+extinction_time_file <- dest_path_ex_times
+extinction_rate_file <- dest_path_ex_rates
+
+rates <- processDivRates(speciation_time_log = speciation_time_file,
+                         speciation_rate_log = speciation_rate_file,
+                         extinction_time_log = extinction_time_file,
+                         extinction_rate_log = extinction_rate_file,
+                         burnin = 0.25)
+
+# remove files
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path_sp_times, dest_path_ex_times,
+            dest_path_sp_rates, dest_path_ex_rates)
 }

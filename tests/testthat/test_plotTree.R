@@ -11,7 +11,7 @@ test_that("plot basic, not-yet-rooted phylogeny", {
   #print(plot_new)
   # load the saved plot for comparison
   file_2 <- system.file("extdata",
-                        "graphs/plotTree_basic.rds",
+                        "graphs/plotTree_df.rds",
                         package = "RevGadgets")
   plot_orig <- readRDS(file_2) # loads an object called 'plot'
 
@@ -19,8 +19,6 @@ test_that("plot basic, not-yet-rooted phylogeny", {
   expect_error(print(plot_new), NA)
 
   #  compare plot data objects
-  expect_equal(plot_new$data, plot_orig$data)
+  expect_equal(plot_new$data, plot_orig)
 
 })
-
-# add a more complex test for the colored branches plot

@@ -13,10 +13,10 @@ test_that("reads single nexus tree", {
 
 test_that("reads tree trace", {
   file <-
-    system.file("extdata", "sub_models/primates_cytb_GTR.trees", package =
+    system.file("extdata", "sub_models/primates_cytb_GTR_mini.trees", package =
                   "RevGadgets")
   tree_multi <- readTrees(path = file)
-  expect_equal(length(tree_multi[[1]]), 1001)
+  expect_equal(length(tree_multi[[1]]), 10)
   expect_equal(class(tree_multi[[1]]), "list")
   expect_equal(length(tree_multi[[1]][[1]]@phylo$tip.label), 23)
 })

@@ -36,13 +36,23 @@
 #'
 #' @examples
 #'
-#' speciation_time_file <- system.file("extdata",
-#'     "epi_bd/primates_EBD_speciation_times.p", package="RevGadgets")
-#' speciation_rate_file <- system.file("extdata",
-#'     "epi_bd/primates_EBD_speciation_rates.p", package="RevGadgets")
+#' # download the example datasets to working directory
+#' url_times <-
+#'    "https://revbayes.github.io/tutorials/intro/data/primates_EBD_speciation_times.log"
+#' dest_path_times <- "primates_EBD_speciation_times.log"
+#' download.file(url_times, dest_path_times)
 #'
-#' speciation_rate <- readTrace(speciation_rate_file,burnin = 0.25)
-#' speciation_times <- readTrace(speciation_time_file,burnin = 0.25)
+#' url_rates <-
+#'    "https://revbayes.github.io/tutorials/intro/data/primates_EBD_speciation_rates.log"
+#' dest_path_rates <- "primates_EBD_speciation_rates.log"
+#' download.file(url_rates, dest_path_rates)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' speciation_time_file <- dest_path_times
+#' speciation_rate_file <- dest_path_rates
+#'
+#' speciation_times <- readTrace(speciation_time_file, burnin = 0.25)
+#' speciation_rate <- readTrace(speciation_rate_file, burnin = 0.25)
 #'
 #' calculateShiftBayesFactor(speciation_rate,
 #'                           speciation_times,
@@ -50,6 +60,11 @@
 #'                           "interval_times",
 #'                           0.0,40.0,
 #'                           decrease=FALSE)
+#'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_times, dest_path_rates)
 #'
 #' @export
 
@@ -65,7 +80,7 @@ calculateShiftBayesFactor <-
            decrease = TRUE,
            return_2lnBF = TRUE) {
     # Make sure times are in correct order
-    times <- sort(c(t1, t2))
+    times <- sort(unlist(c(t1, t2)))
     t1 <- times[1]
     t2 <- times[2]
 
@@ -125,7 +140,7 @@ calculateShiftBayesFactor <-
     rate2 <- numeric(niter)
 
     if (times_are_constant) {
-      sorted_times <- sort(time_log[1, ])
+      sorted_times <- sort(unlist(time_log[1, ]))
 
       # Avoid issues finding the maximum time
       if (t2 == max(sorted_times)) {
@@ -143,7 +158,7 @@ calculateShiftBayesFactor <-
         t1 <- times[1]
         t2 <- times[2]
 
-        sorted_times <- sort(time_log[i, ])
+        sorted_times <- sort(unlist(time_log[i, ]))
 
         # Avoid issues finding the maximum time
         if (t2 == max(sorted_times)) {

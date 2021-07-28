@@ -4,7 +4,7 @@ test_that("processes SSE traces", {
 
   # read in and process file
   bisse_file <- system.file("extdata",
-                            "sse/primates_BiSSE_activity_period.p",
+                            "sse/primates_BiSSE_activity_period_mini.p",
                             package="RevGadgets")
   pdata <- processSSE(bisse_file)
 

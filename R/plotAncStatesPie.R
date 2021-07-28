@@ -652,6 +652,9 @@ plotAncStatesPie <- function(t,
                         order = 1)
   p <- p + ggplot2::guides(size = "none")
 
+  # import ggimage theme
+  theme_transparent <- ggimage::theme_transparent()
+
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
     # create state matrices (matrix of nodes (rows) and all
@@ -678,7 +681,6 @@ plotAncStatesPie <- function(t,
       )
 
     # add pies to tree
-
     # change 0s to avoid dividing by zero when calculating coordinates
     zeros <- which(dplyr::pull(p$data, "x") == 0)
     p$data[zeros, "x"] <- 0.0001

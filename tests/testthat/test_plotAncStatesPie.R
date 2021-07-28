@@ -8,7 +8,7 @@ test_that("plots pies of ancestral states", {
                 package = "RevGadgets")
   plot_file <-
     system.file("extdata",
-                "graphs/plotAncStatesPie.rds",
+                "graphs/plotAncStatesPie_df.rds",
                 package = "RevGadgets")
 
   # make a new plot
@@ -59,7 +59,6 @@ test_that("plots pies of ancestral states", {
   expect_error(print(plot_new), NA)
 
   # compare plot data objects
-  expect_equal(plot_new$data, plot_orig$data)
-
+  expect_equal(plot_new$data, plot_orig)
 
 })

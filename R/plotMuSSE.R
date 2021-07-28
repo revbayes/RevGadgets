@@ -7,9 +7,15 @@
 #' @return a ggplot object
 #' @examples
 #' \donttest{
-#' bisse_file <- system.file("extdata",
-#'                           "sse/primates_BiSSE_activity_period.p",
-#'                           package="RevGadgets")
+#'
+#' # download the example dataset to working directory
+#'
+#' url <- "https://revbayes.github.io/tutorials/intro/data/primates_BiSSE_activity_period.log"
+#' dest_path <- "primates_BiSSE_activity_period.log"
+#' download.file(url, dest_path)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' bisse_file <- dest_path
 #'
 #' pdata <- processSSE(bisse_file)
 #' p <- plotMuSSE(pdata);p
@@ -19,6 +25,11 @@
 #'
 #' # change x-axis label
 #' p + ggplot2::xlab("Rate (events/Ma)")
+#'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path)
 #' }
 #' @export
 

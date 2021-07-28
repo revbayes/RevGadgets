@@ -1,5 +1,6 @@
-#' Stolen from the \code{RmcdrPlugin.KMggplot2} (slightly modified)
-#' Step ribbon plots.
+#' plot geom stepribbon for diversification rates
+#'
+#' Modified from \code{RmcdrPlugin.KMggplot2} step ribbon plots.
 #'
 #' \code{geom_stepribbon} is an extension of the \code{geom_ribbon}, and
 #' is optimized for Kaplan-Meier plots with pointwise confidence intervals
@@ -8,9 +9,13 @@
 #' @seealso
 #'   \code{\link[ggplot2]{geom_ribbon}} \code{geom_stepribbon}
 #'   inherits from \code{geom_ribbon}.
+#'   \code{\link[RcmdrPlugin.KMggplot2]{geom_stepribbon}} \code{geom_stepribbon}
+#'   is modified from \code{RcmdrPlugin.KMggplot2::geom_stepribbon}.
 #' @inheritParams ggplot2:::geom_ribbon
+#'
+#' @rdname geom_stepribbon
 #' @examples
-#' \dontrun{
+#'
 #' huron <- data.frame(year = 1875:1972, level = as.vector(LakeHuron))
 #'
 #' h <- ggplot2::ggplot(huron, ggplot2::aes(year))
@@ -19,14 +24,14 @@
 #'                     fill = "grey70") +
 #'     ggplot2::geom_step(ggplot2::aes(y = level))
 #'
+#' # contrast ggplot2::geom_ribbon with geom_stepribbon:
 #' h + ggplot2::geom_ribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1),
 #'                          fill = "grey70") +
 #'     ggplot2::geom_line(ggplot2::aes(y = level))
-#' }
-#' @rdname geom_stepribbon
+#'
 #' @importFrom ggplot2 layer GeomRibbon
 #'
-# @export
+#' @export
 #'
 geom_stepribbon <- function(mapping     = NULL,
                             data        = NULL,
@@ -51,7 +56,7 @@ geom_stepribbon <- function(mapping     = NULL,
 #' @rdname geom_stepribbon
 #' @format NULL
 #' @usage NULL
-# @export
+#' @export
 GeomStepribbon <- ggplot2::ggproto(
   "GeomStepribbon",
   GeomRibbon,

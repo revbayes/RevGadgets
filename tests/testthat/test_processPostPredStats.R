@@ -2,7 +2,7 @@ context("Tests processPostPredStats function")
 
 test_that("compare processed output from documentation example", {
    file_sim <- system.file("extdata",
-                           "PPS/simulated_data_pps_example.csv",
+                           "PPS/simulated_data_pps_mini.csv",
                            package = "RevGadgets")
    file_emp <- system.file("extdata",
                            "PPS/empirical_data_pps_example.csv",

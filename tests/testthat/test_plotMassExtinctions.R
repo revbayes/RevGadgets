@@ -4,16 +4,16 @@ test_that("tests mass extinctions example", {
   # get files
   mass_extinction_probability_file <-
     system.file("extdata",
-                "mass_extinction/crocs_mass_extinction_probabilities.p",
+                "mass_extinction/crocs_mass_extinction_probabilities_mini.p",
                 package = "RevGadgets")
 
   plot_file <-
     system.file("extdata",
-                "graphs/plotMassExtinctions.rds",
+                "graphs/plotMassExtinctions_df.rds",
                 package = "RevGadgets")
 
   mass_extinction_probabilities <-
-    readTrace(mass_extinction_probability_file, burnin = 0.25)
+    readTrace(mass_extinction_probability_file, burnin = 0)
 
   # prior probability of mass extinction at any time
   prior_n_expected <- 0.1
@@ -36,7 +36,6 @@ test_that("tests mass extinctions example", {
       prior_prob
     )
 
-
   # read original plot object
   plot_orig <- readRDS(plot_file)
 
@@ -44,7 +43,6 @@ test_that("tests mass extinctions example", {
   expect_error(print(plot_new), NA)
 
   # compare plot data objects
-  expect_equal(plot_new$data, plot_orig$data)
-
+  expect_equal(plot_new$data, plot_orig)
 
 })

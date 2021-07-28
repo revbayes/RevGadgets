@@ -28,11 +28,20 @@ into one trace file.
 }
 \examples{
 
-# continuous parameter example, multiple runs
-file_1 <- system.file("extdata",
-    "sub_models/primates_cytb_GTR_run_1.p", package="RevGadgets")
-file_2 <- system.file("extdata",
-    "sub_models/primates_cytb_GTR_run_2.p", package="RevGadgets")
+# download the example dataset to working directory
+url_1 <-
+"https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR_run_1.log"
+dest_path_1 <- "primates_cytb_GTR_run_1.log"
+download.file(url_1, dest_path_1)
+
+url_2 <-
+"https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR_run_2.log"
+dest_path_2 <- "primates_cytb_GTR_run_2.log"
+download.file(url_2, dest_path_2)
+
+# to run on your own data, change this to the path to your data file
+file_1 <- dest_path_1
+file_2 <- dest_path_2
 
 # read in the multiple trace files
 multi_trace <- readTrace(path = c(file_1, file_2), burnin = 0.0)
@@ -41,5 +50,9 @@ multi_trace <- readTrace(path = c(file_1, file_2), burnin = 0.0)
 combined_trace <- combineTraces(trace = multi_trace,
                                 burnin = 0.1)
 
+# remove files
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path_1, dest_path_2)
 
 }

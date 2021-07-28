@@ -6,19 +6,19 @@ context("tests the processDivRates function")
 test_that("processes birth-death scripts", {
         file_spectimes <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_speciation_times.p",
+                            "epi_bd/primates_EBD_speciation_times_mini.p",
                             package = "RevGadgets")
         file_specrates <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_speciation_rates.p",
+                            "epi_bd/primates_EBD_speciation_rates_mini.p",
                             package = "RevGadgets")
         file_exttimes <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_extinction_times.p",
+                            "epi_bd/primates_EBD_extinction_times_mini.p",
                             package = "RevGadgets")
         file_extrates <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_extinction_rates.p",
+                            "epi_bd/primates_EBD_extinction_rates_mini.p",
                             package = "RevGadgets")
 
         primates <- processDivRates(

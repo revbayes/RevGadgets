@@ -34,14 +34,31 @@
 #' @examples
 #'
 #' \donttest{
-#' file_sim <- system.file("extdata",
-#'     "PPS/simulated_data_pps_example.csv", package="RevGadgets")
-#' file_emp <- system.file("extdata",
-#'     "PPS/empirical_data_pps_example.csv", package="RevGadgets")
+#' # download the example datasets to working directory
+#'
+#' url_emp <-
+#'    "https://revbayes.github.io/tutorials/intro/data/empirical_data_pps_example.csv"
+#' dest_path_emp <- "empirical_data_pps_example.csv"
+#' download.file(url_emp, dest_path_emp)
+#'
+#' url_sim <-
+#'    "https://revbayes.github.io/tutorials/intro/data/simulated_data_pps_example.csv"
+#' dest_path_sim <- "simulated_data_pps_example.csv"
+#' download.file(url_sim, dest_path_sim)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' file_sim <- dest_path_sim
+#' file_emp <- dest_path_emp
+#'
 #' t <- processPostPredStats(path_sim = file_sim,
 #'                          path_emp = file_emp)
 #' plots <- plotPostPredStats(data = t)
 #' plots[[1]]
+#'
+#' # remove files
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_sim, dest_path_emp)
 #'
 #' }
 #'

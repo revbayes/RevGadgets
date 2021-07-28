@@ -16,11 +16,22 @@
 #'
 #' @examples
 #'
-#' file <- system.file("extdata",
-#'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
-#' one_trace <- readTrace(paths = file)
+#' # download the example dataset to working directory
+#' url_gtr <- "
+#'     https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+#' dest_path_gtr <- "primates_cytb_GTR.log"
+#' download.file(url_gtr, dest_path_gtr)
 #'
+#' # to run on your own data, change this to the path to your data file
+#' file_single <- dest_path_gtr
+#'
+#' one_trace <- readTrace(paths = file_single)
 #' one_trace_burnin <- removeBurnin(trace = one_trace, burnin = 0.1)
+#'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_gtr)
 #'
 #' @export
 #'

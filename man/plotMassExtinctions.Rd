@@ -46,9 +46,13 @@ plotting style/theme, just as with any ggplot object.
 \examples{
 \donttest{
 
-mass_extinction_probability_file <- system.file("extdata",
-    "mass_extinction/crocs_mass_extinction_probabilities.p",
-    package="RevGadgets")
+# download the example dataset to working directory
+url <- "https://revbayes.github.io/tutorials/intro/data/crocs_mass_extinction_probabilities.log"
+dest_path <- "crocs_mass_extinction_probabilities.log"
+download.file(url, dest_path)
+
+# to run on your own data, change this to the path to your data file
+mass_extinction_probability_file <- dest_path
 
 mass_extinction_probabilities <-
               readTrace(mass_extinction_probability_file,burnin = 0.25)
@@ -68,6 +72,11 @@ p <- plotMassExtinctions(mass_extinction_trace=mass_extinction_probabilities,
                          mass_extinction_times=interval_times,
                          mass_extinction_name="mass_extinction_probabilities"
                          ,prior_prob);p
+
+# remove file
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path)
 }
 
 }

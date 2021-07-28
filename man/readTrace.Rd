@@ -47,16 +47,47 @@ format = "complex", readTrace() will read in those columns as factors
 rather than as numeric vectors.
 }
 \examples{
+# read and process a single trace file
 
-file <- system.file("extdata",
-    "sub_models/primates_cytb_GTR.p", package="RevGadgets")
-one_trace <- readTrace(paths = file)
+# download the example dataset to working directory
+url_gtr <- "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+dest_path_gtr <- "primates_cytb_GTR.log"
+download.file(url_gtr, dest_path_gtr)
 
-file_1 <- system.file("extdata",
-    "sub_models/primates_cytb_GTR_run_1.p", package="RevGadgets")
-file_2 <- system.file("extdata",
-    "sub_models/primates_cytb_GTR_run_2.p", package="RevGadgets")
+# to run on your own data, change this to the path to your data file
+file_single <- dest_path_gtr
 
-multi_trace <- readTrace(path = c(file_1, file_2))
+one_trace <- readTrace(paths = file_single)
+
+# remove file
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path_gtr)
+
+# read and process multiple trace files, such as from multiple runs of
+# the same analysis
+
+# download the example dataset to working directory
+url_1 <-
+"https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR_run_1.log"
+dest_path_1 <- "primates_cytb_GTR_run_1.log"
+download.file(url_1, dest_path_1)
+
+url_2 <-
+"https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR_run_2.log"
+dest_path_2 <- "primates_cytb_GTR_run_2.log"
+download.file(url_2, dest_path_2)
+
+# to run on your own data, change this to the path to your data file
+file_1 <- dest_path_1
+file_2 <- dest_path_2
+
+# read in the multiple trace files
+multi_trace <- readTrace(path = c(file_1, file_2), burnin = 0.0)
+
+# remove files
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path_1, dest_path_2)
 
 }

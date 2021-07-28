@@ -25,19 +25,56 @@
 #' \dontrun{
 #'
 #' # read in a single nexus file
-#' file <- system.file("extdata",
-#'     "sub_models/primates_cytb_GTR_MAP.tre", package="RevGadgets")
+#'
+#' # download the example dataset to working directory
+#' url_nex <-
+#'  "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR_MAP.tre"
+#' dest_path_nex <- "primates_cytb_GTR_MAP.tre"
+#' download.file(url_nex, dest_path_nex)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' file <- dest_path_nex
 #' tree_single <- readTrees(paths = file)
 #'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_nex)
+#'
 #' # read in a single newick string
-#' file <- system.file("extdata", "bds/primates.tre", package="RevGadgets")
-#' tree_new <- readTrees(path = file)
+#'
+#' # download the example dataset to working directory
+#' url_new <-
+#'  "https://revbayes.github.io/tutorials/intro/data/primates.tre"
+#' dest_path_new <- "primates.tre"
+#' download.file(url_new, dest_path_new)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' file_new <- dest_path_new
+#' tree_new <- readTrees(paths = file_new)
+#'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_new)
+#'
 #'
 #' # read in a tree trace (may take a few seconds)
-#' file <- system.file("extdata",
-#'                     "sub_models/primates_cytb_GTR.trees",
-#'                     package="RevGadgets")
-#' tree_multi <- readTrees(path = file)
+#'
+#' # download the example dataset to working directory
+#' url_multi <-
+#'  "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.trees"
+#' dest_path_multi <- "primates_cytb_GTR.trees"
+#' download.file(url_multi, dest_path_multi)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' file_multi <- dest_path_multi
+#' tree_multi <- readTrees(paths = file_multi)
+#'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_multi)
 #'
 #' }
 #' @export

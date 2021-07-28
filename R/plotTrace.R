@@ -39,8 +39,17 @@
 #'
 #' \donttest{
 #'
-#' file <- system.file("extdata",
-#'     "sub_models/primates_cytb_GTR.p", package="RevGadgets")
+#' # example with quantitative parameters
+#'
+#' # download the example dataset to working directory
+#' url_gtr <- "
+#'    https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+#' dest_path_gtr <- "primates_cytb_GTR.log"
+#' download.file(url_gtr, dest_path_gtr)
+#'
+#' # to run on your own data, change this to the path to your data file
+#' file <- dest_path_gtr
+#'
 #' one_trace <- readTrace(paths = file)
 #' plots <- plotTrace(trace = one_trace,
 #'                     vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
@@ -59,10 +68,19 @@
 #' plots <- plotTrace(trace = one_trace, match = "pi")
 #' plots[[1]]
 #'
+#' #' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_gtr)
+#'
 #' # plot some qualitative variables
-#' file <- system.file("extdata",
-#'                     "comp_method_disc/freeK_RJ.p",
-#'                     package = "RevGadgets")
+#'
+#' # download the example dataset to working directory
+#' url_rj <- "https://revbayes.github.io/tutorials/intro/data/freeK_RJ.log"
+#' dest_path_rj <- "freeK_RJ.log"
+#' download.file(url_rj, dest_path_rj)
+#'
+#' file <- dest_path_rj
 #' trace <- readTrace(path = file)
 #'
 #' plots <- plotTrace(trace = trace,
@@ -79,6 +97,12 @@
 #'                              "prob_rate_31"= "blue",
 #'                              "prob_rate_32" = "orange"))
 #' plots[[1]]
+#'
+#' # remove file
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(dest_path_rj)
+#'
 #' }
 #'
 #' @export
@@ -457,7 +481,7 @@ plotTrace <-
             ggthemes::theme_few() +
             ggplot2::scale_color_manual(values = col_vec_qual) +
             ggplot2::scale_fill_manual(values = c(col_vec_qual, "#ffffff"),
-                                       guide = FALSE) +
+                                       guide = "none") +
             ggplot2::guides(color =
                               ggplot2::guide_legend(override.aes =
                                                       list(fill =
@@ -569,7 +593,7 @@ plotTrace <-
             ggthemes::theme_few() +
             ggplot2::scale_color_manual(values = col_vec_qual) +
             ggplot2::scale_fill_manual(values = c(col_vec_qual, "#ffffff"),
-                                       guide = FALSE) +
+                                       guide = "none") +
             ggplot2::guides(color =
                               ggplot2::guide_legend(override.aes =
                                                        list(fill =

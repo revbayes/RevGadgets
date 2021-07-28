@@ -5,7 +5,7 @@ test_that("plots FBD tree", {
   tree_file <-
     system.file("extdata", "fbd/bears.mcc.tre", package = "RevGadgets")
   plot_file <-
-    system.file("extdata", "graphs/plotFBDTree.rds", package = "RevGadgets")
+    system.file("extdata", "graphs/plotFBDTree_df.rds", package = "RevGadgets")
 
   # make a new plot
   example <- readTrees(paths = tree_file)
@@ -20,16 +20,14 @@ test_that("plots FBD tree", {
       age_bars_colored_by = "posterior",
       age_bars_color = rev(colFun(2))
     ) + ggplot2::theme(legend.position = c(.25, .85))
-  #print(plot_new)
 
-  # read original plot object
+  # read original plot data object
   plot_orig <- readRDS(plot_file)
 
   # test for errors in plot_new
   expect_error(print(plot_new), NA)
 
   # compare plot data objects
-  expect_equal(plot_new$data, plot_orig$data)
-
+  expect_equal(plot_new$data, plot_orig)
 
 })

@@ -22,11 +22,21 @@ Uses the SANN method of the optim() function to approximate the MAP estimate
 }
 \examples{
 
+# download the example dataset to working directory
+url <- "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+dest_path <- "primates_cytb_GTR.log"
+download.file(url, dest_path)
 
-file <- system.file("extdata",
-    "sub_models/primates_cytb_GTR.p", package="RevGadgets")
+# to run on your own data, change this to the path to your data file
+file <- dest_path
+
 trace <- readTrace(paths = file)
 MAP <- getMAP(trace[[1]]$"pi[1]")
+
+# remove file
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path)
 
 }
 \seealso{

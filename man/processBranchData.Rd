@@ -41,12 +41,20 @@ processBranchData
 \examples{
 \donttest{
 
-treefile <- system.file("extdata",
-                        "bds/primates.tre",
-                        package="RevGadgets")
-logfile <- system.file("extdata",
-                       "bds/primates_BDS_rates_truncated.p",
-                       package="RevGadgets")
+# download the example dataset to working directory
+url_rates <-
+  "https://revbayes.github.io/tutorials/intro/data/primates_BDS_rates.log"
+dest_path_rates <- "primates_BDS_rates.log"
+download.file(url_rates, dest_path_rates)
+
+url_tree <-
+  "https://revbayes.github.io/tutorials/divrate/data/primates_tree.nex"
+dest_path_tree <- "primates_tree.nex"
+download.file(url_tree, dest_path_tree)
+
+# to run on your own data, change this to the path to your data file
+treefile <- dest_path_tree
+logfile <- dest_path_rates
 
 branch_data <- readTrace(logfile)
 tree <- readTrees(paths = treefile)
@@ -62,6 +70,9 @@ p <- plotTree(tree = annotated_tree,
               line_width = 0.8,
               branch_color = c("blue","green")) +
      ggplot2::theme(legend.position=c(.1, .9));p
-
+# remove files
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(dest_path_tree, dest_path_rates)
 }
 }

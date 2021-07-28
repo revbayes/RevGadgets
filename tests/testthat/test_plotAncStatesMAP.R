@@ -8,7 +8,7 @@ test_that("plots MAP of ancestral states", {
                 package = "RevGadgets")
   plot_file <-
     system.file("extdata",
-                "graphs/plotAncStatesMAP.rds",
+                "graphs/plotAncStatesMAP_df.rds",
                 package = "RevGadgets")
 
   # make a new plot
@@ -18,7 +18,6 @@ test_that("plots MAP of ancestral states", {
                                       "2" = "Beautiful",
                                       "3" = "Cool!"))
   plot_new <- plotAncStatesMAP(t = example)
-  #print(plot_new)
 
   # read original plot object
   plot_orig <- readRDS(plot_file)
@@ -27,7 +26,7 @@ test_that("plots MAP of ancestral states", {
   expect_error(print(plot_new), NA)
 
   # compare plot dataobjects
-  expect_equal(plot_new$data, plot_orig$data)
+  expect_equal(plot_new$data, plot_orig)
 
 })
 

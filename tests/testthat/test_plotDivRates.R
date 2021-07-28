@@ -3,23 +3,23 @@ context("tests the plotDivRates function")
 test_that("plot works", {
         file_plot_orig <-
                 system.file("extdata",
-                            "graphs/plotDivRates.rds",
+                            "graphs/plotDivRates_df.rds",
                             package = "RevGadgets")
         file_spectimes <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_speciation_times.p",
+                            "epi_bd/primates_EBD_speciation_times_mini.p",
                             package = "RevGadgets")
         file_specrates <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_speciation_rates.p",
+                            "epi_bd/primates_EBD_speciation_rates_mini.p",
                             package = "RevGadgets")
         file_exttimes <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_extinction_times.p",
+                            "epi_bd/primates_EBD_extinction_times_mini.p",
                             package = "RevGadgets")
         file_extrates <-
                 system.file("extdata",
-                            "epi_bd/primates_EBD_extinction_rates.p",
+                            "epi_bd/primates_EBD_extinction_rates_mini.p",
                             package = "RevGadgets")
 
         primates <- processDivRates(
@@ -36,6 +36,6 @@ test_that("plot works", {
         expect_error(print(plot_new), NA)
 
         # compare plot data objects
-        expect_equal(plot_new$data, plot_orig$data)
+        expect_equal(plot_new$data, plot_orig)
 
 })
