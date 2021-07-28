@@ -23,7 +23,8 @@ Uses the SANN method of the optim() function to approximate the MAP estimate
 \examples{
 
 # download the example dataset to working directory
-url <- "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+url <-
+  "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
 dest_path <- "primates_cytb_GTR.log"
 download.file(url, dest_path)
 

@@ -9,8 +9,9 @@
 #' @seealso
 #'   \code{\link[ggplot2]{geom_ribbon}} \code{geom_stepribbon}
 #'   inherits from \code{geom_ribbon}.
-#'   \code{\link[RcmdrPlugin.KMggplot2]{geom_stepribbon}} \code{geom_stepribbon}
-#'   is modified from \code{RcmdrPlugin.KMggplot2::geom_stepribbon}.
+#'   \code{geom_stepribbon} is modified from
+#'   \code{RcmdrPlugin.KMggplot2::geom_stepribbon}.
+#'
 #' @inheritParams ggplot2:::geom_ribbon
 #'
 #' @rdname geom_stepribbon

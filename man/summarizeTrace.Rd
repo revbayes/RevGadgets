@@ -33,7 +33,8 @@ character and the 95\% credible set for discrete characters.
 # continuous character only example, one run
 
 # download the example dataset to working directory
-url_gtr <- "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+url_gtr <-
+    "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
 dest_path_gtr <- "primates_cytb_GTR.log"
 download.file(url_gtr, dest_path_gtr)
 

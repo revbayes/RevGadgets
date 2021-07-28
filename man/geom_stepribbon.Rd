@@ -90,7 +90,7 @@ h + ggplot2::geom_ribbon(ggplot2::aes(ymin = level - 1, ymax = level + 1),
 \seealso{
 \code{\link[ggplot2]{geom_ribbon}} \code{geom_stepribbon}
   inherits from \code{geom_ribbon}.
-  \code{\link[RcmdrPlugin.KMggplot2]{geom_stepribbon}} \code{geom_stepribbon}
-  is modified from \code{RcmdrPlugin.KMggplot2::geom_stepribbon}.
+  \code{geom_stepribbon} is modified from
+  \code{RcmdrPlugin.KMggplot2::geom_stepribbon}.
 }
 \keyword{datasets}

@@ -8,5 +8,5 @@ test_that("compare getMAP() for example from documentation", {
   trace <- readTrace(paths = file)
 
   #some error is to be expected given the function, so round to 3 digits
-  expect_equal(0.26, round(getMAP(trace[[1]]$"pi[1]"), digits = 3))
+  expect_equal(0.26, round(getMAP(trace[[1]]$"pi[1]"), digits = 2))
 })

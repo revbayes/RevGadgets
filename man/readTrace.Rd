@@ -50,7 +50,8 @@ rather than as numeric vectors.
 # read and process a single trace file
 
 # download the example dataset to working directory
-url_gtr <- "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
+url_gtr <-
+   "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
 dest_path_gtr <- "primates_cytb_GTR.log"
 download.file(url_gtr, dest_path_gtr)
 
