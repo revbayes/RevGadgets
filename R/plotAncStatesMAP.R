@@ -573,8 +573,8 @@ plotAncStatesMAP <- function(t,
   }
   ##### calculate cladogenetic plotting data #####
   if (cladogenetic == TRUE) {
-    x <- .getXcoord(tree)
-    y <- .getYcoord(tree)
+    x <- ggtree::fortify(tree)$x
+    y <- ggtree::fortify(tree)$y
     x_anc <- numeric(n_node)
     node_index <- numeric(n_node)
     for (i in 1:n_node) {
