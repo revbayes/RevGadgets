@@ -9,10 +9,12 @@ on:
     branches:
       - master
       - development
+      -github_actions
   pull_request:
     branches:
       - master
       - development
+      -github_actions
 
 name: R-CMD-check
 
