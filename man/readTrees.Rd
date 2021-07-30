@@ -48,7 +48,7 @@ download.file(url_nex, dest_path_nex)
 
 # to run on your own data, change this to the path to your data file
 file <- dest_path_nex
-tree_single <- readTrees(paths = file)
+tree_single_old <- readTrees(paths = file)
 
 # remove file
 # WARNING: only run for example dataset!
