@@ -248,10 +248,14 @@ plotAncStatesPie <- function(t,
   state_labels <- as.factor(attributes(t)$state_labels)
 
   ##### calculate pie sizes #####
-  node_pie_size <-  ((ntips * tree_height) / 15) * node_pie_size
-  shoulder_pie_size <-
-    ((ntips * tree_height) / 15) * shoulder_pie_size
-  tip_pie_size <- ((ntips * tree_height) / 15) * tip_pie_size
+  # node_pie_size <-  ((ntips ) / tree_height) * node_pie_size
+  # shoulder_pie_size <-
+  #   ((ntips ) /  tree_height) * shoulder_pie_size
+  # tip_pie_size <- ((ntips ) / tree_height) * tip_pie_size
+
+  node_pie_size <-  node_pie_size / ntips
+  shoulder_pie_size <- shoulder_pie_size / ntips
+  tip_pie_size <- tip_pie_size / ntips
 
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
@@ -657,14 +661,15 @@ plotAncStatesPie <- function(t,
 
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
-    # create state matrices (matrix of nodes (rows) and all
+
+        # create state matrices (matrix of nodes (rows) and all
     # possible states (columns), values are pp. )
     state_probs <-
       .build_state_probs(t, state_labels, include_start_states = TRUE)
     dat_state_end <- state_probs$end
     dat_state_start <- state_probs$start
 
-    # make pies
+    # make pie plots
     pies_start <-
       ggtree::nodepie(
         dat_state_start,
@@ -680,45 +685,112 @@ plotAncStatesPie <- function(t,
         alpha = state_transparency
       )
 
-    # add pies to tree
     # change 0s to avoid dividing by zero when calculating coordinates
     zeros <- which(dplyr::pull(p$data, "x") == 0)
     p$data[zeros, "x"] <- 0.0001
 
-    # add node pies
-    p <- .inset.revgadgets(
-      tree_view = p,
-      insets = pies_end[node_idx],
-      x = "node",
-      height = node_pie_size,
-      width = node_pie_size,
-      hjust = node_pie_nudge_x,
-      vjust = node_pie_nudge_y
-    )
+    # convert pie plots to lists
 
-    # add shoulder pies
-    p <- .inset.revgadgets(
-      tree_view = p,
-      insets = pies_start,
-      x = "parent_shoulder",
-      height = shoulder_pie_size,
-      width = shoulder_pie_size,
-      hjust = shoulder_pie_nudge_x,
-      vjust = shoulder_pie_nudge_y
-    )
-
-    #add tip pies
-    if (tip_pies == TRUE) {
-      p <- .inset.revgadgets(
-        tree_view = p,
-        insets = pies_end[tip_idx],
-        x = "node",
-        height = tip_pie_size,
-        width = tip_pie_size,
-        hjust = tip_pie_nudge_x,
-        vjust = tip_pie_nudge_y
+    # NODE PIES
+    # save pies as images and plot as raster grobs
+    pies_end_to_plot <- pies_end[node_idx]
+    results_end <- list()
+    for (i in seq_len(length(pies_end_to_plot))) {
+      ggplot2::ggsave(
+        ".temp.png",
+        plot = pies_end_to_plot[[i]],
+        bg = "transparent",
+        width = 3,
+        height = 3,
+        units = "cm",
+        dpi = 200
       )
+      pie <- png::readPNG(".temp.png")
+      results_end[[i]] <-
+        ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
     }
+    # plotting data
+    df_pies_end <- p$data[p$data$isTip == FALSE, ]
+    # adjust nudges
+    df_pies_end$x <- df_pies_end$x - node_pie_nudge_x
+    df_pies_end$y <- df_pies_end$y - node_pie_nudge_y
+
+    # SHOULDER PIES
+    # save pies as images and plot as raster grobs
+    results_start <- list()
+    for (i in seq_len(length(pies_start))) {
+      ggplot2::ggsave(
+        ".temp.png",
+        plot = pies_start[[i]],
+        bg = "transparent",
+        width = 3,
+        height = 3,
+        units = "cm",
+        dpi = 200
+      )
+      pie <- png::readPNG(".temp.png")
+      results_start[[i]] <-
+        ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
+    }
+    # plotting data
+    df_pies_start <- p$data
+    df_pies_start$x <- df_pies_start$x[match(df_pies_start$parent,
+                                             df_pies_start$node)]
+    # adjust nudges
+    df_pies_start$x <- df_pies_start$x - shoulder_pie_nudge_x
+    df_pies_start$y <- df_pies_start$y - shoulder_pie_nudge_y
+
+    # save pies as images and plot as raster grobs
+    # TIP PIES
+    if (tip_pies == TRUE) {
+      pies_tip <- pies_end[tip_idx]
+      results_tip <- list()
+      for (i in seq_len(length(pies_tip))) {
+        ggplot2::ggsave(
+          ".temp.png",
+          plot = pies_end[[i]],
+          bg = "transparent",
+          width = 3,
+          height = 3,
+          units = "cm",
+          dpi = 200
+        )
+        pie <- png::readPNG(".temp.png")
+        results_tip[[i]] <-
+          ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
+      }
+      # plotting data
+      df_pies_tip <- p$data[p$data$isTip == TRUE, ]
+      # adjust nudges
+      df_pies_tip$x <- df_pies_tip$x - tip_pie_nudge_x
+      df_pies_tip$y <- df_pies_tip$y - tip_pie_nudge_y
+    }
+
+    if (tip_pies == TRUE) {
+      df_pies <- rbind(df_pies_end, df_pies_start, df_pies_tip)
+      results <- c(results_end, results_start, results_tip)
+      sizes <- c(rep(node_pie_size, nrow(df_pies_end)),
+                 rep(shoulder_pie_size, nrow(df_pies_start)),
+                 rep(tip_pie_size, nrow(df_pies_tip)))
+    } else {
+      df_pies <- rbind(df_pies_end, df_pies_start)
+      results <- c(results_end, results_start)
+      sizes <- c(rep(node_pie_size, nrow(df_pies_end)),
+                 rep(shoulder_pie_size, nrow(df_pies_start)))
+    }
+
+    p <-
+      p + ggpp::geom_plot(data = df_pies,
+                          mapping = ggplot2::aes(
+                            x = x,
+                            y = y,
+                            label = results
+                          ),
+                          vp.width = sizes,
+                          vp.height = sizes,
+                          hjust = 0.5,
+                          vjust = 0.5
+      )
 
   } else {
     # create state matrices (matrix of nodes (rows) and all
@@ -735,28 +807,84 @@ plotAncStatesPie <- function(t,
         color = colors,
         alpha = state_transparency
       )
+    zeros <- which(dplyr::pull(p$data, "x") == 0)
+    p$data[zeros, "x"] <- 0.0001
 
-    # add pies to tree
-    p <- .inset.revgadgets(
-      tree_view = p,
-      insets = pies_anc[node_idx],
-      x = "node",
-      height = node_pie_size,
-      width = node_pie_size,
-      hjust = node_pie_nudge_x,
-      vjust = node_pie_nudge_y
-    )
-    if (tip_pies == TRUE) {
-      p <- .inset.revgadgets(
-        tree_view = p,
-        insets = pies_anc[tip_idx],
-        x = "node",
-        height = tip_pie_size,
-        width = tip_pie_size,
-        hjust = tip_pie_nudge_x,
-        vjust = tip_pie_nudge_y
+    # convert pie plots to lists
+
+    # NODE PIES
+    # save pies as images and plot as raster grobs
+    pies_anc_to_plot <- pies_anc[node_idx]
+    results_anc <- list()
+    for (i in seq_len(length(pies_anc_to_plot))) {
+      ggplot2::ggsave(
+        ".temp.png",
+        plot = pies_anc_to_plot[[i]],
+        bg = "transparent",
+        width = 3,
+        height = 3,
+        units = "cm",
+        dpi = 200
       )
+      pie <- png::readPNG(".temp.png")
+      results_anc[[i]] <-
+        ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
     }
+    # plotting data
+    df_pies_anc <- p$data[p$data$isTip == FALSE, ]
+    # adjust nudges
+    df_pies_anc$x <- df_pies_anc$x - node_pie_nudge_x
+    df_pies_anc$y <- df_pies_anc$y - node_pie_nudge_y
+
+    # save pies as images and plot as raster grobs
+    # TIP PIES
+    if (tip_pies == TRUE) {
+      pies_tip <- pies_anc[tip_idx]
+      results_tip <- list()
+      for (i in seq_len(length(pies_tip))) {
+        ggplot2::ggsave(
+          ".temp.png",
+          plot = pies_tip[[i]],
+          bg = "transparent",
+          width = 3,
+          height = 3,
+          units = "cm",
+          dpi = 200
+        )
+        pie <- png::readPNG(".temp.png")
+        results_tip[[i]] <-
+          ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
+      }
+      # plotting data
+      df_pies_tip <- p$data[p$data$isTip == TRUE, ]
+      # adjust nudges
+      df_pies_tip$x <- df_pies_tip$x - tip_pie_nudge_x
+      df_pies_tip$y <- df_pies_tip$y - tip_pie_nudge_y
+    }
+
+    if (tip_pies == TRUE) {
+      df_pies <- rbind(df_pies_anc, df_pies_tip)
+      results <- c(results_anc, results_tip)
+      sizes <- c(rep(node_pie_size, nrow(df_pies_anc)),
+                 rep(tip_pie_size, nrow(df_pies_tip)))
+    } else {
+      df_pies <- df_pies_anc
+      results <- results_anc
+      sizes <- rep(node_pie_size, nrow(df_pies_anc))
+    }
+
+    p <-
+      p + ggpp::geom_plot(data = df_pies,
+                          mapping = ggplot2::aes(
+                            x = x,
+                            y = y,
+                            label = results
+                          ),
+                          vp.width = sizes,
+                          vp.height = sizes,
+                          hjust = 0.5,
+                          vjust = 0.5
+      )
   }
 
   # add node labels (text)
@@ -906,6 +1034,9 @@ plotAncStatesPie <- function(t,
   if (tip_labels == TRUE & timeline == FALSE) {
     p <- p + ggtree::xlim(0, tree_height + tree_height / 2)
   }
+
+  # clean up pngs
+  file.remove(".temp.png")
 
   return(p)
 }

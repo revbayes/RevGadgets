@@ -46,8 +46,8 @@ test_that("plots pies of ancestral states", {
       cladogenetic = TRUE,
       tip_labels_offset = 0.01,
       timeline = F,
-      node_pie_size = 5,
-      tip_pie_size = 3
+      node_pie_size = .5,
+      tip_pie_size = .3
     ) +
     ggplot2::scale_x_continuous(limits = c(-0.5, 1)) +
     ggplot2::theme(legend.position = c(0.1, 0.75))

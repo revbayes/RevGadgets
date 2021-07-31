@@ -509,3 +509,151 @@
 #   attr(x, "row.names") <- .set_row_names(n)
 #   x
 # }
+
+# # modified from
+# # https://github.com/GuangchuangYu/ggimage/blob/master/R/geom_subview.R
+# .geom_subview_revgadgets <-
+#   function (mapping = NULL,
+#             data = NULL,
+#             width = 0.1,
+#             height = 0.1,
+#             x = NULL,
+#             y = NULL,
+#             subview = NULL) {
+#     if (is.null(data)) {
+#       data <- dplyr::tibble(x = x, y = y)
+#     } else if (!inherits(data, "tbl")) {
+#       data <- dplyr::as_tibble(data)
+#     }
+#     if (is.null(mapping)) {
+#       mapping <- ggplot2::aes_(x = ~ x, y = ~ y)
+#     }
+#
+#     mapping <- as.list(mapping)
+#
+#     if (is.null(mapping$x)) {
+#       stop("x aesthetic mapping should be provided")
+#     }
+#
+#     if (is.null(mapping$y)) {
+#       stop("y aesthetic mapping should be provided")
+#     }
+#
+#     if (is.null(mapping$subview) && is.null(subview)) {
+#       stop("subview must be provided")
+#     }
+#
+#     if (is.null(mapping$subview)) {
+#       if (!inherits(subview, "list")) {
+#         subview <- list(subview)
+#       }
+#       data$subview <- subview
+#     } else {
+#       sv_var <- rvcheck::get_aes_var(mapping, "subview")
+#       data$subview <- data[[sv_var]]
+#     }
+#
+#     xvar <- rvcheck::get_aes_var(mapping, "x")
+#     yvar <- rvcheck::get_aes_var(mapping, "y")
+#
+#     if (is.null(mapping$width)) {
+#       data$width <- width
+#     } else {
+#       width_var <- rvcheck::get_aes_var(mapping, "width")
+#       data$width <- data[[width_var]]
+#     }
+#
+#     if (is.null(mapping$height)) {
+#       data$height <- height
+#     } else {
+#       height_var <- rvcheck::get_aes_var(mapping, "height")
+#       data$height <- data[[height_var]]
+#     }
+#
+#     data$xmin <- data[[xvar]] - data$width / (2 * max(data[[yvar]]))
+#     data$xmax <- data[[xvar]] + data$width / (2 * max(data[[yvar]]))
+#     data$ymin <- data[[yvar]] - data$width / (2 * max(data[[xvar]]))
+#     data$ymax <- data[[yvar]] + data$width / (2 * max(data[[xvar]]))
+#
+#     # save pies as images and plot as raster grobs
+#     results <- list()
+#     for (i in seq_len(nrow(data))) {
+#       ggplot2::ggsave(
+#         ".temp.png",
+#         plot = data$subview[[i]],
+#         bg = "transparent",
+#         width = 3,
+#         height = 3,
+#         units = "cm",
+#         dpi = 200
+#       )
+#       pie <- png::readPNG(".temp.png")
+#       g <- grid::rasterGrob(pie, interpolate = TRUE)
+#       results[[i]] <-
+#         ggplot2::annotation_custom(
+#           ggplotify::as.grob(g),
+#           xmin = data$xmin[i],
+#           xmax = data$xmax[i],
+#           ymin = data$ymin[i],
+#           ymax = data$ymax[i]
+#         )
+#     }
+#     file.remove(".temp.png")
+#     return(results)
+#
+#     #old way of plotting pies - won't plot centered on nodes
+#     #lapply(1:nrow(data), function(i) {
+#     #  ggplot2::annotation_custom(
+#     #    ggplotify::as.grob(data$subview[[i]]),
+#     #    xmin = data$xmin[i],
+#     #    xmax = data$xmax[i],
+#     #    ymin = data$ymin[i],
+#     #    ymax = data$ymax[i]
+#     #  )
+#     #})
+#   }
+
+# # modified from
+# #https://github.com/YuLab-SMU/ggtree/blob/0681b23fe6afb510e5a6041a7cbf50c3b18473e8/R/inset.R
+# .inset.revgadgets <-
+#   function (tree_view,
+#             insets,
+#             width = 0.1,
+#             height = 0.1,
+#             hjust = 0,
+#             vjust = 0,
+#             x = "node",
+#             pos = 0.5) {
+#     df <- tree_view$data[as.numeric(names(insets)),]
+#
+#     # position subviews based on tree part
+#     x <- match.arg(x, c("node", "branch", "edge", "parent_shoulder"))
+#     if (x == "node") {
+#       xx <- df$x
+#     } else if (x == "parent_shoulder") {
+#       xx <- df$x[match(df$parent, df$node)]
+#     } else {
+#       xx <- df$branch
+#     }
+#     yy <- df$y
+#     xx <- xx - hjust # x-coordinates for nodes
+#     yy <- yy - vjust # y-coordinates for nodes
+#
+#     if (length(width) == 1) {
+#       width <- rep(width, length(insets))
+#     }
+#     if (length(height) == 1) {
+#       height <- rep(height, length(insets))
+#     }
+#
+#     tree_view <- tree_view +
+#       .geom_subview_revgadgets(
+#         subview = insets,
+#         width = width,
+#         height = height,
+#         x = xx,
+#         y = yy
+#       )
+#     # return treeview with subviews
+#     return(tree_view)
+#   }
