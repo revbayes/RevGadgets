@@ -279,14 +279,9 @@ plotAncStatesPie <- function(t,
   state_labels <- as.factor(attributes(t)$state_labels)
 
   ##### calculate pie sizes #####
-  # node_pie_size <-  ((ntips ) / tree_height) * node_pie_size
-  # shoulder_pie_size <-
-  #   ((ntips ) /  tree_height) * shoulder_pie_size
-  # tip_pie_size <- ((ntips ) / tree_height) * tip_pie_size
-
-  node_pie_size <-  node_pie_size / ntips
-  shoulder_pie_size <- shoulder_pie_size / ntips
-  tip_pie_size <- tip_pie_size / ntips
+  node_pie_size <-  node_pie_size / 30
+  shoulder_pie_size <- shoulder_pie_size / 30
+  tip_pie_size <- tip_pie_size / 30
 
   if (cladogenetic == TRUE) {
     state_pos_str_base <- c("end_state_", "start_state_")
