@@ -17,7 +17,8 @@
 #'
 #' # download the example dataset to working directory
 #'
-#' url <- "https://revbayes.github.io/tutorials/intro/data/primates_BiSSE_activity_period.log"
+#' url <-
+#'   "https://revbayes.github.io/tutorials/intro/data/primates_BiSSE_activity_period.log"
 #' dest_path <- "primates_BiSSE_activity_period.log"
 #' download.file(url, dest_path)
 #'

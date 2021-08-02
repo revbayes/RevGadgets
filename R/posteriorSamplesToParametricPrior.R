@@ -77,7 +77,8 @@ posteriorSamplesToParametricPrior <- function(samples,
     stop("This function requires numeric input data.")
   }
   if (!length(samples) >= 3) {
-    stop("Must provide at least 3 samples to compute mean/variance (many more is recommended).")
+    stop("Must provide at least 3 samples to compute mean/variance
+         (many more is recommended).")
   }
   if (variance_inflation_factor < 1.0) {
     stop("Not recommended to decrease variance from posterior.")

@@ -325,23 +325,27 @@ plotAncStatesMAP <- function(t,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
     if (geo_units[[1]] != "epochs" &
         geo_units[[1]] != "periods")
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
     if (geo_units[[2]] != "epochs" &
         geo_units[[2]] != "periods")
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
   } else {
     if (geo_units != "epochs" &
         geo_units != "periods")
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
   }
   ##### calculate helper variables #####
@@ -499,7 +503,8 @@ plotAncStatesMAP <- function(t,
         length(node_color) < length(all_states)) {
       stop(
         paste0(
-          "You provided fewer colors in node_color than states in your dataset. There are ",
+          "You provided fewer colors in node_color than states
+          in your dataset. There are ",
           length(all_states),
           " states and you provide ",
           length(node_color),
@@ -511,7 +516,8 @@ plotAncStatesMAP <- function(t,
         length(node_color) > length(all_states)) {
       stop(
         paste0(
-          "You provided more colors in node_color than states in your dataset. There are ",
+          "You provided more colors in node_color than states
+          in your dataset. There are ",
           length(all_states),
           " states and you provide ",
           length(node_color),

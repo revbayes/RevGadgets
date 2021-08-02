@@ -231,7 +231,8 @@ processDivRates <- function(speciation_time_log = "",
   }
 
   if (trace_lengths_same == FALSE) {
-    stop("You must provide the same number of log files for each parameter type.")
+    stop("You must provide the same number of log files
+         for each parameter type.")
   }
   else if (trace_lengths_same == TRUE) {
     if (length(speciation_time) == 0) {

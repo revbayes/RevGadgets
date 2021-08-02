@@ -127,14 +127,16 @@ plotTrace <-
       stop(
         paste0(
           length(vars),
-          " states in dataset; please provide colors (default only can provide up to 12"
+          " states in dataset; please provide colors
+          (default only can provide up to 12)"
         )
       )
     }
     if (color[1] != "default" & length(color) < length(vars)) {
       stop(
         paste0(
-          "You provided fewer colors in node_color than states in your dataset. There are ",
+          "You provided fewer colors in node_color than states in your dataset.
+          There are ",
           length(vars),
           " states and you provide ",
           length(color),
@@ -145,7 +147,8 @@ plotTrace <-
     if (color[1] != "default" & length(color) > length(vars)) {
       stop(
         paste0(
-          "You provided more colors in node_color than states in your dataset. There are ",
+          "You provided more colors in node_color than states in your dataset.
+          There are ",
           length(vars),
           " states and you provide ",
           length(color),

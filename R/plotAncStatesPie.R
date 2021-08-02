@@ -58,8 +58,13 @@
 #' symbols- varies from 0 to 1.
 #' @param timeline (logical; FALSE) Plot tree with labeled x-axis with t
 #' imescale in MYA.
+#' @param geo (logical; timeline) Add a geological timeline? Defaults to the
+#' same as timeline.
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
-#' time intervals (in MYA).
+#' geological timeline units if geo == TRUE or regular time intervals (in MYA)
+#' if geo == FALSE.
+#' @param geo_units (list; list("epochs", "periods")) Which geological units
+#' to include in the geo timescale.
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @examples
@@ -98,7 +103,8 @@
 #'
 #' # plot
 #' plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-#'         cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = TRUE) +
+#'         cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = TRUE,
+#'         geo = FALSE) +
 #'         ggplot2::theme(legend.position = c(0.1, 0.75))
 #' }
 #'
@@ -143,9 +149,8 @@ plotAncStatesPie <- function(t,
                              state_transparency = 0.75,
 
                              timeline = FALSE,
-                             # geo scale currently not working for pies
-                             #geo = timeline,
-                             #geo_units = list("epochs", "periods"),
+                             geo = timeline,
+                             geo_units = list("epochs", "periods"),
                              time_bars = timeline,
                              ...) {
   ##### parameter compatibility checks #####
@@ -226,6 +231,32 @@ plotAncStatesPie <- function(t,
     stop("state_transparency should be a number between 0 - 1")
   if (is.logical(timeline) == FALSE)
     stop("timeline should be TRUE or FALSE")
+  if (is.list(geo_units)) {
+    if (length(geo_units) != 2)
+      stop(
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
+      )
+    if (geo_units[[1]] != "epochs" &
+        geo_units[[1]] != "periods")
+      stop(
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
+      )
+    if (geo_units[[2]] != "epochs" &
+        geo_units[[2]] != "periods")
+      stop(
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
+      )
+  } else {
+    if (geo_units != "epochs" &
+        geo_units != "periods")
+      stop(
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
+      )
+  }
 
   ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ...)
@@ -350,8 +381,6 @@ plotAncStatesPie <- function(t,
 
   # add timeline
   if (timeline == TRUE) {
-    geo <- FALSE
-    geo_units <- NULL
 
     max_age <- tree_height
 

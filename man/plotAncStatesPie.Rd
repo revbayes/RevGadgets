@@ -31,6 +31,8 @@ plotAncStatesPie(
   shoulder_pie_nudge_y = node_pie_nudge_y,
   state_transparency = 0.75,
   timeline = FALSE,
+  geo = timeline,
+  geo_units = list("epochs", "periods"),
   time_bars = timeline,
   ...
 )
@@ -118,8 +120,15 @@ symbols- varies from 0 to 1.}
 \item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with t
 imescale in MYA.}
 
+\item{geo}{(logical; timeline) Add a geological timeline? Defaults to the
+same as timeline.}
+
+\item{geo_units}{(list; list("epochs", "periods")) Which geological units
+to include in the geo timescale.}
+
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
-time intervals (in MYA).}
+geological timeline units if geo == TRUE or regular time intervals (in MYA)
+if geo == FALSE.}
 
 \item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
@@ -162,7 +171,8 @@ names(colors) <- dec_example@state_labels
 
 # plot
 plotAncStatesPie(t = dec_example, pie_colors = colors, tip_labels_size = 3,
-        cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = TRUE) +
+        cladogenetic = TRUE, tip_labels_offset = 0.25, timeline = TRUE,
+        geo = FALSE) +
         ggplot2::theme(legend.position = c(0.1, 0.75))
 }
 

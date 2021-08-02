@@ -50,7 +50,8 @@ processAncStates <-
             include_start_states <- TRUE
         } else {
             stop(
-                "tree file does not contain expected state labels: [\'anc_state\'] or [\'start_state\' and \'end_state\']"
+                "tree file does not contain expected state labels:
+                [\'anc_state\'] or [\'start_state\' and \'end_state\']"
             )
         }
 

@@ -120,7 +120,8 @@ densiTreeWithBranchData <-
            data_intervals = NULL,
            ...) {
     if ((is.null(trees) || is.null(data)) && is.null(tree_files))
-      stop("Please input either trees and data or vector of tree files in Nexus format.")
+      stop("Please input either trees and data or vector
+           of tree files in Nexus format.")
 
     if (is.null(trees) || is.null(data)) {
       treedata <- readTrees(tree_files, burnin = burnin, verbose = FALSE)

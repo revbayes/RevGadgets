@@ -71,7 +71,8 @@ processBranchData <- function(tree,
   if (!"data.frame" %in% class(dat))
     stop("dat must be a data.frame or a single list of a data.frame")
   if (!"treedata" %in% class(tree))
-    stop("tree must be a treedata object or a list of lists of treedata objects")
+    stop("tree must be a treedata object or a list of
+         lists of treedata objects")
 
   dat <- dat[floor(nrow(dat) * burnin):nrow(dat), ]
   tree_tbl <- tibble::as_tibble(tree)
@@ -94,7 +95,8 @@ processBranchData <- function(tree,
         unname(unlist(lapply(net_divs, summary)))[map$Rev]
     } else {
       stop(
-        "You set net_div = TRUE. Cannot calculate net_div without 'avg_lambda and avg_mu' in parnames"
+        "You set net_div = TRUE. Cannot calculate net_div without
+        'avg_lambda and avg_mu' in parnames"
       )
     }
   }

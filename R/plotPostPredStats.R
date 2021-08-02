@@ -105,7 +105,8 @@ plotPostPredStats <- function(data,
   }
   if (length(setdiff(obs_stats, sim_stats)) > 0) {
     warning(
-      "data$simulated and data$observed do not share all the same statistics. Only the shared statistics will be plotted."
+      "data$simulated and data$observed do not share all the same statistics.
+      Only the shared statistics will be plotted."
     )
   }
 

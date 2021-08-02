@@ -190,7 +190,8 @@ plotTreeFull <- function(tree,
     if (.isColor(node_pp_color) == FALSE)
       stop("node_pp_color should be a recognized color")
     if (node_pp_shape %in% 0:25 == FALSE)
-      stop("node_pp_shape should be a recognized shape (value between 0 and 25)")
+      stop("node_pp_shape should be a recognized shape
+           (value between 0 and 25)")
     if (is.numeric(node_pp_size) == FALSE &
         node_pp_size != "variable")
       stop("node_pp_size should be numeric or 'variable'")
@@ -222,23 +223,27 @@ plotTreeFull <- function(tree,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
     if (geo_units[[1]] != "epochs" &
         geo_units[[1]] != "periods")
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
     if (geo_units[[2]] != "epochs" &
         geo_units[[2]] != "periods")
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
   } else {
     if (geo_units != "epochs" &
         geo_units != "periods")
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both: list('epochs','periods')"
+        "geo_units should be 'epochs', 'periods' or a list of both:
+        list('epochs','periods')"
       )
   }
   if (is.numeric(tip_labels_offset) == FALSE)
@@ -316,14 +321,16 @@ plotTreeFull <- function(tree,
   if (length(node_pp_color) == 2 &
       length(branch_color) == 2)
     stop(
-      "You may only include variable colors for either node_pp_label or branch_color, not for both"
+      "You may only include variable colors for either node_pp_label or
+      branch_color, not for both"
     )
 
   #check that if user wants node_age_bars, there are dated intervals in  file
   if (node_age_bars == TRUE) {
     if (!"age_0.95_HPD" %in% colnames(phy@data))
       stop(
-        "You specified node_age_bars, but there is no age_0.95_HPD column in the treedata object."
+        "You specified node_age_bars, but there is no age_0.95_HPD column
+        in the treedata object."
       )
   }
   # get dimensions

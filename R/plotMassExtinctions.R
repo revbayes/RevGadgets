@@ -32,7 +32,8 @@
 #'\donttest{
 #'
 #' # download the example dataset to working directory
-#' url <- "https://revbayes.github.io/tutorials/intro/data/crocs_mass_extinction_probabilities.log"
+#' url <-
+#'   "https://revbayes.github.io/tutorials/intro/data/crocs_mass_extinction_probabilities.log"
 #' dest_path <- "crocs_mass_extinction_probabilities.log"
 #' download.file(url, dest_path)
 #'
@@ -91,7 +92,8 @@ plotMassExtinctions <- function(mass_extinction_trace,
   me_log <- me_log[, is_me]
 
   if (dim(me_log)[2] != length(mass_extinction_times)) {
-    stop("Number of provided interval times does not match number of mass extinctions.")
+    stop("Number of provided interval times does not match number
+         of mass extinctions.")
   }
 
   niter <- dim(me_log)[1]

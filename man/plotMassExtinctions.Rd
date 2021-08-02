@@ -47,7 +47,8 @@ plotting style/theme, just as with any ggplot object.
 \donttest{
 
 # download the example dataset to working directory
-url <- "https://revbayes.github.io/tutorials/intro/data/crocs_mass_extinction_probabilities.log"
+url <-
+  "https://revbayes.github.io/tutorials/intro/data/crocs_mass_extinction_probabilities.log"
 dest_path <- "crocs_mass_extinction_probabilities.log"
 download.file(url, dest_path)
 
