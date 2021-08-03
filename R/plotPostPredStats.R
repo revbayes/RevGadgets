@@ -18,8 +18,8 @@
 #' sides, the "left" side, or the "right" side of the distribution.
 #'
 #' @return A list of ggplot objects, where each plot contains a density
-#' distribution of the predicted values and a dashed line of the empirical v
-#' alue. The blue shaded region of the density plot corresponds to the 5\%
+#' distribution of the predicted values and a dashed line of the empirical
+#' value. The blue shaded region of the density plot corresponds to the 5\%
 #' two-sided quantile and the orange corresponds to the 2\% two-sided quantile.
 #'
 #' @details Each plot shows the rejection region for the provided quantiles,

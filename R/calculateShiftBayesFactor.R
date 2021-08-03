@@ -7,17 +7,17 @@
 #' that the prior probability of a shift is 0.5.
 #'
 #' @param rate_trace (list; no default) The processed Rev output of the rate
-#' of interest throught time for computation (output of readTrace()).
+#' of interest through time for computation (output of readTrace()).
 #' @param time_trace (list; no default) The processed Rev output of the
-#' change/interval times of the rate of interest throught time for computation
+#' change/interval times of the rate of interest through time for computation
 #' (output of readTrace()).
 #' @param rate_name (character; no default) The name of the parameter
 #' (e.g. "speciation") for which Bayes Factor is to be calculated.
 #' @param time_name (character; no default) The name of the interval times
 #' (e.g. "interval_times) for the rate change times.
-#' @param t1 (numeric; no default) Support will be assesed for a shift between
+#' @param t1 (numeric; no default) Support will be assessed for a shift between
 #' time t1 and time t2 (t1 < t2).
-#' @param t2 (numeric; no default) Support will be assesed for a shift between
+#' @param t2 (numeric; no default) Support will be assessed for a shift between
 #' time t1 and time t2 (t1 < t2).
 #' @param decrease (logical; default TRUE) Should support be assessed for a
 #' decrease in the parameter (if TRUE) or an increase (if FALSE) between

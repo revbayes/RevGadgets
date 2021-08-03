@@ -1,4 +1,4 @@
-#' Process Anc States
+#' Process Ancestral States
 #'
 #' Process data for ancestral states plotting
 #'

@@ -52,7 +52,7 @@ same as timeline.}
 include in the geo timescale.}
 
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
-gelogical timeline units if geo == TRUE or regular time intervals (in MYA)
+geological timeline units if geo == TRUE or regular time intervals (in MYA)
 if geo == FALSE.}
 
 \item{node_age_bars}{(logical; TRUE) Plot time tree with node age bars?}

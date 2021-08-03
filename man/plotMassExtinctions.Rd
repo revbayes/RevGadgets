@@ -39,8 +39,8 @@ Plots the support (as 2ln Bayes factors) for mass extinctions.
 \details{
 Works only for analyses with a fixed grid where mass extinctions may occur.
 
-The return object can be manipulated. For example, you can change the axis l
-abels, the color palette, whether the axes are to be linked, or the overall
+The return object can be manipulated. For example, you can change the axis
+labels, the color palette, whether the axes are to be linked, or the overall
 plotting style/theme, just as with any ggplot object.
 }
 \examples{

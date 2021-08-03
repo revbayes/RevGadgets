@@ -1,4 +1,4 @@
-#' colFun
+#' Color Function
 #'
 #' Produce default RevGadgets colors
 #'

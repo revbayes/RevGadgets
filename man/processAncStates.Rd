@@ -2,7 +2,7 @@
 % Please edit documentation in R/processAncStates.R
 \name{processAncStates}
 \alias{processAncStates}
-\title{Process Anc States}
+\title{Process Ancestral States}
 \usage{
 processAncStates(
   path,

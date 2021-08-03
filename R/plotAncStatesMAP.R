@@ -1,4 +1,4 @@
-#' plot Anc States MAP
+#' plot Ancestral States MAP
 #'
 #' Plots the MAP estimates of ancestral states. Can accommodate cladogenetic
 #' reconstructions by plotting on shoulders. Defaults to varying the symbols by
@@ -38,8 +38,8 @@
 #' or NULL for not plotting any text at the nodes (default).
 #' @param node_labels_size (numeric; 2) Size of node labels text. Ignored if
 #' node_labels_as = NULL.
-#' @param node_labels_offset (numeric; 0.1) Horizontal offset of node labels f
-#' rom nodes. Ignored if node_labels_as = NULL.
+#' @param node_labels_offset (numeric; 0.1) Horizontal offset of node labels
+#' from nodes. Ignored if node_labels_as = NULL.
 #' @param node_labels_centered (logical; FALSE) Should node labels be centered
 #' over the nodes? Defaults to FALSE: adjusting node labels to the right of
 #' nodes and left of shoulders.
@@ -75,7 +75,7 @@
 #' practices: \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
 #' @param tip_states (logical; TRUE) Plot states of taxa at tips?
 #' @param tip_states_size (numeric; node_size) Size for tip symbols. Defaults
-#' to the same ize as node symbols.
+#' to the same size as node symbols.
 #' @param tip_states_shape (integer; node_shape) Shape for tip symbols.
 #' Defaults to the same as node symbols.
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotAncStatesMAP.R
 \name{plotAncStatesMAP}
 \alias{plotAncStatesMAP}
-\title{plot Anc States MAP}
+\title{plot Ancestral States MAP}
 \usage{
 plotAncStatesMAP(
   t,
@@ -77,8 +77,8 @@ or NULL for not plotting any text at the nodes (default).}
 \item{node_labels_size}{(numeric; 2) Size of node labels text. Ignored if
 node_labels_as = NULL.}
 
-\item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels f
-rom nodes. Ignored if node_labels_as = NULL.}
+\item{node_labels_offset}{(numeric; 0.1) Horizontal offset of node labels
+from nodes. Ignored if node_labels_as = NULL.}
 
 \item{node_labels_centered}{(logical; FALSE) Should node labels be centered
 over the nodes? Defaults to FALSE: adjusting node labels to the right of
@@ -123,7 +123,7 @@ practices: \url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
 \item{tip_states}{(logical; TRUE) Plot states of taxa at tips?}
 
 \item{tip_states_size}{(numeric; node_size) Size for tip symbols. Defaults
-to the same ize as node symbols.}
+to the same size as node symbols.}
 
 \item{tip_states_shape}{(integer; node_shape) Shape for tip symbols.
 Defaults to the same as node symbols.}

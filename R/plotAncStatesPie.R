@@ -1,4 +1,4 @@
-#' plot Anc States Pie
+#' plot Ancestral States Pie
 #'
 #' Plot character states and posterior probabilities as pies on nodes.
 #'
@@ -29,7 +29,7 @@
 #' from nodes. Ignored if node_labels_as = NULL.
 #' @param pie_colors ("character"; "default") Colors for states in pies.
 #' If "default", plots the default RevGadgets colors. Provide a character
-#' vector of hex codes or other R-readible colors the same length of the number
+#' vector of hex codes or other R-readable colors the same length of the number
 #' of character states. Names of the vector should correspond to state labels.
 #' @param node_pie_size (numeric; 1) Size (diameter) of the pies at nodes.
 #' @param tip_pie_size (numeric; 0.5) Size (diameter) of the pies at tips.
@@ -50,8 +50,8 @@
 #' centered, adjust by nudging
 #' @param state_transparency (integer; 0.75) Alpha (transparency) of state
 #' symbols- varies from 0 to 1.
-#' @param timeline (logical; FALSE) Plot tree with labeled x-axis with t
-#' imescale in MYA.
+#' @param timeline (logical; FALSE) Plot tree with labeled x-axis with
+#' timescale in MYA.
 #' @param geo (logical; timeline) Add a geological timeline? Defaults to the
 #' same as timeline.
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate

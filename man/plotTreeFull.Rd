@@ -53,7 +53,7 @@ same as timeline.}
 include in the geo timescale.}
 
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
-gelogical timeline units if geo == TRUE or regular time intervals (in MYA)
+geological timeline units if geo == TRUE or regular time intervals (in MYA)
 if geo == FALSE.}
 
 \item{node_age_bars}{(logical; TRUE) Plot time tree with node age bars?}
@@ -129,7 +129,7 @@ best practices:
 specifying the color (R color name or hex code) for all branches OR a vector
 of length 2 specifying two colors for a gradient, used to color the branches
 according to the variable specified in color_branch_by. If only 1 color is
-provided and you specify color_branch_by, default colorswill be chosen
+provided and you specify color_branch_by, default colors will be chosen
 (low = "#005ac8", high = "#fa7850").}
 
 \item{color_branch_by}{(character; NULL ) Optional name of one quantitative

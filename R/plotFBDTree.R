@@ -18,7 +18,7 @@
 #' same as timeline.
 #'
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
-#' gelogical timeline units if geo == TRUE or regular time intervals (in MYA)
+#' geological timeline units if geo == TRUE or regular time intervals (in MYA)
 #' if geo == FALSE.
 #'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to

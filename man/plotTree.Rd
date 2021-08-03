@@ -56,7 +56,7 @@ if geo == FALSE.}
 \item{node_age_bars}{(logical; FALSE) Plot time tree with node age bars?}
 
 \item{age_bars_color}{(character; "blue") Color for node age bars. If
-age_bars_colored_by pecifies a variable (not NULL), you must provide two
+age_bars_colored_by specifies a variable (not NULL), you must provide two
 colors, low and high values for a gradient. Colors must be either
 R valid color names or valid hex codes.}
 

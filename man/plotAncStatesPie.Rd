@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotAncStatesPie.R
 \name{plotAncStatesPie}
 \alias{plotAncStatesPie}
-\title{plot Anc States Pie}
+\title{plot Ancestral States Pie}
 \usage{
 plotAncStatesPie(
   t,
@@ -78,7 +78,7 @@ from nodes. Ignored if node_labels_as = NULL.}
 
 \item{pie_colors}{("character"; "default") Colors for states in pies.
 If "default", plots the default RevGadgets colors. Provide a character
-vector of hex codes or other R-readible colors the same length of the number
+vector of hex codes or other R-readable colors the same length of the number
 of character states. Names of the vector should correspond to state labels.}
 
 \item{node_pie_size}{(numeric; 1) Size (diameter) of the pies at nodes.}
@@ -111,8 +111,8 @@ centered, adjust by nudging}
 \item{state_transparency}{(integer; 0.75) Alpha (transparency) of state
 symbols- varies from 0 to 1.}
 
-\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with t
-imescale in MYA.}
+\item{timeline}{(logical; FALSE) Plot tree with labeled x-axis with
+timescale in MYA.}
 
 \item{geo}{(logical; timeline) Add a geological timeline? Defaults to the
 same as timeline.}

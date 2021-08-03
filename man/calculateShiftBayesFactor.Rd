@@ -19,10 +19,10 @@ calculateShiftBayesFactor(
 }
 \arguments{
 \item{rate_trace}{(list; no default) The processed Rev output of the rate
-of interest throught time for computation (output of readTrace()).}
+of interest through time for computation (output of readTrace()).}
 
 \item{time_trace}{(list; no default) The processed Rev output of the
-change/interval times of the rate of interest throught time for computation
+change/interval times of the rate of interest through time for computation
 (output of readTrace()).}
 
 \item{rate_name}{(character; no default) The name of the parameter
@@ -31,10 +31,10 @@ change/interval times of the rate of interest throught time for computation
 \item{time_name}{(character; no default) The name of the interval times
 (e.g. "interval_times) for the rate change times.}
 
-\item{t1}{(numeric; no default) Support will be assesed for a shift between
+\item{t1}{(numeric; no default) Support will be assessed for a shift between
 time t1 and time t2 (t1 < t2).}
 
-\item{t2}{(numeric; no default) Support will be assesed for a shift between
+\item{t2}{(numeric; no default) Support will be assessed for a shift between
 time t1 and time t2 (t1 < t2).}
 
 \item{prior_prob}{(numeric; 0.5) The prior probability of a shift over this

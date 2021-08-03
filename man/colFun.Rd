@@ -2,7 +2,7 @@
 % Please edit documentation in R/colFun.R
 \name{colFun}
 \alias{colFun}
-\title{colFun}
+\title{Color Function}
 \usage{
 colFun(n)
 }
