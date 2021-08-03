@@ -12,6 +12,8 @@ Tested via GitHub actions on the following platforms (and R versions):
 
 Tested locally on OS X v. 10.15.7, R v. 4.1.0
 
+Tested on Windows, Ubuntu, and Fedora with devtools::check_rhub()
+
 ## R CMD check results 
 There were no ERRORs or WARNINGs. 
 
