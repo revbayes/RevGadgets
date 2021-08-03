@@ -1,3 +1,6 @@
+## Release summary
+This is a new submission to CRAN.
+
 ## Test environments
 Tested via GitHub actions on the following platforms (and R versions):
 * macOS-latest (release R)
