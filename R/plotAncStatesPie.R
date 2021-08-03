@@ -31,16 +31,10 @@
 #' If "default", plots the default RevGadgets colors. Provide a character
 #' vector of hex codes or other R-readible colors the same length of the number
 #' of character states. Names of the vector should correspond to state labels.
-#' @param node_pie_size (numeric; 2) Size of the pies at nodes. Size regulates
-#' the area of the symbol, following ggplot2 best practices:
-#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
-#' @param tip_pie_size (numeric; 1) Size of the pies at tips. Size regulates
-#' the area of the symbol, following ggplot2 best practices:
-#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
-#' @param shoulder_pie_size (numeric; node_pie_size) Size of the pies at
-#' shoulders for cladogenetic plots. Size regulates the area of the symbol,
-#' following ggplot2 best practices:
-#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
+#' @param node_pie_size (numeric; 1) Size (diameter) of the pies at nodes.
+#' @param tip_pie_size (numeric; 0.5) Size (diameter) of the pies at tips.
+#' @param shoulder_pie_size (numeric; node_pie_size) Size (diameter) of the
+#' pies at shoulders for cladogenetic plots.
 #' @param tip_pies (logical; TRUE) Plot pies tips?
 #' @param node_pie_nudge_x (numeric; 0) If pies aren't centered, adjust by
 #' nudging
@@ -260,6 +254,9 @@ plotAncStatesPie <- function(t,
 
   ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ...)
+
+  ##### specify temp directory for intermediary files #####
+  tmp <- tempdir()
 
   ##### calculate helper variables #####
   tree <- attributes(t)$phylo
@@ -721,7 +718,7 @@ plotAncStatesPie <- function(t,
     results_end <- list()
     for (i in seq_len(length(pies_end_to_plot))) {
       ggplot2::ggsave(
-        ".temp.png",
+        paste0(tmp,"/.temp.png"),
         plot = pies_end_to_plot[[i]],
         bg = "transparent",
         width = 3,
@@ -729,7 +726,7 @@ plotAncStatesPie <- function(t,
         units = "cm",
         dpi = 200
       )
-      pie <- png::readPNG(".temp.png")
+      pie <- png::readPNG(paste0(tmp,"/.temp.png"))
       results_end[[i]] <-
         ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
     }
@@ -744,7 +741,7 @@ plotAncStatesPie <- function(t,
     results_start <- list()
     for (i in seq_len(length(pies_start))) {
       ggplot2::ggsave(
-        ".temp.png",
+        paste0(tmp,"/.temp.png"),
         plot = pies_start[[i]],
         bg = "transparent",
         width = 3,
@@ -752,7 +749,7 @@ plotAncStatesPie <- function(t,
         units = "cm",
         dpi = 200
       )
-      pie <- png::readPNG(".temp.png")
+      pie <- png::readPNG(paste0(tmp,"/.temp.png"))
       results_start[[i]] <-
         ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
     }
@@ -771,7 +768,7 @@ plotAncStatesPie <- function(t,
       results_tip <- list()
       for (i in seq_len(length(pies_tip))) {
         ggplot2::ggsave(
-          ".temp.png",
+          paste0(tmp,"/.temp.png"),
           plot = pies_end[[i]],
           bg = "transparent",
           width = 3,
@@ -779,7 +776,7 @@ plotAncStatesPie <- function(t,
           units = "cm",
           dpi = 200
         )
-        pie <- png::readPNG(".temp.png")
+        pie <- png::readPNG(paste0(tmp,"/.temp.png"))
         results_tip[[i]] <-
           ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
       }
@@ -842,7 +839,7 @@ plotAncStatesPie <- function(t,
     results_anc <- list()
     for (i in seq_len(length(pies_anc_to_plot))) {
       ggplot2::ggsave(
-        ".temp.png",
+        paste0(tmp,"/.temp.png"),
         plot = pies_anc_to_plot[[i]],
         bg = "transparent",
         width = 3,
@@ -850,7 +847,7 @@ plotAncStatesPie <- function(t,
         units = "cm",
         dpi = 200
       )
-      pie <- png::readPNG(".temp.png")
+      pie <- png::readPNG(paste0(tmp,"/.temp.png"))
       results_anc[[i]] <-
         ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
     }
@@ -867,7 +864,7 @@ plotAncStatesPie <- function(t,
       results_tip <- list()
       for (i in seq_len(length(pies_tip))) {
         ggplot2::ggsave(
-          ".temp.png",
+          paste0(tmp,"/.temp.png"),
           plot = pies_tip[[i]],
           bg = "transparent",
           width = 3,
@@ -875,7 +872,7 @@ plotAncStatesPie <- function(t,
           units = "cm",
           dpi = 200
         )
-        pie <- png::readPNG(".temp.png")
+        pie <- png::readPNG(paste0(tmp,"/.temp.png"))
         results_tip[[i]] <-
           ggplotify::as.ggplot(grid::rasterGrob(pie, interpolate = TRUE))
       }
@@ -1060,7 +1057,7 @@ plotAncStatesPie <- function(t,
   }
 
   # clean up pngs
-  file.remove(".temp.png")
+  unlink(paste0(tmp,"/.temp.png"))
 
   return(p)
 }

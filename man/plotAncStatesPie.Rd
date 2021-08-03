@@ -81,20 +81,14 @@ If "default", plots the default RevGadgets colors. Provide a character
 vector of hex codes or other R-readible colors the same length of the number
 of character states. Names of the vector should correspond to state labels.}
 
-\item{node_pie_size}{(numeric; 2) Size of the pies at nodes. Size regulates
-the area of the symbol, following ggplot2 best practices:
-\url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
+\item{node_pie_size}{(numeric; 1) Size (diameter) of the pies at nodes.}
 
-\item{shoulder_pie_size}{(numeric; node_pie_size) Size of the pies at
-shoulders for cladogenetic plots. Size regulates the area of the symbol,
-following ggplot2 best practices:
-\url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
+\item{shoulder_pie_size}{(numeric; node_pie_size) Size (diameter) of the
+pies at shoulders for cladogenetic plots.}
 
 \item{tip_pies}{(logical; TRUE) Plot pies tips?}
 
-\item{tip_pie_size}{(numeric; 1) Size of the pies at tips. Size regulates
-the area of the symbol, following ggplot2 best practices:
-\url{https://ggplot2.tidyverse.org/reference/scale_size.html})}
+\item{tip_pie_size}{(numeric; 0.5) Size (diameter) of the pies at tips.}
 
 \item{node_pie_nudge_x}{(numeric; 0) If pies aren't centered, adjust by
 nudging}
