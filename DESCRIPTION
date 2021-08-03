@@ -20,7 +20,7 @@ Authors@R: c(
     )
 Maintainer: Carrie Tribble <ctribble09@gmail.com>
 Description: Processes and visualizes the output of complex phylogenetic analyses from the RevBayes phylogenetic graphical modeling software.
-URL: https://github.com/cmt2/RevGadgets
+URL: https://github.com/cmt2/RevGadgets, https://revbayes.github.io/tutorials/intro/revgadgets
 BugReports: https://github.com/cmt2/RevGadgets/issues
 License: GPL-3
 Encoding: UTF-8
