@@ -21,6 +21,8 @@
 #' associated probabilities.
 #'
 #' @examples
+#'
+#' \donttest{
 #' # continuous character only example, one run
 #'
 #' # download the example dataset to working directory
@@ -92,6 +94,7 @@
 #' # WARNING: only run for example dataset!
 #' # otherwise you might delete your data!
 #' file.remove(dest_path_rj)
+#' }
 #'
 #' @export
 
@@ -106,12 +109,13 @@ summarizeTrace <- function(trace, vars) {
 
   # ensure variable names present in data frame
   if (any(vars %in% colnames(trace[[1]]) == FALSE) == TRUE) {
-    cat(
+    stop(
+      paste0(
       "The following variables you provided are not present in trace file:",
       paste0("\t", vars[!vars %in% colnames(trace[[1]])]),
       sep = "\n"
     )
-    stop("oops!")
+    )
   }
 
   # subset to desired characters

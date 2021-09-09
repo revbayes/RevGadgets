@@ -172,12 +172,11 @@ plotTrace <-
     # ensure variable names present in data frame
     if (!is.null(vars)) {
       if (any(vars %in% colnames(trace[[1]]) == FALSE) == TRUE) {
-        cat(
+        stop(paste0(
           "The following variables you provided are not present in trace file:",
           paste0("\t", vars[!vars %in% colnames(trace[[1]])]),
-          sep = "\n"
+          sep = "\n")
         )
-        stop("oops!")
       }
     }
 

@@ -96,6 +96,8 @@
 #' to include in the geo timescale.
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
+#' @return A ggplot object
+#'
 #' @examples
 #'
 #' \donttest{

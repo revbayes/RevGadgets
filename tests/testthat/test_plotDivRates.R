@@ -32,8 +32,13 @@ test_that("plot works", {
         plot_new <- plotDivRates(primates)
         plot_orig <- readRDS(file_plot_orig)
 
+        tmp <- tempdir()
+        pdf(paste0(tmp,"/Rplots.pdf"))
+
         # check that plot doesn't error out
         expect_error(print(plot_new), NA)
+
+        dev.off()
 
         # compare plot data objects
         expect_equal(plot_new$data, plot_orig)

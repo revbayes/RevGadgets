@@ -528,7 +528,7 @@
     }
   }
   if (verbose == TRUE) {
-    cat("\n")
+    close(bar)
   }
 
   # translate using dictionary if translate block present in file
@@ -591,7 +591,7 @@
     }
   }
   if (verbose == TRUE) {
-    cat("\n")
+    close(bar)
   }
 
   # return the trees

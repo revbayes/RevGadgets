@@ -1,6 +1,6 @@
 Package: RevGadgets
 Type: Package
-Title: Visualization and Post-Processing of RevBayes Analyses
+Title: Visualization and Post-Processing of 'RevBayes' Analyses
 Version: 1.0.0
 Authors@R: c(
     person("Carrie", "Tribble", 
@@ -19,7 +19,7 @@ Authors@R: c(
     person("Schliep", "Klaus", role = "ctb")
     )
 Maintainer: Carrie Tribble <ctribble09@gmail.com>
-Description: Processes and visualizes the output of complex phylogenetic analyses from the RevBayes phylogenetic graphical modeling software.
+Description: Processes and visualizes the output of complex phylogenetic analyses from the 'RevBayes' phylogenetic graphical modeling software.
 URL: https://github.com/cmt2/RevGadgets, https://revbayes.github.io/tutorials/intro/revgadgets
 BugReports: https://github.com/cmt2/RevGadgets/issues
 License: GPL-3

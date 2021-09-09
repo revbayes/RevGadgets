@@ -25,6 +25,9 @@ as integers (for example, as chromosome numbers)?}
 coded to NA? If TRUE, the state will not be plotted. If FALSE, it will be
 considered an additional state  when plotting.}
 }
+\value{
+A treedata object
+}
 \description{
 Process data for ancestral states plotting
 }

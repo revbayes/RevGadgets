@@ -36,8 +36,7 @@ parameter. Set isNodeParameter = TRUE in the extended newick monitor
 }
 \examples{
 
-\dontrun{
-
+\donttest{
 # read in a single nexus file
 
 # download the example dataset to working directory
@@ -89,6 +88,6 @@ tree_multi <- readTrees(paths = file_multi)
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path_multi)
-
 }
+
 }

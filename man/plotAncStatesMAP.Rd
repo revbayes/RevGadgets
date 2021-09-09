@@ -152,6 +152,9 @@ if geo == FALSE.}
 
 \item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
+\value{
+A ggplot object
+}
 \description{
 Plots the MAP estimates of ancestral states. Can accommodate cladogenetic
 reconstructions by plotting on shoulders. Defaults to varying the symbols by

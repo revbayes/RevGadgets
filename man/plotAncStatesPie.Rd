@@ -126,6 +126,9 @@ if geo == FALSE.}
 
 \item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
+\value{
+A ggplot object
+}
 \description{
 Plot character states and posterior probabilities as pies on nodes.
 }

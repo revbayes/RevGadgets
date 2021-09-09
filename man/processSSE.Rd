@@ -39,6 +39,7 @@ Title
 }
 \examples{
 
+\donttest{
 # download the example dataset to working directory
 
 url <-
@@ -55,5 +56,6 @@ pdata <- processSSE(bisse_file)
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path)
+}
 
 }

@@ -26,6 +26,7 @@ multiple traces are provided, this function will remove the burnin from each.
 }
 \examples{
 
+\donttest{
 # download the example dataset to working directory
 url_gtr <-
     "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
@@ -42,5 +43,6 @@ one_trace_burnin <- removeBurnin(trace = one_trace, burnin = 0.1)
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path_gtr)
+}
 
 }

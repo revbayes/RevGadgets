@@ -76,6 +76,8 @@
 #' Remco R. Bouckaert (2010) DensiTree: making sense of sets of phylogenetic
 #' trees \emph{Bioinformatics}, \bold{26 (10)}, 1372-1373.
 #'
+#' @return No return value, produces plot in base R
+#'
 #' @examples
 #'
 #' # generate random trees & data

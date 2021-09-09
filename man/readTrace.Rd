@@ -49,6 +49,7 @@ rather than as numeric vectors.
 \examples{
 # read and process a single trace file
 
+\donttest{
 # download the example dataset to working directory
 url_gtr <-
    "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
@@ -90,5 +91,6 @@ multi_trace <- readTrace(path = c(file_1, file_2), burnin = 0.0)
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path_1, dest_path_2)
+}
 
 }

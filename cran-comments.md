@@ -1,3 +1,17 @@
+## Resubmission
+This is a resubmission. In this version I have: 
+
+* Used single quotes for software names ('RevBayes') in package DESCRIPTION
+* Added \value fields to:
+  * densiTreeWithBranchData.Rd
+  * plotAncStatesMAP.Rd
+  * plotAncStatesPie.Rd
+  * processAncStates.Rd
+* Changed all calls from cat() to either stop() or close(bar)
+* Ensured all tests plot to a pdf in a temp directory rather than package directory
+* Put all examples that download data within \donttest{} statements
+
+
 ## Release summary
 This is a new submission to CRAN.
 
@@ -25,10 +39,7 @@ There was one NOTE:
 
   New submission
 
-  Possibly mis-spelled words in DESCRIPTION:
-    RevBayes (3:45, 19:92)
-  
-This is a new submission to CRAN. RevBayes is spelled correctly. 
+This is a new submission to CRAN.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package. 
