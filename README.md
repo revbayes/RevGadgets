@@ -3,8 +3,10 @@
 <a href="https://revbayes.github.io/tutorials/intro/revgadgets"><img src="https://raw.githubusercontent.com/cmt2/RevGadgets/master/inst/hex_sticker.png" height="200" align="right" /></a>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/cmt2/RevGadgets/workflows/R-CMD-check/badge.svg)](https://github.com/cmt2/RevGadgets/actions)
 ![CRAN](https://www.r-pkg.org/badges/version/RevGadgets)
+![downloads](https://cranlogs.r-pkg.org/badges/grand-total/RevGadgets)
+[![R-CMD-check](https://github.com/cmt2/RevGadgets/workflows/R-CMD-check/badge.svg)](https://github.com/cmt2/RevGadgets/actions)
+
 
 
 <!-- badges: end -->
