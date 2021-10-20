@@ -6,6 +6,7 @@
 ![CRAN](https://www.r-pkg.org/badges/version/RevGadgets)
 ![downloads](https://cranlogs.r-pkg.org/badges/grand-total/RevGadgets)
 [![R-CMD-check](https://github.com/cmt2/RevGadgets/workflows/R-CMD-check/badge.svg)](https://github.com/cmt2/RevGadgets/actions)
+<a href="https://zenodo.org/badge/latestdoi/162725392"><img src="https://zenodo.org/badge/162725392.svg" alt="DOI"></a>
 
 
 
