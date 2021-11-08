@@ -109,7 +109,6 @@
       attributes(t)$data[[m]] <- x_state
     }
 
-    # unique(c(as.matrix(t@data[, columns])))
     # Just add the USED state_labels here
     used_state_labels <-
       na.omit(unique(c(as.matrix(t@data[, columns]))))
