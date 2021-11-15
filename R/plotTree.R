@@ -49,7 +49,7 @@
 #'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
-#' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
+#' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
 #'
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip
 #' labels?
@@ -159,7 +159,7 @@ plotTree <- function(tree,
                      node_labels_offset = 0,
 
                      tip_labels = TRUE,
-                     tip_labels_italics = FALSE,
+                     tip_labels_italics = TRUE,
                      tip_labels_remove_underscore = TRUE,
                      tip_labels_color = "black",
                      tip_labels_size = 3,
