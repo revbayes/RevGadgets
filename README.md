@@ -30,7 +30,7 @@ install.packages("devtools")
 Install RevGadgets directly from GitHub:
 
 ```R
-devtools::install_github("cmt2/RevGadgets")
+devtools::install_github("revbayes/RevGadgets")
 ```
 
 ### Note about magick dependency:
@@ -52,5 +52,5 @@ For an introduction to using RevGadgets, check out the [tutorial](https://revbay
 Some old RevBayes tutorials reference a legacy version of RevGadgets. To reproduce those tutorials, or the results of papers published using the legacy version, you'll need to install the legacy version of RevGadgets. To use this code, install the package using devtools, specifying the legacy branch: 
 
 ```R
-devtools::install_github("cmt2/RevGadgets@legacy")
+devtools::install_github("revbayes/RevGadgets@legacy")
 ```
