@@ -63,14 +63,14 @@
 #' p <- plotDivRates(rates = rates);p
 #'
 #' # change the x-axis
-#' p <- p + ggplot2::xlab("Thousands of years ago");p
+#' p <- p + xlab("Thousands of years ago");p
 #'
 #' # change the colors
-#' p <- p + ggplot2::scale_fill_manual(values = c("red",
+#' p <- p + scale_fill_manual(values = c("red",
 #'                                                "green",
 #'                                                "yellow",
 #'                                                "purple")) +
-#'   ggplot2::scale_color_manual(values = c("red",
+#'   scale_color_manual(values = c("red",
 #'                                          "green",
 #'                                          "yellow",
 #'                                          "purple"));p
@@ -79,7 +79,7 @@
 #' # and use the same y-axis for all three rates
 #' rates <- rates[!grepl("relative-extinction", rates$item),]
 #' p2 <- plotDivRates(rates)
-#' p2 <- p2 + ggplot2::facet_wrap(ggplot2::vars(item), scale = "fixed");p2
+#' p2 <- p2 + facet_wrap(vars(item), scale = "fixed");p2
 #'
 #' # remove files
 #' # WARNING: only run for example dataset!
@@ -90,44 +90,60 @@
 #' }
 #'
 #' @export
+#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank
 
 plotDivRates <- function(rates, facet = TRUE){
   message("Using default time units in x-axis label: Age (Ma)")
   rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
   `%>%` <- dplyr::`%>%`
-
-    p <- rates %>%
+  
+  vert_lines <- lapply(grep("rate", unique(rates$item), value = TRUE),
+                       function(item) make_vertical_lines(rates, item)) %>%
+    bind_rows()
+  
+  p <- rates %>%
     subset(grepl("rate", item)) %>%
-    ggplot2::ggplot(ggplot2::aes(time, value, color = item))  +
-    ggplot2::geom_step(ggplot2::aes(time, value),
-                       direction = "vh") +
-    geom_stepribbon(ggplot2::aes(x = time,
-                                 ymin = lower,
-                                 ymax = upper,
-                                 fill = item),
-                    direction = "vh",
-                    alpha = 0.4,
-                    color = NA) +
-    ggplot2::scale_x_reverse() +
-    ggplot2::xlab("Age (Ma)") +
-    ggplot2::ylab("Rate") +
-    ggplot2::theme_bw() +
-    ggplot2::theme(legend.title = ggplot2::element_blank(),
-                   legend.position = "none",
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank(),
-                   strip.background = ggplot2::element_blank()) +
-    ggplot2::scale_color_manual(values = colFun(length(rates_to_plot))) +
-    ggplot2::scale_fill_manual(values = colFun(length(rates_to_plot)))
-
-    if (facet){
-      p <- p +
-        ggplot2::facet_wrap(dplyr::vars(item),
-                            scales = "free_y",
-                            labeller =
-                              ggplot2::labeller(item = .titleFormatLabeller))
-    }
-
-
+    ggplot(aes(x = time, 
+               y = value, 
+               yend = value, 
+               xend = time_end))  +
+    geom_segment(aes(color = item)) + ## plot horizontal segments
+    geom_segment(data = vert_lines, 
+                 aes(y = y, x = x, yend = yend, xend = xend, color = item)) + ## plot the vertical segments
+    geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper, fill = item),
+              alpha = 0.4) +
+    scale_x_reverse() +
+    xlab("Age (Ma)") +
+    ylab("Rate") +
+    theme_bw() +
+    theme(legend.title = element_blank(),
+          legend.position = "none",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank()) +
+    scale_color_manual(values = colFun(length(rates_to_plot))) +
+    scale_fill_manual(values = colFun(length(rates_to_plot)))
+  
+  if (facet){
+    p <- p +
+      facet_wrap(dplyr::vars(item),
+                 scales = "free_y",
+                 labeller =
+                   labeller(item = .titleFormatLabeller))
+  }
+  
+  
   return(p)
+}
+
+make_vertical_lines <- function(df, item1){
+  d <- subset(df, item == item1)
+  
+  res <- tibble::tibble(y = head(d$value, n = -1), 
+                        yend = tail(d$value, n = -1), 
+                        x =  tail(d$time, n = -1), 
+                        xend =  tail(d$time, n = -1))
+  res$item <- item1
+  
+  return(res)
 }
