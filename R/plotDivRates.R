@@ -90,7 +90,8 @@
 #' }
 #'
 #' @export
-#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank
+#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment
+#' @importFrom dplyr bind_rows
 
 plotDivRates <- function(rates, facet = TRUE){
   message("Using default time units in x-axis label: Age (Ma)")
