@@ -249,9 +249,10 @@
 }
 
 .computeInterval <- function(item, rates, probs, summary = "mean") {
+  time_var <- grep("time", names(rates), value = TRUE, ignore.case = TRUE)[[1]]
   interval_times <-
-    unlist(rates[["speciation time"]][1, grepl("interval_times",
-                                               names(rates$`speciation time`))])
+    unlist(rates[[time_var]][1, grepl("interval_times",
+                                               names(rates[[time_var]]))])
   # For some reason these are ordered differently than rate vectors
   interval_times <-
     sort(interval_times)
@@ -259,7 +260,6 @@
   rate <- rates[[item]]
   rate <- rate[, grep("[0-9]", colnames(rate))]
 
-  #mean_rate <- colMeans(rate)
   summary_rate <- apply(rate, 2, summary)
   quantiles <- apply(rate, 2,
                      quantile,
@@ -391,7 +391,10 @@
                     node_names_op = node_names_op))
 }
 
-.makePlotData <- function(rates, probs, summary) {
+.makePlotData <- function(rates, 
+                          probs, 
+                          summary, 
+                          levels) {
   rates <- .removeNull(rates)
   res <-
     lapply(names(rates), function(e)
@@ -404,14 +407,7 @@
   plotdata <- do.call(rbind, res)
   plotdata$item <- factor(
     plotdata$item,
-    levels = c(
-      "speciation rate",
-      "extinction rate",
-      "speciation time",
-      "extinction time",
-      "net-diversification rate",
-      "relative-extinction rate"
-    )
+    levels = levels
   )
   return(plotdata)
 }

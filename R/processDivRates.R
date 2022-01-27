@@ -316,7 +316,15 @@ processDivRates <- function(speciation_time_log = "",
       plotdata <-
         .makePlotData(rates = rates,
                       probs = probs,
-                      summary = summary)
+                      summary = summary,
+                      levels = c(
+                        "speciation rate",
+                        "extinction rate",
+                        "speciation time",
+                        "extinction time",
+                        "net-diversification rate",
+                        "relative-extinction rate"
+                      ))
       return(plotdata)
     }
   }

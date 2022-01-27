@@ -16,6 +16,7 @@
 #' such as produced by processDivRates(), containing the data on rates
 #' and interval times for each type of rate to be plotted (e.g.
 #' speciation rate, etc.).
+#' @param plot_var only include variable that contain the string, default "rate" in the name
 #'
 #' @param facet (logical; TRUE) plot rates in separate facets.
 #'
@@ -93,17 +94,20 @@
 #' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment
 #' @importFrom dplyr bind_rows
 
-plotDivRates <- function(rates, facet = TRUE){
+plotDivRates <- function(rates, plot_var = "rate", facet = TRUE){
   message("Using default time units in x-axis label: Age (Ma)")
-  rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
   `%>%` <- dplyr::`%>%`
   
-  vert_lines <- lapply(grep("rate", unique(rates$item), value = TRUE),
+  vert_lines <- lapply(grep(plot_var, unique(rates$item), value = TRUE),
                        function(item) make_vertical_lines(rates, item)) %>%
     bind_rows()
   
-  p <- rates %>%
-    subset(grepl("rate", item)) %>%
+  pdata <- rates %>%
+    subset(grepl(plot_var, item)) 
+  
+  rates_to_plot <- unique(pdata$item)
+  
+  p <- pdata %>%
     ggplot(aes(x = time, 
                y = value, 
                yend = value, 
@@ -133,6 +137,51 @@ plotDivRates <- function(rates, facet = TRUE){
                    labeller(item = .titleFormatLabeller))
   }
   
+  
+  return(p)
+}
+
+#' Title
+#'
+#' @param df 
+#' @param plot_var 
+#'
+#' @return a ggplot object
+#' @export
+#'
+#' @examples
+plotPopulationSize <- function(df, plot_var = "size"){
+  message("Using default time units in x-axis label: Age (Ma)")
+  `%>%` <- dplyr::`%>%`
+  
+  vert_lines <- lapply(grep(plot_var, unique(df$item), value = TRUE),
+                       function(item) make_vertical_lines(df, item)) %>%
+    bind_rows()
+  
+  pdata <- df %>%
+    subset(grepl(plot_var, item)) 
+  
+  rates_to_plot <- unique(pdata$item)
+  
+  p <- pdata %>%
+    ggplot(aes(x = time, 
+               y = value, 
+               yend = value, 
+               xend = time_end))  +
+    geom_segment(aes(color = item)) + ## plot horizontal segments
+    geom_segment(data = vert_lines, 
+                 aes(y = y, x = x, yend = yend, xend = xend, color = item)) + ## plot the vertical segments
+    geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper, fill = item),
+              alpha = 0.4) +
+    scale_x_reverse() +
+    xlab("Age (Ma)") +
+    ylab("Rate") +
+    theme_bw() +
+    theme(legend.title = element_blank(),
+          legend.position = "none",
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank())
   
   return(p)
 }

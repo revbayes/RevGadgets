@@ -4,13 +4,15 @@
 \alias{plotDivRates}
 \title{Plot Diversification Rates}
 \usage{
-plotDivRates(rates, facet = TRUE)
+plotDivRates(rates, plot_var = "rate", facet = TRUE)
 }
 \arguments{
 \item{rates}{(list of dataframes; no default) A list of dataframes,
 such as produced by processDivRates(), containing the data on rates
 and interval times for each type of rate to be plotted (e.g.
 speciation rate, etc.).}
+
+\item{plot_var}{only include variable that contain the string, default "rate" in the name}
 
 \item{facet}{(logical; TRUE) plot rates in separate facets.}
 }
