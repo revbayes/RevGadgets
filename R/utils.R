@@ -270,6 +270,11 @@
   df["lower"] <- quantiles[1, ]
   df["upper"] <- quantiles[2, ]
   df$time <- interval_times
+  
+  time_end <- tail(df$time, n = -1)
+  #res <- c(res, Inf)
+  time_end <- c(time_end, tail(time_end, n = 1) + diff(tail(time_end, n = 2)))
+  df$time_end <- time_end
   df$item <- item
 
   return(df)
