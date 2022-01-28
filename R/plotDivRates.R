@@ -60,17 +60,17 @@
 #'                          burnin = 0.25)
 #'
 #' # then plot results:
-#' p <- plotDivRates(rates = rates);p
+#' p <- plotDivRates(rates);p
 #'
 #' # change the x-axis
-#' p <- p + xlab("Thousands of years ago");p
+#' p <- p + ggplot2::xlab("Thousands of years ago");p
 #'
 #' # change the colors
-#' p <- p + scale_fill_manual(values = c("red",
+#' p <- p + ggplot2::scale_fill_manual(values = c("red",
 #'                                                "green",
 #'                                                "yellow",
 #'                                                "purple")) +
-#'   scale_color_manual(values = c("red",
+#'   ggplot2::scale_color_manual(values = c("red",
 #'                                          "green",
 #'                                          "yellow",
 #'                                          "purple"));p
@@ -79,7 +79,7 @@
 #' # and use the same y-axis for all three rates
 #' rates <- rates[!grepl("relative-extinction", rates$item),]
 #' p2 <- plotDivRates(rates)
-#' p2 <- p2 + facet_wrap(vars(item), scale = "fixed");p2
+#' p2 <- p2 + ggplot2::facet_wrap(ggplot2::vars(item), scale = "fixed");p2
 #'
 #' # remove files
 #' # WARNING: only run for example dataset!

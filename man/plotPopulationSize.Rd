@@ -7,6 +7,10 @@
 plotPopulationSize(df, plot_var = "size")
 }
 \arguments{
+\item{df}{a data frame, such as produced by processDivRates(), containing 
+the data on rates and interval times for each type of rate to be 
+plotted (speciation rate, etc.).}
+
 \item{plot_var}{only include variable that contain the string, default "rate" in the name}
 }
 \value{

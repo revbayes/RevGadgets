@@ -471,7 +471,7 @@
   # obj <- .beast("", text, stats, tree)
 
   obj <- treeio::read.beast.newick(textConnection(text))
-
+  
   if ("index" %in% colnames(obj@data)) {
     obj@data$index <- as.character(obj@data$index)
   } else {
