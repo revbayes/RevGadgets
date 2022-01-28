@@ -7,13 +7,23 @@
 plotPopulationSize(df, plot_var = "size")
 }
 \arguments{
-\item{df}{}
-
-\item{plot_var}{}
+\item{plot_var}{only include variable that contain the string, default "rate" in the name}
 }
 \value{
 a ggplot object
 }
 \description{
 Title
+}
+\examples{
+library(tibble)
+
+df <- tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
+             "time_end" = c(1.0, 2.0, 3.0, 4.0, 5.0),
+             "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
+             "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
+             "lower" = c(0.5, 0.0, 0.5, 0.5, 0.8),
+             "item" = "population size")
+             
+plotPopulationSize(df)
 }

@@ -12,10 +12,9 @@
 #' overall plotting style/theme, just as with any ggplot object.
 #'
 #'
-#' @param rates (list of dataframes; no default) A list of dataframes,
-#' such as produced by processDivRates(), containing the data on rates
-#' and interval times for each type of rate to be plotted (e.g.
-#' speciation rate, etc.).
+#' @param df a data frame, such as produced by processDivRates(), containing 
+#' the data on rates and interval times for each type of rate to be 
+#' plotted (speciation rate, etc.).
 #' @param plot_var only include variable that contain the string, default "rate" in the name
 #'
 #' @param facet (logical; TRUE) plot rates in separate facets.
@@ -91,18 +90,19 @@
 #' }
 #'
 #' @export
-#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment
+#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment geom_rect
 #' @importFrom dplyr bind_rows
+#' @importFrom utils head tail
 
-plotDivRates <- function(rates, plot_var = "rate", facet = TRUE){
+plotDivRates <- function(df, plot_var = "rate", facet = TRUE){
   message("Using default time units in x-axis label: Age (Ma)")
   `%>%` <- dplyr::`%>%`
   
-  vert_lines <- lapply(grep(plot_var, unique(rates$item), value = TRUE),
-                       function(item) make_vertical_lines(rates, item)) %>%
+  vert_lines <- lapply(grep(plot_var, unique(df$item), value = TRUE),
+                       function(item) make_vertical_lines(df, item)) %>%
     bind_rows()
   
-  pdata <- rates %>%
+  pdata <- df %>%
     subset(grepl(plot_var, item)) 
   
   rates_to_plot <- unique(pdata$item)
@@ -143,13 +143,22 @@ plotDivRates <- function(rates, plot_var = "rate", facet = TRUE){
 
 #' Title
 #'
-#' @param df 
-#' @param plot_var 
+#' @inheritParams plotDivRates
 #'
 #' @return a ggplot object
 #' @export
 #'
 #' @examples
+#' library(tibble)
+#' 
+#' df <- tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
+#'              "time_end" = c(1.0, 2.0, 3.0, 4.0, 5.0),
+#'              "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
+#'              "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
+#'              "lower" = c(0.5, 0.0, 0.5, 0.5, 0.8),
+#'              "item" = "population size")
+#'              
+#' plotPopulationSize(df)
 plotPopulationSize <- function(df, plot_var = "size"){
   message("Using default time units in x-axis label: Age (Ma)")
   `%>%` <- dplyr::`%>%`
