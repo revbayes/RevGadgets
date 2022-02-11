@@ -461,6 +461,18 @@
   return(list(state_labels = st_lbl, state_color = st_colors))
 }
 
+.makeVerticalLines <- function(df, item1){
+  d <- subset(df, item == item1)
+  
+  res <- tibble::tibble(y = head(d$value, n = -1), 
+                        yend = tail(d$value, n = -1), 
+                        x =  tail(d$time, n = -1), 
+                        xend =  tail(d$time, n = -1))
+  res$item <- item1
+  
+  return(res)
+}
+
 .parseTreeString <- function(string) {
   # recover()
   text <- sub("[^(]*", "", string)

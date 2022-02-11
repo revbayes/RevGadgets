@@ -99,7 +99,7 @@ plotDivRates <- function(df, plot_var = "rate", facet = TRUE){
   `%>%` <- dplyr::`%>%`
   
   vert_lines <- lapply(grep(plot_var, unique(df$item), value = TRUE),
-                       function(item) make_vertical_lines(df, item)) %>%
+                       function(item) .makeVerticalLines(df, item)) %>%
     bind_rows()
   
   pdata <- df %>%
@@ -139,70 +139,4 @@ plotDivRates <- function(df, plot_var = "rate", facet = TRUE){
   
   
   return(p)
-}
-
-#' Title
-#'
-#' @inheritParams plotDivRates
-#'
-#' @return a ggplot object
-#' @export
-#'
-#' @examples
-#' library(tibble)
-#' 
-#' df <- tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
-#'              "time_end" = c(1.0, 2.0, 3.0, 4.0, 5.0),
-#'              "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
-#'              "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
-#'              "lower" = c(0.5, 0.0, 0.5, 0.5, 0.8),
-#'              "item" = "population size")
-#'              
-#' plotPopulationSize(df)
-plotPopulationSize <- function(df, plot_var = "size"){
-  message("Using default time units in x-axis label: Age (Ma)")
-  `%>%` <- dplyr::`%>%`
-  
-  vert_lines <- lapply(grep(plot_var, unique(df$item), value = TRUE),
-                       function(item) make_vertical_lines(df, item)) %>%
-    bind_rows()
-  
-  pdata <- df %>%
-    subset(grepl(plot_var, item)) 
-  
-  rates_to_plot <- unique(pdata$item)
-  
-  p <- pdata %>%
-    ggplot(aes(x = time, 
-               y = value, 
-               yend = value, 
-               xend = time_end))  +
-    geom_segment(aes(color = item)) + ## plot horizontal segments
-    geom_segment(data = vert_lines, 
-                 aes(y = y, x = x, yend = yend, xend = xend, color = item)) + ## plot the vertical segments
-    geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper, fill = item),
-              alpha = 0.4) +
-    scale_x_reverse() +
-    xlab("Age (Ma)") +
-    ylab("Rate") +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank())
-  
-  return(p)
-}
-
-make_vertical_lines <- function(df, item1){
-  d <- subset(df, item == item1)
-  
-  res <- tibble::tibble(y = head(d$value, n = -1), 
-                        yend = tail(d$value, n = -1), 
-                        x =  tail(d$time, n = -1), 
-                        xend =  tail(d$time, n = -1))
-  res$item <- item1
-  
-  return(res)
 }
