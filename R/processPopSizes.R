@@ -69,7 +69,7 @@ processPopSizes <- function(population_size_log = "",
       pop_size_trajectories[[i]] <- f
     }
     
-    x <- seq(0, max(sapply(times, max)), length.out = num_grid_points)
+    x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
     m <- sapply(pop_size_trajectories, function(e) e(x))
     quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
     

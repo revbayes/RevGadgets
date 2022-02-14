@@ -44,7 +44,7 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
   if (method == "events"){
     p <- df %>%
       ggplot(aes(x = time, y = value)) +
-      geom_line(color = "#00883a", size = 1) +
+      geom_line(color = "#00883a", size = 0.8) +
       geom_ribbon(aes(ymin = lower, ymax = upper), fill = "#00883a", alpha = 0.4)
     
     
@@ -63,7 +63,7 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
                  y = value, 
                  yend = value, 
                  xend = time_end))  +
-      geom_segment(color = "#00883a", size = 1) + ## plot horizontal segments
+      geom_segment(color = "#00883a", size = 0.8) + ## plot horizontal segments
       geom_segment(data = vert_lines, 
                    aes(y = y, x = x, yend = yend, xend = xend), color = "#00883a", size = 1.2) + ## plot the vertical segments
       geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper), fill = "#00883a",
@@ -76,7 +76,7 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
                  y = value, 
                  yend = value, 
                  xend = time_end))  +
-      geom_segment(color = "#00883a", size = 1) + ## plot horizontal segment
+      geom_segment(color = "#00883a", size = 0.8) + ## plot horizontal segment
       geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper), fill = "#00883a",
                 alpha = 0.4) +
       xlim(1e5, 0)
