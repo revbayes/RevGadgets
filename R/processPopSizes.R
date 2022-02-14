@@ -29,7 +29,7 @@
 #' containing the upper and lower bounds for the confidence intervals.
 #' @param summary typically "mean" or "median"; the metric to summarize the
 #' posterior distribution. Defaults to "mean"
-#' @param num_grid_points only if method = "events, defines the number of grid points through time for which to 
+#' @param num_grid_points only if method = "events", defines the number of grid points through time for which to 
 #' evaluate the demographic functions
 #' @return List object with processed rate and, if applicable, time parameters.
 #'

@@ -1,6 +1,6 @@
 #' Plot Population Sizes
 #' 
-#' Plots the output of a coalescent demographic analysis
+#' Plots the output of a coalescent demographic analysis.
 #'
 #' Plots the output of coalescent demographic analyses. Takes as
 #' input the output of processPopSizes() and plotting parameters.
@@ -33,7 +33,7 @@
 #' plotPopSizes(df, method = "specified")
 #'
 #' @export
-#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment geom_rect geom_line geom_ribbon scale_y_log10 coord_cartesian
+#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment geom_rect geom_line geom_ribbon scale_y_log10 coord_cartesian xlim
 #' @importFrom dplyr bind_rows
 #' @importFrom utils head tail
 #' 
@@ -44,7 +44,7 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
   if (method == "events"){
     p <- df %>%
       ggplot(aes(x = time, y = value)) +
-      geom_line(color = "#00883a", size = 1.2) +
+      geom_line(color = "#00883a", size = 1) +
       geom_ribbon(aes(ymin = lower, ymax = upper), fill = "#00883a", alpha = 0.4)
     
     
@@ -63,7 +63,7 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
                  y = value, 
                  yend = value, 
                  xend = time_end))  +
-      geom_segment(color = "#00883a", size = 1.2) + ## plot horizontal segments
+      geom_segment(color = "#00883a", size = 1) + ## plot horizontal segments
       geom_segment(data = vert_lines, 
                    aes(y = y, x = x, yend = yend, xend = xend), color = "#00883a", size = 1.2) + ## plot the vertical segments
       geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper), fill = "#00883a",
@@ -76,10 +76,10 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
                  y = value, 
                  yend = value, 
                  xend = time_end))  +
-      geom_segment(color = "#00883a", size = 1.2) + ## plot horizontal segment
+      geom_segment(color = "#00883a", size = 1) + ## plot horizontal segment
       geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper), fill = "#00883a",
                 alpha = 0.4) +
-      coord_cartesian(xlim = c(1e5, 0))
+      xlim(1e5, 0)
     
   } else {
     stop("Please choose as method either 'events', 'specified' or 'constant'")

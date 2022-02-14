@@ -19,7 +19,7 @@ the data on population sizes and, if applicable, interval times}
 a ggplot object
 }
 \description{
-Plots the output of a coalescent demographic analysis
+Plots the output of a coalescent demographic analysis.
 }
 \details{
 Plots the output of coalescent demographic analyses. Takes as

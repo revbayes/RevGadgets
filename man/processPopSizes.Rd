@@ -34,7 +34,7 @@ containing the upper and lower bounds for the confidence intervals.}
 \item{summary}{typically "mean" or "median"; the metric to summarize the
 posterior distribution. Defaults to "mean"}
 
-\item{num_grid_points}{only if method = "events, defines the number of grid points through time for which to 
+\item{num_grid_points}{only if method = "events", defines the number of grid points through time for which to 
 evaluate the demographic functions}
 }
 \value{
