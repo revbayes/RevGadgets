@@ -1,58 +1,59 @@
-################################################################################
-#
-# @brief Plotting the output of a population size inference in an Occurrence Birth Death Process analysis.
-#
-# @date Last modified: 2020-04-03
-# @author Jeremy Andreoletti
-#
-# @param    Kt_mean                   data.frame        The processed output for plotting.
-# @param    xlab                      character         The label of the x-axis.
-# @param    ylab                      character         The label of the y-axis.
-# @param    line.size                 numeric           The width of the lineage plot line.
-# @param    interval.line.size        numeric           The width of the credence interval.
-# @param    col.Hidden                character         The color of the hidden lineages plot line.
-# @param    col.LTT                   character         The color of the LTT plot line.
-# @param    col.Total                 character         The color of the total lineages plot line.
-# @param    col.Hidden.interval       character         The color of the credence interval lines around the hidden lineages plot.
-# @param    col.Total.interval        character         The color of the credence interval lines around the total lineages plot.
-# @param    palette.Hidden            character         The palette of the hidden lineages plot distribution.
-# @param    palette.Total             character         The palette of the total lineages plot distribution.
-# @param    show.Hidden               boolean           Whether to show the plot for hidden lineages.
-# @param    show.LTT                  boolean           Whether to show the plot for observed lineages.
-# @param    show.Total                boolean           Whether to show the plot for total lineages.
-# @param    show.intervals            boolean           Whether to show the credence intervals.
-# @param    show.densities            boolean           Whether to show the diversity densities.
-# @param    show.expectations         boolean           Whether to show the diversity expectations.
-# @param    use.interpolate           boolean           Whether to interpolate densities.
-#
-#
-################################################################################
+#' Plot Diversity distribution from OBDP analysis
+#' 
+#' Plots the probability distribution of the number of lineages through time inferred with the 
+#' Occurrence Birth Death Process
+#'#'
+#' @param Kt_mean (data.frame; no default) The processed data.frame previously obtained with `process_OBDP_output`.
+#' @param xlab (character; "Time") The label of the x-axis.
+#' @param ylab (character; "Number of lineages") The label of the y-axis.
+#' @param xticks.n.breaks (numeric; 5) An integer guiding the number of major breaks. 
+#' @param col.Hidden (character; "dodgerblue3") The color of the hidden lineages plot line.
+#' @param col.LTT (character; "gray25") The color of the LTT plot line.
+#' @param col.Total (character; "forestgreen") The color of the total lineages plot line.
+#' @param col.Hidden.interval (character; "dodgerblue2") The color of the credible interval lines around the hidden lineages plot.
+#' @param col.Total.interval (character; "darkolivegreen4") The color of the credible interval lines around the total lineages plot.
+#' @param palette.Hidden (character; c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black")) The palette of the hidden lineages plot distribution.
+#' @param palette.Total (character; c("transparent", "green4", "forestgreen", "black")) The palette of the total lineages plot distribution.
+#' @param line.size (numeric; 0.7) The width of the lineage plot line.
+#' @param interval.line.size (numeric; 0.5) The width of the credible interval.
+#' 
+#' @param show.Hidden (boolean; TRUE) Whether to show the plot for hidden lineages.
+#' @param show.LTT (boolean; TRUE) Whether to show the plot for observed lineages.
+#' @param show.Total (boolean; TRUE) Whether to show the plot for total lineages.
+#' @param show.intervals (boolean; TRUE) Whether to show the credible intervals.
+#' @param show.densities (boolean; TRUE) Whether to show the diversity densities.
+#' @param show.expectations (boolean; TRUE) Whether to show the diversity expectations.
+#' @param use.interpolate (boolean; TRUE) Whether to interpolate densities.
+#'
+#' @return A ggplot object
+#' 
+#' @export
 
-rev.plot.nbLineages = function( Kt_mean,
-                                xlab="Time",
-                                ylab="Number of lineages",
-                                xticks.n.breaks = 5,
-                                col.Hidden = "dodgerblue3",
-                                col.LTT = "gray25",
-                                col.Total = "forestgreen",
-                                col.Hidden.interval = "dodgerblue2",
-                                col.Total.interval = "darkolivegreen4",
-                                palette.Hidden = c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black"),
-                                palette.Total = c("transparent", "green4", "forestgreen", "black"),
-                                line.size=0.7,
-                                interval.line.size=0.5,
-                                show.Hidden=TRUE,
-                                show.LTT=TRUE,
-                                show.Total=TRUE,
-                                show.intervals=TRUE,
-                                show.densities=TRUE,
-                                show.expectations=TRUE,
-                                use.interpolate=TRUE ){
+plotDiversityOBDP = function( Kt_mean,
+                              xlab="Time",
+                              ylab="Number of lineages",
+                              xticks.n.breaks = 5,
+                              col.Hidden = "dodgerblue3",
+                              col.LTT = "gray25",
+                              col.Total = "forestgreen",
+                              col.Hidden.interval = "dodgerblue2",
+                              col.Total.interval = "darkolivegreen4",
+                              palette.Hidden = c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black"),
+                              palette.Total = c("transparent", "green4", "forestgreen", "black"),
+                              line.size=0.7,
+                              interval.line.size=0.5,
+                              show.Hidden=TRUE,
+                              show.LTT=TRUE,
+                              show.Total=TRUE,
+                              show.intervals=TRUE,
+                              show.densities=TRUE,
+                              show.expectations=TRUE,
+                              use.interpolate=TRUE ){
   
   N <- length(Kt_mean)-8                                                                # Maximal number of hidden lineages
   
   ## Format Kt_mean for plotting
-  Kt_mean_plot <- Kt_mean %>% pivot_longer(-c("TimePoints", "NbObservedLin", "aggregNbHiddenLin", "aggregNbTotalLin", "NbHiddenLin0.025", "NbHiddenLin0.5", "NbHiddenLin0.975", "NbTotalLin0.025", "NbTotalLin0.5", "NbTotalLin0.975"), names_to="NbHiddenLin", values_to="ProbabilityDensity")
+  Kt_mean_plot <- Kt_mean %>% tidyr::pivot_longer(-c("TimePoints", "NbObservedLin", "aggregNbHiddenLin", "aggregNbTotalLin", "NbHiddenLin0.025", "NbHiddenLin0.5", "NbHiddenLin0.975", "NbTotalLin0.025", "NbTotalLin0.5", "NbTotalLin0.975"), names_to="NbHiddenLin", values_to="ProbabilityDensity")
   Kt_mean_plot$NbHiddenLin <- as.integer(Kt_mean_plot$NbHiddenLin)
 
   ## Get the distribution of the total number of lineages
@@ -64,11 +65,11 @@ rev.plot.nbLineages = function( Kt_mean,
   
   p <- ggplot(Kt_mean_plot, aes(x=TimePoints, y=NbTotalLin, z = ProbabilityDensity))
   
-  ### Plot the number of hidden lineages : full distribution + aggregated expectation + credence interval
+  ### Plot the number of hidden lineages : full distribution + aggregated expectation + credible interval
   if (show.Hidden){
     if (show.densities){
       p <- p + annotate(geom="raster", x=Kt_mean_plot$TimePoints, y=Kt_mean_plot$NbHiddenLin, interpolate = use.interpolate,
-                        fill = colour_ramp(c(colorRampPalette(palette.Hidden)(N)))(Kt_mean_plot$ProbabilityDensity))
+                        fill = scales::colour_ramp(c(colorRampPalette(palette.Hidden)(N)))(Kt_mean_plot$ProbabilityDensity))
     }
     if (show.expectations){
       p <- p + geom_line(aes(y=aggregNbHiddenLin, color="c1"), size=line.size)
@@ -80,11 +81,11 @@ rev.plot.nbLineages = function( Kt_mean,
     }
   }
   
-  ### Plot the total number lineages : full distribution + aggregated expectation + credence interval
+  ### Plot the total number lineages : full distribution + aggregated expectation + credible interval
   if (show.Total){
     if (show.densities){
       p <- p + annotate(geom="raster", x=Kt_mean_plot$TimePoints, y=Kt_mean_plot$NbTotalLin, interpolate = use.interpolate,
-                        fill = colour_ramp(colorRampPalette(palette.Total)(N))(Kt_mean_plot$ProbabilityDensity))
+                        fill = scales::colour_ramp(colorRampPalette(palette.Total)(N))(Kt_mean_plot$ProbabilityDensity))
       }
     if (show.expectations){
       p <- p + geom_line(aes(y=aggregNbTotalLin, color="c3"), size=line.size)
@@ -105,7 +106,7 @@ rev.plot.nbLineages = function( Kt_mean,
   ### Legend and axes
   p <- p + 
     scale_color_manual(name = "Lineages", breaks = c("c1", "H.95%", "c2", "c3", "T.95%"), 
-                       values = cols, labels = c("Hidden", "95% credence interval", "LTT", "Total", "95% credence interval")) +
+                       values = cols, labels = c("Hidden", "95% credible interval", "LTT", "Total", "95% credible interval")) +
     scale_x_continuous(name = xlab, expand = c(0.01,0.01), n.breaks = xticks.n.breaks, minor_breaks=NULL) +   
     scale_y_continuous(name = ylab, expand = c(0.01,0.01)) + 
     theme(panel.background=element_rect(fill="white"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) +
@@ -116,23 +117,22 @@ rev.plot.nbLineages = function( Kt_mean,
 
 
 
-################################################################################
-#
-# @brief Processing the output of the MCMC analysis + population size (diversity) inference in the Occurrence Birth Death Process.
-#
-# @date Last modified: 2020-04-03
-# @author Jeremy Andreoletti
-#
-# @param    start_time_trace_file                   character      The trace of the starting times along the MCMC chain.
-# @param    popSize_distribution_matrices_file      character      The Kt matrices computed with `fnInferAncestralPopSize` in RevBayes.
-# @param    trees_trace_file                        character      The corresponding trees.
-#
-#
-################################################################################
+#' Read OBDP outputs
+#' 
+#' Reads and formats the outputs of an analysis with the Occurrence Birth Death Process (MCMC parameter 
+#' inference + diversity estimation)
+#'
+#' @param start_time_trace_file               (character; no default)  Trace of the starting times along the MCMC chain.
+#' @param popSize_distribution_matrices_file  (character; no default)  Kt matrices computed with `fnInferAncestralPopSize` in RevBayes.
+#' @param trees_trace_file                    (character; no default)  Trace of the trees.
+#' 
+#' @return A data.frame
+#' 
+#' @export
 
-rev.process.nbLineages = function( start_time_trace_file, 
-                                   popSize_distribution_matrices_file,
-                                   trees_trace_file ){
+readOBDP = function( start_time_trace_file, 
+                     popSize_distribution_matrices_file,
+                     trees_trace_file ){
   
   ## Import start times
   start_time_trace_lines <- readLines(start_time_trace_file)
@@ -181,7 +181,7 @@ rev.process.nbLineages = function( start_time_trace_file,
                                     matrix(0, nrow=length(NA_rows), ncol=N))        # These rows are considered to have 0 hidden lineages
   
   ## Add root edges lengths
-  get_root_age <- function(tree){ltt.plot.coords(tree)[2]}
+  get_root_age <- function(tree){ape::ltt.plot.coords(tree)[2]}
   root_times <- sapply(trees$obd_tree, get_root_age)
   root_edge_lengths <- root_times-start_times
   for (i in 1:nb_trees){
@@ -203,8 +203,8 @@ rev.process.nbLineages = function( start_time_trace_file,
       Kt_mean <- Kt_mean + Kt/nb_trees
       
       ### Get the LTT coordinates
-      obd_tree <- collapse.singles(trees$obd_tree[[i]])       # Remove single nodes (ie. sampled ancestors)
-      LTT <- data.frame(ltt.plot.coords(obd_tree))            # Extract LTT coordinates
+      obd_tree <- ape::collapse.singles(trees$obd_tree[[i]])       # Remove single nodes (ie. sampled ancestors)
+      LTT <- data.frame(ape::ltt.plot.coords(obd_tree))            # Extract LTT coordinates
       LTT$time <- round(LTT$time, 4)                          # Reduce precision (extant tips wrongly at time -0.000001)
       
       ### Increment number of observed lineages
@@ -231,14 +231,14 @@ rev.process.nbLineages = function( start_time_trace_file,
   Kt_mean$aggregNbTotalLin <- observedLin_mean + Kt_mean$aggregNbHiddenLin
   Kt_mean$NbObservedLin <- round(observedLin_mean)
   
-  ## Get the 95% credence interval around the number of hidden lineages
+  ## Get the 95% credible interval around the number of hidden lineages
   Kt_mean[1:(N+1)] <- t(apply(Kt_mean[1:(N+1)], 1, function(row){row/sum(row)}))   # Force lines to sum to 1 (correct numerical uncertainties)
   Kt_mean_cumsum <- apply(Kt_mean[1:(N+1)], 1, cumsum)
   Kt_mean$NbHiddenLin0.025 <- apply(Kt_mean_cumsum, 2, function(col){which(col>0.025)[1]-1})
   Kt_mean$NbHiddenLin0.5 <- apply(Kt_mean_cumsum, 2, function(col){which(col>0.5)[1]})
   Kt_mean$NbHiddenLin0.975 <- apply(Kt_mean_cumsum, 2, function(col){which(col>0.975)[1]})
 
-  ## Get the 95% credence interval around the total number of lineages
+  ## Get the 95% credible interval around the total number of lineages
   Kt_mean$NbTotalLin0.025 <- observedLin_mean + Kt_mean$NbHiddenLin0.025
   Kt_mean$NbTotalLin0.5 <- observedLin_mean + Kt_mean$NbHiddenLin0.5
   Kt_mean$NbTotalLin0.975 <- observedLin_mean + Kt_mean$NbHiddenLin0.975
