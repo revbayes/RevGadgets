@@ -7,11 +7,11 @@
 processPopSizes(
   population_size_log = "",
   interval_change_points_log = "",
-  method = "events",
   burnin = 0.25,
   probs = c(0.025, 0.975),
   summary = "mean",
-  num_grid_points = 100
+  num_grid_points = 100,
+  max_age = NULL
 )
 }
 \arguments{
@@ -19,10 +19,8 @@ processPopSizes(
 single character string; "") Path to population sizes log file(s)}
 
 \item{interval_change_points_log}{(vector of character strings or
-single character string; "") Path to interval change points log file(s)}
-
-\item{method}{which method was chosen for the analysis, "events" - event-based coalescent process,
-"specified" - coalescent process with user-defined interval times, "constant" - constant coalescent process}
+single character string; "") Path to interval change points log file(s).
+If not given, a constant process with only one population size is assumed.}
 
 \item{burnin}{(single numeric value; default = 0) Fraction of generations to
 discard (if value provided is between 0 and 1) or number of generations (if
@@ -34,8 +32,12 @@ containing the upper and lower bounds for the confidence intervals.}
 \item{summary}{typically "mean" or "median"; the metric to summarize the
 posterior distribution. Defaults to "mean"}
 
-\item{num_grid_points}{only if method = "events", defines the number of grid points through time for which to 
+\item{num_grid_points}{defines the number of grid points through time for which to 
 evaluate the demographic functions}
+
+\item{max_age}{defines the maximal age up to which the demographic functions should be evaluated.
+If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
+to the maximal age provided with the interval_change_points_log.}
 }
 \value{
 List object with processed rate and, if applicable, time parameters.
@@ -45,11 +47,6 @@ Processing the output of a coalescent demographic analysis.
 }
 \details{
 For processing the output of a coalescent demographic analysis.
-processPopSizes() can process output from different analyses,
-either an event-based skyline analysis (method = "events"),
-or an analysis with user-defined intervals (method = "specified"),
-or an analysis with only one population size and no interval times
-(method = "constant").
 processPopSizes() assumes that the the first size parameter (i.e. population_size[1])
 corresponds to the present. processPopSizes() partly
 relies on readTrace and produces a list object that can be read by

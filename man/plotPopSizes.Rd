@@ -4,7 +4,13 @@
 \alias{plotPopSizes}
 \title{Plot Population Sizes}
 \usage{
-plotPopSizes(df, plot_var = "size", method = "events")
+plotPopSizes(
+  df,
+  plot_var = "size",
+  add = FALSE,
+  existing_plot = NULL,
+  col = "#00883a"
+)
 }
 \arguments{
 \item{df}{a data frame, such as produced by processPopSizes(), containing 
@@ -12,8 +18,12 @@ the data on population sizes and, if applicable, interval times}
 
 \item{plot_var}{only include variables that contain the string, default "size" in the name}
 
-\item{method}{which method was chosen for the analysis, "events" - event-based coalescent process,
-"specified" - coalescent process with user-defined interval times, "constant" - constant coalescent process}
+\item{add}{boolean, specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
+the existing_plot has to be given.}
+
+\item{existing_plot}{a ggplot2 object to which the new plot should be added.}
+
+\item{col}{color for the trajectories}
 }
 \value{
 a ggplot object
@@ -41,6 +51,6 @@ df <- tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
              "lower" = c(0.5, 0.0, 0.5, 0.5, 0.8),
              "item" = "population size")
              
-plotPopSizes(df, method = "specified")
+plotPopSizes(df)
 
 }

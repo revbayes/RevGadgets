@@ -14,8 +14,10 @@
 #' @param df a data frame, such as produced by processPopSizes(), containing 
 #' the data on population sizes and, if applicable, interval times
 #' @param plot_var only include variables that contain the string, default "size" in the name
-#' @param method which method was chosen for the analysis, "events" - event-based coalescent process,
-#' "specified" - coalescent process with user-defined interval times, "constant" - constant coalescent process
+#' @param add boolean, specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
+#' the existing_plot has to be given.
+#' @param existing_plot a ggplot2 object to which the new plot should be added.
+#' @param col color for the trajectories
 #'
 #'
 #' @return a ggplot object
@@ -30,66 +32,39 @@
 #'              "lower" = c(0.5, 0.0, 0.5, 0.5, 0.8),
 #'              "item" = "population size")
 #'              
-#' plotPopSizes(df, method = "specified")
+#' plotPopSizes(df)
 #'
 #' @export
 #' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment geom_rect geom_line geom_ribbon scale_y_log10 coord_cartesian xlim
 #' @importFrom dplyr bind_rows
 #' @importFrom utils head tail
 #' 
-plotPopSizes <- function(df, plot_var = "size", method = "events"){
-  message("Using default time units in x-axis label: Age (years)")
-  `%>%` <- dplyr::`%>%`
-  
-  if (method == "events"){
-    p <- df %>%
-      ggplot(aes(x = time, y = value)) +
-      geom_line(color = "#00883a", size = 0.8) +
-      geom_ribbon(aes(ymin = lower, ymax = upper), fill = "#00883a", alpha = 0.4)
-    
-    
-  } else if (method == "specified"){
-    vert_lines <- lapply(grep(plot_var, unique(df$item), value = TRUE),
-                         function(item) .makeVerticalLines(df, item)) %>%
-      bind_rows()
-    
-    pdata <- df %>%
-      subset(grepl(plot_var, item)) 
-    
-    rates_to_plot <- unique(pdata$item)
-    
-    p <- pdata %>%
-      ggplot(aes(x = time, 
-                 y = value, 
-                 yend = value, 
-                 xend = time_end))  +
-      geom_segment(color = "#00883a", size = 0.8) + ## plot horizontal segments
-      geom_segment(data = vert_lines, 
-                   aes(y = y, x = x, yend = yend, xend = xend), color = "#00883a", size = 1.2) + ## plot the vertical segments
-      geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper), fill = "#00883a",
-                alpha = 0.4)
-    
-  } else if (method == "constant"){
-
-    p <- df %>%
-      ggplot(aes(x = time, 
-                 y = value, 
-                 yend = value, 
-                 xend = time_end))  +
-      geom_segment(color = "#00883a", size = 0.8) + ## plot horizontal segment
-      geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper), fill = "#00883a",
-                alpha = 0.4) +
-      xlim(1e5, 0)
-    
-  } else {
-    stop("Please choose as method either 'events', 'specified' or 'constant'")
+plotPopSizes <- function(df, plot_var = "size", add = FALSE, existing_plot = NULL, col = "#00883a"){
+  if (add == TRUE && is.null(existing_plot)){
+    stop("Please provide an existing plot if you want to add this one.")
   }
   
+  `%>%` <- dplyr::`%>%`
+  
+  if (add == FALSE){
+    message("Using default time units in x-axis label: Age (years)")
+    
+    p <- df %>%
+      ggplot(aes(x = time, y = value)) +
+      geom_line(color = col, size = 0.8) +
+      geom_ribbon(aes(ymin = lower, ymax = upper), fill = col, alpha = 0.4) +
+      scale_y_log10() +
+      scale_x_reverse() +
+      xlab("Age (years)") +
+      ylab("Population Size")
+  } else {
+    p <- existing_plot +
+      geom_line(data = df, aes(x = time, y = value), color = col, size = 0.8) +
+      geom_ribbon(data = df, aes(ymin = lower, ymax = upper), fill = col, alpha = 0.4)        
+  }
+
+  
   p <- p +
-    scale_y_log10() +
-    scale_x_reverse() +
-    xlab("Age (years)") +
-    ylab("Population Size") +
     theme_bw() +
     theme(legend.title = element_blank(),
           legend.position = "none",
@@ -99,3 +74,4 @@ plotPopSizes <- function(df, plot_var = "size", method = "events"){
   
   return(p)
 }
+

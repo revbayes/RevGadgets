@@ -4,11 +4,6 @@
 #' Processing the output of a coalescent demographic analysis.
 #'
 #' For processing the output of a coalescent demographic analysis.
-#' processPopSizes() can process output from different analyses,
-#' either an event-based skyline analysis (method = "events"),
-#' or an analysis with user-defined intervals (method = "specified"),
-#' or an analysis with only one population size and no interval times
-#' (method = "constant").
 #' processPopSizes() assumes that the the first size parameter (i.e. population_size[1])
 #' corresponds to the present. processPopSizes() partly
 #' relies on readTrace and produces a list object that can be read by
@@ -19,9 +14,8 @@
 #' @param population_size_log (vector of character strings or
 #' single character string; "") Path to population sizes log file(s)
 #' @param interval_change_points_log (vector of character strings or
-#' single character string; "") Path to interval change points log file(s)
-#' @param method which method was chosen for the analysis, "events" - event-based coalescent process,
-#' "specified" - coalescent process with user-defined interval times, "constant" - constant coalescent process
+#' single character string; "") Path to interval change points log file(s).
+#' If not given, a constant process with only one population size is assumed.
 #' @param burnin (single numeric value; default = 0) Fraction of generations to
 #'  discard (if value provided is between 0 and 1) or number of generations (if
 #'  value provided is greater than 1).
@@ -29,8 +23,11 @@
 #' containing the upper and lower bounds for the confidence intervals.
 #' @param summary typically "mean" or "median"; the metric to summarize the
 #' posterior distribution. Defaults to "mean"
-#' @param num_grid_points only if method = "events", defines the number of grid points through time for which to 
+#' @param num_grid_points defines the number of grid points through time for which to 
 #' evaluate the demographic functions
+#' @param max_age defines the maximal age up to which the demographic functions should be evaluated.
+#' If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
+#' to the maximal age provided with the interval_change_points_log.
 #' @return List object with processed rate and, if applicable, time parameters.
 #'
 #' @export
@@ -38,14 +35,41 @@
 
 processPopSizes <- function(population_size_log = "",
                             interval_change_points_log = "",
-                            method = "events",
                             burnin = 0.25,
                             probs = c(0.025, 0.975),
                             summary = "mean",
-                            num_grid_points = 100){
-  if (method == "events"){
-    times <- read_file(interval_change_points_log, burnin = burnin)
+                            num_grid_points = 100,
+                            max_age = NULL){
+  constant_dem = FALSE
+  
+  if (interval_change_points_log == ""){
+    constant_dem = TRUE
+  }
+  
+  if (constant_dem == TRUE){
+    pop_size <- readTrace(paths = population_size_log)[[1]]
+    pop_sizes <- pop_size[, ncol(pop_size)]
+
+    summary_size <- apply(as.matrix(pop_sizes), 2, FUN = summary)
+    quantiles <- apply(as.matrix(pop_sizes), 2,
+                       quantile,
+                       probs = probs)
+    
+    if (is.null(max_age)){
+      x <- seq(0, 1e5, length.out = num_grid_points)
+    } else {
+      x <- seq(0, max_age, length.out = num_grid_points)
+    }
+
+    plotdf <- dplyr::tibble(.rows = length(x))
+    plotdf["value"] <- rep(summary_size, length(x))
+    plotdf["lower"] <- rep(quantiles[1, ], length(x))
+    plotdf["upper"] <- rep(quantiles[2, ], length(x))
+    plotdf$time <- x
+
+  } else {
     pop_size <- read_file(population_size_log, burnin = burnin)
+    times <- read_file(interval_change_points_log, burnin = burnin)
     
     orders <- lapply(times, order)
     
@@ -69,7 +93,12 @@ processPopSizes <- function(population_size_log = "",
       pop_size_trajectories[[i]] <- f
     }
     
-    x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
+    if (is.null(max_age)){
+      x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
+    } else {
+      x <- seq(0, max_age, length.out = num_grid_points)
+    }
+    
     m <- sapply(pop_size_trajectories, function(e) e(x))
     quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
     
@@ -77,42 +106,8 @@ processPopSizes <- function(population_size_log = "",
     plotdf$lower <- quantiles[1,]
     plotdf$upper <- quantiles[2,]
     plotdf$time <- x
-    
-  } else if (method == "specified"){
-    interval_time <- readTrace(paths = interval_change_points_log,
-                               burnin = burnin)[[1]]
-    pop_size <- readTrace(paths = population_size_log,
-                          burnin = burnin)[[1]]
-
-    interval_time$`interval_times[0]` <- rep(0, nrow(interval_time))
-
-    rates <- list(
-      "population size" = pop_size,
-      "coalescent time" = interval_time
-    )
-
-    plotdf <- .makePlotData(rates = rates, probs = probs, summary = summary)
-    
-  } else if (method == "constant") {
-    pop_size <- readTrace(paths = population_size_log)[[1]]
-    interval_time <- c("interval_times[0]" = 0, "interval_times[1]" = Inf)
-    
-    pop_sizes <- pop_size[, ncol(pop_size)]
-    
-    summary_size <- apply(as.matrix(pop_sizes), 2, FUN = summary)
-    quantiles <- apply(as.matrix(pop_sizes), 2,
-                       quantile,
-                       probs = probs)
-    
-    plotdf <- dplyr::tibble(.rows = length(summary_size))
-    plotdf["value"] <- summary_size
-    plotdf["lower"] <- quantiles[1, ]
-    plotdf["upper"] <- quantiles[2, ]
-    plotdf$time <- interval_time[1]
-    plotdf$time_end <- interval_time[2]
-
   }
-  
+
   return(plotdf)
 }
 
@@ -123,6 +118,11 @@ read_file <- function(path, burnin = 0.25) {
   res <- path %>% 
     readLines() %>%
     tail(n = -1)
+  
+  names <- path %>% 
+    readLines() %>%
+    head(n = 1) %>%
+    strsplit("\t")
     
   if (burnin >= length(res))
     stop("Burnin larger than provided trace file")
@@ -138,9 +138,12 @@ read_file <- function(path, burnin = 0.25) {
     stop("What have you done?")
   }
   
+  names_to_exclude = c("Iteration|Replicate_ID|Posterior|Likelihood|Prior")
+  cols_to_exclude = length(grep(pattern = names_to_exclude, names[[1]]))
+  
   res <- res %>%
     strsplit("\t") %>% 
-    lapply(function(x) tail(x, n = -4)) %>%
+    lapply(function(x) tail(x, n = -cols_to_exclude)) %>%
     lapply(as.numeric)
   
   return(res)
