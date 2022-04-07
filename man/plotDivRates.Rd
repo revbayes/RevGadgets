@@ -4,14 +4,13 @@
 \alias{plotDivRates}
 \title{Plot Diversification Rates}
 \usage{
-plotDivRates(df, plot_var = "rate", facet = TRUE)
+plotDivRates(rates, facet = TRUE)
 }
 \arguments{
-\item{df}{a data frame, such as produced by processDivRates(), containing 
-the data on rates and interval times for each type of rate to be 
-plotted (speciation rate, etc.).}
-
-\item{plot_var}{only include variable that contain the string, default "rate" in the name}
+\item{rates}{(list of dataframes; no default) A list of dataframes,
+such as produced by processDivRates(), containing the data on rates
+and interval times for each type of rate to be plotted (e.g.
+speciation rate, etc.).}
 
 \item{facet}{(logical; TRUE) plot rates in separate facets.}
 }
@@ -69,7 +68,7 @@ rates <- processDivRates(speciation_time_log = speciation_time_file,
                          burnin = 0.25)
 
 # then plot results:
-p <- plotDivRates(rates);p
+p <- plotDivRates(rates = rates);p
 
 # change the x-axis
 p <- p + ggplot2::xlab("Thousands of years ago");p

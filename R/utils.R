@@ -249,10 +249,9 @@
 }
 
 .computeInterval <- function(item, rates, probs, summary = "mean") {
-  time_var <- grep("time", names(rates), value = TRUE, ignore.case = TRUE)[[1]]
   interval_times <-
-    unlist(rates[[time_var]][1, grepl("interval_times",
-                                               names(rates[[time_var]]))])
+    unlist(rates[["speciation time"]][1, grepl("interval_times",
+                                               names(rates$`speciation time`))])
   # For some reason these are ordered differently than rate vectors
   interval_times <-
     sort(interval_times)
@@ -260,6 +259,7 @@
   rate <- rates[[item]]
   rate <- rate[, grep("[0-9]", colnames(rate))]
 
+  #mean_rate <- colMeans(rate)
   summary_rate <- apply(rate, 2, summary)
   quantiles <- apply(rate, 2,
                      quantile,
@@ -270,11 +270,6 @@
   df["lower"] <- quantiles[1, ]
   df["upper"] <- quantiles[2, ]
   df$time <- interval_times
-  
-  time_end <- tail(df$time, n = -1)
-  #res <- c(res, Inf)
-  time_end <- c(time_end, tail(time_end, n = 1) + diff(tail(time_end, n = 2)))
-  df$time_end <- time_end
   df$item <- item
 
   return(df)
@@ -391,10 +386,7 @@
                     node_names_op = node_names_op))
 }
 
-.makePlotData <- function(rates, 
-                          probs, 
-                          summary, 
-                          levels) {
+.makePlotData <- function(rates, probs, summary) {
   rates <- .removeNull(rates)
   res <-
     lapply(names(rates), function(e)
@@ -407,7 +399,14 @@
   plotdata <- do.call(rbind, res)
   plotdata$item <- factor(
     plotdata$item,
-    levels = levels
+    levels = c(
+      "speciation rate",
+      "extinction rate",
+      "speciation time",
+      "extinction time",
+      "net-diversification rate",
+      "relative-extinction rate"
+    )
   )
   return(plotdata)
 }
@@ -461,18 +460,6 @@
   return(list(state_labels = st_lbl, state_color = st_colors))
 }
 
-.makeVerticalLines <- function(df, item1){
-  d <- subset(df, item == item1)
-  
-  res <- tibble::tibble(y = head(d$value, n = -1), 
-                        yend = tail(d$value, n = -1), 
-                        x =  tail(d$time, n = -1), 
-                        xend =  tail(d$time, n = -1))
-  res$item <- item1
-  
-  return(res)
-}
-
 .parseTreeString <- function(string) {
   # recover()
   text <- sub("[^(]*", "", string)
@@ -483,7 +470,7 @@
   # obj <- .beast("", text, stats, tree)
 
   obj <- treeio::read.beast.newick(textConnection(text))
-  
+
   if ("index" %in% colnames(obj@data)) {
     obj@data$index <- as.character(obj@data$index)
   } else {
