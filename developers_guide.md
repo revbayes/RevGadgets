@@ -174,7 +174,7 @@ processDivRates <- function(speciation_time_log = "",
 ### Example 2: plotDivRates()
 
 This function plots the results of the episodic birth-death process tutorial, taking as input the processed rates produced by `processDivRates()` above. We will mostly refer to this `plotDivRates()` function for this example.
-```{R}
+```R
 #' Plot Diversification Rates
 #'
 #' Plots the output of a episodic diversification rate analysis
@@ -373,7 +373,7 @@ By including dependency packages here, this ensures that the dependencies will b
 ## Document Function
 
 We will use the package `roxygen2` to document functions. Function documentation should occur at the very beginning of the source file. In `plotDivRates.R`, this documentation appears as:
-```{R}
+```R
 #' Plot Diversification Rates
 #'
 #' Plots the output of a episodic diversification rate analysis
@@ -427,7 +427,7 @@ We will use the package `roxygen2` to document functions. Function documentation
 Roxygen2 documentation begins with #' to distinguish it from other comments in the file. The first sentence becomes the function title and should be formatted as a sentence. The second paragraph is the description of the function and should briefly describe the purpose of the function. The third and any additional paragraphs correspond to the Details section of the function documentation, and should provide a more comprehensive description of the function.
 
 The tag **@param** should be used to specify all parameters of the function, including information about the necessary format, default value (if exists), and a description of its purpose and/or possible values. For example, we have defined the path parameter as:
-```{R}
+```R
 #'@param output (list; no default) The processed output for plotting (output of processDivRates()).
 ```
 
@@ -440,7 +440,7 @@ The tag **@examples** provides the user with examples of the function in use. Of
 ## Export and Import
 
 We specify that we want the function to be exported as part of our package (available directly to the user as opposed to used internally) using @export, and we specify any functions used inside our function from external packages using the @import tag, followed by the package name and the names of the function(s).
-```{R}
+```R
 #' @export
 #' @importFrom graphics plot polygon
 #' @importFrom stats quantile
@@ -450,7 +450,7 @@ We specify that we want the function to be exported as part of our package (avai
 
 The following code defines our example function, which allows the user to plot the processed output of the episodic birth-death process tutorial.
 
-```{R}
+```R
 plotDivRates <- function(output,
                          fig_types = c("speciation rate",
                                        "extinction rate",
@@ -579,7 +579,7 @@ plotDivRates <- function(output,
 
 The first step in writing a function is naming the function and establishing the parameters of the function. This is done on the first few lines; in our example, the function is named plotDivRates and contains parameters output, fig_types, etc.. We include ... in the list of parameters to indicate that any additional parameters the user supplies will  be passed as arguments to an internal function called within our function (see below for how this is used). The use of function() tells R that we are defining a function with a name indicated by the assignment arrow, and to expect all parameter names within the parentheses. The opening curly bracket indicates that the function will be defined in the rows below.
 
-```{R}
+```R
 plotDivRates <- function(output,
                          fig_types = c("speciation rate",
                                        "extinction rate",
@@ -598,7 +598,7 @@ We ask that you follow the style guides of RevBayes: functions should be in came
 
 The tasks that the function will perform are defined within curly brackets following the function() element. Functions should include informative error messages that will catch common user mistakes, especially for correct formating of parameter values. In our example, the first task of the function is to check that the user has indicated logical parameter values. For example, we check that output is a list, fig_types is a string or vector of strings, xlab is a single character string, etc..  We also check that vector lengths match when necessary.
 
-```{R}
+```R
   # Enforce argument matching
   if (is.list(output) == FALSE) stop("output must be list of processed rates")
   if (is.character(fig_types) == FALSE) stop("fig_types must be a character string or vector of strings")
@@ -648,7 +648,7 @@ The stop command is used to provide informative error messages if these checks a
 
 Next, the function performs its task, in our case producing plots from processed log files. We have designed the function to accept user provided colors as hex codes, but if the user does  not specify colors for the plots, we assign them at the beginning. Next, we compute our axes for the plots based on the processed rates and assign labels to the x axes. Finally, we loop through each desired plot type, calculating means and quantiles from the posteriors and plotting the results.
 
-```{R}
+```R
 # read in tree(s) of type nexus or newick
 
 # Make color vector
@@ -723,7 +723,7 @@ Next, the function performs its task, in our case producing plots from processed
 
 In many cases, you may want the function to produce  an object (data frame, value, etc.) that will be outputted to the user. In `plotDivRates()`, we do not do this; the function simply plots the provided data, and the final curly bracket ends the function. However, in `processDivRates()`, we wish to return a list of the process rates. We create a list of the processed rates, and then use `return()` to indicate that the function should produce this for the user.
 
-```{R}
+```R
 
  # return a list of processed data frames
  res <- list("speciation rate" = speciation_rate,
@@ -741,7 +741,7 @@ In many cases, you may want the function to produce  an object (data frame, valu
 
 We ask that you additionally include a separate file that can be used to test the function using `testthat`. These files should be stored in the RevGadgets > tests > testthat subdirectory. For the `processDivRates()` function, we have created a testing file called `test_processDivRates.R`, the contents of which are shown below:
 
-```{R}
+```R
 context("tests the processDivRates function")
 
 # relies heavily on readTrace(), so we only test for elements not
@@ -781,7 +781,7 @@ In many cases, our tests will rely on reading in sample datasets. The outputs of
 
 We recommend that plotting functions are tested by comparing a saved version of the gg object to the newly produced gg object. Once the function is producing a plot that you are content with, save the plot object as a `.Rdata` file in `inst/extdata/graphs`. This file can then be loaded in during testing and compared with a newly-produced plot object. For example, the follow test compares a saved version and new version of the `plotTrace()` plot.
 
-```{R}
+```R
 
 test_that("plot pi traces", {
   # load in the trace file
