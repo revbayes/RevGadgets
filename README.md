@@ -49,6 +49,14 @@ Some old RevBayes tutorials reference a legacy version of RevGadgets. To reprodu
 devtools::install_github("cmt2/RevGadgets@legacy")
 ```
 
+### Gists:
+
+Here's a list of useful `R` scripts for working with `RevBayes`/`RevGadgets`, but separate from core `RevGadgets` functionality.
+This is a growing list: please let us know if you want to contribute your own!
+
+- [Reading stochastic maps for use with phytools](https://gist.github.com/cmt2/f8f875461ae993e35f51f2b41877913c)
+- [Convert BioGeoBears output for plotting with RevGadgets](https://gist.github.com/cmt2/c2425575be47c1a574df02ebe4058d38)
+
 ### Contributing:
 
 If you'd like to contribute to `RevGadgets`, please have a look at our [developer guide](https://github.com/revbayes/RevGadgets/blob/development/developers_guide.md)!
