@@ -85,7 +85,7 @@ from nodes.}
 
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
-\item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
+\item{tip_labels_italics}{(logical; FALSE) Plot tip labels in italics?}
 
 \item{tip_labels_remove_underscore}{(logical; FALSE) Should underscores be
 replaced by spaces in tip labels?}
