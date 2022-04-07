@@ -7,7 +7,7 @@ We will use the following two example functions to illustrate these best practic
 ### Example 1: processDivRates()
 
 This function processes the output of the episodic birth-death process tutorial from RevBayes, making the data available for subsequent plotting. It relies on the function `readTrace()`. If you are curious about that function, please see the corresponding documentation in the R package.
-```{R}
+```R
 
 #' Process Diversification Rates
 #'
