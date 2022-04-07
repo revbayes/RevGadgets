@@ -54,3 +54,7 @@ Some old RevBayes tutorials reference a legacy version of RevGadgets. To reprodu
 ```R
 devtools::install_github("revbayes/RevGadgets@legacy")
 ```
+
+### Contributing:
+
+If you'd like to make contributions to `RevGadgets`, please see our `development` branch, where we provide some instructions on code style, testing, and other important details.
