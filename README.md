@@ -48,3 +48,8 @@ Some old RevBayes tutorials reference a legacy version of RevGadgets. To reprodu
 ```R
 devtools::install_github("cmt2/RevGadgets@legacy")
 ```
+
+### Contributing:
+
+If you'd like to contribute to `RevGadgets`, please have a look at our developer guide.
+
