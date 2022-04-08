@@ -1,13 +1,3 @@
----
-title: "Developer's Guide"
-author: "Carrie Tribble and Mike May"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Developer's Guide}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
 ## Intro
 
 The purpose of this vignette is to establish common practices developing the RevGadgets package. These practices include documenting, writing, and testing of functions, as well as appropriate use of unit testing through GitHub actions.
@@ -813,6 +803,6 @@ test_that("plot pi traces", {
 ```
 ## Unit Testing and GitHub
 
-Please be sure to do all development using the Development branch of RevGadgets. We will occasionally merge the Development and Master branches for new releases. When you push to GitHub, Travis will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
+Please be sure to do all development using the Development branch of RevGadgets. We will occasionally merge the Development and Master branches for new releases. When you push to GitHub, GitHub will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
 
 If have any questions about these recommendations or are hesitant about pushing to the development branch, feel free to contact the developers for additional guidance.
