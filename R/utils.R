@@ -348,7 +348,7 @@
     return(FALSE)
   } else {
     t <- try(col2rgb(var), silent = TRUE)
-    if (length(t) == 1 && class(t) == "try-error") {
+    if (length(t) == 1 && methods::is(t, "try-error")) {
       return(FALSE)
     }
     else
