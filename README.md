@@ -59,4 +59,4 @@ This is a growing list: please let us know if you want to contribute your own!
 
 ### Contributing:
 
-If you'd like to contribute to `RevGadgets`, please have a look at our [developer guide](https://github.com/revbayes/RevGadgets/blob/development/developers_guide.md)!
+If you'd like to contribute to `RevGadgets`, please have a look at our [developer guide](https://github.com/revbayes/RevGadgets/blob/development/inst/developers_guide.md)!
