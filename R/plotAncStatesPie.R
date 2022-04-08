@@ -150,7 +150,7 @@ plotAncStatesPie <- function(t,
                              time_bars = timeline,
                              ...) {
   ##### parameter compatibility checks #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata object")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")

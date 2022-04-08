@@ -227,7 +227,7 @@ plotAncStatesMAP <- function(t,
 
                              ...) {
   ##### parameter compatability checks! #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")

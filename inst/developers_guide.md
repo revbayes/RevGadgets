@@ -1,3 +1,13 @@
+---
+title: "Developer's Guide"
+author: "Carrie Tribble and Mike May"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Developer's Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
 ## Intro
 
 The purpose of this vignette is to establish common practices developing the RevGadgets package. These practices include documenting, writing, and testing of functions, as well as appropriate use of unit testing through GitHub actions.
