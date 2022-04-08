@@ -253,7 +253,7 @@ plotAncStatesPie <- function(t,
         list('epochs','periods')"
       )
   }
-
+  
   ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ...)
 
@@ -339,7 +339,8 @@ plotAncStatesPie <- function(t,
     }
 
   } else if (sum(otherpp, na.rm = TRUE) != 0) {
-    state_labels <- as.factor(c(t@state_labels, "other"))
+    
+    state_labels <- as.factor(c(as.character(t@state_labels), "other"))
 
     if ("anc_state_" %in% state_pos_str_base) {
       p$data$anc_state_other <- "other"
