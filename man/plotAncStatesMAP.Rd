@@ -152,6 +152,9 @@ if geo == FALSE.}
 
 \item{...}{(various) Additional arguments passed to ggtree::ggtree().}
 }
+\value{
+A ggplot object
+}
 \description{
 Plots the MAP estimates of ancestral states. Can accommodate cladogenetic
 reconstructions by plotting on shoulders. Defaults to varying the symbols by
@@ -179,11 +182,11 @@ example <- processAncStates(file,
                                              "3" = "Cool!"))
 
 # have states vary by color and indicate state pp with size (default)
-plotAncStatesMAP(t = example, tip_labels_italics = TRUE)
+plotAncStatesMAP(t = example)
 
 # have states vary by color and indicate state pp with size ,
 # and add a timeline
-plotAncStatesMAP(t = example, tip_labels_italics = TRUE, timeline = TRUE)
+plotAncStatesMAP(t = example, timeline = TRUE)
 
 # have states vary by color and symbol, label nodes with pp of states
 plotAncStatesMAP(t = example,  node_shape_as = "state",

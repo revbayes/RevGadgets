@@ -107,6 +107,9 @@ NULL will be set based on the data.}
 
 \item{\dots}{further arguments to be passed to plot.}
 }
+\value{
+No return value, produces plot in base R
+}
 \description{
 This function plots a distribution of trees (e.g obtained from an
 MCMC inference) with branch-specific rates or other data.

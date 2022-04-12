@@ -21,6 +21,7 @@ Reads in and processes posterior-predictive statistics
 }
 \examples{
 
+\donttest{
 # download the example datasets to working directory
 
 url_emp <-
@@ -44,5 +45,7 @@ t <- processPostPredStats(path_sim = file_sim,
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path_sim, dest_path_emp)
+}
+
 
 }

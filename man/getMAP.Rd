@@ -22,6 +22,7 @@ Uses the SANN method of the optim() function to approximate the MAP estimate
 }
 \examples{
 
+\donttest{
 # download the example dataset to working directory
 url <-
   "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
@@ -38,6 +39,7 @@ MAP <- getMAP(trace[[1]]$"pi[1]")
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path)
+}
 
 }
 \seealso{

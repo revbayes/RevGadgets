@@ -96,6 +96,8 @@
 #' to include in the geo timescale.
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
+#' @return A ggplot object
+#'
 #' @examples
 #'
 #' \donttest{
@@ -111,11 +113,11 @@
 #'                                              "3" = "Cool!"))
 #'
 #' # have states vary by color and indicate state pp with size (default)
-#' plotAncStatesMAP(t = example, tip_labels_italics = TRUE)
+#' plotAncStatesMAP(t = example)
 #'
 #' # have states vary by color and indicate state pp with size ,
 #' # and add a timeline
-#' plotAncStatesMAP(t = example, tip_labels_italics = TRUE, timeline = TRUE)
+#' plotAncStatesMAP(t = example, timeline = TRUE)
 #'
 #' # have states vary by color and symbol, label nodes with pp of states
 #' plotAncStatesMAP(t = example,  node_shape_as = "state",
@@ -225,7 +227,7 @@ plotAncStatesMAP <- function(t,
 
                              ...) {
   ##### parameter compatability checks! #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")
@@ -379,9 +381,12 @@ plotAncStatesMAP <- function(t,
         p$data$node_color_as <-
           dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))
       }
-      # double check levels are alphabetical
-      levels(p$data$node_color_as) <-
-        sort(levels(p$data$node_color_as))
+      # double check levels are alphabetical (if not numeric)
+      if (suppressWarnings(any(is.na(as.integer(levels(p$data$node_color_as)))))) {
+        levels(p$data$node_color_as) <-
+          sort(levels(p$data$node_color_as))
+      }
+
     }
     if (node_color_as == "node_posterior") {
       p$data$node_color_as <- as.numeric(p$data$posterior)
@@ -395,8 +400,12 @@ plotAncStatesMAP <- function(t,
 
   if (is.null(node_size_as) == FALSE) {
     if (node_size_as == "state") {
-      p$data$node_size_as <-
-        as.integer(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))
+      size_tmp <- dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))
+      if (is.factor(size_tmp)) {
+        p$data$node_size_as <- as.integer(levels(size_tmp))[size_tmp]
+      } else {
+        p$data$node_size_as <- as.integer(size_tmp)
+      }
     }
     if (node_size_as == "node_posterior") {
       p$data$node_size_as <- as.numeric(p$data$posterior)
@@ -410,6 +419,7 @@ plotAncStatesMAP <- function(t,
 
   if (is.null(node_shape_as) == FALSE) {
     if (node_shape_as == "state") {
+
       p$data$node_shape_as <-
         factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))
     }
@@ -434,6 +444,11 @@ plotAncStatesMAP <- function(t,
           p$data$clado_node_color_as <-
             dplyr::pull(p$data, paste0(state_pos_str_base[2], "1"))
         }
+
+        if (suppressWarnings(any(is.na(as.integer(levels(p$data$clado_node_color_as)))))) {
+          levels(p$data$clado_node_color_as) <-
+            sort(levels(p$data$clado_node_color_as))
+        }
       }
       if (node_color_as == "node_posterior") {
         p$data$clado_node_color_as <- 1
@@ -447,8 +462,12 @@ plotAncStatesMAP <- function(t,
 
     if (is.null(node_size_as) == FALSE) {
       if (node_size_as == "state") {
-        p$data$clado_node_size_as <-
-          as.integer(dplyr::pull(p$data, paste0(state_pos_str_base[2], "1")))
+        clado_size_tmp <- dplyr::pull(p$data, paste0(state_pos_str_base[2], "1"))
+        if (is.factor(clado_size_tmp)) {
+          p$data$clado_node_size_as <- as.integer(levels(clado_size_tmp))[clado_size_tmp]
+        } else {
+          p$data$clado_node_size_as <- as.integer(clado_size_tmp)
+        }
       }
       if (node_size_as == "node_posterior") {
         p$data$clado_node_size_as <- 1
@@ -485,6 +504,7 @@ plotAncStatesMAP <- function(t,
         p$data, paste0(state_pos_str_base[1], "1")
       ))))
   }
+  all_states <- sort(all_states)
 
   ##### color processing and checks #####
   # check if number of states exceeds default color palette options
@@ -526,6 +546,7 @@ plotAncStatesMAP <- function(t,
       )
     }
   }
+
   # set default colors
   if (any(node_color == "default")) {
     if (is.null(node_color_as) == TRUE) {

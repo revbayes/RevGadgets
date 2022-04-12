@@ -38,6 +38,7 @@
 #'
 #' @examples
 #'
+#' \donttest{
 #' # download the example datasets to working directory
 #'
 #' url_ex_times <-
@@ -77,6 +78,8 @@
 #' # otherwise you might delete your data!
 #' file.remove(dest_path_sp_times, dest_path_ex_times,
 #'             dest_path_sp_rates, dest_path_ex_rates)
+#' }
+#'
 #' @export
 
 processDivRates <- function(speciation_time_log = "",
@@ -114,48 +117,52 @@ processDivRates <- function(speciation_time_log = "",
   do_speciation_time_log_exist <- file.exists(speciation_time_log)
   if (any(do_speciation_time_log_exist == FALSE) == TRUE) {
     # print out paths to files that don't exist
-    cat(
+    stop(
+      paste0(
       "Some speciation_time_log files do not exist:",
       paste0("\t", speciation_time_log[do_speciation_time_log_exist == FALSE]),
       sep = "\n"
     )
-    stop()
+    )
   }
 
   # check if speciation rates log file(s) exist
   do_speciation_rate_log_exist <- file.exists(speciation_rate_log)
   if (any(do_speciation_rate_log_exist == FALSE) == TRUE) {
     # print out paths to files that don't exist
-    cat(
+    stop(
+      paste0(
       "Some speciation_rate_log files do not exist:",
       paste0("\t", speciation_rate_log[do_speciation_rate_log_exist == FALSE]),
       sep = "\n"
     )
-    stop()
+    )
   }
 
   # check if extinction times log file(s) exist
   do_extinction_time_log_exist <- file.exists(extinction_time_log)
   if (any(do_extinction_time_log_exist == FALSE) == TRUE) {
     # print out paths to files that don't exist
-    cat(
+    stop(
+      paste0(
       "Some extinction_time_log files do not exist:",
       paste0("\t", extinction_time_log[do_extinction_time_log_exist == FALSE]),
       sep = "\n"
     )
-    stop()
+    )
   }
 
   # check if extinction rates log file(s) exist
   do_extinction_rate_log_exist <- file.exists(extinction_rate_log)
   if (any(do_extinction_rate_log_exist == FALSE) == TRUE) {
     # print out paths to files that don't exist
-    cat(
+    stop(
+      paste0(
       "Some extinction_rate_log files do not exist:",
       paste0("\t", extinction_rate_log[do_extinction_rate_log_exist == FALSE]),
       sep = "\n"
     )
-    stop()
+    )
   }
 
   # check if fossilization times log file(s) exist if provided
@@ -164,14 +171,15 @@ processDivRates <- function(speciation_time_log = "",
       file.exists(fossilization_time_log)
     if (any(do_fossilization_time_log_exist == FALSE) == TRUE) {
       # print out paths to files that don't exist
-      cat(
+      stop(
+        paste0(
         "Some fossilization_time_log files do not exist:",
         paste0("\t",
                fossilization_time_log[do_fossilization_time_log_exist ==
                                         FALSE]),
         sep = "\n"
       )
-      stop()
+      )
     }
   }
 
@@ -181,14 +189,15 @@ processDivRates <- function(speciation_time_log = "",
       file.exists(fossilization_rate_log)
     if (any(do_fossilization_rate_log_exist == FALSE) == TRUE) {
       # print out paths to files that don't exist
-      cat(
+      stop(
+        paste0(
         "Some fossilization_rate_log files do not exist:",
         paste0("\t",
                fossilization_rate_log[do_fossilization_rate_log_exist ==
                                         FALSE]),
         sep = "\n"
       )
-      stop()
+      )
     }
   }
 

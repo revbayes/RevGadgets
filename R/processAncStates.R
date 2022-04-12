@@ -13,6 +13,8 @@
 #' coded to NA? If TRUE, the state will not be plotted. If FALSE, it will be
 #' considered an additional state  when plotting.
 #'
+#' @return A treedata object
+#'
 #' @examples
 #'
 #' # standard ancestral state estimation example

@@ -46,7 +46,7 @@
 #'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
-#' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
+#' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
 #'
 #' @param tip_labels_remove_underscore (logical; FALSE) Should underscores be
 #' replaced by spaces in tip labels?
@@ -333,6 +333,7 @@ plotTreeFull <- function(tree,
         in the treedata object."
       )
   }
+
   # get dimensions
   n_node <- treeio::Nnode(phy)
   tree_height <- max(phytools::nodeHeights(phy@phylo))
@@ -370,9 +371,8 @@ plotTreeFull <- function(tree,
         }
       })
       minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
+      max_age <- max(minmax, na.rm = TRUE)
     }
-
-    max_age <- max(minmax, na.rm = TRUE)
 
     interval <- max_age / 5
     dx <- max_age %% interval
@@ -428,7 +428,7 @@ plotTreeFull <- function(tree,
     pp <- pp + ggplot2::scale_x_continuous(
       name = "Age (Ma)",
       expand = c(0, 0),
-      limits = c(-max(minmax, na.rm = TRUE), tree_height /
+      limits = c(-max_age, tree_height /
                    2),
       breaks = -rev(seq(0, max_age +
                           dx, interval)),
@@ -814,7 +814,7 @@ plotTreeFull <- function(tree,
     pp$data[, col_num] <-
       as.numeric(as.data.frame(pp$data)[, col_num])
     name <- .titleFormat(color_branch_by)
-    pp <- pp +
+    pp <- pp + 
       ggplot2::aes(color = as.data.frame(pp$data)[, col_num]) +
       ggplot2::scale_color_gradient(
         low = branch_color[1],
@@ -855,7 +855,6 @@ plotTreeFull <- function(tree,
     } else {
       xlim_max <- range(pp$data$x)[2]
     }
-
 
     pp <- pp + ggtree::xlim(xlim_min, xlim_max)
 

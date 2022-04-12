@@ -27,6 +27,7 @@
 #' @examples
 #' # read and process a single trace file
 #'
+#' \donttest{
 #' # download the example dataset to working directory
 #' url_gtr <-
 #'    "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR.log"
@@ -68,6 +69,7 @@
 #' # WARNING: only run for example dataset!
 #' # otherwise you might delete your data!
 #' file.remove(dest_path_1, dest_path_2)
+#' }
 #'
 #' @export
 
@@ -82,18 +84,20 @@ readTrace <- function(paths,
   character_paths_are_strings <- is.character(paths)
   if (any(character_paths_are_strings == FALSE) == TRUE) {
     # print out the ones that are not character strings
-    cat("Some paths are not character strings:",
+    stop(
+      paste0("Some paths are not character strings:",
         paste0("\t", paths[character_paths_are_strings == FALSE]),
         sep = "\n")
-    stop()
+    )
   }
 
   do_files_exist <- file.exists(paths)
   if (any(do_files_exist == FALSE) == TRUE) {
     # print out paths to files that don't exist
-    cat("Some files do not exist:",
+    stop(
+      paste0("Some files do not exist:",
         paste0("\t", paths[do_files_exist == FALSE]), sep = "\n")
-    stop()
+    )
   }
 
   format <- match.arg(format, choices = c("simple", "complex"))
@@ -133,7 +137,7 @@ readTrace <- function(paths,
   if (format == "simple") {
     output <- vector("list", num_paths)
     for (i in 1:num_paths) {
-      cat(paste0("Reading in log file ", i), "\n", sep = "")
+      message(paste0(paste0("Reading in log file ", i), "\n", sep = ""))
 
       out <- utils::read.table(
         file = paths[i],

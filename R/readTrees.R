@@ -22,8 +22,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#'
+#' \donttest{
 #' # read in a single nexus file
 #'
 #' # download the example dataset to working directory
@@ -75,8 +74,8 @@
 #' # WARNING: only run for example dataset!
 #' # otherwise you might delete your data!
 #' file.remove(dest_path_multi)
-#'
 #' }
+#'
 #' @export
 
 readTrees <-
@@ -96,18 +95,20 @@ readTrees <-
     character_paths_are_strings <- is.character(paths)
     if (any(character_paths_are_strings == FALSE) == TRUE) {
       # print out the ones that are not character strings
-      cat("Some paths are not character strings:",
+      stop(
+        paste0("Some paths are not character strings:",
           paste0("\t", paths[character_paths_are_strings == FALSE]),
           sep = "\n")
-      stop()
+        )
     }
 
     do_files_exist <- file.exists(paths)
     if (any(do_files_exist == FALSE) == TRUE) {
       # print out paths to files that don't exist
-      cat("Some files do not exist:",
+      stop(
+        paste0("Some files do not exist:",
           paste0("\t", paths[do_files_exist == FALSE]), sep = "\n")
-      stop()
+      )
     }
 
     n_paths  <- length(paths)

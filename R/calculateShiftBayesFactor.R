@@ -36,7 +36,8 @@
 #'
 #' @examples
 #'
-#' # download the example datasets to working directory
+#' \donttest{
+#' #' # download the example datasets to working directory
 #' url_times <-
 #'    "https://revbayes.github.io/tutorials/intro/data/primates_EBD_speciation_times.log"
 #' dest_path_times <- "primates_EBD_speciation_times.log"
@@ -65,6 +66,7 @@
 #' # WARNING: only run for example dataset!
 #' # otherwise you might delete your data!
 #' file.remove(dest_path_times, dest_path_rates)
+#' }
 #'
 #' @export
 

@@ -109,7 +109,6 @@
       attributes(t)$data[[m]] <- x_state
     }
 
-    # unique(c(as.matrix(t@data[, columns])))
     # Just add the USED state_labels here
     used_state_labels <-
       na.omit(unique(c(as.matrix(t@data[, columns]))))
@@ -349,7 +348,7 @@
     return(FALSE)
   } else {
     t <- try(col2rgb(var), silent = TRUE)
-    if (length(t) == 1 && class(t) == "try-error") {
+    if (length(t) == 1 && methods::is(t, "try-error")) {
       return(FALSE)
     }
     else
@@ -528,7 +527,7 @@
     }
   }
   if (verbose == TRUE) {
-    cat("\n")
+    close(bar)
   }
 
   # translate using dictionary if translate block present in file
@@ -591,7 +590,7 @@
     }
   }
   if (verbose == TRUE) {
-    cat("\n")
+    close(bar)
   }
 
   # return the trees

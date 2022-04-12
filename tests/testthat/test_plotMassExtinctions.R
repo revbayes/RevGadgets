@@ -39,8 +39,11 @@ test_that("tests mass extinctions example", {
   # read original plot object
   plot_orig <- readRDS(plot_file)
 
+  tmp <- tempdir()
+  pdf(paste0(tmp,"/Rplots.pdf"))
   # test for errors in plot_new
   expect_error(print(plot_new), NA)
+  dev.off()
 
   # compare plot data objects
   expect_equal(plot_new$data, plot_orig)

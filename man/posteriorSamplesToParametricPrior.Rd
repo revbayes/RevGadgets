@@ -36,6 +36,7 @@ being supplied.
 }
 \examples{
 
+\donttest{
 # download the example datasets to working directory
 
 url_ex_times <-
@@ -81,5 +82,6 @@ speciation_1_gamma_prior <-
 # otherwise you might delete your data!
 file.remove(dest_path_sp_times, dest_path_ex_times,
             dest_path_sp_rates, dest_path_ex_rates)
+}
 
 }

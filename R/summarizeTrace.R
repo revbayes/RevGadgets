@@ -21,6 +21,8 @@
 #' associated probabilities.
 #'
 #' @examples
+#'
+#' \donttest{
 #' # continuous character only example, one run
 #'
 #' # download the example dataset to working directory
@@ -92,6 +94,7 @@
 #' # WARNING: only run for example dataset!
 #' # otherwise you might delete your data!
 #' file.remove(dest_path_rj)
+#' }
 #'
 #' @export
 
@@ -106,12 +109,13 @@ summarizeTrace <- function(trace, vars) {
 
   # ensure variable names present in data frame
   if (any(vars %in% colnames(trace[[1]]) == FALSE) == TRUE) {
-    cat(
+    stop(
+      paste0(
       "The following variables you provided are not present in trace file:",
       paste0("\t", vars[!vars %in% colnames(trace[[1]])]),
       sep = "\n"
     )
-    stop("oops!")
+    )
   }
 
   # subset to desired characters
@@ -121,7 +125,7 @@ summarizeTrace <- function(trace, vars) {
     output[[i]] <- list()
     for (j in seq_len(length(trace))) {
       col <- trace[[j]][, vars[i]]
-      if (class(col) == "numeric") {
+      if (methods::is(col, "numeric")) {
         q_2.5 <- quantile(col, prob = c(0.025, 0.975))[1]
         q_97.5 <- quantile(col, prob = c(0.025, 0.975))[2]
         names(q_2.5) <- NULL
@@ -138,8 +142,8 @@ summarizeTrace <- function(trace, vars) {
         } else {
           names(output[[i]])[j] <- paste0("trace_", j)
         }
-      } else if (class(col) == "integer" |
-                 class(col) == "character") {
+      } else if (methods::is(col, "integer") |
+                 methods::is(col, "character")) {
         credible_set <- col
         state_probs <-
           sort(table(credible_set) / length(credible_set),
@@ -162,7 +166,7 @@ summarizeTrace <- function(trace, vars) {
       combined_trace <- do.call("rbind", trace)
       col <- combined_trace[, vars[i]]
       num_traces <- length(trace)
-      if (class(col) == "numeric") {
+      if (methods::is(col, "numeric")) {
         q_2.5 <- quantile(col, prob = c(0.025, 0.975))[1]
         q_97.5 <- quantile(col, prob = c(0.025, 0.975))[2]
         names(q_2.5) <- NULL
@@ -175,8 +179,8 @@ summarizeTrace <- function(trace, vars) {
           quantile_97.5 = q_97.5
         )
         names(output[[i]])[num_traces + 1] <- "Combined"
-      } else if (class(col) == "integer" |
-                 class(col) == "character") {
+      } else if (methods::is(col, "integer") |
+                    methods::is(col, "character")) {
         credible_set <- col
         state_probs <-
           sort(table(credible_set) / length(credible_set),

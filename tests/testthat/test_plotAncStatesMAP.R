@@ -22,12 +22,16 @@ test_that("plots MAP of ancestral states", {
   # read original plot object
   plot_orig <- readRDS(plot_file)
 
+  tmp <- tempdir()
+  pdf(paste0(tmp,"/Rplots.pdf"))
+
   #  plot new doesn't error out
   expect_error(print(plot_new), NA)
 
   # compare plot dataobjects
   expect_equal(plot_new$data, plot_orig)
 
+  dev.off()
 })
 
 test_that("error messages behave as expected", {

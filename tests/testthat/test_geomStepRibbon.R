@@ -15,10 +15,15 @@ test_that("geomStepRibbon example works", {
                            package = "RevGadgets")
   plot_orig <- readRDS(plot_file)
 
+  tmp <- tempdir()
+  pdf(paste0(tmp,"/Rplots.pdf"))
+
   # test for errors in plot_new
   expect_error(print(plot_new), NA)
 
   # compare plot data objects
   expect_equal(plot_new$data, plot_orig)
+
+  dev.off()
 })
 

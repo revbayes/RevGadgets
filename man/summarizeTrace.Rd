@@ -30,6 +30,8 @@ computing the mean and 95\% credible interval for quantitative
 character and the 95\% credible set for discrete characters.
 }
 \examples{
+
+\donttest{
 # continuous character only example, one run
 
 # download the example dataset to working directory
@@ -101,5 +103,6 @@ trace_sum_discrete[["prob_rate_12"]]
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path_rj)
+}
 
 }

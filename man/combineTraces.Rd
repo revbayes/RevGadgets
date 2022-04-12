@@ -28,7 +28,9 @@ into one trace file.
 }
 \examples{
 
-# download the example dataset to working directory
+\donttest{
+
+#' # download the example dataset to working directory
 url_1 <-
 "https://revbayes.github.io/tutorials/intro/data/primates_cytb_GTR_run_1.log"
 dest_path_1 <- "primates_cytb_GTR_run_1.log"
@@ -54,5 +56,7 @@ combined_trace <- combineTraces(trace = multi_trace,
 # WARNING: only run for example dataset!
 # otherwise you might delete your data!
 file.remove(dest_path_1, dest_path_2)
+}
+
 
 }
