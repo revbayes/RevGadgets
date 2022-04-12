@@ -19,7 +19,7 @@
 #' @param tip_labels_size (numeric; 2) Size of tip labels.
 #' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from
 #' tree.
-#' @param tip_labels_italics (logical; TRUE) Italicize tip labels?
+#' @param tip_labels_italics (logical; FALSE) Italicize tip labels?
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores from
 #' tip labels?
 #' @param tip_labels_states (logical; FALSE) Optional plotting of text at tips
@@ -187,7 +187,7 @@ plotAncStatesMAP <- function(t,
                              tip_labels = TRUE,
                              tip_labels_size = 2,
                              tip_labels_offset = 1,
-                             tip_labels_italics = TRUE,
+                             tip_labels_italics = FALSE,
                              tip_labels_remove_underscore = TRUE,
 
                              # label states at tips
@@ -227,7 +227,7 @@ plotAncStatesMAP <- function(t,
 
                              ...) {
   ##### parameter compatability checks! #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")

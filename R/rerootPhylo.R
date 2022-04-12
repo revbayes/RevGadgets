@@ -38,9 +38,9 @@
 rerootPhylo <- function(tree, outgroup) {
   if (!is.list(tree))
     stop("tree should be a list of lists of treedata objects")
-  if (class(tree[[1]][[1]]) != "treedata")
+  if (!methods::is(tree[[1]][[1]], "treedata"))
     stop("tree should be a list of lists of treedata objects")
-  if (class(outgroup) != "character")
+  if (!methods::is(outgroup, "character"))
     stop("outgroup should be of class character")
   if (length(outgroup) > 2)
     stop("outgroup should contain 1 or 2 taxa names")

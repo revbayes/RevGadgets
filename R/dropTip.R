@@ -32,9 +32,9 @@
 dropTip <- function(tree, tips) {
   if (!is.list(tree))
     stop("tree should be a list of lists of treedata objects")
-  if (class(tree[[1]][[1]]) != "treedata")
+  if (!methods::is(tree[[1]][[1]], "treedata"))
     stop("tree should be a list of lists of treedata objects")
-  if (class(tips) != "character" & class(tips) != "numeric")
+  if (!methods::is(tips, "character") & !methods::is(tips, "numeric"))
     stop("tips should be of class character or numeric")
   if (length(tips) > length(tree[[1]][[1]]@phylo$tip.label))
     stop("number of tips to drop larger than the number of tips in the tree")

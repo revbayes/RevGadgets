@@ -61,10 +61,10 @@ processBranchData <- function(tree,
                                            "num_shifts"),
                               summary = "median",
                               net_div = FALSE) {
-  if (class(dat) == "list") {
+  if (methods::is(dat, "list")) {
     dat <- dat[[1]]
   }
-  if (class(tree) == "list") {
+  if (methods::is(tree, "list")) {
     tree <- tree[[1]][[1]]
   }
 

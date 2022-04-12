@@ -10,7 +10,7 @@
 #' @param tip_labels_size (numeric; 2) Size of tip labels.
 #' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from
 #' tree.
-#' @param tip_labels_italics (logical; TRUE) Italicize tip labels?
+#' @param tip_labels_italics (logical; FALSE) Italicize tip labels?
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores from
 #' tip labels?
 #' @param tip_labels_states (logical; FALSE) Optional plotting of text at tips
@@ -114,7 +114,7 @@ plotAncStatesPie <- function(t,
                              tip_labels = TRUE,
                              tip_labels_size = 2,
                              tip_labels_offset = 1,
-                             tip_labels_italics = TRUE,
+                             tip_labels_italics = FALSE,
                              tip_labels_remove_underscore = TRUE,
 
                              # label states at tips
@@ -150,7 +150,7 @@ plotAncStatesPie <- function(t,
                              time_bars = timeline,
                              ...) {
   ##### parameter compatibility checks #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata object")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")
@@ -253,7 +253,7 @@ plotAncStatesPie <- function(t,
         list('epochs','periods')"
       )
   }
-
+  
   ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ...)
 
@@ -339,7 +339,8 @@ plotAncStatesPie <- function(t,
     }
 
   } else if (sum(otherpp, na.rm = TRUE) != 0) {
-    state_labels <- as.factor(c(t@state_labels, "other"))
+    
+    state_labels <- as.factor(c(as.character(t@state_labels), "other"))
 
     if ("anc_state_" %in% state_pos_str_base) {
       p$data$anc_state_other <- "other"
@@ -679,8 +680,8 @@ plotAncStatesPie <- function(t,
                         order = 1)
   p <- p + ggplot2::guides(size = "none")
 
-  # import ggimage theme
-  theme_transparent <- ggimage::theme_transparent()
+  # import ggfun theme
+  theme_transparent <- ggfun::theme_transparent()
 
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {

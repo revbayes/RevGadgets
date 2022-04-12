@@ -49,7 +49,7 @@
 #'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
-#' @param tip_labels_italics (logical; TRUE) Plot tip labels in italics?
+#' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
 #'
 #' @param tip_labels_remove_underscore (logical; FALSE) Should underscores be
 #' replaced by spaces in tip labels?
@@ -137,7 +137,7 @@ plotFBDTree <- function(
                         node_labels_offset = 0,
 
                         tip_labels = TRUE,
-                        tip_labels_italics = TRUE,
+                        tip_labels_italics = FALSE,
                         tip_labels_remove_underscore = TRUE,
                         tip_labels_color = "black",
                         tip_labels_size = 3,
