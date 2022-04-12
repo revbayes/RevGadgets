@@ -360,12 +360,12 @@ Your functions may depend on objects or functions from other packages, such as `
 
 ```
 Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0),
-         ggtree (>= 3.0.2), treeio (>= 1.12.0),  tidytree (>= 0.3.4),
-         ggplot2 (>= 3.0.0), reshape (>= 0.8.8),
-         ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1),
-         gginnards (>= 0.0.3), ggplotify (>= 0.0.5), ggimage, ggpp,
-         png (>= 0.1-7), stats (>= 4.0.1), utils (>= 4.0.1),
-         grDevices (>= 4.0.1), deeptime (>= 0.1.0)
+         ggtree (>= 3.3.1), treeio (>= 1.12.0),  tidytree (>= 0.3.4),
+         ggplot2 (>= 3.0.0), reshape (>= 0.8.8), methods (>= 4.1.0),
+         ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1), 
+         gginnards (>= 0.0.3), ggplotify (>= 0.0.5), ggpp, ggimage,
+         png (>= 0.1-7), stats (>= 4.0.1), utils (>= 4.0.1), 
+         grDevices (>= 4.0.1), deeptime (>= 0.1.0), ggfun (>= 0.0.6)
 ```
 
 By including dependency packages here, this ensures that the dependencies will be loaded when RevGadgets is loaded, and will be installed when RevGadgets is installed.
@@ -783,7 +783,6 @@ We recommend that plotting functions are tested by comparing a saved version of 
 
 ```R
 
-test_that("plot pi traces", {
   # load in the trace file
   file_1 <- system.file("extdata",
                       "sub_models/primates_cytb_GTR.p",
