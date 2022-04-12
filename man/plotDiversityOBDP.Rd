@@ -8,66 +8,66 @@ plotDiversityOBDP(
   Kt_mean,
   xlab = "Time",
   ylab = "Number of lineages",
-  xticks.n.breaks = 5,
-  col.Hidden = "dodgerblue3",
-  col.LTT = "gray25",
-  col.Total = "forestgreen",
-  col.Hidden.interval = "dodgerblue2",
-  col.Total.interval = "darkolivegreen4",
-  palette.Hidden = c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4",
+  xticks_n_breaks = 5,
+  col_Hidden = "dodgerblue3",
+  col_LTT = "gray25",
+  col_Total = "forestgreen",
+  col_Hidden_interval = "dodgerblue2",
+  col_Total_interval = "darkolivegreen4",
+  palette_Hidden = c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4",
     "black"),
-  palette.Total = c("transparent", "green4", "forestgreen", "black"),
-  line.size = 0.7,
-  interval.line.size = 0.5,
-  show.Hidden = TRUE,
-  show.LTT = TRUE,
-  show.Total = TRUE,
-  show.intervals = TRUE,
-  show.densities = TRUE,
-  show.expectations = TRUE,
-  use.interpolate = TRUE
+  palette_Total = c("transparent", "green4", "forestgreen", "black"),
+  line_size = 0.7,
+  interval_line_size = 0.5,
+  show_Hidden = TRUE,
+  show_LTT = TRUE,
+  show_Total = TRUE,
+  show_intervals = TRUE,
+  show_densities = TRUE,
+  show_expectations = TRUE,
+  use_interpolate = TRUE
 )
 }
 \arguments{
-\item{Kt_mean}{(data.frame; no default) The processed data.frame (output of`readOBDP(...)`).}
+\item{Kt_mean}{(data.frame; no default) The processed data.frame (output of readOBDP()).}
 
 \item{xlab}{(character; "Time") The label of the x-axis.}
 
 \item{ylab}{(character; "Number of lineages") The label of the y-axis.}
 
-\item{xticks.n.breaks}{(numeric; 5) An integer guiding the number of major breaks.}
+\item{xticks_n_breaks}{(numeric; 5) An integer guiding the number of major breaks.}
 
-\item{col.Hidden}{(character; "dodgerblue3") The color of the hidden lineages plot line.}
+\item{col_Hidden}{(character; "dodgerblue3") The color of the hidden lineages plot line.}
 
-\item{col.LTT}{(character; "gray25") The color of the LTT plot line.}
+\item{col_LTT}{(character; "gray25") The color of the LTT plot line.}
 
-\item{col.Total}{(character; "forestgreen") The color of the total lineages plot line.}
+\item{col_Total}{(character; "forestgreen") The color of the total lineages plot line.}
 
-\item{col.Hidden.interval}{(character; "dodgerblue2") The color of the credible interval lines around the hidden lineages plot.}
+\item{col_Hidden_interval}{(character; "dodgerblue2") The color of the credible interval lines around the hidden lineages plot.}
 
-\item{col.Total.interval}{(character; "darkolivegreen4") The color of the credible interval lines around the total lineages plot.}
+\item{col_Total_interval}{(character; "darkolivegreen4") The color of the credible interval lines around the total lineages plot.}
 
-\item{palette.Hidden}{(character; c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black")) The palette of the hidden lineages plot distribution.}
+\item{palette_Hidden}{(character; c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black")) The palette of the hidden lineages plot distribution.}
 
-\item{palette.Total}{(character; c("transparent", "green4", "forestgreen", "black")) The palette of the total lineages plot distribution.}
+\item{palette_Total}{(character; c("transparent", "green4", "forestgreen", "black")) The palette of the total lineages plot distribution.}
 
-\item{line.size}{(numeric; 0.7) The width of the lineage plot line.}
+\item{line_size}{(numeric; 0.7) The width of the lineage plot line.}
 
-\item{interval.line.size}{(numeric; 0.5) The width of the credible interval.}
+\item{interval_line_size}{(numeric; 0.5) The width of the credible interval.}
 
-\item{show.Hidden}{(boolean; TRUE) Whether to show the plot for hidden lineages.}
+\item{show_Hidden}{(boolean; TRUE) Whether to show the plot for hidden lineages.}
 
-\item{show.LTT}{(boolean; TRUE) Whether to show the plot for observed lineages.}
+\item{show_LTT}{(boolean; TRUE) Whether to show the plot for observed lineages.}
 
-\item{show.Total}{(boolean; TRUE) Whether to show the plot for total lineages.}
+\item{show_Total}{(boolean; TRUE) Whether to show the plot for total lineages.}
 
-\item{show.intervals}{(boolean; TRUE) Whether to show the credible intervals.}
+\item{show_intervals}{(boolean; TRUE) Whether to show the credible intervals.}
 
-\item{show.densities}{(boolean; TRUE) Whether to show the diversity densities.}
+\item{show_densities}{(boolean; TRUE) Whether to show the diversity densities.}
 
-\item{show.expectations}{(boolean; TRUE) Whether to show the diversity expectations.}
+\item{show_expectations}{(boolean; TRUE) Whether to show the diversity expectations.}
 
-\item{use.interpolate}{(boolean; TRUE) Whether to interpolate densities.}
+\item{use_interpolate}{(boolean; TRUE) Whether to interpolate densities.}
 }
 \value{
 A ggplot object
@@ -81,9 +81,12 @@ Occurrence Birth Death Process
 
 \dontrun{
 # first run readOBDP()
-start_time_trace_file <- system.file("extdata", "obdp/start_time_trace.txt", package="RevGadgets")
-popSize_distribution_matrices_file <- system.file("extdata", "obdp/Kt_trace.txt", package="RevGadgets")
-trees_trace_file <- system.file("extdata", "obdp/mcmc_OBDP.trees", package="RevGadgets")
+start_time_trace_file <- 
+     system.file("extdata", "obdp/start_time_trace.p", package="RevGadgets")
+popSize_distribution_matrices_file <- 
+     system.file("extdata", "obdp/Kt_trace.p", package="RevGadgets")
+trees_trace_file <- 
+     system.file("extdata", "obdp/mcmc_OBDP_trees.p", package="RevGadgets")
     
 Kt_mean <- readOBDP( start_time_trace_file=start_time_trace_file, 
                      popSize_distribution_matrices_file=popSize_distribution_matrices_file, 
@@ -93,23 +96,24 @@ Kt_mean <- readOBDP( start_time_trace_file=start_time_trace_file,
 p <- plotDiversityOBDP( Kt_mean,
                         xlab="Time (My)",
                         ylab="Number of lineages",
-                        xticks.n.breaks=21,
-                        col.Hidden="dodgerblue3",
-                        col.LTT="gray25",
-                        col.Total="forestgreen",
-                        col.Hidden.interval="dodgerblue2",
-                        col.Total.interval="darkolivegreen4",
-                        palette.Hidden=c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black"),
-                        palette.Total=c("transparent", "green4", "forestgreen", "black"),
-                        line.size=0.7,
-                        interval.line.size=0.5,
-                        show.Hidden=TRUE,
-                        show.LTT=TRUE,
-                        show.Total=TRUE,
-                        show.intervals=TRUE,
-                        show.densities=TRUE,
-                        show.expectations=TRUE,
-                        use.interpolate=TRUE )
+                        xticks_n_breaks=21,
+                        col_Hidden="dodgerblue3",
+                        col_LTT="gray25",
+                        col_Total="forestgreen",
+                        col_Hidden_interval="dodgerblue2",
+                        col_Total_interval="darkolivegreen4",
+                        palette_Hidden=c("transparent", "dodgerblue2", "dodgerblue3", 
+                                         "dodgerblue4", "black"),
+                        palette_Total=c("transparent", "green4", "forestgreen", "black"),
+                        line_size=0.7,
+                        interval_line_size=0.5,
+                        show_Hidden=TRUE,
+                        show_LTT=TRUE,
+                        show_Total=TRUE,
+                        show_intervals=TRUE,
+                        show_densities=TRUE,
+                        show_expectations=TRUE,
+                        use_interpolate=TRUE )
 
 # basic plot
 p
@@ -118,7 +122,8 @@ p
 library(deeptime)
 library(ggplot2)
 q <- gggeo_scale(p, dat="periods", height=unit(1.3, "line"), abbrv=F, size=4.5, neg=T)
-r <- gggeo_scale(q, dat="epochs", height=unit(1.1, "line"), abbrv=F, size=3.5, neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene"))
+r <- gggeo_scale(q, dat="epochs", height=unit(1.1, "line"), abbrv=F, size=3.5, neg=T, 
+                    skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene"))
 s <- gggeo_scale(r, dat="stages", height=unit(1, "line"), abbrv=T, size=2.5, neg=T)
 s
 }

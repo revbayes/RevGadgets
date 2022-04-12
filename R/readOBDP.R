@@ -13,9 +13,12 @@
 #'
 #' \dontrun{
 #' # first run readOBDP()
-#' start_time_trace_file <- system.file("extdata", "obdp/start_time_trace.p", package="RevGadgets")
-#' popSize_distribution_matrices_file <- system.file("extdata", "obdp/Kt_trace.p", package="RevGadgets")
-#' trees_trace_file <- system.file("extdata", "obdp/mcmc_OBDP_trees.p", package="RevGadgets")
+#' start_time_trace_file <- 
+#'      system.file("extdata", "obdp/start_time_trace.p", package="RevGadgets")
+#' popSize_distribution_matrices_file <- 
+#'      system.file("extdata", "obdp/Kt_trace.p", package="RevGadgets")
+#' trees_trace_file <- 
+#'      system.file("extdata", "obdp/mcmc_OBDP_trees.p", package="RevGadgets")
 #'     
 #' Kt_mean <- readOBDP( start_time_trace_file=start_time_trace_file, 
 #'                      popSize_distribution_matrices_file=popSize_distribution_matrices_file, 
@@ -31,7 +34,8 @@
 #'                         col_Total="forestgreen",
 #'                         col_Hidden_interval="dodgerblue2",
 #'                         col_Total_interval="darkolivegreen4",
-#'                         palette_Hidden=c("transparent", "dodgerblue2", "dodgerblue3", "dodgerblue4", "black"),
+#'                         palette_Hidden=c("transparent", "dodgerblue2", "dodgerblue3", 
+#'                                          "dodgerblue4", "black"),
 #'                         palette_Total=c("transparent", "green4", "forestgreen", "black"),
 #'                         line_size=0.7,
 #'                         interval_line_size=0.5,
@@ -50,13 +54,16 @@
 #' library(deeptime)
 #' library(ggplot2)
 #' q <- gggeo_scale(p, dat="periods", height=unit(1.3, "line"), abbrv=F, size=4.5, neg=T)
-#' r <- gggeo_scale(q, dat="epochs", height=unit(1.1, "line"), abbrv=F, size=3.5, neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene"))
+#' r <- gggeo_scale(q, dat="epochs", height=unit(1.1, "line"), abbrv=F, size=3.5, neg=T, 
+#'                     skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene"))
 #' s <- gggeo_scale(r, dat="stages", height=unit(1, "line"), abbrv=T, size=2.5, neg=T)
 #' s
 #' }
 #' 
 #' @export
 #' @importFrom ape read.tree collapse.singles ltt.plot.coords
+#' @importFrom stats weighted.mean
+#' @importFrom grDevices colorRampPalette
 
 readOBDP = function( start_time_trace_file, 
                      popSize_distribution_matrices_file,

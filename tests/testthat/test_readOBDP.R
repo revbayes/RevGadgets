@@ -1,6 +1,5 @@
-context("tests the plotDiversityOBDP function")
-#note: does not compare the generated plot to the expectation
-test_that("plot diversity OBDP", {
+context("tests the readOBDP function")
+test_that("read and format OBDP outputs", {
     start_time_trace_file <- 
           system.file("extdata", "obdp/start_time_trace.p", package="RevGadgets")
     popSize_distribution_matrices_file <- 
