@@ -10,7 +10,7 @@ plotAncStatesMAP(
   tip_labels = TRUE,
   tip_labels_size = 2,
   tip_labels_offset = 1,
-  tip_labels_italics = TRUE,
+  tip_labels_italics = FALSE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_states = FALSE,
   tip_labels_states_size = 2,
@@ -51,7 +51,7 @@ analyses?}
 \item{tip_labels_offset}{(numeric; 1) Horizontal offset of tip labels from
 tree.}
 
-\item{tip_labels_italics}{(logical; TRUE) Italicize tip labels?}
+\item{tip_labels_italics}{(logical; FALSE) Italicize tip labels?}
 
 \item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores from
 tip labels?}
