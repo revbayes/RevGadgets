@@ -13,7 +13,7 @@ processDivRates(
   fossilization_rate_log = "",
   burnin = 0.25,
   probs = c(0.025, 0.975),
-  summary = "mean"
+  summary = "median"
 )
 }
 \arguments{
