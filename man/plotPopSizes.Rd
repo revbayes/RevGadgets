@@ -13,17 +13,17 @@ plotPopSizes(
 )
 }
 \arguments{
-\item{df}{a data frame, such as produced by processPopSizes(), containing 
+\item{df}{(data frame) such as produced by processPopSizes(), containing 
 the data on population sizes and, if applicable, interval times}
 
-\item{plot_var}{only include variables that contain the string, default "size" in the name}
+\item{plot_var}{(string, default: "size") only include variables that contain the string, default "size" in the name}
 
-\item{add}{boolean, specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
+\item{add}{(boolean; default: TRUE) specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
 the existing_plot has to be given.}
 
-\item{existing_plot}{a ggplot2 object to which the new plot should be added.}
+\item{existing_plot}{(ggplot2 object; default: NULL) a ggplot2 object to which the new plot should be added.}
 
-\item{col}{color for the trajectories}
+\item{col}{(string; default: "#00883a") color for the trajectories}
 }
 \value{
 a ggplot object

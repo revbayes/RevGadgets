@@ -508,6 +508,46 @@
   sum(pnorm(x, 0, sigmas, lower.tail = FALSE) * probs)
 }
 
+# for reading in RevBayes output, especially if the number
+# of elements per line varies
+.readOutputFile <- function(path, burnin = 0.25) {
+  
+  `%>%` <- dplyr::`%>%`
+  
+  res <- path %>% 
+    readLines() %>%
+    tail(n = -1)
+  
+  names <- path %>% 
+    readLines() %>%
+    head(n = 1) %>%
+    strsplit("\t")
+  
+  if (burnin >= length(res))
+    stop("Burnin larger than provided trace file")
+  
+  if (burnin >= 1) {
+    res <- res[(burnin + 1):length(res)]
+  } else if (burnin < 1 & burnin > 0) {
+    discard <- ceiling(burnin * length(res))
+    res <- res[(discard + 1):length(res)]
+  } else if (burnin == 0) {
+    res <- res
+  } else {
+    stop("What have you done?")
+  }
+  
+  names_to_exclude = c("Iteration|Replicate_ID|Posterior|Likelihood|Prior")
+  cols_to_exclude = length(grep(pattern = names_to_exclude, names[[1]]))
+  
+  res <- res %>%
+    strsplit("\t") %>% 
+    lapply(function(x) tail(x, n = -cols_to_exclude)) %>%
+    lapply(as.numeric)
+  
+  return(res)
+}
+
 .readNexusTrees <- function(path, burnin, verbose) {
   # read the lines
   lines <- readLines(path)

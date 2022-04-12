@@ -9,7 +9,7 @@ processPopSizes(
   interval_change_points_log = "",
   burnin = 0.25,
   probs = c(0.025, 0.975),
-  summary = "mean",
+  summary = "median",
   num_grid_points = 100,
   max_age = NULL
 )
@@ -22,20 +22,20 @@ single character string; "") Path to population sizes log file(s)}
 single character string; "") Path to interval change points log file(s).
 If not given, a constant process with only one population size is assumed.}
 
-\item{burnin}{(single numeric value; default = 0) Fraction of generations to
+\item{burnin}{(single numeric value; default: 0.25) Fraction of generations to
 discard (if value provided is between 0 and 1) or number of generations (if
 value provided is greater than 1).}
 
 \item{probs}{(numeric vector; c(0.025, 0.975)) a vector of length two
 containing the upper and lower bounds for the confidence intervals.}
 
-\item{summary}{typically "mean" or "median"; the metric to summarize the
-posterior distribution. Defaults to "mean"}
+\item{summary}{(string, default: "median") the metric to summarize the
+posterior distribution, typically "mean" or "median".}
 
-\item{num_grid_points}{defines the number of grid points through time for which to 
-evaluate the demographic functions}
+\item{num_grid_points}{(numeric; default: 100) defines the number of grid points through time for which to 
+evaluate the demographic functions.}
 
-\item{max_age}{defines the maximal age up to which the demographic functions should be evaluated.
+\item{max_age}{(numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
 to the maximal age provided with the interval_change_points_log.}
 }

@@ -16,16 +16,16 @@
 #' @param interval_change_points_log (vector of character strings or
 #' single character string; "") Path to interval change points log file(s).
 #' If not given, a constant process with only one population size is assumed.
-#' @param burnin (single numeric value; default = 0) Fraction of generations to
+#' @param burnin (single numeric value; default: 0.25) Fraction of generations to
 #'  discard (if value provided is between 0 and 1) or number of generations (if
 #'  value provided is greater than 1).
 #' @param probs (numeric vector; c(0.025, 0.975)) a vector of length two
 #' containing the upper and lower bounds for the confidence intervals.
-#' @param summary typically "mean" or "median"; the metric to summarize the
-#' posterior distribution. Defaults to "mean"
-#' @param num_grid_points defines the number of grid points through time for which to 
-#' evaluate the demographic functions
-#' @param max_age defines the maximal age up to which the demographic functions should be evaluated.
+#' @param summary (string, default: "median") the metric to summarize the
+#' posterior distribution, typically "mean" or "median".
+#' @param num_grid_points (numeric; default: 100) defines the number of grid points through time for which to 
+#' evaluate the demographic functions.
+#' @param max_age (numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 #' If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
 #' to the maximal age provided with the interval_change_points_log.
 #' @return List object with processed rate and, if applicable, time parameters.
@@ -37,7 +37,7 @@ processPopSizes <- function(population_size_log = "",
                             interval_change_points_log = "",
                             burnin = 0.25,
                             probs = c(0.025, 0.975),
-                            summary = "mean",
+                            summary = "median",
                             num_grid_points = 100,
                             max_age = NULL){
   constant_dem = FALSE
@@ -68,8 +68,8 @@ processPopSizes <- function(population_size_log = "",
     plotdf$time <- x
 
   } else {
-    pop_size <- read_file(population_size_log, burnin = burnin)
-    times <- read_file(interval_change_points_log, burnin = burnin)
+    pop_size <- .readOutputFile(population_size_log, burnin = burnin)
+    times <- .readOutputFile(interval_change_points_log, burnin = burnin)
     
     orders <- lapply(times, order)
     
@@ -109,42 +109,4 @@ processPopSizes <- function(population_size_log = "",
   }
 
   return(plotdf)
-}
-
-read_file <- function(path, burnin = 0.25) {
-  
-  `%>%` <- dplyr::`%>%`
-  
-  res <- path %>% 
-    readLines() %>%
-    tail(n = -1)
-  
-  names <- path %>% 
-    readLines() %>%
-    head(n = 1) %>%
-    strsplit("\t")
-    
-  if (burnin >= length(res))
-    stop("Burnin larger than provided trace file")
-
-  if (burnin >= 1) {
-    res <- res[(burnin + 1):length(res)]
-  } else if (burnin < 1 & burnin > 0) {
-    discard <- ceiling(burnin * length(res))
-    res <- res[(discard + 1):length(res)]
-  } else if (burnin == 0) {
-    res <- res
-  } else {
-    stop("What have you done?")
-  }
-  
-  names_to_exclude = c("Iteration|Replicate_ID|Posterior|Likelihood|Prior")
-  cols_to_exclude = length(grep(pattern = names_to_exclude, names[[1]]))
-  
-  res <- res %>%
-    strsplit("\t") %>% 
-    lapply(function(x) tail(x, n = -cols_to_exclude)) %>%
-    lapply(as.numeric)
-  
-  return(res)
 }
