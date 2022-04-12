@@ -365,7 +365,7 @@ Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0),
          ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1), 
          gginnards (>= 0.0.3), ggplotify (>= 0.0.5), ggpp, ggimage,
          png (>= 0.1-7), stats (>= 4.0.1), utils (>= 4.0.1), 
-         grDevices (>= 4.0.1), deeptime (>= 0.1.0), ggfun (>= 0.0.6)
+         grDevices (>= 4.0.1), deeptime (>= 0.1.0)
 ```
 
 By including dependency packages here, this ensures that the dependencies will be loaded when RevGadgets is loaded, and will be installed when RevGadgets is installed.

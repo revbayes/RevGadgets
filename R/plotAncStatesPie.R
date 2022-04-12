@@ -680,8 +680,8 @@ plotAncStatesPie <- function(t,
                         order = 1)
   p <- p + ggplot2::guides(size = "none")
 
-  # import ggfun theme
-  theme_transparent <- ggfun::theme_transparent()
+  # import theme
+  theme_transparent <- ggimage::theme_transparent()
 
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
