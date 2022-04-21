@@ -19,6 +19,7 @@ plotTree(
   node_labels_offset = 0,
   tip_labels = TRUE,
   tip_labels_italics = FALSE,
+  tip_labels_formatted = FALSE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_color = "black",
   tip_labels_size = 3,
@@ -79,6 +80,11 @@ nodes.}
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
 \item{tip_labels_italics}{(logical; FALSE) Plot tip labels in italics?}
+
+\item{tip_labels_formatted}{(logical; FALSE) Do the tip labels contain 
+manually added formatting information? Will set parse = TRUE in geom_text()
+and associated functions to interpret formatting. See ?plotmath for more.
+Cannot be TRUE if tip_labels_italics = TRUE.}
 
 \item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores in tip
 labels?}
