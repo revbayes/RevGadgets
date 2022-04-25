@@ -143,8 +143,9 @@ timescale in MYA.}
 \item{geo}{(logical; timeline) Add a geological timeline? Defaults to the
 same as timeline.}
 
-\item{geo_units}{(list; list("epochs", "periods")) Which geological units
-to include in the geo timescale.}
+\item{geo_units}{(list; list("epochs", "periods")) Which geological units to
+include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+"eras", or a list of two of those units.}
 
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
 geological timeline units if geo == TRUE or regular time intervals (in MYA)

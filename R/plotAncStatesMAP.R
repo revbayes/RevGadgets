@@ -92,8 +92,9 @@
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
 #' geological timeline units if geo == TRUE or regular time intervals (in MYA)
 #' if geo == FALSE.
-#' @param geo_units (list; list("epochs", "periods")) Which geological units
-#' to include in the geo timescale.
+#' @param geo_units (list; list("epochs", "periods")) Which geological units to
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' "eras", or a list of two of those units.
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @return A ggplot object
@@ -327,26 +328,30 @@ plotAncStatesMAP <- function(t,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[1]] != "epochs" &
-        geo_units[[1]] != "periods")
+    if (geo_units[[1]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[2]] != "epochs" &
-        geo_units[[2]] != "periods")
+    if (geo_units[[2]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   } else {
-    if (geo_units != "epochs" &
-        geo_units != "periods")
+    if (geo_units %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras') == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   }

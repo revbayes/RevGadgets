@@ -22,7 +22,8 @@
 #' if geo == FALSE.
 #'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to
-#' include in the geo timescale.
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' "eras", or a list of two of those units.
 #'
 #' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
 #'

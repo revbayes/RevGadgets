@@ -45,7 +45,8 @@ multiple trees or multiple traces, only the first will be used.}
 timescale in MYA.}
 
 \item{geo_units}{(list; list("epochs", "periods")) Which geological units to
-include in the geo timescale.}
+include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+"eras", or a list of two of those units.}
 
 \item{geo}{(logical; timeline) Add a geological timeline? Defaults to the
 same as timeline.}
