@@ -22,6 +22,10 @@
 #' @param tip_labels_italics (logical; FALSE) Italicize tip labels?
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores from
 #' tip labels?
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#' manually added formatting information? Will set parse = TRUE in geom_text()
+#' and associated functions to interpret formatting. See ?plotmath for more.
+#' Cannot be TRUE if tip_labels_italics = TRUE.  
 #' @param tip_labels_states (logical; FALSE) Optional plotting of text at tips
 #' in addition
 #' to taxa labels.
@@ -189,6 +193,7 @@ plotAncStatesMAP <- function(t,
                              tip_labels_size = 2,
                              tip_labels_offset = 1,
                              tip_labels_italics = FALSE,
+                             tip_labels_formatted = FALSE,
                              tip_labels_remove_underscore = TRUE,
 
                              # label states at tips
@@ -240,6 +245,10 @@ plotAncStatesMAP <- function(t,
     stop("tip_labels_offset should be a number")
   if (is.logical(tip_labels_italics) == FALSE)
     stop("tip_labels_italics should be TRUE or FALSE")
+  if (is.logical(tip_labels_formatted) == FALSE)
+    stop("tip_labels_formatted should be TRUE or FALSE")
+  if (tip_labels_italics == TRUE & tip_labels_formatted == TRUE) 
+    stop("tip_labels_italics and tip_labels_formatted may not both be TRUE")
   if (is.logical(tip_labels_remove_underscore) == FALSE)
     stop("tip_labels_remove_underscore should be TRUE or FALSE")
   if (is.logical(tip_labels_states) == FALSE)
@@ -772,6 +781,14 @@ plotAncStatesMAP <- function(t,
           offset = tip_labels_offset,
           parse = TRUE
         )
+    }
+    else if (tip_labels_formatted == TRUE ) {
+      p <- p + ggtree::geom_tiplab(
+        ggplot2::aes(label = label),
+        size = tip_labels_size,
+        offset = tip_labels_offset,
+        parse = TRUE
+      )
     } else {
       p <-
         p + ggtree::geom_tiplab(size = tip_labels_size,

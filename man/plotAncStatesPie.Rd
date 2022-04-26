@@ -11,6 +11,7 @@ plotAncStatesPie(
   tip_labels_size = 2,
   tip_labels_offset = 1,
   tip_labels_italics = FALSE,
+  tip_labels_formatted = FALSE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_states = FALSE,
   tip_labels_states_size = 2,
@@ -53,6 +54,11 @@ tree.}
 
 \item{tip_labels_italics}{(logical; FALSE) Italicize tip labels?}
 
+\item{tip_labels_formatted}{(logical; FALSE) Do the tip labels contain 
+manually added formatting information? Will set parse = TRUE in geom_text()
+and associated functions to interpret formatting. See ?plotmath for more.
+Cannot be TRUE if tip_labels_italics = TRUE.}
+
 \item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores from
 tip labels?}
 
@@ -67,8 +73,9 @@ state labels. Ignored if tip_labels_states = NULL.}
 
 \item{node_labels_as}{(character; NULL) Optional plotting of text at nodes.
 Possible values are "state" for the MAP ancestral states, "node_posterior"
-for the posterior probability of the node on the tree, or NULL for not
-plotting any text at the nodes (default).}
+for the posterior probability of the node on the tree, “state_posterior” 
+for the posterior probability of the MAP, or NULL for not plotting any
+text at the nodes (default).}
 
 \item{node_labels_size}{(numeric; 2) Size of node labels text. Ignored if
 node_labels_as = NULL.}
