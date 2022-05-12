@@ -11,7 +11,7 @@ test_that("drops tips", {
   tree <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
   tree_dropped <- dropTip(tree, "Otolemur_crassicaudatus")
 
-  # check that tree_rooted is a list of lists of a treedata object
+  # check that tree_dropped is a list of lists of a treedata object
   expect_equal(class(tree_dropped), "list")
   expect_equal(length(tree_dropped), 1)
   expect_equal(class(tree_dropped[[1]]), "list")
@@ -24,6 +24,6 @@ test_that("drops tips", {
 
   # check that data was also dropped
   expect_equal(dim(tree[[1]][[1]]@data)[1],
-               dim(tree_dropped[[1]][[1]]@data)[1] + 2)
+               dim(tree_dropped[[1]][[1]]@data)[1] + 1)
 
 })

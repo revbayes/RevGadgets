@@ -18,8 +18,24 @@ test_that("reroots tree", {
   expect_equal(length(tree_rooted[[1]]), 1)
   expect_equal(class(tree_rooted[[1]][[1]])[1], "treedata")
 
-  # check that rerooted added a branch to edge matrix
+  # if input is unrooted, check that rerooted added a branch to edge matrix
   expect_equal(dim(tree[[1]][[1]]@phylo$edge)[1], 43)
   expect_equal(dim(tree_rooted[[1]][[1]]@phylo$edge)[1], 44)
+  
+  # check that data are correctly re-associated 
+  node <- ape::getMRCA(tree[[1]][[1]]@phylo, c("Callicebus_donacophilus", 
+                                               "Pan_paniscus"))
+  node_pp <- tree[[1]][[1]]@data[which(tree[[1]][[1]]@data$node == node), 
+                                 "posterior"]
+  
+  node_root <- ape::getMRCA(tree_rooted[[1]][[1]]@phylo, c("Saimiri_sciureus",
+                                                           "Cebus_albifrons"))
+  
+  node_pp_root <- 
+    tree_rooted[[1]][[1]]@data[which(tree_rooted[[1]][[1]]@data$node == 
+                                       node_root), 
+                               "posterior"]
+  
+  expect_equal(node_pp, node_pp_root)
 
 })
