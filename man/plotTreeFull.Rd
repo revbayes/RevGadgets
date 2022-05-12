@@ -20,6 +20,7 @@ plotTreeFull(
   node_labels_offset,
   tip_labels,
   tip_labels_italics,
+  tip_labels_formatted,
   tip_labels_remove_underscore,
   tip_labels_color,
   tip_labels_size,
@@ -50,7 +51,8 @@ timescale in MYA.
 same as timeline.}
 
 \item{geo_units}{(list; list("epochs", "periods")) Which geological units to
-include in the geo timescale.}
+include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+"eras", or a list of two of those units.}
 
 \item{time_bars}{(logical; timeline) Add vertical gray bars to indicate
 geological timeline units if geo == TRUE or regular time intervals (in MYA)
@@ -85,7 +87,12 @@ from nodes.}
 
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
-\item{tip_labels_italics}{(logical; TRUE) Plot tip labels in italics?}
+\item{tip_labels_italics}{(logical; FALSE) Plot tip labels in italics?}
+
+\item{tip_labels_formatted}{(logical; FALSE) Do the tip labels contain 
+manually added formatting information? Will set parse = TRUE in geom_text()
+and associated functions to interpret formatting. See ?plotmath for more.
+Cannot be TRUE if tip_labels_italics = TRUE.}
 
 \item{tip_labels_remove_underscore}{(logical; FALSE) Should underscores be
 replaced by spaces in tip labels?}

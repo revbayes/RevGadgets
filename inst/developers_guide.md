@@ -360,11 +360,11 @@ Your functions may depend on objects or functions from other packages, such as `
 
 ```
 Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0),
-         ggtree (>= 3.0.2), treeio (>= 1.12.0),  tidytree (>= 0.3.4),
-         ggplot2 (>= 3.0.0), reshape (>= 0.8.8),
-         ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1),
-         gginnards (>= 0.0.3), ggplotify (>= 0.0.5), ggimage, ggpp,
-         png (>= 0.1-7), stats (>= 4.0.1), utils (>= 4.0.1),
+         ggtree (>= 3.0.4), treeio (>= 1.12.0),  tidytree (>= 0.3.4),
+         ggplot2 (>= 3.0.0), reshape (>= 0.8.8), methods (>= 4.1.0),
+         ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1), 
+         gginnards (>= 0.0.3), ggplotify (>= 0.0.5), ggpp, ggimage,
+         png (>= 0.1-7), stats (>= 4.0.1), utils (>= 4.0.1), 
          grDevices (>= 4.0.1), deeptime (>= 0.1.0)
 ```
 
@@ -783,7 +783,6 @@ We recommend that plotting functions are tested by comparing a saved version of 
 
 ```R
 
-test_that("plot pi traces", {
   # load in the trace file
   file_1 <- system.file("extdata",
                       "sub_models/primates_cytb_GTR.p",
@@ -803,6 +802,6 @@ test_that("plot pi traces", {
 ```
 ## Unit Testing and GitHub
 
-Please be sure to do all development using the Development branch of RevGadgets. We will occasionally merge the Development and Master branches for new releases. When you push to GitHub, Travis will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
+Please be sure to do all development using the Development branch of RevGadgets. We will occasionally merge the Development and Master branches for new releases. When you push to GitHub, GitHub will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
 
 If have any questions about these recommendations or are hesitant about pushing to the development branch, feel free to contact the developers for additional guidance.

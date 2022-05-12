@@ -22,7 +22,8 @@
 #' if geo == FALSE.
 #'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to
-#' include in the geo timescale.
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' "eras", or a list of two of those units.
 #'
 #' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
 #'
@@ -47,6 +48,11 @@
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
 #' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
+#'
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#' manually added formatting information? Will set parse = TRUE in geom_text()
+#' and associated functions to interpret formatting. See ?plotmath for more.
+#' Cannot be TRUE if tip_labels_italics = TRUE.  
 #'
 #' @param tip_labels_remove_underscore (logical; FALSE) Should underscores be
 #' replaced by spaces in tip labels?
@@ -137,6 +143,7 @@ plotTreeFull <- function(tree,
 
                          tip_labels,
                          tip_labels_italics,
+                         tip_labels_formatted,
                          tip_labels_remove_underscore,
                          tip_labels_color,
                          tip_labels_size,
@@ -180,6 +187,10 @@ plotTreeFull <- function(tree,
     stop("tip_labels should be TRUE or FALSE")
   if (is.logical(tip_labels_italics) == FALSE)
     stop("tip_labels_italics should be TRUE or FALSE")
+  if (is.logical(tip_labels_formatted) == FALSE)
+    stop("tip_labels_formatted should be TRUE or FALSE")
+  if (tip_labels_italics == TRUE & tip_labels_formatted == TRUE) 
+    stop("tip_labels_italics and tip_labels_formatted may not both be TRUE")
   if (.isColor(tip_labels_color) == FALSE)
     stop("tip_labels_color should be a recognized color")
   if (class(node_pp) != "logical")
@@ -223,26 +234,30 @@ plotTreeFull <- function(tree,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[1]] != "epochs" &
-        geo_units[[1]] != "periods")
+    if (geo_units[[1]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[2]] != "epochs" &
-        geo_units[[2]] != "periods")
+    if (geo_units[[2]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   } else {
-    if (geo_units != "epochs" &
-        geo_units != "periods")
+    if (geo_units %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras') == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   }
@@ -646,6 +661,36 @@ plotTreeFull <- function(tree,
           hjust = 0,
           parse = TRUE
         )
+    } else if (tip_labels_italics == TRUE) {
+      pp <-
+        pp + ggplot2::annotate(
+          "text",
+          x = sampled_ancs$x,
+          y = sampled_ancs$y,
+          label = seq_len(nrow(sampled_ancs)),
+          vjust = -.5,
+          size = tip_labels_size,
+          color = tip_labels_color
+        ) +
+        ggplot2::annotate(
+          "text",
+          x = rep(-max(
+            unlist(pp$data$age_0.95_HPD), na.rm = TRUE
+          ),
+          times = nrow(sampled_ancs)),
+          y = seq(
+            from = ntips - space_labels,
+            by = -space_labels,
+            length.out = nrow(sampled_ancs)
+          ),
+          label = paste0(seq_len(nrow(sampled_ancs)),
+                         ": ",
+                         sampled_ancs$label),
+          size = tip_labels_size,
+          color = tip_labels_color,
+          hjust = 0,
+          parse = TRUE
+        )
     } else {
       pp <-
         pp + ggplot2::annotate(
@@ -725,7 +770,7 @@ plotTreeFull <- function(tree,
     } else {
       pp$data$extant <- TRUE
     }
-    if (tip_labels_italics) {
+    if (tip_labels_italics == TRUE) {
       pp <- pp + ggtree::geom_tiplab(
         ggplot2::aes(
           subset = extant & isTip,
@@ -751,6 +796,32 @@ plotTreeFull <- function(tree,
             color = tip_labels_color,
             size = tip_labels_size,
             parse = TRUE
+          )
+      }
+    } else if (tip_labels_formatted == TRUE ) {
+      pp <- pp + ggtree::geom_tiplab(
+        ggplot2::aes(subset = extant & isTip,
+                     label = label),
+        size = tip_labels_size,
+        offset = tip_labels_offset,
+        color = tip_labels_color,
+        parse = TRUE
+      )
+      if (tip_age_bars == TRUE) {
+        new_tip_df <-
+          dplyr::left_join(tip_df,
+                           pp$data[, c("label", "node")],
+                           by = c("node_id" = "node"))
+        pp <-
+          pp + ggplot2::annotate(
+            "text",
+            x = -new_tip_df$min + tip_labels_offset,
+            y = new_tip_df$y,
+            label = new_tip_df$label,
+            hjust = 0,
+            color = tip_labels_color,
+            size = tip_labels_size,
+            parse = TRUE 
           )
       }
     } else {

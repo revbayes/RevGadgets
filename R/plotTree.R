@@ -22,7 +22,8 @@
 #' if geo == FALSE.
 #'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to
-#' include in the geo timescale.
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' "eras", or a list of two of those units.
 #'
 #' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
 #'
@@ -50,6 +51,11 @@
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
 #' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
+#' 
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#' manually added formatting information? Will set parse = TRUE in geom_text()
+#' and associated functions to interpret formatting. See ?plotmath for more.
+#' Cannot be TRUE if tip_labels_italics = TRUE.  
 #'
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip
 #' labels?
@@ -160,6 +166,7 @@ plotTree <- function(tree,
 
                      tip_labels = TRUE,
                      tip_labels_italics = FALSE,
+                     tip_labels_formatted = FALSE,
                      tip_labels_remove_underscore = TRUE,
                      tip_labels_color = "black",
                      tip_labels_size = 3,
@@ -196,6 +203,7 @@ plotTree <- function(tree,
 
                tip_labels = tip_labels,
                tip_labels_italics = tip_labels_italics,
+               tip_labels_formatted = tip_labels_formatted,
                tip_labels_remove_underscore = tip_labels_remove_underscore,
                tip_labels_color = tip_labels_color,
                tip_labels_size = tip_labels_size,
