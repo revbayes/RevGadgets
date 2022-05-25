@@ -3,7 +3,7 @@
 <a href="https://revbayes.github.io/tutorials/intro/revgadgets"><img src="https://raw.githubusercontent.com/cmt2/RevGadgets/master/inst/hex_sticker.png" height="200" align="right" /></a>
 
 <!-- badges: start -->
-![CRAN](https://www.r-pkg.org/badges/version/RevGadgets)
+![CRAN](https://www.r-pkg.org/badges/last-release/RevGadgets)
 ![downloads](https://cranlogs.r-pkg.org/badges/grand-total/RevGadgets)
 [![R-CMD-check](https://github.com/cmt2/RevGadgets/workflows/R-CMD-check/badge.svg)](https://github.com/cmt2/RevGadgets/actions)
 <a href="https://zenodo.org/badge/latestdoi/162725392"><img src="https://zenodo.org/badge/162725392.svg" alt="DOI"></a>
