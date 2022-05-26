@@ -165,7 +165,7 @@ plotTreeFull <- function(tree,
   # enforce argument matching
   if (!is.list(tree))
     stop("tree should be a list of lists of treedata objects")
-  if (class(tree[[1]][[1]]) != "treedata")
+  if (!methods::is(tree[[1]][[1]], "treedata"))
     stop("tree should be a list of lists of treedata objects")
   vars <- colnames(tree[[1]][[1]]@data)
   if (is.logical(timeline) == FALSE)
@@ -193,7 +193,7 @@ plotTreeFull <- function(tree,
     stop("tip_labels_italics and tip_labels_formatted may not both be TRUE")
   if (.isColor(tip_labels_color) == FALSE)
     stop("tip_labels_color should be a recognized color")
-  if (class(node_pp) != "logical")
+  if (!methods::is(node_pp,"logical"))
     stop("node_pp should be TRUE or FALSE")
   if (node_pp) {
     if (length(node_pp_color) > 2)
