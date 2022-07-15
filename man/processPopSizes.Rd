@@ -7,6 +7,7 @@
 processPopSizes(
   population_size_log = "",
   interval_change_points_log = "",
+  model = "constant",
   burnin = 0.25,
   probs = c(0.025, 0.975),
   summary = "median",
@@ -21,6 +22,9 @@ single character string; "") Path to population sizes log file(s)}
 \item{interval_change_points_log}{(vector of character strings or
 single character string; "") Path to interval change points log file(s).
 If not given, a constant process with only one population size is assumed.}
+
+\item{model}{(string, default: "constant") The demographic model of the intervals.
+Can be "constant" or "linear".}
 
 \item{burnin}{(single numeric value; default: 0.25) Fraction of generations to
 discard (if value provided is between 0 and 1) or number of generations (if

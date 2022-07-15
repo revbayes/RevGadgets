@@ -16,6 +16,8 @@
 #' @param interval_change_points_log (vector of character strings or
 #' single character string; "") Path to interval change points log file(s).
 #' If not given, a constant process with only one population size is assumed.
+#' @param model (string, default: "constant") The demographic model of the intervals.
+#' Can be "constant" or "linear".
 #' @param burnin (single numeric value; default: 0.25) Fraction of generations to
 #'  discard (if value provided is between 0 and 1) or number of generations (if
 #'  value provided is greater than 1).
@@ -35,6 +37,7 @@
 
 processPopSizes <- function(population_size_log = "",
                             interval_change_points_log = "",
+                            model = "constant",
                             burnin = 0.25,
                             probs = c(0.025, 0.975),
                             summary = "median",
@@ -80,18 +83,33 @@ processPopSizes <- function(population_size_log = "",
     }
     
     pop_size_trajectories <- list()
-    for (i in seq_along(pop_size_ordered)){
-      if(length(times[[i]]) > 0){
-        f <- approxfun(sort(times[[i]]),
-                       tail(pop_size_ordered[[i]], n = -1), 
-                       yleft = pop_size_ordered[[i]][1],
-                       yright = tail(pop_size_ordered[[i]], n = 1),
-                       method = "constant")
-      }else{
-        f <- function(t) pop_size_ordered[[i]][1] + t*0
+    
+    if (model == "constant"){
+      for (i in seq_along(pop_size_ordered)){
+        if(length(times[[i]]) > 0){
+          f <- approxfun(sort(times[[i]]),
+                         tail(pop_size_ordered[[i]], n = -1), 
+                         yleft = pop_size_ordered[[i]][1],
+                         yright = tail(pop_size_ordered[[i]], n = 1),
+                         method = "constant")
+        }else{
+          f <- function(t) pop_size_ordered[[i]][1] + t*0
+        }
+        pop_size_trajectories[[i]] <- f
       }
-      pop_size_trajectories[[i]] <- f
+    } else if (model == "linear") {
+      for (i in seq_along(pop_size_ordered)){
+        f <- approxfun(c(0, sort(times[[i]])),
+                         pop_size_ordered[[i]], 
+                         #yleft = pop_size_ordered[[i]][1],
+                         yright = tail(pop_size_ordered[[i]], n = 1),
+                         method = "linear")
+        pop_size_trajectories[[i]] <- f
+      }
+    } else {
+      stop('Please provide as demographic model either "constant" or "linear".')
     }
+
     
     if (is.null(max_age)){
       x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)

@@ -11,7 +11,8 @@
 #'
 #' @param df (data frame) such as produced by processPopSizes(), containing 
 #' the data on population sizes and corresponding grid points (points in time for population size evaluation)
-#' @param add (boolean; default: TRUE) specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
+#' @param plot_CIs (boolean; default: TRUE) specifies whether the credible intervals should be plotted.
+#' @param add (boolean; default: FALSE) specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
 #' the existing_plot has to be given.
 #' @param existing_plot (ggplot2 object; default: NULL) a ggplot2 object to which the new plot should be added.
 #' @param col (string; default: "#00883a") color for the trajectories
@@ -34,7 +35,11 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom utils head tail
 #' 
-plotPopSizes <- function(df, add = FALSE, existing_plot = NULL, col = "#00883a"){
+plotPopSizes <- function(df,
+                         plot_CIs = TRUE,
+                         add = FALSE,
+                         existing_plot = NULL,
+                         col = "#00883a"){
   if (add == TRUE && is.null(existing_plot)){
     stop("Please provide an existing plot if you want to add this one.")
   }
@@ -47,17 +52,19 @@ plotPopSizes <- function(df, add = FALSE, existing_plot = NULL, col = "#00883a")
     p <- df %>%
       ggplot(aes(x = time, y = value)) +
       geom_line(color = col, size = 0.8) +
-      geom_ribbon(aes(ymin = lower, ymax = upper), fill = col, alpha = 0.4) +
       scale_y_log10() +
       scale_x_reverse() +
       xlab("Age (years)") +
       ylab("Population Size")
+
   } else {
     p <- existing_plot +
-      geom_line(data = df, aes(x = time, y = value), color = col, size = 0.8) +
-      geom_ribbon(data = df, aes(ymin = lower, ymax = upper), fill = col, alpha = 0.4)        
+      geom_line(data = df, aes(x = time, y = value), color = col, size = 0.8) #+
   }
 
+  if (plot_CIs == TRUE){
+    p <- p + geom_ribbon(aes(ymin = lower, ymax = upper), fill = col, alpha = 0.4)
+  }
   
   p <- p +
     theme_bw() +
