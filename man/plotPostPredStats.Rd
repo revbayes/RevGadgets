@@ -20,6 +20,16 @@ Defaults to blue and red.}
 \item{side}{(character; default "both") Whether the intervals are on "both"
 sides, the "left" side, or the "right" side of the distribution.}
 }
+
+\item{type}{(character; default "both") Whether equal values are
+considered as less extreme as the observed data ("strict") or half of the
+equal values are considered to be higher and half to be lower ("midpoint").}
+}
+
+\item{color}{(character; default "both") Whether the plotted/colored
+intervals are on "both" sides, the "left" side, or the "right" side of the
+distribution.}
+}
 \value{
 A list of ggplot objects, where each plot contains a density
 distribution of the predicted values and a dashed line of the empirical

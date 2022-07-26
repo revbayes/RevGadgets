@@ -129,6 +129,8 @@ plotPostPredStats <- function(data,
     min_value <- min(sim[, i], obs[[i]])
     max_value <- max(sim[, i], obs[[i]])
     spread_value <- max_value - min_value
+    spread_value <- ifelse( spread_value > 0, spread_value, min_value*0.01 )
+    spread_value <- ifelse( spread_value > 0, spread_value, 0.05 )
 
     # fit a kernel density
     kde <- density(sim[, i])
@@ -174,9 +176,9 @@ plotPostPredStats <- function(data,
     p_y   <- max(df$y)
 
     # make the ppes label
-    ppes_lab <- paste0("p=", sprintf("%.3f", ppes))
-    ppes_x   <- max_value + 0.25 * spread_value
-    ppes_y   <- max(df$y) * 0.95
+    ppes_lab <- paste0("ppes=", sprintf("%.3f", ppes))
+    ppes_x   <- max_value - 0.25 * spread_value
+    ppes_y   <- max(df$y)
 
     # plot
     p <- ggplot2::ggplot(df, ggplot2::aes(x, y))
