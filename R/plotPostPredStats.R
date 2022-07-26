@@ -16,6 +16,12 @@
 #' Defaults to blue and red.
 #' @param side (character; default "both") Whether the intervals are on "both"
 #' sides, the "left" side, or the "right" side of the distribution.
+#' @param type (character; default "strict") Whether equal values are
+#' considered as less extreme as the observed data ("strict") or half of the
+#' equal values are considered to be higher and half to be lower ("midpoint")
+#' @param color (character; default "both") Whether the plotted/colored
+#' intervals are on "both" sides, the "left" side, or the "right" side of the
+#' distribution.
 #'
 #' @return A list of ggplot objects, where each plot contains a density
 #' distribution of the predicted values and a dashed line of the empirical
@@ -65,9 +71,11 @@
 #' @export
 
 plotPostPredStats <- function(data,
-                              prob = c(0.9, 0.95),
-                              col  = NULL,
-                              side = "both") {
+                              prob  = c(0.9, 0.95),
+                              col   = NULL,
+                              side  = "both",
+                              type  = "strict",
+                              color = "both") {
   if (is.list(data) == FALSE)
     stop("Argument data must be a list.")
   if ("simulated" %in% names(data) == FALSE)
@@ -80,6 +88,10 @@ plotPostPredStats <- function(data,
     stop("data$observed must be a data.frame.")
   if (side %in% c("both", "left", "right") == FALSE)
     stop("Invalid side argument.")
+  if (type %in% c("strict", "midpoint") == FALSE)
+    stop("Invalid type argument.")
+  if (color %in% c("both", "left", "right") == FALSE)
+    stop("Invalid color argument.")
 
   if (is.null(col)) {
     col <- grDevices::colorRampPalette(colFun(2))(length(prob))
@@ -135,11 +147,23 @@ plotPostPredStats <- function(data,
         p_value <- mean(pdf(sim[, i]) <= dens)
       }
 
-    } else if (side == "left") {
-      p_value <- mean(sim[, i] <= obs[, i])
-    } else if (side == "right") {
-      p_value <- mean(sim[, i] >= obs[, i])
+    } else if (side == "left" && type == "strict") {
+      # lower p-value
+      p_value <- mean(sim[, i] < obs[, i])
+    } else if (side == "left" && type == "midpoint") {
+      # lower midpoint p-value
+      p_value <- mean(sim[, i] < obs[, i]) + mean(sim[, i] == obs[, i]) / 2.0
+    } else if (side == "right" && type == "strict" ) {
+      # upper p-value
+      p_value <- mean(sim[, i] > obs[, i])
+    } else if (side == "right" && type == "midpoint" ) {
+      # upper midpoint p-value
+      p_value <- mean(sim[, i] > obs[, i]) + mean(sim[, i] == obs[, i]) / 2.0
     }
+
+    # compute the posterior predictive effect size
+    ppes <- abs( obs[, i] - median(sim[, i]) ) / sd(sim[, i])
+    ppes <- ifelse( sd(sim[, i]) == 0, 0, ppes )
 
     # make dataframe of plotting data
     df <- data.frame((kde)[c("x", "y")])
@@ -149,17 +173,22 @@ plotPostPredStats <- function(data,
     p_x   <- max_value + 0.25 * spread_value
     p_y   <- max(df$y)
 
+    # make the ppes label
+    ppes_lab <- paste0("p=", sprintf("%.3f", ppes))
+    ppes_x   <- max_value + 0.25 * spread_value
+    ppes_y   <- max(df$y) * 0.95
+
     # plot
     p <- ggplot2::ggplot(df, ggplot2::aes(x, y))
     for (q in seq_len(length(prob))) {
       this_q <- prob[q]
-      if (side == "left") {
+      if (color == "left") {
         l <- 1 - this_q
         p <-
           p +
           ggplot2::geom_area(data = df[df$x <= quantile(sim[, i], prob = l), ],
                                  fill = col[q])
-      } else if (side == "right") {
+      } else if (color == "right") {
         u <- this_q
         p <-
           p +
@@ -199,6 +228,14 @@ plotPostPredStats <- function(data,
         x = p_x,
         y = p_y,
         label = p_lab,
+        size = 3,
+        hjust = 1
+      ) +
+      ggplot2::annotate(
+        "text",
+        x = ppes_x,
+        y = ppes_y,
+        label = ppes_lab,
         size = 3,
         hjust = 1
       )
