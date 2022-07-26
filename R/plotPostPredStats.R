@@ -22,6 +22,8 @@
 #' @param color (character; default "both") Whether the plotted/colored
 #' intervals are on "both" sides, the "left" side, or the "right" side of the
 #' distribution.
+#' @param PPES (boolean; default FALSE) Whether we provide the posterior
+#' predictive effect size (PPES).
 #'
 #' @return A list of ggplot objects, where each plot contains a density
 #' distribution of the predicted values and a dashed line of the empirical
@@ -75,7 +77,8 @@ plotPostPredStats <- function(data,
                               col   = NULL,
                               side  = "both",
                               type  = "strict",
-                              color = "both") {
+                              color = "both",
+                              PPES  = FALSE) {
   if (is.list(data) == FALSE)
     stop("Argument data must be a list.")
   if ("simulated" %in% names(data) == FALSE)
@@ -129,8 +132,8 @@ plotPostPredStats <- function(data,
     min_value <- min(sim[, i], obs[[i]])
     max_value <- max(sim[, i], obs[[i]])
     spread_value <- max_value - min_value
-    spread_value <- ifelse( spread_value > 0, spread_value, min_value*0.01 )
-    spread_value <- ifelse( spread_value > 0, spread_value, 0.05 )
+#    spread_value <- ifelse( spread_value > 0, spread_value, min_value*0.01 )
+#    spread_value <- ifelse( spread_value > 0, spread_value, 0.05 )
 
     # fit a kernel density
     kde <- density(sim[, i])
@@ -177,7 +180,7 @@ plotPostPredStats <- function(data,
 
     # make the ppes label
     ppes_lab <- paste0("ppes=", sprintf("%.3f", ppes))
-    ppes_x   <- max_value - 0.25 * spread_value
+    ppes_x   <- min_value
     ppes_y   <- max(df$y)
 
     # plot
@@ -232,15 +235,17 @@ plotPostPredStats <- function(data,
         label = p_lab,
         size = 3,
         hjust = 1
-      ) +
-      ggplot2::annotate(
-        "text",
-        x = ppes_x,
-        y = ppes_y,
-        label = ppes_lab,
-        size = 3,
-        hjust = 1
       )
+      if ( PPES ) {
+        p <- p + ggplot2::annotate(
+                 "text",
+                 x = ppes_x,
+                 y = ppes_y,
+                 label = ppes_lab,
+                 size = 3,
+                 hjust = 1
+                 )
+      }
 
     plots[[i]] <- p
 

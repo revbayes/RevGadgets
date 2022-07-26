@@ -30,6 +30,10 @@ equal values are considered to be higher and half to be lower ("midpoint").}
 intervals are on "both" sides, the "left" side, or the "right" side of the
 distribution.}
 }
+
+\item{PPES}{(boolean; default "FALSE") Whether we provide the posterior
+predictive effect size (PPES).}
+}
 \value{
 A list of ggplot objects, where each plot contains a density
 distribution of the predicted values and a dashed line of the empirical
