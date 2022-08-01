@@ -23,7 +23,7 @@
 #' containing the upper and lower bounds for the confidence intervals.
 #' @param summary (string, default: "median") the metric to summarize the
 #' posterior distribution, typically "mean" or "median".
-#' @param num_grid_points (numeric; default: 100) defines the number of grid points through time for which to 
+#' @param num_grid_points (numeric; default: 100) defines the number of grid points through time for which to
 #' evaluate the demographic functions.
 #' @param max_age (numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 #' If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
@@ -41,11 +41,11 @@ processPopSizes <- function(population_size_log = "",
                             num_grid_points = 100,
                             max_age = NULL){
   constant_dem = FALSE
-  
+
   if (interval_change_points_log == ""){
     constant_dem = TRUE
   }
-  
+
   if (constant_dem == TRUE){
     pop_size <- readTrace(paths = population_size_log)[[1]]
     pop_sizes <- pop_size[, ncol(pop_size)]
@@ -54,7 +54,7 @@ processPopSizes <- function(population_size_log = "",
     quantiles <- apply(as.matrix(pop_sizes), 2,
                        quantile,
                        probs = probs)
-    
+
     if (is.null(max_age)){
       x <- seq(0, 1e5, length.out = num_grid_points)
     } else {
@@ -70,20 +70,29 @@ processPopSizes <- function(population_size_log = "",
   } else {
     pop_size <- .readOutputFile(population_size_log, burnin = burnin)
     times <- .readOutputFile(interval_change_points_log, burnin = burnin)
-    
+
+    if ( length(pop_size) == length(times) ) {
+      times_pruned <- list()
+      for (i in seq_along(times)){
+        res <- times[[i]][-length(times[[i]])]
+        times_pruned[[i]] <- res
+      }
+      times <- times_pruned
+    }
+
     orders <- lapply(times, order)
-    
-    pop_size_ordered <- list() 
+
+    pop_size_ordered <- list()
     for (i in seq_along(pop_size)){
       res <- c(pop_size[[i]][1], pop_size[[i]][-1][orders[[i]]])
       pop_size_ordered[[i]] <- res
     }
-    
+
     pop_size_trajectories <- list()
     for (i in seq_along(pop_size_ordered)){
       if(length(times[[i]]) > 0){
         f <- approxfun(sort(times[[i]]),
-                       tail(pop_size_ordered[[i]], n = -1), 
+                       tail(pop_size_ordered[[i]], n = -1),
                        yleft = pop_size_ordered[[i]][1],
                        yright = tail(pop_size_ordered[[i]], n = 1),
                        method = "constant")
@@ -92,16 +101,27 @@ processPopSizes <- function(population_size_log = "",
       }
       pop_size_trajectories[[i]] <- f
     }
-    
+
     if (is.null(max_age)){
+      x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
       x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
     } else {
       x <- seq(0, max_age, length.out = num_grid_points)
+      min_age <- min( unlist(times) )
+      max_age <- max( unlist(times) )
+      first_break  <- c()
+      second_break <- c()
+      for (i in seq_along(times)){
+        first_break[i]  <- times[[i]][orders[[i]]][1]
+        second_break[i] <- times[[i]][orders[[i]]][2]
+      }
+      min_age <- max(first_break)
+      x <- exp(seq(log(min_age), log(max_age), length.out = num_grid_points))
     }
-    
+
     m <- sapply(pop_size_trajectories, function(e) e(x))
     quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
-    
+
     plotdf <- as_tibble(apply(m, 1, summary))
     plotdf$lower <- quantiles[1,]
     plotdf$upper <- quantiles[2,]
