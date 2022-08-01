@@ -4,13 +4,21 @@
 \alias{plotPopSizes}
 \title{Plot Population Sizes}
 \usage{
-plotPopSizes(df, add = FALSE, existing_plot = NULL, col = "#00883a")
+plotPopSizes(
+  df,
+  plot_CIs = TRUE,
+  add = FALSE,
+  existing_plot = NULL,
+  col = "#00883a"
+)
 }
 \arguments{
 \item{df}{(data frame) such as produced by processPopSizes(), containing 
 the data on population sizes and corresponding grid points (points in time for population size evaluation)}
 
-\item{add}{(boolean; default: TRUE) specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
+\item{plot_CIs}{(boolean; default: TRUE) specifies whether the credible intervals should be plotted.}
+
+\item{add}{(boolean; default: FALSE) specifies whether the new plot should be added to an existing ggplot2 object. If TRUE,
 the existing_plot has to be given.}
 
 \item{existing_plot}{(ggplot2 object; default: NULL) a ggplot2 object to which the new plot should be added.}
