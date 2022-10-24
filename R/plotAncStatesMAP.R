@@ -870,11 +870,10 @@ plotAncStatesMAP <- function(t,
     }
 
     # vary tip symbol by size and color
-    # when size is state, color is state, and shape is null
+    # when size is state, color is state or PP, and shape is null
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == FALSE) {
       if (node_size_as == "state" &
-          node_color_as == "state" &
           is.null(node_shape_as) == TRUE) {
         p <- p + ggtree::geom_tippoint(
           ggplot2::aes(size = node_size_as,
@@ -885,7 +884,7 @@ plotAncStatesMAP <- function(t,
       }
     }
   }
-
+  
   # plot symbols at nodes and shoulders
   blank_nodes <-
     is.null(node_color_as) == TRUE &
@@ -1163,6 +1162,7 @@ plotAncStatesMAP <- function(t,
       }
     }
   }
+  
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
