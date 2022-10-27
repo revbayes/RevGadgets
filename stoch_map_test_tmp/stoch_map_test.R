@@ -6,6 +6,7 @@ tree <- readTrees("stoch_map_test_tmp/tree.nexus")[[1]][[1]]
 # process samples
 stoch_map_df <- RevGadgets:::processStochMaps(tree, "stoch_map_test_tmp/maps.log", states = c("0","1"), burnin = 0.1)
 maps <- stoch_map_df
+
 #plot samples:
 
 colors <- c("0" = "red", "1" = "blue")

@@ -95,9 +95,14 @@ processStochMaps <- function(tree,
         branch_prob_per_state <- apply(branch_states_per_interval, 2, tabulate, nbins = nstates) / nsamples
         rownames(branch_prob_per_state) <- states
         
+        # now do the vertical segments
+        vert_prob_per_state <- t(branch_prob_per_state[,ncol(branch_prob_per_state), drop = FALSE])
+        
         # make the df
-        this_df <- data.frame(index = Rev_index, bl = this_edge_length, x0 = these_pts, x1 = c(these_pts[-1], this_edge_length))
+        this_df <- data.frame(index = Rev_index, bl = this_edge_length, x0 = these_pts, x1 = c(these_pts[-1], this_edge_length), vert = FALSE)
         this_df <- cbind(this_df, t(branch_prob_per_state))
+        vert_df <- cbind(data.frame(index = Rev_index, bl = this_edge_length, x0 = this_edge_length, x1 = this_edge_length, vert = TRUE), vert_prob_per_state)
+        this_df <- rbind(this_df, vert_df)        
         
         # store
         dfs[[i]] <- this_df
@@ -110,10 +115,9 @@ processStochMaps <- function(tree,
     # get node instead of index 
     # node is R's standard numbering for nodes
     # index is RevBayes specific 
-    nodematch <- matchNodes(tree@phylo)
-    colnames(nodematch) <- c("node", "index")
-    nodematch$index  <- as.character(nodematch$index)
-    dfs <- dplyr::full_join(dfs, nodematch, by = "index")
+    colnames(map) <- c("node", "index")
+    map$index  <- as.character(map$index)
+    dfs <- dplyr::full_join(dfs, map, by = "index")
     dfs$index <- NULL
     
     return(dfs)
