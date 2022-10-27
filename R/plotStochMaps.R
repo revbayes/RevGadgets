@@ -1,0 +1,247 @@
+#' plotStochMaps
+#'
+#' @param tree (treedata object; none) Output of readTrees() function
+#' containing tree.
+#' @param maps (dataframe; no default) Dataframe with processed maps,
+#' as in the output of processStochMaps()
+#' @param colors (named character vector; no default) Named character vector
+#' where items are colors and names are the corresponding states.
+#'
+#' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with
+#' timescale in MYA.
+#'
+#' @param geo (logical; timeline) Add a geological timeline? Defaults to the
+#' same as timeline.
+#'
+#' @param time_bars (logical; timeline) Add vertical gray bars to indicate
+#' geological timeline units if geo == TRUE or regular time intervals (in MYA)
+#' if geo == FALSE.
+#'
+#' @param geo_units (list; list("epochs", "periods")) Which geological units to
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons",
+#' "eras", or a list of two of those units.
+#'
+#' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
+#'
+#' @param age_bars_colored_by (character; NULL) Specify column to color node age
+#' bars by, such as "posterior". If null, all node age bars plotted the same
+#' color, specified by age_bars_color
+#'
+#' @param age_bars_color (character; "blue") Color for node age bars. If
+#' age_bars_colored_by specifies a variable (not NULL), you must provide two
+#' colors, low and high values for a gradient. Colors must be either
+#' R valid color names or valid hex codes.
+#'
+#' @param node_labels (character; NULL) Plot text labels at nodes, specified by
+#' the name of the corresponding column in the tidytree object. If NULL, no
+#' text is plotted.
+#'
+#' @param node_labels_color (character; "black") Color to plot node_labels,
+#' either as a valid R color name or a valid hex code.
+#'
+#' @param node_labels_size (numeric; 3) Size of node labels
+#'
+#' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from
+#' nodes.
+#'
+#' @param tip_labels (logical; TRUE) Plot tip labels?
+#'
+#' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
+#'
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain
+#' manually added formatting information? Will set parse = TRUE in geom_text()
+#' and associated functions to interpret formatting. See ?plotmath for more.
+#' Cannot be TRUE if tip_labels_italics = TRUE.
+#'
+#' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip
+#' labels?
+#'
+#' @param tip_labels_color (character; "black") Color to plot tip labels, either
+#' as a valid R color name or a valid hex code.
+#'
+#' @param tip_labels_size (numeric; 3) Size of tip labels
+#'
+#' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from
+#' tree.
+#'
+#' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at
+#' nodes? Specify symbol aesthetics with node_pp_shape, node_pp_color, and
+#' node_pp_size.
+#'
+#' @param node_pp_shape (integer; 1) Integer corresponding to point shape
+#' (value between 0-25). See ggplot2 documentation for details:
+#' \url{https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#point}
+#'
+#'
+#' @param node_pp_color (character; "black") Color for node_pp symbols, either
+#' as valid R color name(s) or hex code(s). Can be a single character string
+#' specifying a single color, or a vector of length two specifying two colors
+#' to form a gradient. In this case, posterior probabilities will be indicated
+#' by color along the specified gradient.
+#'
+#' @param node_pp_size (numeric or character; 1) Size for node_pp symbols.
+#' If numeric, the size will be fixed at the specified value. If a character,
+#' it should specify "variable", indicating that size should be scaled by the
+#' posterior value. Size regulates the area of the shape, following ggplot2
+#' best practices:
+#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
+#'
+#' @param line_width (numeric; 1) Change line width for branches
+#'
+#' @param tree_layout (character; "rectangular") Tree shape layout, passed
+#' to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
+#' 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
+#' 'daylight', or 'ape'.
+#'
+#' @param ... (various) Additional arguments passed to ggtree::ggtree().
+#'
+#' @return returns a single plot object.
+#'
+#' @export
+
+plotStochMaps <- function(tree,
+                          maps,
+                          colors,
+                          
+                          timeline = FALSE,
+                          geo_units = list("epochs", "periods"),
+                          geo = timeline,
+                          time_bars = timeline,
+                          
+                          node_age_bars = FALSE,
+                          age_bars_color = "blue",
+                          age_bars_colored_by = NULL,
+                          
+                          node_labels = NULL,
+                          node_labels_color = "black",
+                          node_labels_size = 3,
+                          node_labels_offset = 0,
+                          
+                          tip_labels = TRUE,
+                          tip_labels_italics = FALSE,
+                          tip_labels_formatted = FALSE,
+                          tip_labels_remove_underscore = TRUE,
+                          tip_labels_color = "black",
+                          tip_labels_size = 3,
+                          tip_labels_offset = 0,
+                          
+                          node_pp = FALSE,
+                          node_pp_shape = 16,
+                          node_pp_color = "black",
+                          node_pp_size = "variable",
+                          
+                          line_width = 1,
+                          tree_layout = "rectangular",
+                          ...) {
+  p <-  plotTree(
+    tree = list(list(tree)),
+    lineend = "square",
+    
+    timeline = timeline,
+    geo_units = geo_units,
+    geo = geo,
+    time_bars = time_bars,
+    
+    node_age_bars = node_age_bars,
+    age_bars_color = age_bars_color,
+    age_bars_colored_by = age_bars_colored_by,
+    
+    node_labels = node_labels,
+    node_labels_color = node_labels_color,
+    node_labels_offset = node_labels_offset,
+    node_labels_size = node_labels_size,
+    
+    tip_labels = tip_labels,
+    tip_labels_italics = tip_labels_italics,
+    tip_labels_formatted = tip_labels_formatted,
+    tip_labels_remove_underscore = tip_labels_remove_underscore,
+    tip_labels_color = tip_labels_color,
+    tip_labels_size = tip_labels_size,
+    tip_labels_offset = tip_labels_offset,
+    
+    node_pp = node_pp,
+    node_pp_shape = node_pp_shape,
+    node_pp_color = node_pp_color,
+    node_pp_size = node_pp_size,
+    
+    branch_color = "black",
+    color_branch_by = NULL,
+    line_width = line_width,
+    
+    tree_layout = tree_layout,
+    ...
+  )
+  
+  if (colors != "default") {
+    states <- names(colors)
+  }
+  
+  
+  dat <- dplyr::left_join(maps, p$data, by = "node")
+  
+  max <- apply(dat[, states], MARGIN = 1, which.max)
+  dat$map_state <- states[unlist(max)]
+  
+  # horizontal segments
+  
+  dat_horiz <- dat[dat$vert == FALSE,]
+  
+  seg_horiz <- data.frame(
+    x    = dat_horiz$x - dat_horiz$x0,
+    xend = dat_horiz$x - dat_horiz$x1,
+    y    = dat_horiz$y,
+    yend = dat_horiz$y,
+    col  = dat_horiz$map_state
+  )
+  
+  dat_vert <- dat[dat$vert == TRUE,]
+  
+  getParentX <- function(node) {
+    parent_node <- dat_vert[which(dat_vert$node == node), "parent"]
+    parent_x <- dat_vert[which(dat_vert$node == parent_node), "x"]
+    return(parent_x)
+  }
+  getParentY <- function(node) {
+    parent_node <- dat_vert[which(dat_vert$node == node), "parent"]
+    parent_y <- dat_vert[which(dat_vert$node == parent_node), "y"]
+    return(parent_y)
+  }
+  
+  dat_vert$y_parent <- unlist(lapply(dat_vert$node, getParentY))
+  dat_vert$x_parent <- unlist(lapply(dat_vert$node, getParentX))
+  
+  seg_vert <- data.frame(
+    x = dat_vert$x_parent,
+    xend = dat_vert$x_parent,
+    y = dat_vert$y,
+    yend = dat_vert$y_parent,
+    col = dat_vert$map_state
+  )
+  
+  p + ggplot2::geom_segment(
+    data = seg_horiz,
+    ggplot2::aes(
+      x = x,
+      y = y,
+      xend = xend,
+      yend = yend,
+      color = col
+    ),
+    lineend = "square",
+    size = line_width
+  ) +
+    ggplot2::geom_segment(
+      data = seg_vert,
+      ggplot2::aes(
+        x = x,
+        y = y,
+        xend = xend,
+        yend = yend,
+        color = col
+      ),
+      lineend = "square",
+      size = line_width
+    ) +
+    ggplot2::scale_color_manual(values = colors)
+  
+}
