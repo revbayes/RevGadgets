@@ -33,13 +33,20 @@ processStochMaps <- function(tree,
     nsamples <- nrow(samples)
     
     # get the number of branches
-    num_branches <- length(tree@phylo$edge.length)
+    # including the root branch
+    num_branches <- length(tree@phylo$edge.length) + 1
+    root_index   <- ape::Ntip(tree@phylo) + 1
     
     # create the index map
     map <- matchNodes(tree@phylo)
     
     # get the dt
-    root_age  <- max(ape::branching.times(tree@phylo))
+    root_age <- max(ape::branching.times(tree@phylo))
+    if (!is.null(tree@phylo$root.edge)) {
+        root_age <- root_age + tree@phylo$root.edge
+    } else {
+        tree@phylo$root.edge <- 0
+    }
     dt <- root_age / num_intervals
     
     # loop over branches
@@ -47,12 +54,16 @@ processStochMaps <- function(tree,
     for(i in 1:num_branches) {
         
         # get the branch indexes
-        R_index   <- tree@phylo$edge[i,2]
+        R_index   <- map$R[i]
         Rev_index <- as.character(map[R_index,2])
         
         # get the time points
-        this_edge_length <- tree@phylo$edge.length[i]
-        these_pts        <- seq(0, this_edge_length, by = dt)
+        if ( R_index == root_index ) {
+            this_edge_length <- tree@phylo$root.edge
+        } else {
+            this_edge_length <- tree@phylo$edge.length[tree@phylo$edge[,2] == R_index]
+        }
+        these_pts <- seq(0, this_edge_length, by = dt)
         
         # get the samples
         branch_samples <- samples[,Rev_index]
@@ -72,9 +83,13 @@ processStochMaps <- function(tree,
         })
         
         # get the state per interval
-        branch_states_per_interval <- do.call(rbind, lapply(branch_samples, function(sample) {
-            match(names(sample)[findInterval(these_pts, sample) + 1], states)
-        }))
+        if ( this_edge_length == 0 ) {
+            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), states)))
+        } else {
+            branch_states_per_interval <- do.call(rbind, lapply(branch_samples, function(sample) {
+                match(names(sample)[findInterval(these_pts, sample) + 1], states)
+            }))
+        }
         
         # compute probability of each state per interval
         branch_prob_per_state <- apply(branch_states_per_interval, 2, tabulate, nbins = nstates) / nsamples
