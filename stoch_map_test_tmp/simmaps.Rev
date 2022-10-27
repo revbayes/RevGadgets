@@ -1,0 +1,36 @@
+# make up some data
+for(i in 1:10) {
+  taxa[i] = taxon("t_" + i)
+}
+
+# make a tree
+tree ~ dnBDP(rootAge = 1, lambda = 1, mu = 0, taxa = taxa)
+
+# rescale tree
+# tree.rescale(2 / tree.treeLength())
+
+# write the tree
+writeNexus(tree, filename = "tree.nexus")
+
+# simulate data
+Q <- fnJC(2)
+
+# rate parameter
+rate ~ dnPointMass(1)
+moves[1] = mvScale(rate, weight = 0)
+
+# simulate data
+x ~ dnPhyloCTMC(tree, Q, type = "Binary", branchRates = rate, nSites = 1)
+
+# make a model
+mymodel = model(x)
+
+# make a monitor
+monitors[1] = mnScreen(printgen = 1)
+monitors[2] = mnStochasticCharacterMap(ctmc = x, printgen = 1, filename = "maps.log", index = 1, include_simmap = FALSE)
+
+# analysis
+mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc.run(10000)
+
+q()
