@@ -1,6 +1,6 @@
 #' processStochMaps
 #' 
-#' @param t (treedata object; none) Output of readTrees() function
+#' @param tree (treedata object; none) Output of readTrees() function
 #' containing tree.
 #' @param paths (vector of character strings; no default) File path(s) to
 #' stochastic map trace(s).
@@ -10,7 +10,7 @@
 #' to divide the tree in to.
 #' 
 #' @export
-processStochMaps <- function(t,
+processStochMaps <- function(tree,
                              paths,
                              states,
                              num_intervals = 1000,
@@ -33,13 +33,13 @@ processStochMaps <- function(t,
     nsamples <- nrow(samples)
     
     # get the number of branches
-    num_branches <- length(t@phylo$edge.length)
+    num_branches <- length(tree@phylo$edge.length)
     
     # create the index map
-    map <- matchNodes(t@phylo)
+    map <- matchNodes(tree@phylo)
     
     # get the dt
-    root_age  <- max(ape::branching.times(t@phylo))
+    root_age  <- max(ape::branching.times(tree@phylo))
     dt <- root_age / num_intervals
     
     # loop over branches
@@ -47,11 +47,11 @@ processStochMaps <- function(t,
     for(i in 1:num_branches) {
         
         # get the branch indexes
-        R_index   <- t@phylo$edge[i,2]
+        R_index   <- tree@phylo$edge[i,2]
         Rev_index <- as.character(map[R_index,2])
         
         # get the time points
-        this_edge_length <- t@phylo$edge.length[i]
+        this_edge_length <- tree@phylo$edge.length[i]
         these_pts        <- seq(0, this_edge_length, by = dt)
         
         # get the samples
@@ -88,9 +88,18 @@ processStochMaps <- function(t,
         dfs[[i]] <- this_df
         
     }
-    
+
     # combine the branches
     dfs <- do.call(rbind, dfs)
+    
+    # get node instead of index 
+    # node is R's standard numbering for nodes
+    # index is RevBayes specific 
+    nodematch <- matchNodes(tree@phylo)
+    colnames(nodematch) <- c("node", "index")
+    nodematch$index  <- as.character(nodematch$index)
+    dfs <- dplyr::full_join(dfs, nodematch, by = "index")
+    dfs$index <- NULL
     
     return(dfs)
     
