@@ -13,14 +13,14 @@ tree ~ dnBDP(rootAge = 1, lambda = 1, mu = 0, taxa = taxa)
 writeNexus(tree, filename = "tree.nexus")
 
 # simulate data
-Q <- fnJC(2)
+Q <- fnJC(5)
 
 # rate parameter
 rate ~ dnPointMass(1)
 moves[1] = mvScale(rate, weight = 0)
 
 # simulate data
-x ~ dnPhyloCTMC(tree, Q, type = "Binary", branchRates = rate, nSites = 1)
+x ~ dnPhyloCTMC(tree, Q, type = "Standard", branchRates = rate, nSites = 1)
 
 # make a model
 mymodel = model(x)
