@@ -164,7 +164,7 @@ plotStochMaps <- function(tree,
     lineend = "square",
     ...
   )
-  
+
   if (colors[1] != "default") {
     states <- names(colors)
   } else {
@@ -183,11 +183,11 @@ plotStochMaps <- function(tree,
     names(seg_col) <- seg_col
   } else if (color_by == "prob") {
     rgbcols <- col2rgb(colors)
-    rbg_values_per_seg <- t(rgbcols %*% t(dat[,states]))
-    seg_col <- tolower(rgb(red = rbg_values_per_seg[ ,1],
-                       green = rbg_values_per_seg[ ,2],
-                       blue = rbg_values_per_seg[ ,3],
-                       maxColorValue = 255))
+    rgb_values_per_seg <- t(rgbcols %*% t(dat[,states]))
+    seg_col <- tolower(rgb(red   = rgb_values_per_seg[ ,1],
+                           green = rgb_values_per_seg[ ,2],
+                           blue  = rgb_values_per_seg[ ,3],
+                           maxColorValue = 255))
     dat$seg_col <- seg_col
     names(seg_col) <- seg_col
   }
