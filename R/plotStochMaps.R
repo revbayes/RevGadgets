@@ -6,6 +6,11 @@
 #' as in the output of processStochMaps()
 #' @param colors (named character vector; no default) Named character vector
 #' where items are colors and names are the corresponding states.
+#' 
+#' #' @param color_by (character string; "prob") How to color the branches. 
+#' Options are "MAP" for assigning color by the MAP state, or "prob" for 
+#' assigning color as the weighted average of states based on the posterior
+#' probabilities.
 #'
 #' @param timeline (logical; FALSE) Plot time tree with labeled x-axis with
 #' timescale in MYA.
@@ -101,22 +106,10 @@
 
 plotStochMaps <- function(tree,
                           maps,
-                          colors,
-                          
-                          timeline = FALSE,
-                          geo_units = list("epochs", "periods"),
-                          geo = timeline,
-                          time_bars = timeline,
-                          
-                          node_age_bars = FALSE,
-                          age_bars_color = "blue",
-                          age_bars_colored_by = NULL,
-                          
-                          node_labels = NULL,
-                          node_labels_color = "black",
-                          node_labels_size = 3,
-                          node_labels_offset = 0,
-                          
+                          colors = "default",
+                          color_by = "prob",
+                          tree_layout = "rectangular",
+                          line_width = 1,
                           tip_labels = TRUE,
                           tip_labels_italics = FALSE,
                           tip_labels_formatted = FALSE,
@@ -124,32 +117,16 @@ plotStochMaps <- function(tree,
                           tip_labels_color = "black",
                           tip_labels_size = 3,
                           tip_labels_offset = 0,
-                          
-                          node_pp = FALSE,
-                          node_pp_shape = 16,
-                          node_pp_color = "black",
-                          node_pp_size = "variable",
-                          
-                          line_width = 1,
-                          tree_layout = "rectangular",
+                          timeline = FALSE,
+                          geo_units = list("epochs", "periods"),
+                          geo = timeline,
+                          time_bars = timeline,
+                          label_sampled_ancs = FALSE,
                           ...) {
-  p <-  plotTree(
+  p <-  plotTreeFull(
     tree = list(list(tree)),
-    lineend = "square",
-    
-    timeline = timeline,
-    geo_units = geo_units,
-    geo = geo,
-    time_bars = time_bars,
-    
-    node_age_bars = node_age_bars,
-    age_bars_color = age_bars_color,
-    age_bars_colored_by = age_bars_colored_by,
-    
-    node_labels = node_labels,
-    node_labels_color = node_labels_color,
-    node_labels_offset = node_labels_offset,
-    node_labels_size = node_labels_size,
+    tree_layout = tree_layout,
+    line_width = line_width,
     
     tip_labels = tip_labels,
     tip_labels_italics = tip_labels_italics,
@@ -159,31 +136,63 @@ plotStochMaps <- function(tree,
     tip_labels_size = tip_labels_size,
     tip_labels_offset = tip_labels_offset,
     
-    node_pp = node_pp,
-    node_pp_shape = node_pp_shape,
-    node_pp_color = node_pp_color,
-    node_pp_size = node_pp_size,
+    timeline = timeline,
+    geo_units = geo_units,
+    geo = timeline,
+    time_bars = timeline,
+    
+    label_sampled_ancs = label_sampled_ancs,
+    
+    node_age_bars = FALSE,
+    age_bars_color = "blue",
+    age_bars_colored_by = NULL,
+    
+    node_labels = NULL,
+    node_labels_color = "black",
+    node_labels_size = 3,
+    node_labels_offset = 0,
+    
+    node_pp = FALSE,
+    node_pp_shape = 16,
+    node_pp_color = "black",
+    node_pp_size = "variable",
     
     branch_color = "black",
     color_branch_by = NULL,
-    line_width = line_width,
     
-    tree_layout = tree_layout,
+    tip_age_bars = FALSE,
+    lineend = "square",
     ...
   )
   
-  if (colors != "default") {
+  if (colors[1] != "default") {
     states <- names(colors)
+  } else {
+    states <- colnames(maps)[-c(1:5)]
+    colors <- colFun(length(states))
+    names(colors) <- states
   }
-  
   
   dat <- dplyr::left_join(maps, p$data, by = "node")
   
-  max <- apply(dat[, states], MARGIN = 1, which.max)
-  dat$map_state <- states[unlist(max)]
-  
+  #set up colors 
+  if (color_by == "MAP") {
+    max <- apply(dat[, states], MARGIN = 1, which.max)
+    seg_col <- colors[unlist(max)]
+    dat$seg_col <- seg_col
+    names(seg_col) <- seg_col
+  } else if (color_by == "prob") {
+    rgbcols <- col2rgb(colors)
+    rbg_values_per_seg <- t(rgbcols %*% t(dat[,states]))
+    seg_col <- tolower(rgb(red = rbg_values_per_seg[ ,1],
+                       green = rbg_values_per_seg[ ,2],
+                       blue = rbg_values_per_seg[ ,3],
+                       maxColorValue = 255))
+    dat$seg_col <- seg_col
+    names(seg_col) <- seg_col
+  }
+
   # horizontal segments
-  
   dat_horiz <- dat[dat$vert == FALSE,]
   
   seg_horiz <- data.frame(
@@ -191,32 +200,25 @@ plotStochMaps <- function(tree,
     xend = dat_horiz$x - dat_horiz$x1,
     y    = dat_horiz$y,
     yend = dat_horiz$y,
-    col  = dat_horiz$map_state
+    col  = dat_horiz$seg_col
   )
   
+  #vertical segments
   dat_vert <- dat[dat$vert == TRUE,]
   
-  getParentX <- function(node) {
-    parent_node <- dat_vert[which(dat_vert$node == node), "parent"]
-    parent_x <- dat_vert[which(dat_vert$node == parent_node), "x"]
-    return(parent_x)
-  }
-  getParentY <- function(node) {
-    parent_node <- dat_vert[which(dat_vert$node == node), "parent"]
-    parent_y <- dat_vert[which(dat_vert$node == parent_node), "y"]
-    return(parent_y)
-  }
-  
-  dat_vert$y_parent <- unlist(lapply(dat_vert$node, getParentY))
-  dat_vert$x_parent <- unlist(lapply(dat_vert$node, getParentX))
+  m <- match(x = dat_vert$parent, dat_vert$node)
+  dat_vert$y_parent <- dat_vert[m, "y"]
+  dat_vert$x_parent <- dat_vert[m, "x"]
   
   seg_vert <- data.frame(
     x = dat_vert$x_parent,
     xend = dat_vert$x_parent,
     y = dat_vert$y,
     yend = dat_vert$y_parent,
-    col = dat_vert$map_state
+    col = dat_vert$seg_col
   )
+  
+  # plot! 
   
   p + ggplot2::geom_segment(
     data = seg_horiz,
@@ -228,7 +230,7 @@ plotStochMaps <- function(tree,
       color = col
     ),
     lineend = "square",
-    size = line_width
+    size = line_width,
   ) +
     ggplot2::geom_segment(
       data = seg_vert,
@@ -240,8 +242,12 @@ plotStochMaps <- function(tree,
         color = col
       ),
       lineend = "square",
-      size = line_width
+      size = line_width, 
+
     ) +
-    ggplot2::scale_color_manual(values = colors)
-  
+    ggplot2::scale_color_manual(values = seg_col, 
+                                breaks = colors,
+                                name = "State",
+                                labels = names(colors))
+    
 }

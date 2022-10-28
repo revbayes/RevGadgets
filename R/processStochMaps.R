@@ -117,7 +117,7 @@ processStochMaps <- function(tree,
     # index is RevBayes specific 
     colnames(map) <- c("node", "index")
     map$index  <- as.character(map$index)
-    dfs <- dplyr::full_join(dfs, map, by = "index")
+    dfs <- dplyr::full_join(map,dfs, by = "index")
     dfs$index <- NULL
     
     return(dfs)
