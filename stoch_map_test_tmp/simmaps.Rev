@@ -16,7 +16,7 @@ writeNexus(tree, filename = "tree.nexus")
 Q <- fnJC(5)
 
 # rate parameter
-rate ~ dnPointMass(10)
+rate ~ dnPointMass(1)
 moves[1] = mvScale(rate, weight = 0)
 
 # simulate data
