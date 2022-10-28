@@ -4,6 +4,8 @@
 #' containing tree.
 #' @param paths (vector of character strings; no default) File path(s) to
 #' stochastic map trace(s).
+#' @param simmap (multiphylo; none) A multiphylo object with simmaps in 
+#' phytools format.
 #' @param states (vector of character strings; no default) The character
 #' states.
 #' @param num_intervals (numeric; default 1001) The number of intervals
@@ -11,7 +13,8 @@
 #' 
 #' @export
 processStochMaps <- function(tree,
-                             paths,
+                             paths = NULL,
+                             simmap = NULL,
                              states,
                              num_intervals = 1000,
                              ...) {
@@ -19,26 +22,56 @@ processStochMaps <- function(tree,
     # compute the number of states
     nstates <- length(states)
     
-    # read traces
-    samples <- readTrace(paths, ...)
+    # create the index map
+    map <- matchNodes(tree@phylo)
     
-    # combine multiple samples together
-    if ( length(samples) > 1 ) {
-        samples <- combineTraces(samples)    
+    # either paths or simmap must be provided
+    if ( !is.null(paths) ) { # samples in files
+        
+        # read traces
+        samples <- readTrace(paths, ...)
+        
+        # combine multiple samples together
+        if ( length(samples) > 1 ) {
+            samples <- combineTraces(samples)    
+        } else {
+            samples <- samples[[1]]
+        }
+        
+        # compute the number of samples
+        nsamples <- nrow(samples)
+    
+    } else if ( !is.null(simmap) ) { # samples in phytools format
+        
+        # make the samples
+        samples <- as.data.frame(do.call(rbind, lapply(simmap, function(map) {
+            sapply(map$maps, function(edge) {
+                edge <- rev(edge)
+                return(paste0("{", paste0(paste0(names(edge),",", edge), collapse = ":"),"}"))
+            })
+        })))
+        
+        # add a root edge
+        root_edge_samples <- sapply(simmap, function(map) {
+            paste0("{", head(names(map$maps[[1]]), n = 1), ",0}")
+        })
+        samples <- cbind(samples, root_edge_samples)
+        
+        # get the nodes
+        nodes <- c(tree@phylo$edge[,2], ape::Ntip(tree@phylo) + 1)
+        colnames(samples) <- map$Rev[nodes]
+        
+        # compute the number of samples
+        nsamples <- length(simmap)
+        
     } else {
-        samples <- samples[[1]]
+        stop("Please provide either a paths or simmap argument.")
     }
-    
-    # compute the number of samples
-    nsamples <- nrow(samples)
     
     # get the number of branches
     # including the root branch
     num_branches <- length(tree@phylo$edge.length) + 1
     root_index   <- ape::Ntip(tree@phylo) + 1
-    
-    # create the index map
-    map <- matchNodes(tree@phylo)
     
     # get the dt
     root_age <- max(ape::branching.times(tree@phylo))

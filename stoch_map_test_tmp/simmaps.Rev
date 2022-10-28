@@ -1,5 +1,5 @@
 # make up some data
-for(i in 1:100) {
+for(i in 1:10) {
   taxa[i] = taxon("t_" + i)
 }
 
@@ -27,7 +27,7 @@ mymodel = model(x)
 
 # make a monitor
 monitors[1] = mnScreen(printgen = 1)
-monitors[2] = mnStochasticCharacterMap(ctmc = x, printgen = 1, filename = "maps.log", index = 1, include_simmap = FALSE)
+monitors[2] = mnStochasticCharacterMap(ctmc = x, printgen = 1, filename = "maps.log", index = 1, include_simmap = TRUE)
 
 # analysis
 mymcmc = mcmc(mymodel, monitors, moves)
