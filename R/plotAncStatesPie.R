@@ -268,7 +268,7 @@ plotAncStatesPie <- function(t,
         list('epochs','periods')"
       )
   }
-  
+
   ##### create basic tree plot #####
   p <- ggtree::ggtree(t, ...)
 
@@ -705,7 +705,7 @@ plotAncStatesPie <- function(t,
 
   # import theme
   theme_transparent <- ggimage::theme_transparent()
-
+  
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
 
@@ -718,14 +718,14 @@ plotAncStatesPie <- function(t,
 
     # make pie plots
     pies_start <-
-      ggtree::nodepie(
+     .nodepie(
         dat_state_start,
         cols = 1:(ncol(dat_state_start) - 1),
         color = colors,
         alpha = state_transparency
-      )
+      ) 
     pies_end <-
-      ggtree::nodepie(
+     .nodepie(
         dat_state_end,
         cols = 1:(ncol(dat_state_end) - 1),
         color = colors,
@@ -848,7 +848,7 @@ plotAncStatesPie <- function(t,
       dat_state_anc$other <- NULL
     }
     pies_anc <-
-      ggtree::nodepie(
+      .nodepie(
         dat_state_anc,
         cols = 1:(ncol(dat_state_anc) - 1),
         color = colors,

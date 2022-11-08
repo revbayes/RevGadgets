@@ -12,7 +12,7 @@
 #'   \code{geom_stepribbon} is modified from
 #'   \code{RcmdrPlugin.KMggplot2::geom_stepribbon}.
 #'
-#' @inheritParams ggplot2:::geom_ribbon
+#' @inheritParams ggplot2::geom_ribbon
 #'
 #' @rdname geom_stepribbon
 #' @examples

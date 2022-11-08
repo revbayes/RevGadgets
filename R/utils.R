@@ -343,6 +343,20 @@
   }
 }
 
+# from ggtree::ggpie (called by .nodepie())
+.ggpie <- function(data, y, fill, color, alpha=1, outline.color="transparent", outline.size=0) {
+  p <- ggplot2::ggplot(data, ggplot2::aes_(x=1, y=y, fill=fill)) +
+    ggplot2::geom_bar(stat='identity', alpha=alpha, color=outline.color, linewidth=outline.size, show.legend = F) +
+    ggplot2::coord_polar(theta='y') + ggtree::theme_inset()
+  
+  if (methods::missingArg(color) == TRUE || is.null(color) == TRUE || any(is.na(color)) == TRUE) {
+    ## do nothing
+  } else {
+    p <- p + ggplot2::scale_fill_manual(values=color)
+  }
+  return(p)
+}
+
 .isColor <- function(var) {
   if (is.null(var)) {
     return(FALSE)
@@ -459,6 +473,21 @@
 
   return(list(state_labels = st_lbl, state_color = st_colors))
 }
+
+# from ggtree::nodepie, calls .ggpie
+.nodepie <- function(data, cols, color, alpha=1, outline.color="transparent", outline.size=0) {
+  if (! "node" %in% colnames(data)) {
+    stop("data should have a column 'node'...")
+  }
+  type <- value <- NULL
+  if (methods::missingArg(color)) {
+    color <- NA
+  }
+  `%>%` <- dplyr::`%>%`
+  ldf <- tidyr::gather(data, type, value, !! cols) %>% split(., .$node)
+  lapply(ldf, function(df) .ggpie(df, y=~value, fill=~type, color, alpha, outline.color, outline.size))
+}
+
 
 .parseTreeString <- function(string) {
   # recover()
