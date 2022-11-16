@@ -25,10 +25,10 @@ BugReports: https://github.com/revbayes/RevGadgets/issues
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.2.1
-Depends: R (>= 4.2.0)
+Depends: R (>= 4.0.0)
 biocViews:
 Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0),
-         ggtree (>= 3.6.1), treeio (>= 1.12.0),  tidytree (>= 0.3.4),
+         ggtree (>= 3.6.2), treeio (>= 1.12.0),  tidytree (>= 0.3.4),
          ggplot2 (>= 3.4.0), reshape (>= 0.8.8), methods (>= 4.1.0),
          ggthemes (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1), 
          gginnards (>= 0.0.3), ggplotify (>= 0.0.5), ggpp, ggimage,
