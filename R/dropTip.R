@@ -5,7 +5,6 @@
 #' Modifies a tree object (in RevGadget's format) by dropping one or more tips
 #' from the tree and from any associated data. Wrapper for treeio::drop.tip().
 #'
-#'
 #' @param tree (list of lists of treedata objects; no default) Name of a list of
 #' lists of treedata objects, such as produced by readTrees().
 #'
@@ -47,6 +46,7 @@ dropTip <- function(tree, tips) {
     for (j in seq_len(length(tree[[i]]))) {
       t <- tree[[i]][[j]]
       t_dropped <- treeio::drop.tip(t, tip = tips)
+      #t_dropped <- .drop.tip(t, tip = tips)
       # replace old treedata object with new
       tree[[i]][[j]] <- t_dropped
     }
