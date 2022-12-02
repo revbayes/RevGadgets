@@ -25,7 +25,7 @@ BugReports: https://github.com/revbayes/RevGadgets/issues
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.2.2
-Depends: R (>= 4.0.0)
+Depends: R (>= 4.2.0)
 biocViews:
 Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0),
          ggtree (>= 3.6.1), tidytree (>= 0.3.4), treeio (>= 1.12.0),
