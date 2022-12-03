@@ -298,47 +298,6 @@
   return(labs)
 }
 
-# borrowed from treeio for testing purposes 
-# `%>%` <- dplyr::`%>%` # give you the pipe 
-# .drop.tip <- function(object, tip, ...){
-#   params <- list(...)
-#   if ("interactive" %in% names(params) && params$interactive){
-#     message("The interactive mode is not implemented for treedata object!")
-#     params$interactive <- FALSE
-#   }
-#   res <- treeio:::build_new_labels(tree=object)
-#   tree <- res$tree
-#   old_and_new <- res$node2old_new_lab
-#   if(is.character(tip)){
-#     tip <- old_and_new[old_and_new$old %in% tip, "new"] %>% unlist(use.names=FALSE)
-#   }
-#   params$phy <- tree
-#   params$tip <- tip
-#   new_tree <- do.call(ape::drop.tip, params)
-#   
-#   if (is.null(new_tree)){
-#     return(new_tree)
-#   }
-#   
-#   trans_node_data <- treeio:::old_new_node_mapping(tree, new_tree)
-#   object@phylo <- treeio:::build_new_tree(tree=new_tree, node2old_new_lab=old_and_new)
-#   
-#   update_data <- function(data, trans_node_data) {
-#     data <- data[match(trans_node_data$old, data$node),]
-#     data$node <- trans_node_data$new
-#     return(data)    
-#   }
-#   
-#   if (nrow(object@data) > 0) {
-#     object@data <- update_data(object@data, trans_node_data)
-#   }
-#   
-#   if (nrow(object@extraInfo) > 0) {
-#     object@extraInfo <- update_data(object@extraInfo, trans_node_data)
-#   }
-#   return (object)
-# }
-
 .findTreeLines <- function(lines) {
   # pull out tree block only
   start_tree_block <-

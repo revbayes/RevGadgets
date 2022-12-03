@@ -44,7 +44,6 @@ dropTip <- function(tree, tips) {
     for (j in seq_len(length(tree[[i]]))) {
       t <- tree[[i]][[j]]
       t_dropped <- treeio::drop.tip(t, tip = tips)
-      #t_dropped <- .drop.tip(t, tip = tips)
       # replace old treedata object with new
       tree[[i]][[j]] <- t_dropped
     }
