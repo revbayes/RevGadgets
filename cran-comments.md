@@ -4,6 +4,7 @@ to logical' errors were not corrected in time.
 
 ## Test environments
 Tested via GitHub actions on the following platforms (and R versions):
+
 * macOS-latest (release R)
 * windows-latest (release R)
 * ubuntu-latest (release R)
@@ -15,6 +16,7 @@ Tested locally on OS X v. 11.6, R v. 4.2.2
 There were no ERRORs or WARNINGs. 
 
 There was one NOTE:
+
 * checking CRAN incoming feasibility ... NOTE
   Maintainer: ‘Carrie Tribble <ctribble09@gmail.com>’
 
