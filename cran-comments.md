@@ -1,3 +1,9 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Change the URLs in README.md to the approprixxate repository
+* Changed the name of news.md to NEWS.md 
+
 ## Release summary
 This is a new submission to CRAN. Package was archived on CRAN as 'coercion
 to logical' errors were not corrected in time. 
