@@ -1,12 +1,12 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Change the URLs in README.md to the approprixxate repository
+* Changed the URLs in README.md to the appropriate repository (to revbayes/revgadgets from cmt2/revgadgets)
 * Changed the name of news.md to NEWS.md 
+* Please note that "phylogenetic" in DESCRIPTION is not mispelled 
 
 ## Release summary
-This is a new submission to CRAN. Package was archived on CRAN as 'coercion
-to logical' errors were not corrected in time. 
+This is a new submission to CRAN. Package was archived on CRAN as 'coercion to logical' errors were not corrected in time. 
 
 ## Test environments
 Tested via GitHub actions on the following platforms (and R versions):
