@@ -139,17 +139,6 @@
 #' # default with circular tree
 #' plotAncStatesMAP(t = example, tree_layout = "circular")
 #'
-#' # default with 'ape' tree layout, note that you may have to
-#' # manually adjust the axes limits
-#' # we recommend setting tip_labels_offset to 0
-#'
-#' p <- plotAncStatesMAP(t = example,
-#'                       tree_layout = "ape",
-#'                       tip_labels_offset = 0)
-#'
-#' tree_height <- max(phytools::nodeHeights(example@phylo))
-#' p + ggplot2::xlim(-tree_height/3, tree_height*2) +
-#'     ggplot2::ylim(-tree_height/3, tree_height*2)
 #'
 #' # Chromosome evolution example
 #'

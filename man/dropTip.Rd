@@ -29,8 +29,6 @@ file <- system.file("extdata",
                     "sub_models/primates_cytb_GTR_MAP.tre",
                     package="RevGadgets")
 tree <- readTrees(paths = file)
-# reroot tree, then drop the tip
-tree <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 tree_dropped <- dropTip(tree, "Otolemur_crassicaudatus")
 
 
