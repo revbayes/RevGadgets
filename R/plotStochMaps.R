@@ -7,7 +7,7 @@
 #' @param colors (named character vector; no default) Named character vector
 #' where items are colors and names are the corresponding states.
 #' 
-#' #' @param color_by (character string; "prob") How to color the branches. 
+#' @param color_by (character string; "prob") How to color the branches. 
 #' Options are "MAP" for assigning color by the MAP state, or "prob" for 
 #' assigning color as the weighted average of states based on the posterior
 #' probabilities.
@@ -25,29 +25,6 @@
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to
 #' include in the geo timescale. May be "periods", "epochs", "stages", "eons",
 #' "eras", or a list of two of those units.
-#'
-#' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
-#'
-#' @param age_bars_colored_by (character; NULL) Specify column to color node age
-#' bars by, such as "posterior". If null, all node age bars plotted the same
-#' color, specified by age_bars_color
-#'
-#' @param age_bars_color (character; "blue") Color for node age bars. If
-#' age_bars_colored_by specifies a variable (not NULL), you must provide two
-#' colors, low and high values for a gradient. Colors must be either
-#' R valid color names or valid hex codes.
-#'
-#' @param node_labels (character; NULL) Plot text labels at nodes, specified by
-#' the name of the corresponding column in the tidytree object. If NULL, no
-#' text is plotted.
-#'
-#' @param node_labels_color (character; "black") Color to plot node_labels,
-#' either as a valid R color name or a valid hex code.
-#'
-#' @param node_labels_size (numeric; 3) Size of node labels
-#'
-#' @param node_labels_offset (numeric; 0) Horizontal offset of node labels from
-#' nodes.
 #'
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
@@ -69,38 +46,51 @@
 #' @param tip_labels_offset (numeric; 1) Horizontal offset of tip labels from
 #' tree.
 #'
-#' @param node_pp (logical; FALSE) Plot posterior probabilities as symbols at
-#' nodes? Specify symbol aesthetics with node_pp_shape, node_pp_color, and
-#' node_pp_size.
-#'
-#' @param node_pp_shape (integer; 1) Integer corresponding to point shape
-#' (value between 0-25). See ggplot2 documentation for details:
-#' \url{https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#point}
-#'
-#'
-#' @param node_pp_color (character; "black") Color for node_pp symbols, either
-#' as valid R color name(s) or hex code(s). Can be a single character string
-#' specifying a single color, or a vector of length two specifying two colors
-#' to form a gradient. In this case, posterior probabilities will be indicated
-#' by color along the specified gradient.
-#'
-#' @param node_pp_size (numeric or character; 1) Size for node_pp symbols.
-#' If numeric, the size will be fixed at the specified value. If a character,
-#' it should specify "variable", indicating that size should be scaled by the
-#' posterior value. Size regulates the area of the shape, following ggplot2
-#' best practices:
-#' \url{https://ggplot2.tidyverse.org/reference/scale_size.html})
-#'
 #' @param line_width (numeric; 1) Change line width for branches
 #'
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed
 #' to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
 #' 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
 #' 'daylight', or 'ape'.
+#' 
+#' @param label_sampled_ancs (logical; FALSE) Label any sampled ancestors?
+#' Will inherent tip labels aesthetics for size and color.
 #'
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @return returns a single plot object.
+#'
+#' @examples
+#'
+#' \donttest{
+#'
+#' # Standard stochastic mapping example
+#' 
+#' # read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
+#' treefile <- system.file("extdata",
+#'                         "stoch_map_test_tmp/tree.nexus",
+#'                         package="RevGadgets")
+#'                         
+#' tree <- readTrees(treefile)[[1]][[1]]
+#' 
+#' # process samples
+#' mapsfile <- system.file("extdata",
+#'                         "stoch_map_test_tmp/maps.log",
+#'                         package="RevGadgets")
+#'                         
+#' stoch_map_df <- processStochMaps(tree,
+#'                                  mapsfile, 
+#'                                  states = as.character(0:4), 
+#'                                  burnin = 0.1)
+#' 
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df,
+#'               color_by = "MAP",
+#'               colors = "default",
+#'               tree_layout = "rectangular",
+#'               tip_labels = FALSE)
+#'
+#' }
 #'
 #' @export
 
@@ -184,10 +174,10 @@ plotStochMaps <- function(tree,
   } else if (color_by == "prob") {
     rgbcols <- col2rgb(colors)
     rgb_values_per_seg <- t(rgbcols %*% t(dat[,states]))
-    seg_col <- tolower(rgb(red   = rgb_values_per_seg[ ,1],
-                           green = rgb_values_per_seg[ ,2],
-                           blue  = rgb_values_per_seg[ ,3],
-                           maxColorValue = 255))
+    seg_col <- tolower(grDevices::rgb(red   = rgb_values_per_seg[ ,1],
+                                      green = rgb_values_per_seg[ ,2],
+                                      blue  = rgb_values_per_seg[ ,3],
+                                      maxColorValue = 255))
     dat$seg_col <- seg_col
     names(seg_col) <- seg_col
   }

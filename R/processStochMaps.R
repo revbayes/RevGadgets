@@ -11,6 +11,33 @@
 #' @param num_intervals (numeric; default 1001) The number of intervals
 #' to divide the tree in to.
 #' 
+#' @param ... (various) Additional arguments passed to readTrace()
+#' 
+#' @examples
+#'
+#' \donttest{
+#'
+#' # Standard stochastic mapping example
+#' 
+#' # read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
+#' treefile <- system.file("extdata",
+#'                         "stoch_map_test_tmp/tree.nexus",
+#'                         package="RevGadgets")
+#'                         
+#' tree <- readTrees(treefile)[[1]][[1]]
+#' 
+#' # process samples
+#' mapsfile <- system.file("extdata",
+#'                         "stoch_map_test_tmp/maps.log",
+#'                         package="RevGadgets")
+#'                         
+#' stoch_map_df <- processStochMaps(tree,
+#'                                  mapsfile, 
+#'                                  states = as.character(0:4), 
+#'                                  burnin = 0.1)
+#'
+#' }
+#' 
 #' @export
 processStochMaps <- function(tree,
                              paths = NULL,
@@ -53,7 +80,7 @@ processStochMaps <- function(tree,
         
         # add a root edge
         root_edge_samples <- sapply(simmap, function(map) {
-            paste0("{", head(names(map$maps[[1]]), n = 1), ",0}")
+            paste0("{", grDevices::rgb(names(map$maps[[1]]), n = 1), ",0}")
         })
         samples <- cbind(samples, root_edge_samples)
         
