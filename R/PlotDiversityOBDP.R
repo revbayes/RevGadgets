@@ -152,12 +152,12 @@ plotDiversityOBDP = function( Kt_mean,
                         fill = colour_ramp(c(colorRampPalette(palette_Hidden)(N)))(Kt_mean_plot$ProbabilityDensity))
     }
     if (show_expectations){
-      p <- p + geom_line(aes_(y=~aggregNbHiddenLin, color="c1"), size=line_size)
+      p <- p + geom_line(aes_(y=~aggregNbHiddenLin, color="c1"), linewidth=line_size)
     }
     if (show_intervals){
       p <- p + geom_line(aes_(y=~NbHiddenLin, color="H.95%"), alpha=0) +  # Fake plot for the legend
-        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbHiddenLin0.025, color=cols["H.95%"], linetype="twodash", size=interval_line_size) +
-        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbHiddenLin0.975, color=cols["H.95%"], linetype="twodash", size=interval_line_size)
+        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbHiddenLin0.025, color=cols["H.95%"], linetype="twodash", linewidth=interval_line_size) +
+        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbHiddenLin0.975, color=cols["H.95%"], linetype="twodash", linewidth=interval_line_size)
     }
   }
   
@@ -168,18 +168,18 @@ plotDiversityOBDP = function( Kt_mean,
                         fill = colour_ramp(colorRampPalette(palette_Total)(N))(Kt_mean_plot$ProbabilityDensity))
       }
     if (show_expectations){
-      p <- p + geom_line(aes_(y=~aggregNbTotalLin, color="c3"), size=line_size)
+      p <- p + geom_line(aes_(y=~aggregNbTotalLin, color="c3"), linewidth=line_size)
     }
     if (show_intervals){
       p <- p + geom_line(aes_(y=~NbTotalLin0.025, color="T.95%"), alpha=0) +  # Fake plot for the legend
-        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbTotalLin0.025, color=cols["T.95%"], linetype="twodash", size=interval_line_size) +
-        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbTotalLin0.975, color=cols["T.95%"], linetype="twodash", size=interval_line_size)
+        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbTotalLin0.025, color=cols["T.95%"], linetype="twodash", linewidth=interval_line_size) +
+        annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbTotalLin0.975, color=cols["T.95%"], linetype="twodash", linewidth=interval_line_size)
       }
   }
   
   ### Plot the number of observed lineages : mean
   if (show_LTT){
-    p <- p + geom_line(aes_(y=~NbObservedLin, color="c2"), size=line_size)
+    p <- p + geom_line(aes_(y=~NbObservedLin, color="c2"), linewidth=line_size)
   }
   
   ### Legend
