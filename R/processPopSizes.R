@@ -74,6 +74,7 @@ processPopSizes <- function(population_size_log = "",
     pop_size <- .readOutputFile(population_size_log, burnin = burnin)
     times <- .readOutputFile(interval_change_points_log, burnin = burnin)
 
+    # remove the last time because we are not going to use it
     if ( length(pop_size) == length(times) ) {
       times_pruned <- list()
       for (i in seq_along(times)){
