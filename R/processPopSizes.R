@@ -42,7 +42,8 @@ processPopSizes <- function(population_size_log = "",
                             probs = c(0.025, 0.975),
                             summary = "median",
                             num_grid_points = 100,
-                            max_age = NULL){
+                            max_age = NULL,
+                            min_age = NULL){
   constant_dem = FALSE
 
   if (interval_change_points_log == ""){
@@ -122,22 +123,21 @@ processPopSizes <- function(population_size_log = "",
     }
 
 
-    if (is.null(max_age)){
-      x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
-      x <- seq(0, suppressWarnings(max(sapply(times, max))), length.out = num_grid_points)
-    } else {
-      x <- seq(0, max_age, length.out = num_grid_points)
+    if ( is.null(min_age) ) {
       min_age <- min( unlist(times) )
-      max_age <- max( unlist(times) )
-      first_break  <- c()
-      second_break <- c()
-      for (i in seq_along(times)){
-        first_break[i]  <- times[[i]][orders[[i]]][1]
-        second_break[i] <- times[[i]][orders[[i]]][2]
-      }
-      min_age <- max(first_break)
-      x <- exp(seq(log(min_age), log(max_age), length.out = num_grid_points))
+#      first_break  <- c()
+#      second_break <- c()
+#      for (i in seq_along(times)){
+#        first_break[i]  <- times[[i]][orders[[i]]][1]
+#        second_break[i] <- times[[i]][orders[[i]]][2]
+#      }
+#      min_age <- max(first_break)
     }
+    if ( is.null(max_age) ) {
+      max_age <- max( unlist(times) )
+    }
+    x <- exp(seq(log(min_age), log(max_age), length.out = num_grid_points))
+
 
     m <- sapply(pop_size_trajectories, function(e) e(x))
     quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
