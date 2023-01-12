@@ -77,6 +77,7 @@ processPopSizes <- function(population_size_log = "",
 
     # remove the last time because we are not going to use it
     if ( length(pop_size) == length(times) ) {
+      cat("Removing last time ...\n")
       times_pruned <- list()
       for (i in seq_along(times)){
         res <- times[[i]][-length(times[[i]])]
@@ -125,6 +126,7 @@ processPopSizes <- function(population_size_log = "",
 
     if ( is.null(min_age) ) {
       min_age <- min( unlist(times) )
+      min_age <- max(min_age, 1E-2)
 #      first_break  <- c()
 #      second_break <- c()
 #      for (i in seq_along(times)){
