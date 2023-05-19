@@ -491,9 +491,9 @@ plotAncStatesPie <- function(t,
     if (time_bars) {
       if (geo) {
         if ("epochs" %in% geo_units) {
-          x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
+          x_pos <- -rev(c(0, deeptime::get_scale_data("epochs")$max_age))
         } else {
-          x_pos <-  -rev(c(0, deeptime::getScaleData("periods")$max_age))
+          x_pos <-  -rev(c(0, deeptime::get_scale_data("periods")$max_age))
         }
       } else if (!geo) {
         x_pos <- -rev(xline)
