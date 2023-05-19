@@ -113,6 +113,20 @@ plotStochMaps <- function(tree,
                           time_bars = timeline,
                           label_sampled_ancs = FALSE,
                           ...) {
+  
+  # pull tree from list object if necessary
+  if (inherits(tree,"list")) {
+    if (length(tree) == 1){
+      tree <- tree[[1]]
+    } else {stop("tree should contain only one tree object")}
+  }
+  
+  if (inherits(tree,"list")) {
+    if (length(tree) == 1){
+      tree <- tree[[1]]
+    } else {stop("tree should contain only one tree object")}
+  } 
+  
   p <-  plotTreeFull(
     tree = list(list(tree)),
     tree_layout = tree_layout,

@@ -345,6 +345,7 @@
 
 # from ggtree::ggpie (called by .nodepie())
 .ggpie <- function(data, y, fill, color, alpha=1, outline.color="transparent", outline.size=0) {
+  
   p <- ggplot2::ggplot(data, ggplot2::aes_(x=1, y=y, fill=fill)) +
     ggplot2::geom_bar(stat='identity', alpha=alpha, color=outline.color, linewidth=outline.size, show.legend = F) +
     ggplot2::coord_polar(theta='y') + ggtree::theme_inset()

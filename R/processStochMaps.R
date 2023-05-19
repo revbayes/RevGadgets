@@ -45,7 +45,20 @@ processStochMaps <- function(tree,
                              states,
                              num_intervals = 1000,
                              ...) {
+  
+    # pull tree from list object if necessary
+    if (inherits(tree,"list")) {
+      if (length(tree) == 1){
+        tree <- tree[[1]]
+      } else {stop("tree should contain only one tree object")}
+    }
     
+    if (inherits(tree,"list")) {
+      if (length(tree) == 1){
+        tree <- tree[[1]]
+      } else {stop("tree should contain only one tree object")}
+    } 
+  
     # compute the number of states
     nstates <- length(states)
     
