@@ -4,7 +4,7 @@
 \alias{plotPostPredStats}
 \title{plot Posterior Predictive Statistics}
 \usage{
-plotPostPredStats(data, prob = c(0.9, 0.95), col = NULL, side = "both")
+plotPostPredStats(data, prob = c(0.9, 0.95), col = NULL, side = "both", ...)
 }
 \arguments{
 \item{data}{(list of data frames; no default) A list of data frames
@@ -19,6 +19,8 @@ Defaults to blue and red.}
 
 \item{side}{(character; default "both") Whether the intervals are on "both"
 sides, the "left" side, or the "right" side of the distribution.}
+
+\item{...}{Additional arguments are passed to stats::density().}
 }
 \value{
 A list of ggplot objects, where each plot contains a density

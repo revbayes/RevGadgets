@@ -16,6 +16,7 @@
 #' Defaults to blue and red.
 #' @param side (character; default "both") Whether the intervals are on "both"
 #' sides, the "left" side, or the "right" side of the distribution.
+#' @param ... Additional arguments are passed to stats::density(). 
 #'
 #' @return A list of ggplot objects, where each plot contains a density
 #' distribution of the predicted values and a dashed line of the empirical
@@ -67,7 +68,8 @@
 plotPostPredStats <- function(data,
                               prob = c(0.9, 0.95),
                               col  = NULL,
-                              side = "both") {
+                              side = "both",
+                              ...) {
   if (is.list(data) == FALSE)
     stop("Argument data must be a list.")
   if ("simulated" %in% names(data) == FALSE)
@@ -119,7 +121,7 @@ plotPostPredStats <- function(data,
     spread_value <- max_value - min_value
 
     # fit a kernel density
-    kde <- density(sim[, i])
+    kde <- density(sim[, i], ...)
     pdf <- approxfun(kde)
 
     # compute the p-value

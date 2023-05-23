@@ -492,9 +492,9 @@ plotTreeFull <- function(tree,
     if (time_bars) {
       if (geo) {
         if ("epochs" %in% geo_units) {
-          x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
+          x_pos <- -rev(c(0, deeptime::get_scale_data("epochs")$max_age))
         } else {
-          x_pos <-  -rev(c(0, deeptime::getScaleData("periods")$max_age))
+          x_pos <-  -rev(c(0, deeptime::get_scale_data("periods")$max_age))
         }
       } else if (!geo) {
         x_pos <- -rev(xline)
@@ -578,7 +578,7 @@ plotTreeFull <- function(tree,
           ),
           data = bar_df,
           color = age_bars_color,
-          size = age_bars_width,
+          linewidth = age_bars_width,
           alpha = 0.8
         )
     } else if (is.null(age_bars_colored_by) == FALSE) {
@@ -617,7 +617,7 @@ plotTreeFull <- function(tree,
             color = olena
           ),
           data = bar_df,
-          size = age_bars_width,
+          linewidth = age_bars_width,
           alpha = 0.8
         ) +
         ggplot2::scale_color_gradient(
