@@ -5,7 +5,6 @@
 #' Modifies a tree object (in RevGadget's format) by dropping one or more tips
 #' from the tree and from any associated data. Wrapper for treeio::drop.tip().
 #'
-#'
 #' @param tree (list of lists of treedata objects; no default) Name of a list of
 #' lists of treedata objects, such as produced by readTrees().
 #'
@@ -22,8 +21,6 @@
 #'                     "sub_models/primates_cytb_GTR_MAP.tre",
 #'                     package="RevGadgets")
 #' tree <- readTrees(paths = file)
-#' # reroot tree, then drop the tip
-#' tree <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 #' tree_dropped <- dropTip(tree, "Otolemur_crassicaudatus")
 #'
 #'
@@ -32,9 +29,9 @@
 dropTip <- function(tree, tips) {
   if (!is.list(tree))
     stop("tree should be a list of lists of treedata objects")
-  if (class(tree[[1]][[1]]) != "treedata")
+  if (!methods::is(tree[[1]][[1]], "treedata"))
     stop("tree should be a list of lists of treedata objects")
-  if (class(tips) != "character" & class(tips) != "numeric")
+  if (!methods::is(tips, "character") & !methods::is(tips, "numeric"))
     stop("tips should be of class character or numeric")
   if (length(tips) > length(tree[[1]][[1]]@phylo$tip.label))
     stop("number of tips to drop larger than the number of tips in the tree")

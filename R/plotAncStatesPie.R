@@ -13,6 +13,10 @@
 #' @param tip_labels_italics (logical; FALSE) Italicize tip labels?
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores from
 #' tip labels?
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#' manually added formatting information? Will set parse = TRUE in geom_text()
+#' and associated functions to interpret formatting. See ?plotmath for more.
+#' Cannot be TRUE if tip_labels_italics = TRUE.  
 #' @param tip_labels_states (logical; FALSE) Optional plotting of text at tips
 #' in addition to taxa labels. Will plot the MAP state label.
 #' @param tip_labels_states_size (numeric; 2) Size of state labels at tips.
@@ -21,8 +25,9 @@
 #' state labels. Ignored if tip_labels_states = NULL.
 #' @param node_labels_as (character; NULL) Optional plotting of text at nodes.
 #' Possible values are "state" for the MAP ancestral states, "node_posterior"
-#' for the posterior probability of the node on the tree, or NULL for not
-#' plotting any text at the nodes (default).
+#' for the posterior probability of the node on the tree, “state_posterior” 
+#' for the posterior probability of the MAP, or NULL for not plotting any
+#' text at the nodes (default).
 #' @param node_labels_size (numeric; 2) Size of node labels text. Ignored if
 #' node_labels_as = NULL.
 #' @param node_labels_offset (numeric; 0.1) Horizontal offset of node labels
@@ -57,8 +62,9 @@
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
 #' geological timeline units if geo == TRUE or regular time intervals (in MYA)
 #' if geo == FALSE.
-#' @param geo_units (list; list("epochs", "periods")) Which geological units
-#' to include in the geo timescale.
+#' @param geo_units (list; list("epochs", "periods")) Which geological units to
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' "eras", or a list of two of those units.
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @return A ggplot object
@@ -115,6 +121,7 @@ plotAncStatesPie <- function(t,
                              tip_labels_size = 2,
                              tip_labels_offset = 1,
                              tip_labels_italics = FALSE,
+                             tip_labels_formatted = FALSE,
                              tip_labels_remove_underscore = TRUE,
 
                              # label states at tips
@@ -150,7 +157,7 @@ plotAncStatesPie <- function(t,
                              time_bars = timeline,
                              ...) {
   ##### parameter compatibility checks #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata object")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")
@@ -162,6 +169,10 @@ plotAncStatesPie <- function(t,
     stop("tip_labels_offset should be a number")
   if (is.logical(tip_labels_italics) == FALSE)
     stop("tip_labels_italics should be TRUE or FALSE")
+  if (is.logical(tip_labels_formatted) == FALSE)
+    stop("tip_labels_formatted should be TRUE or FALSE")
+  if (tip_labels_italics == TRUE & tip_labels_formatted == TRUE) 
+    stop("tip_labels_italics and tip_labels_formatted may not both be TRUE")
   if (is.logical(tip_labels_remove_underscore) == FALSE)
     stop("tip_labels_remove_underscore should be TRUE or FALSE")
   if (is.logical(tip_labels_states) == FALSE)
@@ -230,26 +241,30 @@ plotAncStatesPie <- function(t,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[1]] != "epochs" &
-        geo_units[[1]] != "periods")
+    if (geo_units[[1]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[2]] != "epochs" &
-        geo_units[[2]] != "periods")
+    if (geo_units[[2]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   } else {
-    if (geo_units != "epochs" &
-        geo_units != "periods")
+    if (geo_units %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras') == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   }
@@ -339,7 +354,8 @@ plotAncStatesPie <- function(t,
     }
 
   } else if (sum(otherpp, na.rm = TRUE) != 0) {
-    state_labels <- as.factor(c(t@state_labels, "other"))
+    
+    state_labels <- as.factor(c(as.character(t@state_labels), "other"))
 
     if ("anc_state_" %in% state_pos_str_base) {
       p$data$anc_state_other <- "other"
@@ -475,9 +491,9 @@ plotAncStatesPie <- function(t,
     if (time_bars) {
       if (geo) {
         if ("epochs" %in% geo_units) {
-          x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
+          x_pos <- -rev(c(0, deeptime::get_scale_data("epochs")$max_age))
         } else {
-          x_pos <-  -rev(c(0, deeptime::getScaleData("periods")$max_age))
+          x_pos <-  -rev(c(0, deeptime::get_scale_data("periods")$max_age))
         }
       } else if (!geo) {
         x_pos <- -rev(xline)
@@ -517,6 +533,14 @@ plotAncStatesPie <- function(t,
           offset = tip_labels_offset,
           parse = TRUE
         )
+    } 
+    else if (tip_labels_formatted == TRUE ) {
+      p <- p + ggtree::geom_tiplab(
+        ggplot2::aes(label = label),
+        size = tip_labels_size,
+        offset = tip_labels_offset,
+        parse = TRUE
+      )
     } else {
       p <-
         p + ggtree::geom_tiplab(size = tip_labels_size,
@@ -679,9 +703,9 @@ plotAncStatesPie <- function(t,
                         order = 1)
   p <- p + ggplot2::guides(size = "none")
 
-  # import ggimage theme
+  # import theme
   theme_transparent <- ggimage::theme_transparent()
-
+  
   # plot pies at nodes (and shoulders)
   if (cladogenetic == TRUE) {
 
@@ -694,14 +718,14 @@ plotAncStatesPie <- function(t,
 
     # make pie plots
     pies_start <-
-      ggtree::nodepie(
+     .nodepie(
         dat_state_start,
         cols = 1:(ncol(dat_state_start) - 1),
         color = colors,
         alpha = state_transparency
-      )
+      ) 
     pies_end <-
-      ggtree::nodepie(
+     .nodepie(
         dat_state_end,
         cols = 1:(ncol(dat_state_end) - 1),
         color = colors,
@@ -824,7 +848,7 @@ plotAncStatesPie <- function(t,
       dat_state_anc$other <- NULL
     }
     pies_anc <-
-      ggtree::nodepie(
+      .nodepie(
         dat_state_anc,
         cols = 1:(ncol(dat_state_anc) - 1),
         color = colors,

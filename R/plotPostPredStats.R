@@ -10,20 +10,25 @@
 #' @param data (list of data frames; no default) A list of data frames
 #' of the empirical and simulated values, such as the output of
 #' processPostPredStats.R
+#' 
 #' @param prob (vector of numerics; default c(0.9, 0.95)) The
 #' posterior-predictive intervals to shade.
+#' 
 #' @param col (vector of colors; default NULL) The colors for each quantile.
 #' Defaults to blue and red.
-#' @param side (character; default "both") Whether the intervals are on "both"
-#' sides, the "left" side, or the "right" side of the distribution.
+#' 
+#' @param side (character; default "both") Whether the plotted/colored 
+#' intervals are on "both" sides, the "left" side, or the "right" 
+#' side of the distribution.
+#' 
 #' @param type (character; default "strict") Whether equal values are
 #' considered as less extreme as the observed data ("strict") or half of the
 #' equal values are considered to be higher and half to be lower ("midpoint")
-#' @param color (character; default "both") Whether the plotted/colored
-#' intervals are on "both" sides, the "left" side, or the "right" side of the
-#' distribution.
+#' 
 #' @param PPES (boolean; default FALSE) Whether we provide the posterior
 #' predictive effect size (PPES).
+#' 
+#' @param ... Additional arguments are passed to stats::density(). 
 #'
 #' @return A list of ggplot objects, where each plot contains a density
 #' distribution of the predicted values and a dashed line of the empirical
@@ -31,9 +36,9 @@
 #' two-sided quantile and the orange corresponds to the 2\% two-sided quantile.
 #'
 #' @details Each plot shows the rejection region for the provided quantiles,
-#' as well as a p-value for the observed statistic. If side="left" (/"right"),
+#' as well as a p-value for the observed statistic. If side="left" (or "right"),
 #' then the p-value is the fraction of simulated statistics that are less than
-#' (/greater than) or equal to the observed statistic. If side="both", then
+#' ( or greater than) or equal to the observed statistic. If side="both", then
 #' the p-value is calculated by first fitting a KDE to the samples, then
 #' computing the fraction of simulated statistics with density lower than the
 #' density of he observed statistic; in this sense, the "both" option computes
@@ -77,8 +82,8 @@ plotPostPredStats <- function(data,
                               col   = NULL,
                               side  = "both",
                               type  = "strict",
-                              color = "both",
-                              PPES  = FALSE) {
+                              PPES  = FALSE,
+                              ...) {
   if (is.list(data) == FALSE)
     stop("Argument data must be a list.")
   if ("simulated" %in% names(data) == FALSE)
@@ -93,8 +98,6 @@ plotPostPredStats <- function(data,
     stop("Invalid side argument.")
   if (type %in% c("strict", "midpoint") == FALSE)
     stop("Invalid type argument.")
-  if (color %in% c("both", "left", "right") == FALSE)
-    stop("Invalid color argument.")
 
   if (is.null(col)) {
     col <- grDevices::colorRampPalette(colFun(2))(length(prob))
@@ -136,7 +139,7 @@ plotPostPredStats <- function(data,
 #    spread_value <- ifelse( spread_value > 0, spread_value, 0.05 )
 
     # fit a kernel density
-    kde <- density(sim[, i])
+    kde <- density(sim[, i], ...)
     pdf <- approxfun(kde)
 
     # compute the p-value
@@ -167,8 +170,8 @@ plotPostPredStats <- function(data,
     }
 
     # compute the posterior predictive effect size
-    ppes <- abs( obs[, i] - median(sim[, i]) ) / sd(sim[, i])
-    ppes <- ifelse( sd(sim[, i]) == 0, 0, ppes )
+    ppes <- abs( obs[, i] - stats::median(sim[, i]) ) / stats::sd(sim[, i])
+    ppes <- ifelse( stats::sd(sim[, i]) == 0, 0, ppes )
 
     # make dataframe of plotting data
     df <- data.frame((kde)[c("x", "y")])
@@ -187,13 +190,13 @@ plotPostPredStats <- function(data,
     p <- ggplot2::ggplot(df, ggplot2::aes(x, y))
     for (q in seq_len(length(prob))) {
       this_q <- prob[q]
-      if (color == "left") {
+      if (side == "left") {
         l <- 1 - this_q
         p <-
           p +
           ggplot2::geom_area(data = df[df$x <= quantile(sim[, i], prob = l), ],
                                  fill = col[q])
-      } else if (color == "right") {
+      } else if (side == "right") {
         u <- this_q
         p <-
           p +

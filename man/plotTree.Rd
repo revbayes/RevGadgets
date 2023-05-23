@@ -13,12 +13,14 @@ plotTree(
   node_age_bars = FALSE,
   age_bars_color = "blue",
   age_bars_colored_by = NULL,
+  age_bars_width = 1.5,
   node_labels = NULL,
   node_labels_color = "black",
   node_labels_size = 3,
   node_labels_offset = 0,
   tip_labels = TRUE,
   tip_labels_italics = FALSE,
+  tip_labels_formatted = FALSE,
   tip_labels_remove_underscore = TRUE,
   tip_labels_color = "black",
   tip_labels_size = 3,
@@ -44,7 +46,8 @@ multiple trees or multiple traces, only the first will be used.}
 timescale in MYA.}
 
 \item{geo_units}{(list; list("epochs", "periods")) Which geological units to
-include in the geo timescale.}
+include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+"eras", or a list of two of those units.}
 
 \item{geo}{(logical; timeline) Add a geological timeline? Defaults to the
 same as timeline.}
@@ -64,6 +67,8 @@ R valid color names or valid hex codes.}
 bars by, such as "posterior". If null, all node age bars plotted the same
 color, specified by age_bars_color}
 
+\item{age_bars_width}{(numeric; 1.5) Change line width for age bars}
+
 \item{node_labels}{(character; NULL) Plot text labels at nodes, specified by
 the name of the corresponding column in the tidytree object. If NULL, no
 text is plotted.}
@@ -79,6 +84,11 @@ nodes.}
 \item{tip_labels}{(logical; TRUE) Plot tip labels?}
 
 \item{tip_labels_italics}{(logical; FALSE) Plot tip labels in italics?}
+
+\item{tip_labels_formatted}{(logical; FALSE) Do the tip labels contain 
+manually added formatting information? Will set parse = TRUE in geom_text()
+and associated functions to interpret formatting. See ?plotmath for more.
+Cannot be TRUE if tip_labels_italics = TRUE.}
 
 \item{tip_labels_remove_underscore}{(logical; TRUE) Remove underscores in tip
 labels?}

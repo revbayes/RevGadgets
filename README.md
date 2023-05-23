@@ -1,11 +1,11 @@
 # RevGadgets
 
-<a href="https://revbayes.github.io/tutorials/intro/revgadgets"><img src="https://raw.githubusercontent.com/cmt2/RevGadgets/master/inst/hex_sticker.png" height="200" align="right" /></a>
+<a href="https://revbayes.github.io/tutorials/intro/revgadgets"><img src="https://raw.githubusercontent.com/revbayes/RevGadgets/master/inst/hex_sticker.png" height="200" align="right" /></a>
 
 <!-- badges: start -->
 ![CRAN](https://www.r-pkg.org/badges/last-release/RevGadgets)
 ![downloads](https://cranlogs.r-pkg.org/badges/grand-total/RevGadgets)
-[![R-CMD-check](https://github.com/cmt2/RevGadgets/workflows/R-CMD-check/badge.svg)](https://github.com/cmt2/RevGadgets/actions)
+[![R-CMD-check](https://github.com/revbayes/RevGadgets/workflows/R-CMD-check/badge.svg)](https://github.com/revbayes/RevGadgets/actions)
 <a href="https://zenodo.org/badge/latestdoi/162725392"><img src="https://zenodo.org/badge/162725392.svg" alt="DOI"></a>
 
 
@@ -65,4 +65,4 @@ This is a growing list: please let us know if you want to contribute your own!
 
 ### Contributing:
 
-If you'd like to make contributions to `RevGadgets`, please see our `development` branch, where we provide some instructions on code style, testing, and other important details.
+If you'd like to contribute to `RevGadgets`, please have a look at our [developer guide](https://github.com/revbayes/RevGadgets/blob/development/inst/developers_guide.md)!
