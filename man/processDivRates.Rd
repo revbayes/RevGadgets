@@ -43,7 +43,7 @@ value provided is greater than 1). Passed to readTrace().}
 containing the upper and lower bounds for the confidence intervals.}
 
 \item{summary}{typically "mean" or "median"; the metric to summarize the
-posterior distribution. Defaults to "Mean"}
+posterior distribution. Defaults to "median"}
 }
 \value{
 List object with processed rate and time parameters.
