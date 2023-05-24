@@ -33,7 +33,7 @@
 #' @param probs (numeric vector; c(0.025, 0.975)) a vector of length two
 #' containing the upper and lower bounds for the confidence intervals.
 #' @param summary typically "mean" or "median"; the metric to summarize the
-#' posterior distribution. Defaults to "Mean"
+#' posterior distribution. Defaults to "median"
 #' @return List object with processed rate and time parameters.
 #'
 #' @examples
@@ -90,7 +90,7 @@ processDivRates <- function(speciation_time_log = "",
                             fossilization_rate_log = "",
                             burnin = 0.25,
                             probs = c(0.025, 0.975),
-                            summary = "mean") {
+                            summary = "median") {
   # enforce argument matching
   if (is.character(speciation_time_log) == FALSE)
     stop("speciation_time_log must be a character string or vector of strings")

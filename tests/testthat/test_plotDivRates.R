@@ -27,7 +27,8 @@ test_that("plot works", {
                 speciation_rate_log = file_specrates,
                 extinction_time_log = file_exttimes,
                 extinction_rate_log = file_extrates,
-                burnin = 0.25
+                burnin = 0.25,
+                summary = "mean"
         )
         plot_new <- plotDivRates(primates)
         plot_orig <- readRDS(file_plot_orig)
