@@ -12,7 +12,8 @@ processPopSizes(
   probs = c(0.025, 0.975),
   summary = "median",
   num_grid_points = 100,
-  max_age = NULL
+  max_age = NULL,
+  min_age = NULL
 )
 }
 \arguments{
@@ -36,7 +37,7 @@ containing the upper and lower bounds for the confidence intervals.}
 \item{summary}{(string, default: "median") the metric to summarize the
 posterior distribution, typically "mean" or "median".}
 
-\item{num_grid_points}{(numeric; default: 100) defines the number of grid points through time for which to 
+\item{num_grid_points}{(numeric; default: 100) defines the number of grid points through time for which to
 evaluate the demographic functions.}
 
 \item{max_age}{(numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.

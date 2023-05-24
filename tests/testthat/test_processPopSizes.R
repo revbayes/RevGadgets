@@ -37,7 +37,7 @@ test_that("processes population size output", {
         GMRF <- processPopSizes(
                 population_size_log = file_popsizes_GMRF,
                 interval_change_points_log = file_changepoints_GMRF,
-                max_age = 10000
+                max_age = 300000
         )
         
         expect_equal(ncol(constant), 4)
@@ -53,5 +53,5 @@ test_that("processes population size output", {
         expect_equal(ncol(GMRF), 4)
         expect_equal(class(GMRF), c("tbl_df", "tbl", "data.frame"))
         expect_equal(nrow(GMRF), 100)
-        expect_equal(max(GMRF$time), 10000)
+        expect_equal(max(GMRF$time), 300000)
 })

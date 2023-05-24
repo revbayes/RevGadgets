@@ -13,7 +13,7 @@ plotPopSizes(
 )
 }
 \arguments{
-\item{df}{(data frame) such as produced by processPopSizes(), containing 
+\item{df}{(data frame) such as produced by processPopSizes(), containing
 the data on population sizes and corresponding grid points (points in time for population size evaluation)}
 
 \item{plot_CIs}{(boolean; default: TRUE) specifies whether the credible intervals should be plotted.}
@@ -40,13 +40,11 @@ axis labels, the color palette, whether the axes are to be linked, or the
 overall plotting style/theme, just as with any ggplot object.
 }
 \examples{
-library(tibble)
+df <- dplyr::tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
+                    "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
+                    "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
+                    "lower" = c(0.5, 0.1, 0.5, 0.5, 0.8))
 
-df <- tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
-             "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
-             "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
-             "lower" = c(0.5, 0.1, 0.5, 0.5, 0.8))
-             
 plotPopSizes(df)
 
 }

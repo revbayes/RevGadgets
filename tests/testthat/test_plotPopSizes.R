@@ -33,11 +33,13 @@ test_that("plot population size trajectories", {
         GMRF <- processPopSizes(
                 population_size_log = file_popsizes_GMRF,
                 interval_change_points_log = file_changepoints_GMRF,
-                max_age = 10000
+                max_age = 300000
         )
         
         plot_new_1 <- plotPopSizes(CPP)
-        plot_new_2 <- plotPopSizes(GMRF, add = TRUE, existing_plot = plot_new_1, col = "blue")
+        plot_new_2 <- plotPopSizes(GMRF, add = TRUE, 
+                                   existing_plot = plot_new_1, 
+                                   col = "blue")
         
         plot_orig <- readRDS(file_plot_orig)
 
@@ -50,6 +52,6 @@ test_that("plot population size trajectories", {
         dev.off()
 
         # compare plot data objects
-        expect_equal(plot_new_2$data, plot_orig)
+        expect_equal(plot_new_1$data, plot_orig)
 
 })

@@ -21,20 +21,15 @@
 #' @return a ggplot object
 #'
 #' @examples
-#' library(tibble)
-#'
-#' df <- tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
-#'              "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
-#'              "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
-#'              "lower" = c(0.5, 0.1, 0.5, 0.5, 0.8))
+#' df <- dplyr::tibble("time" = c(0.0, 1.0, 2.0, 3.0, 4.0),
+#'                     "value" = c(1.0, 1.5, 2.0, 1.5, 1.5),
+#'                     "upper" = c(3.5, 7.0, 6.5, 5.0, 5.0),
+#'                     "lower" = c(0.5, 0.1, 0.5, 0.5, 0.8))
 #'
 #' plotPopSizes(df)
 #'
 #' @export
-#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment geom_rect geom_line geom_ribbon scale_y_log10 coord_cartesian xlim
-#' @importFrom dplyr bind_rows
-#' @importFrom utils head tail
-#'
+
 plotPopSizes <- function(df,
                          plot_CIs = TRUE,
                          add = FALSE,
@@ -50,29 +45,36 @@ plotPopSizes <- function(df,
     message("Using default time units in x-axis label: Age (years)")
 
     p <- df %>%
-      ggplot(aes(x = time, y = value)) +
-      geom_line(color = col, size = 0.8) +
-      scale_y_log10() +
-      scale_x_reverse() +
-      xlab("Age (years)") +
-      ylab("Population Size")
+      ggplot2::ggplot(ggplot2::aes(x = time, y = value)) +
+      ggplot2::geom_line(color = col, linewidth = 0.8) +
+      ggplot2::scale_y_log10() +
+      ggplot2::scale_x_reverse() +
+      ggplot2::xlab("Age (years)") +
+      ggplot2::ylab("Population Size")
 
   } else {
     p <- existing_plot +
-      geom_line(data = df, aes(x = time, y = value), color = col, size = 0.8) #+
+      ggplot2::geom_line(data = df, 
+                         ggplot2::aes(x = time, y = value), 
+                         color = col, 
+                         linewidth = 0.8)
   }
 
   if (plot_CIs == TRUE){
-    p <- p + geom_ribbon(data = df, aes(ymin = lower, ymax = upper), fill = col, alpha = 0.4)
+    p <- p + 
+      ggplot2::geom_ribbon(data = df, 
+                           ggplot2::aes(ymin = lower, ymax = upper), 
+                           fill = col, 
+                           alpha = 0.4)
   }
 
   p <- p +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank())
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.title = ggplot2::element_blank(),
+                   legend.position = "none",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   strip.background = ggplot2::element_blank())
 
   return(p)
 }

@@ -33,7 +33,6 @@
 #' @return List object with processed rate and, if applicable, time parameters.
 #'
 #' @export
-#' @importFrom tibble as_tibble tibble
 
 processPopSizes <- function(population_size_log = "",
                             interval_change_points_log = "",
@@ -44,6 +43,7 @@ processPopSizes <- function(population_size_log = "",
                             num_grid_points = 100,
                             max_age = NULL,
                             min_age = NULL){
+  #recover()
   constant_dem = FALSE
 
   if (interval_change_points_log == ""){
@@ -144,7 +144,7 @@ processPopSizes <- function(population_size_log = "",
     m <- sapply(pop_size_trajectories, function(e) e(x))
     quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
 
-    plotdf <- as_tibble(apply(m, 1, summary))
+    plotdf <- dplyr::as_tibble(apply(m, 1, summary))
     plotdf$lower <- quantiles[1,]
     plotdf$upper <- quantiles[2,]
     plotdf$time <- x
