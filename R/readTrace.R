@@ -121,7 +121,8 @@ readTrace <- function(paths,
         header = TRUE,
         sep = delim,
         check.names = check.names,
-        nrows = 0
+        nrows = 0,
+        ...
       )
     )
   }

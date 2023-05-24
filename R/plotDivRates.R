@@ -12,10 +12,10 @@
 #' overall plotting style/theme, just as with any ggplot object.
 #'
 #'
-#' @param df a data frame, such as produced by processDivRates(), containing 
-#' the data on rates and interval times for each type of rate to be 
-#' plotted (speciation rate, etc.).
-#' @param plot_var only include variable that contain the string, default "rate" in the name
+#' @param rates (list of dataframes; no default) A list of dataframes,
+#' such as produced by processDivRates(), containing the data on rates
+#' and interval times for each type of rate to be plotted (e.g.
+#' speciation rate, etc.).
 #'
 #' @param facet (logical; TRUE) plot rates in separate facets.
 #'
@@ -60,7 +60,7 @@
 #'                          burnin = 0.25)
 #'
 #' # then plot results:
-#' p <- plotDivRates(rates);p
+#' p <- plotDivRates(rates = rates);p
 #'
 #' # change the x-axis
 #' p <- p + ggplot2::xlab("Thousands of years ago");p
@@ -90,53 +90,44 @@
 #' }
 #'
 #' @export
-#' @importFrom ggplot2 aes ggplot theme xlab ylab theme_bw scale_color_manual scale_fill_manual scale_x_reverse labeller facet_wrap element_blank geom_segment geom_rect
-#' @importFrom dplyr bind_rows
-#' @importFrom utils head tail
 
-plotDivRates <- function(df, plot_var = "rate", facet = TRUE){
+plotDivRates <- function(rates, facet = TRUE){
   message("Using default time units in x-axis label: Age (Ma)")
+  rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
   `%>%` <- dplyr::`%>%`
-  
-  vert_lines <- lapply(grep(plot_var, unique(df$item), value = TRUE),
-                       function(item) .makeVerticalLines(df, item)) %>%
-    bind_rows()
-  
-  pdata <- df %>%
-    subset(grepl(plot_var, item)) 
-  
-  rates_to_plot <- unique(pdata$item)
-  
-  p <- pdata %>%
-    ggplot(aes(x = time, 
-               y = value, 
-               yend = value, 
-               xend = time_end))  +
-    geom_segment(aes(color = item)) + ## plot horizontal segments
-    geom_segment(data = vert_lines, 
-                 aes(y = y, x = x, yend = yend, xend = xend, color = item)) + ## plot the vertical segments
-    geom_rect(aes(xmin = time, xmax = time_end, ymin = lower, ymax = upper, fill = item),
-              alpha = 0.4) +
-    scale_x_reverse() +
-    xlab("Age (Ma)") +
-    ylab("Rate") +
-    theme_bw() +
-    theme(legend.title = element_blank(),
-          legend.position = "none",
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank()) +
-    scale_color_manual(values = colFun(length(rates_to_plot))) +
-    scale_fill_manual(values = colFun(length(rates_to_plot)))
-  
-  if (facet){
-    p <- p +
-      facet_wrap(dplyr::vars(item),
-                 scales = "free_y",
-                 labeller =
-                   labeller(item = .titleFormatLabeller))
-  }
-  
-  
+
+    p <- rates %>%
+    subset(grepl("rate", item)) %>%
+    ggplot2::ggplot(ggplot2::aes(time, value, color = item))  +
+    ggplot2::geom_step(ggplot2::aes(time, value),
+                       direction = "vh") +
+    geom_stepribbon(ggplot2::aes(x = time,
+                                 ymin = lower,
+                                 ymax = upper,
+                                 fill = item),
+                    direction = "vh",
+                    alpha = 0.4,
+                    color = NA) +
+    ggplot2::scale_x_reverse() +
+    ggplot2::xlab("Age (Ma)") +
+    ggplot2::ylab("Rate") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.title = ggplot2::element_blank(),
+                   legend.position = "none",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   strip.background = ggplot2::element_blank()) +
+    ggplot2::scale_color_manual(values = colFun(length(rates_to_plot))) +
+    ggplot2::scale_fill_manual(values = colFun(length(rates_to_plot)))
+
+    if (facet){
+      p <- p +
+        ggplot2::facet_wrap(dplyr::vars(item),
+                            scales = "free_y",
+                            labeller =
+                              ggplot2::labeller(item = .titleFormatLabeller))
+    }
+
+
   return(p)
 }

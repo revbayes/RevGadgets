@@ -90,7 +90,7 @@ processDivRates <- function(speciation_time_log = "",
                             fossilization_rate_log = "",
                             burnin = 0.25,
                             probs = c(0.025, 0.975),
-                            summary = "median") {
+                            summary = "mean") {
   # enforce argument matching
   if (is.character(speciation_time_log) == FALSE)
     stop("speciation_time_log must be a character string or vector of strings")
@@ -316,15 +316,7 @@ processDivRates <- function(speciation_time_log = "",
       plotdata <-
         .makePlotData(rates = rates,
                       probs = probs,
-                      summary = summary,
-                      levels = c(
-                        "speciation rate",
-                        "extinction rate",
-                        "speciation time",
-                        "extinction time",
-                        "net-diversification rate",
-                        "relative-extinction rate"
-                      ))
+                      summary = summary)
       return(plotdata)
     }
   }

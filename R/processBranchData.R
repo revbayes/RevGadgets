@@ -45,8 +45,7 @@
 #'               node_pp = FALSE,
 #'               tip_labels = FALSE,
 #'               color_branch_by = "avg_lambda",
-#'               line_width = 0.8,
-#'               branch_color = c("blue","green")) +
+#'               line_width = 0.8) +
 #'      ggplot2::theme(legend.position=c(.1, .9));p
 #' # remove files
 #' # WARNING: only run for example dataset!
@@ -61,10 +60,10 @@ processBranchData <- function(tree,
                                            "num_shifts"),
                               summary = "median",
                               net_div = FALSE) {
-  if (class(dat) == "list") {
+  if (methods::is(dat, "list")) {
     dat <- dat[[1]]
   }
-  if (class(tree) == "list") {
+  if (methods::is(tree, "list")) {
     tree <- tree[[1]][[1]]
   }
 

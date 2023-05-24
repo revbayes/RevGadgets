@@ -41,11 +41,9 @@ test_that("invalid inputs are rejected", {
 
   expect_error(densiTreeWithBranchData(trees = trees))
   expect_error(densiTreeWithBranchData(data = data))
-  expect_error(
-    expect_warning(densiTreeWithBranchData(
-      tree_files = tree_file,
-      burnin = 0,
-      data_name = "psi"
-    )) 
-  )
+  expect_error(densiTreeWithBranchData(
+    tree_files = tree_file,
+    burnin = 0,
+    data_name = "psi"
+  ))
 })
