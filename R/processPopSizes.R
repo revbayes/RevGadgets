@@ -30,6 +30,9 @@
 #' @param max_age (numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 #' If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
 #' to the maximal age provided with the interval_change_points_log.
+#' @param min_age (numeric; default: NULL, i.e. not provided) defines the minimal age up to which the demographic functions should be evaluated.
+#' If not provided, it will either be automatically set to 1e2 (in case of a constant process) or
+#' to the minimal age provided with the interval_change_points_log.
 #' @return List object with processed rate and, if applicable, time parameters.
 #'
 #' @export
@@ -101,9 +104,9 @@ processPopSizes <- function(population_size_log = "",
       for (i in seq_along(pop_size_ordered)){
         if(length(times[[i]]) > 0){
           f <- approxfun(sort(times[[i]]),
-                         tail(pop_size_ordered[[i]], n = -1),
+                         utils::tail(pop_size_ordered[[i]], n = -1),
                          yleft = pop_size_ordered[[i]][1],
-                         yright = tail(pop_size_ordered[[i]], n = 1),
+                         yright = utils::tail(pop_size_ordered[[i]], n = 1),
                          method = "constant")
         }else{
           f <- function(t) pop_size_ordered[[i]][1] + t*0
@@ -115,7 +118,7 @@ processPopSizes <- function(population_size_log = "",
         f <- approxfun(c(0, sort(times[[i]])),
                          pop_size_ordered[[i]],
                          #yleft = pop_size_ordered[[i]][1],
-                         yright = tail(pop_size_ordered[[i]], n = 1),
+                         yright = utils::tail(pop_size_ordered[[i]], n = 1),
                          method = "linear")
         pop_size_trajectories[[i]] <- f
       }

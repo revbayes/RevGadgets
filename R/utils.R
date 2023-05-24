@@ -532,11 +532,11 @@
   
   res <- path %>% 
     readLines() %>%
-    tail(n = -1)
+    utils::tail(n = -1)
   
   names <- path %>% 
     readLines() %>%
-    head(n = 1) %>%
+    utils::head(n = 1) %>%
     strsplit("\t")
   
   if (burnin >= length(res))
@@ -558,7 +558,7 @@
   
   res <- res %>%
     strsplit("\t") %>% 
-    lapply(function(x) tail(x, n = -cols_to_exclude)) %>%
+    lapply(function(x) utils::tail(x, n = -cols_to_exclude)) %>%
     lapply(as.numeric)
   
   return(res)

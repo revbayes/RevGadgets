@@ -43,6 +43,10 @@ evaluate the demographic functions.}
 \item{max_age}{(numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
 to the maximal age provided with the interval_change_points_log.}
+
+\item{min_age}{(numeric; default: NULL, i.e. not provided) defines the minimal age up to which the demographic functions should be evaluated.
+If not provided, it will either be automatically set to 1e2 (in case of a constant process) or
+to the minimal age provided with the interval_change_points_log.}
 }
 \value{
 List object with processed rate and, if applicable, time parameters.
