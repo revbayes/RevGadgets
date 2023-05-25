@@ -2,6 +2,8 @@
 
 The purpose of this vignette is to establish common practices developing the RevGadgets package. These practices include documenting, writing, and testing of functions, as well as appropriate use of unit testing through GitHub actions.
 
+Please be sure to do all development using the development branch of RevGadgets or a feature branch (for example dev_pop_size). Adding new functionality should be done on a feature branch (branched from development), but minor fixes to existing code can happen directly on development. Once the feature branch is good to go, submit a pull request to merge back with development. We will occasionally merge the development and master branches for new releases. 
+
 We will use the following two example functions to illustrate these best practices:
 
 ### Example 1: processDivRates()
@@ -802,6 +804,6 @@ We recommend that plotting functions are tested by comparing a saved version of 
 ```
 ## Unit Testing and GitHub
 
-Please be sure to do all development using the Development branch of RevGadgets. We will occasionally merge the Development and Master branches for new releases. When you push to GitHub, GitHub will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
+When you push to GitHub, GitHub will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
 
 If have any questions about these recommendations or are hesitant about pushing to the development branch, feel free to contact the developers for additional guidance.
