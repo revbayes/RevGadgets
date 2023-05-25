@@ -65,4 +65,4 @@ This is a growing list: please let us know if you want to contribute your own!
 
 ### Contributing:
 
-If you'd like to contribute to `RevGadgets`, please have a look at our [developer guide](https://github.com/revbayes/RevGadgets/blob/development/inst/developers_guide.md)!
+If you'd like to contribute to `RevGadgets`, please have a look at our [developer guide](https://github.com/revbayes/RevGadgets/blob/development/inst/developers_guide.md)! For minor changes to existing code, make changes to development. To develop new code or make more substantial changes, create a new feature branch from development and then submit a pull request to merge back with development when the code is ready. No changes should happen directly on the master branch. 
