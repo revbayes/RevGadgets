@@ -35,6 +35,8 @@
 #' If age_bars_colored_by specifies a variable (not NULL), you must provide
 #' two colors, low and high values for a gradient. Colors must be either R
 #' valid color names or valid hex codes.
+#' 
+#' @param age_bars_width (numeric; 1) Change line width for age bars
 #'
 #' @param node_labels (character; NULL) Plot text labels at nodes, specified by
 #' the name of the corresponding column in the tidytree object. If NULL, no
@@ -135,6 +137,7 @@ plotTreeFull <- function(tree,
                          tip_age_bars,
                          age_bars_color,
                          age_bars_colored_by,
+                         age_bars_width,
 
                          node_labels,
                          node_labels_color,
@@ -177,6 +180,8 @@ plotTreeFull <- function(tree,
   if (is.null(age_bars_colored_by) == FALSE &
       any(vars %in% age_bars_colored_by) == FALSE)
     stop("age_bars_colored_by should be a column in your tidytree object")
+  if (is.numeric(age_bars_width) == FALSE)
+    stop ("age_bars_width should be numeric")
   if (is.null(node_labels) == FALSE &
       any(vars %in% node_labels) == FALSE)
     stop("node_labels should be NULL or a column in your tidytree object")
@@ -487,9 +492,9 @@ plotTreeFull <- function(tree,
     if (time_bars) {
       if (geo) {
         if ("epochs" %in% geo_units) {
-          x_pos <- -rev(c(0, deeptime::getScaleData("epochs")$max_age))
+          x_pos <- -rev(c(0, deeptime::get_scale_data("epochs")$max_age))
         } else {
-          x_pos <-  -rev(c(0, deeptime::getScaleData("periods")$max_age))
+          x_pos <-  -rev(c(0, deeptime::get_scale_data("periods")$max_age))
         }
       } else if (!geo) {
         x_pos <- -rev(xline)
@@ -573,7 +578,7 @@ plotTreeFull <- function(tree,
           ),
           data = bar_df,
           color = age_bars_color,
-          size = 1.5,
+          linewidth = age_bars_width,
           alpha = 0.8
         )
     } else if (is.null(age_bars_colored_by) == FALSE) {
@@ -612,7 +617,7 @@ plotTreeFull <- function(tree,
             color = olena
           ),
           data = bar_df,
-          size = 1.5,
+          linewidth = age_bars_width,
           alpha = 0.8
         ) +
         ggplot2::scale_color_gradient(

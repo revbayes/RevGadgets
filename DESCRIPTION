@@ -1,7 +1,7 @@
 Package: RevGadgets
 Type: Package
 Title: Visualization and Post-Processing of 'RevBayes' Analyses
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: c(
     person("Carrie", "Tribble", 
            email = "ctribble09@gmail.com", 
@@ -24,7 +24,7 @@ URL: https://github.com/revbayes/RevGadgets, https://revbayes.github.io/tutorial
 BugReports: https://github.com/revbayes/RevGadgets/issues
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Depends: R (>= 4.2.0)
 biocViews:
 Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0),
@@ -38,4 +38,3 @@ Suggests: testthat,
           knitr,
           rmarkdown,
           phangorn
-          
