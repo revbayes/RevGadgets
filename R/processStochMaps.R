@@ -58,7 +58,7 @@ processStochMaps <- function(tree,
         tree <- tree[[1]]
       } else {stop("tree should contain only one tree object")}
     } 
-  
+
     # compute the number of states
     nstates <- length(states)
     
@@ -73,7 +73,8 @@ processStochMaps <- function(tree,
         
         # combine multiple samples together
         if ( length(samples) > 1 ) {
-            samples <- combineTraces(samples)    
+            samples <- combineTraces(samples)
+            samples <- samples[[1]]
         } else {
             samples <- samples[[1]]
         }
