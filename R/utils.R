@@ -557,8 +557,14 @@
   cols_to_exclude = length(grep(pattern = names_to_exclude, names[[1]]))
   
   res <- res %>%
-    strsplit("\t") %>% 
-    lapply(function(x) utils::tail(x, n = -cols_to_exclude)) %>%
+    strsplit("\t")
+  
+  if (cols_to_exclude > 0) {
+    res <- res %>%
+      lapply(function(x) utils::tail(x, n = -cols_to_exclude))
+  }
+  
+  res <- res %>%
     lapply(as.numeric)
   
   return(res)

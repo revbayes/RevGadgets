@@ -79,7 +79,9 @@ processPopSizes <- function(population_size_log = "",
     times <- .readOutputFile(interval_change_points_log, burnin = burnin)
 
     # remove the last time because we are not going to use it
-    if ( length(pop_size) == length(times) ) {
+    # if the vector of times has the same number of elements
+    # as the vector of population sizes
+    if ( length(pop_size[[1]]) == length(times[[1]]) ) {
       cat("Removing last time ...\n")
       times_pruned <- list()
       for (i in seq_along(times)){
@@ -130,13 +132,6 @@ processPopSizes <- function(population_size_log = "",
     if ( is.null(min_age) ) {
       min_age <- min( unlist(times) )
       min_age <- max(min_age, 1E-2)
-#      first_break  <- c()
-#      second_break <- c()
-#      for (i in seq_along(times)){
-#        first_break[i]  <- times[[i]][orders[[i]]][1]
-#        second_break[i] <- times[[i]][orders[[i]]][2]
-#      }
-#      min_age <- max(first_break)
     }
     if ( is.null(max_age) ) {
       max_age <- max( unlist(times) )
