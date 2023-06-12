@@ -12,8 +12,10 @@ processPopSizes(
   probs = c(0.025, 0.975),
   summary = "median",
   num_grid_points = 100,
+  spacing = "exponential",
   max_age = NULL,
-  min_age = NULL
+  min_age = NULL,
+  distribution = FALSE
 )
 }
 \arguments{
@@ -40,16 +42,25 @@ posterior distribution, typically "mean" or "median".}
 \item{num_grid_points}{(numeric; default: 100) defines the number of grid points through time for which to
 evaluate the demographic functions.}
 
+\item{spacing}{(string, default: "exponential") The spacing of grid points. Can be "exponential" or "equal".
+Exponentially spaced grid points are dense towards the present and have larger distances towards the past.}
+
 \item{max_age}{(numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
 to the maximal age provided with the interval_change_points_log.}
 
 \item{min_age}{(numeric; default: NULL, i.e. not provided) defines the minimal age up to which the demographic functions should be evaluated.
 If not provided, it will either be automatically set to 1e2 (in case of a constant process) or
-to the minimal age provided with the interval_change_points_log.}
+to the minimal age provided with the interval_change_points_log. Can not be 0 in case of exponential spacing.}
+
+\item{distribution}{(boolean; default: FALSE) specifies whether the summary data frame will be returned 
+(distribution = FALSE) or a matrix with distributions of population size for each point on the grid and 
+with the times of the grid points as row names (distribution = TRUE).}
 }
 \value{
-List object with processed rate and, if applicable, time parameters.
+List object with processed rate and, if applicable, time parameters (if distribution = FALSE). 
+Matrix object with distributions of population size (if distribution = TRUE). If applicable, one row for each point on the grid, 
+with the times of the grid points as row names.
 }
 \description{
 Processing the output of a coalescent demographic analysis.

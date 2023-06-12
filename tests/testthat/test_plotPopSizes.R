@@ -3,7 +3,7 @@ context("tests the plotPopSizes function")
 test_that("plot population size trajectories", {
         file_plot_orig <-
                 system.file("extdata",
-                            "graphs/plotPopSizes_df.rds",
+                            "graphs/plotPopSizes.rds",
                             package = "RevGadgets")
         
         file_popsizes_CPP <-
@@ -33,6 +33,8 @@ test_that("plot population size trajectories", {
         GMRF <- processPopSizes(
                 population_size_log = file_popsizes_GMRF,
                 interval_change_points_log = file_changepoints_GMRF,
+                spacing = "equal",
+                min_age = 0,
                 max_age = 300000
         )
         
@@ -52,6 +54,8 @@ test_that("plot population size trajectories", {
         dev.off()
 
         # compare plot data objects
-        expect_equal(plot_new_1$data, plot_orig)
-
+        expect_equal(plot_new_2$data, plot_orig$data)
+        expect_equal(plot_new_2$scales, plot_orig$scales)
+        expect_equal(plot_new_2$layers, plot_orig$layers)
+        
 })

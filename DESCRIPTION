@@ -16,7 +16,8 @@ Authors@R: c(
     person("Bjorn Tore", "Kopperud", role = "aut"),
     person("Sebastian", "Hohna", role = "aut"),
     person("Nagashima", "Kengo", role = "ctb"),
-    person("Schliep", "Klaus", role = "ctb")
+    person("Schliep", "Klaus", role = "ctb"),
+    person("Ronja J.", "Billenstein", role = "aut")
     )
 Maintainer: Carrie Tribble <ctribble09@gmail.com>
 Description: Processes and visualizes the output of complex phylogenetic analyses from the 'RevBayes' phylogenetic graphical modeling software.

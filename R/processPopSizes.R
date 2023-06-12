@@ -27,13 +27,20 @@
 #' posterior distribution, typically "mean" or "median".
 #' @param num_grid_points (numeric; default: 100) defines the number of grid points through time for which to
 #' evaluate the demographic functions.
+#' @param spacing (string, default: "exponential") The spacing of grid points. Can be "exponential" or "equal".
+#' Exponentially spaced grid points are dense towards the present and have larger distances towards the past.
 #' @param max_age (numeric; default: NULL, i.e. not provided) defines the maximal age up to which the demographic functions should be evaluated.
 #' If not provided, it will either be automatically set to 1e5 (in case of a constant process) or
 #' to the maximal age provided with the interval_change_points_log.
 #' @param min_age (numeric; default: NULL, i.e. not provided) defines the minimal age up to which the demographic functions should be evaluated.
 #' If not provided, it will either be automatically set to 1e2 (in case of a constant process) or
-#' to the minimal age provided with the interval_change_points_log.
-#' @return List object with processed rate and, if applicable, time parameters.
+#' to the minimal age provided with the interval_change_points_log. Can not be 0 in case of exponential spacing.
+#' @param distribution (boolean; default: FALSE) specifies whether the summary data frame will be returned 
+#' (distribution = FALSE) or a matrix with distributions of population size for each point on the grid and 
+#' with the times of the grid points as row names (distribution = TRUE).
+#' @return List object with processed rate and, if applicable, time parameters (if distribution = FALSE). 
+#' Matrix object with distributions of population size (if distribution = TRUE). If applicable, one row for each point on the grid, 
+#' with the times of the grid points as row names.
 #'
 #' @export
 
@@ -44,40 +51,61 @@ processPopSizes <- function(population_size_log = "",
                             probs = c(0.025, 0.975),
                             summary = "median",
                             num_grid_points = 100,
+                            spacing = "exponential",
                             max_age = NULL,
-                            min_age = NULL){
+                            min_age = NULL,
+                            distribution = FALSE){
+  
+  if (spacing == "exponential" && !is.null(min_age) && min_age == 0){
+    stop("Exponential spacing of grid points can not be combined with a minimal age of 0. Please choose either equal spacing or a different min_age.")
+  }
+  
   #recover()
   constant_dem = FALSE
-
+  
   if (interval_change_points_log == ""){
     constant_dem = TRUE
   }
-
+  
   if (constant_dem == TRUE){
     pop_size <- readTrace(paths = population_size_log)[[1]]
     pop_sizes <- pop_size[, ncol(pop_size)]
-
-    summary_size <- apply(as.matrix(pop_sizes), 2, FUN = summary)
-    quantiles <- apply(as.matrix(pop_sizes), 2,
-                       quantile,
-                       probs = probs)
-
-    if (is.null(max_age)){
-      x <- seq(0, 1e5, length.out = num_grid_points)
-    } else {
-      x <- seq(0, max_age, length.out = num_grid_points)
+    
+    if ( is.null(min_age) ) {
+      min_age <- 1E-2
     }
-
-    plotdf <- dplyr::tibble(.rows = length(x))
-    plotdf["value"] <- rep(summary_size, length(x))
-    plotdf["lower"] <- rep(quantiles[1, ], length(x))
-    plotdf["upper"] <- rep(quantiles[2, ], length(x))
-    plotdf$time <- x
-
+    if ( is.null(max_age) ) {
+      max_age <- 1e5
+    }
+    
+    if (spacing == "exponential"){
+      x <- exp(seq(log(min_age), log(max_age), length.out = num_grid_points))
+    } else if (spacing == "equal"){
+      x <- seq(min_age, max_age, length.out = num_grid_points)
+    } else {
+      stop('Please provide as grid point spacing either "exponential" or "equal".')
+    }
+    
+    if (distribution == TRUE){
+      m =  matrix(rep(pop_sizes,each=num_grid_points),nrow=num_grid_points)
+    } else {
+      summary_size <- apply(as.matrix(pop_sizes), 2, FUN = summary)
+      quantiles <- apply(as.matrix(pop_sizes), 2,
+                         quantile,
+                         probs = probs)
+      
+      plotdf <- dplyr::tibble(.rows = length(x))
+      plotdf["value"] <- rep(summary_size, length(x))
+      plotdf["lower"] <- rep(quantiles[1, ], length(x))
+      plotdf["upper"] <- rep(quantiles[2, ], length(x))
+      plotdf$time <- x
+    }
+    
+    
   } else {
     pop_size <- .readOutputFile(population_size_log, burnin = burnin)
     times <- .readOutputFile(interval_change_points_log, burnin = burnin)
-
+    
     # remove the last time because we are not going to use it
     # if the vector of times has the same number of elements
     # as the vector of population sizes
@@ -90,27 +118,27 @@ processPopSizes <- function(population_size_log = "",
       }
       times <- times_pruned
     }
-
+    
     orders <- lapply(times, order)
-
+    
     pop_size_ordered <- list()
     for (i in seq_along(pop_size)){
       res <- c(pop_size[[i]][1], pop_size[[i]][-1][orders[[i]]])
       pop_size_ordered[[i]] <- res
     }
-
+    
     pop_size_trajectories <- list()
-
+    
     if (model == "constant"){
-
-      for (i in seq_along(pop_size_ordered)){
-        if(length(times[[i]]) > 0){
+      
+      for (i in seq_along(pop_size_ordered)) {
+        if (length(times[[i]]) > 0) {
           f <- approxfun(sort(times[[i]]),
                          utils::tail(pop_size_ordered[[i]], n = -1),
                          yleft = pop_size_ordered[[i]][1],
                          yright = utils::tail(pop_size_ordered[[i]], n = 1),
                          method = "constant")
-        }else{
+        } else {
           f <- function(t) pop_size_ordered[[i]][1] + t*0
         }
         pop_size_trajectories[[i]] <- f
@@ -118,17 +146,16 @@ processPopSizes <- function(population_size_log = "",
     } else if (model == "linear") {
       for (i in seq_along(pop_size_ordered)){
         f <- approxfun(c(0, sort(times[[i]])),
-                         pop_size_ordered[[i]],
-                         #yleft = pop_size_ordered[[i]][1],
-                         yright = utils::tail(pop_size_ordered[[i]], n = 1),
-                         method = "linear")
+                       pop_size_ordered[[i]],
+                       #yleft = pop_size_ordered[[i]][1],
+                       yright = utils::tail(pop_size_ordered[[i]], n = 1),
+                       method = "linear")
         pop_size_trajectories[[i]] <- f
       }
     } else {
       stop('Please provide as demographic model either "constant" or "linear".')
     }
-
-
+    
     if ( is.null(min_age) ) {
       min_age <- min( unlist(times) )
       min_age <- max(min_age, 1E-2)
@@ -136,17 +163,31 @@ processPopSizes <- function(population_size_log = "",
     if ( is.null(max_age) ) {
       max_age <- max( unlist(times) )
     }
-    x <- exp(seq(log(min_age), log(max_age), length.out = num_grid_points))
-
-
+    
+    if (spacing == "exponential"){
+      x <- exp(seq(log(min_age), log(max_age), length.out = num_grid_points))
+    } else if (spacing == "equal"){
+      x <- seq(min_age, max_age, length.out = num_grid_points)
+    } else {
+      stop('Please provide as grid point spacing either "exponential" or "equal".')
+    }
+    
     m <- sapply(pop_size_trajectories, function(e) e(x))
-    quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
-
-    plotdf <- dplyr::as_tibble(apply(m, 1, summary))
-    plotdf$lower <- quantiles[1,]
-    plotdf$upper <- quantiles[2,]
-    plotdf$time <- x
+    
+    if (distribution == FALSE){
+      quantiles <- apply(m, 1, function(x) quantile(x, probs = probs))
+      
+      plotdf <- dplyr::as_tibble(apply(m, 1, summary))
+      plotdf$lower <- quantiles[1,]
+      plotdf$upper <- quantiles[2,]
+      plotdf$time <- x
+    }
   }
-
-  return(plotdf)
+  
+  if (distribution == TRUE) {
+    rownames(m) = x
+    return(m)
+  } else {
+    return(plotdf)
+  }
 }
