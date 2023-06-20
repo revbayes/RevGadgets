@@ -30,7 +30,7 @@ test_that("plot works", {
                 burnin = 0.25,
                 summary = "mean"
         )
-        plot_new <- plotDivRates(primates)
+        plot_new <- plotDivRates(primates, )
         plot_orig <- readRDS(file_plot_orig)
 
         tmp <- tempdir()
