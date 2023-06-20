@@ -1,5 +1,5 @@
 context("tests the plotPopSizes function")
-#note: does not compare the generated plot to the expectation
+
 test_that("plot population size trajectories", {
         file_plot_orig <-
                 system.file("extdata",
