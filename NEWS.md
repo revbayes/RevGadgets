@@ -1,7 +1,11 @@
-## RevGadgets 1.1.2
-A few updates to existing code 
+## RevGadgets 1.2.0
+New minor release with a few updates to existing code:
 
-* changing theme for posterior probability plots for stylistic consistency. 
+* changing theme for posterior probability plots for stylistic consistency.
+
+and some new functionality: 
+
+* adds population size plotting for coalescent analyses 
 
 ## RevGadgets 1.1.1
 Patch for a bug caused by changes to stats::density() defaults.
