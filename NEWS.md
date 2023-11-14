@@ -1,3 +1,8 @@
+## RevGadgets 1.1.2
+A few updates to existing code 
+
+* changing theme for posterior probability plots for stylistic consistency. 
+
 ## RevGadgets 1.1.1
 Patch for a bug caused by changes to stats::density() defaults.
 

@@ -277,7 +277,7 @@ plotTrace <-
 
           plots[[i]] <- plots[[i]] +
             ggplot2::scale_color_manual(values = col_vec_quant) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::ggtitle(label = paste("Trace", i, sep = " ")) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
@@ -307,7 +307,7 @@ plotTrace <-
               ),
               fill = col_vec_quant[1]
             ) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::ggtitle(label = paste0("Trace ", i, ": ", vars_quant)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
         }
@@ -366,7 +366,7 @@ plotTrace <-
 
           plots[[length(trace) + 1]] <- plots[[length(trace) + 1]] +
             ggplot2::scale_color_manual(values = col_vec_quant) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::ggtitle(label = "Combined Trace:")  +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
@@ -396,7 +396,7 @@ plotTrace <-
             ) +
             ggplot2::xlab("Parameter value") +
             ggplot2::ylab("Density") +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::ggtitle(label = paste0("Combined Trace: ", vars_quant)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
         }
@@ -480,7 +480,7 @@ plotTrace <-
               position = ggplot2::position_dodge2(preserve = "single"),
               stat = "identity"
             ) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::scale_color_manual(values = col_vec_qual) +
             ggplot2::scale_fill_manual(values = c(col_vec_qual, "#ffffff"),
                                        guide = "none") +
@@ -521,7 +521,7 @@ plotTrace <-
               color = col_vec_qual[1],
               fill = col_vec_qual[1]
             ) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::ggtitle(label = paste0("Trace ", i, ": ", vars_qual)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
         }
@@ -592,7 +592,7 @@ plotTrace <-
               position = ggplot2::position_dodge2(preserve = "single"),
               stat = "identity"
             ) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::scale_color_manual(values = col_vec_qual) +
             ggplot2::scale_fill_manual(values = c(col_vec_qual, "#ffffff"),
                                        guide = "none") +
@@ -633,7 +633,7 @@ plotTrace <-
               color = col_vec_qual[1],
               fill = col_vec_qual[1]
             ) +
-            ggthemes::theme_few() +
+            ggplot2::theme_bw() +
             ggplot2::ggtitle(label = paste0("Combined Trace: ", vars_qual)) +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
