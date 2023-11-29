@@ -1,3 +1,6 @@
+## RevGadgets 1.2.1
+Patch release to fix testing failures on development R, no changes to functions.
+
 ## RevGadgets 1.2.0
 New minor release with a few updates to existing code:
 

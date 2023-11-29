@@ -1,7 +1,7 @@
 Package: RevGadgets
 Type: Package
 Title: Visualization and Post-Processing of 'RevBayes' Analyses
-Version: 1.2.0.9000
+Version: 1.2.1
 Authors@R: c(
     person("Carrie", "Tribble", 
            email = "ctribble09@gmail.com", 
