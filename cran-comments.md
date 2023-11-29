@@ -1,5 +1,6 @@
 ## Release summary
-This is a minor update with a patch to remove dependency on the ggthemes() package, and we have bundled the addition of one additional feature. 
+This is a patch release to adjust tests that were failing on development R after
+changes to the scales package. 
 
 ## Test environments
 Tested via GitHub actions on the following platforms (and R versions):
