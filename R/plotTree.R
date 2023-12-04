@@ -22,7 +22,7 @@
 #' if geo == FALSE.
 #'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to
-#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons",
 #' "eras", or a list of two of those units.
 #'
 #' @param node_age_bars (logical; FALSE) Plot time tree with node age bars?
@@ -37,7 +37,7 @@
 #' R valid color names or valid hex codes.
 #'
 #' @param age_bars_width (numeric; 1.5) Change line width for age bars
-#' 
+#'
 #' @param node_labels (character; NULL) Plot text labels at nodes, specified by
 #' the name of the corresponding column in the tidytree object. If NULL, no
 #' text is plotted.
@@ -53,11 +53,11 @@
 #' @param tip_labels (logical; TRUE) Plot tip labels?
 #'
 #' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
-#' 
-#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#'
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain
 #' manually added formatting information? Will set parse = TRUE in geom_text()
 #' and associated functions to interpret formatting. See ?plotmath for more.
-#' Cannot be TRUE if tip_labels_italics = TRUE.  
+#' Cannot be TRUE if tip_labels_italics = TRUE.
 #'
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores in tip
 #' labels?
@@ -161,7 +161,7 @@ plotTree <- function(tree,
                      age_bars_color = "blue",
                      age_bars_colored_by = NULL,
                      age_bars_width = 1.5,
-                     
+
                      node_labels = NULL,
                      node_labels_color = "black",
                      node_labels_size = 3,
@@ -184,6 +184,7 @@ plotTree <- function(tree,
                      color_branch_by = NULL,
                      line_width = 1,
 
+                     max_plot_age = 0,
                      tree_layout = "rectangular",
                      ...) {
 
@@ -222,6 +223,7 @@ plotTree <- function(tree,
                color_branch_by = color_branch_by,
                line_width = line_width,
 
+               max_plot_age = max_plot_age,
                tree_layout = tree_layout,
 
                # Turn off FBD-specific aspects

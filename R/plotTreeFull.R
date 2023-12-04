@@ -22,7 +22,7 @@
 #' if geo == FALSE.
 #'
 #' @param geo_units (list; list("epochs", "periods")) Which geological units to
-#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons",
 #' "eras", or a list of two of those units.
 #'
 #' @param node_age_bars (logical; TRUE) Plot time tree with node age bars?
@@ -35,7 +35,7 @@
 #' If age_bars_colored_by specifies a variable (not NULL), you must provide
 #' two colors, low and high values for a gradient. Colors must be either R
 #' valid color names or valid hex codes.
-#' 
+#'
 #' @param age_bars_width (numeric; 1) Change line width for age bars
 #'
 #' @param node_labels (character; NULL) Plot text labels at nodes, specified by
@@ -51,10 +51,10 @@
 #'
 #' @param tip_labels_italics (logical; FALSE) Plot tip labels in italics?
 #'
-#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain
 #' manually added formatting information? Will set parse = TRUE in geom_text()
 #' and associated functions to interpret formatting. See ?plotmath for more.
-#' Cannot be TRUE if tip_labels_italics = TRUE.  
+#' Cannot be TRUE if tip_labels_italics = TRUE.
 #'
 #' @param tip_labels_remove_underscore (logical; FALSE) Should underscores be
 #' replaced by spaces in tip labels?
@@ -163,6 +163,7 @@ plotTreeFull <- function(tree,
                          color_branch_by,
                          line_width,
 
+                         max_plot_age,
                          tree_layout,
                          ...) {
   # enforce argument matching
@@ -194,7 +195,7 @@ plotTreeFull <- function(tree,
     stop("tip_labels_italics should be TRUE or FALSE")
   if (is.logical(tip_labels_formatted) == FALSE)
     stop("tip_labels_formatted should be TRUE or FALSE")
-  if (tip_labels_italics == TRUE & tip_labels_formatted == TRUE) 
+  if (tip_labels_italics == TRUE & tip_labels_formatted == TRUE)
     stop("tip_labels_italics and tip_labels_formatted may not both be TRUE")
   if (.isColor(tip_labels_color) == FALSE)
     stop("tip_labels_color should be a recognized color")
@@ -239,29 +240,29 @@ plotTreeFull <- function(tree,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons',
          'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[1]] %in% 
+    if (geo_units[[1]] %in%
         c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons',
          'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[2]] %in% 
+    if (geo_units[[2]] %in%
         c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons',
          'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   } else {
-    if (geo_units %in% 
+    if (geo_units %in%
         c('periods', 'epochs', 'stages', 'eons', 'eras') == FALSE)
       stop(
-        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons',
          'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
@@ -380,7 +381,8 @@ plotTreeFull <- function(tree,
     warning("Plotting with default axis label (Age (Ma))")
     if (node_age_bars == FALSE) {
       minmax <- phytools::nodeHeights(phy@phylo)
-      max_age <- tree_height
+      minmax <- c(max_plot_age,minmax)
+      max_age <- max(tree_height,max_plot_age)
     } else {
       pp$data$age_0.95_HPD <- lapply(pp$data$age_0.95_HPD, function(z) {
         if (any(is.null(z)) ||
@@ -391,7 +393,8 @@ plotTreeFull <- function(tree,
         }
       })
       minmax <- t(matrix(unlist(pp$data$age_0.95_HPD), nrow = 2))
-      max_age <- max(minmax, na.rm = TRUE)
+      minmax <- c(max_plot_age,minmax)
+      max_age <- max(max_plot_age,minmax, na.rm = TRUE)
     }
 
     interval <- max_age / 5
@@ -414,8 +417,8 @@ plotTreeFull <- function(tree,
             "bottom"),
           size = lapply(seq_len(length(geo_units)), function(x)
             tip_labels_size),
-          xlim = c(-max(minmax, na.rm = TRUE), tree_height /
-                     2),
+          xlim = c(-max(minmax, na.rm = TRUE), max(minmax, na.rm = TRUE) /
+                     10),
           ylim = c(-tick_height * 5, ntips *
                      1.1),
           height = grid::unit(4, "line"),
@@ -826,7 +829,7 @@ plotTreeFull <- function(tree,
             hjust = 0,
             color = tip_labels_color,
             size = tip_labels_size,
-            parse = TRUE 
+            parse = TRUE
           )
       }
     } else {
@@ -890,7 +893,7 @@ plotTreeFull <- function(tree,
     pp$data[, col_num] <-
       as.numeric(as.data.frame(pp$data)[, col_num])
     name <- .titleFormat(color_branch_by)
-    pp <- pp + 
+    pp <- pp +
       ggplot2::aes(color = as.data.frame(pp$data)[, col_num]) +
       ggplot2::scale_color_gradient(
         low = branch_color[1],
