@@ -20,6 +20,8 @@
 #' @param check.names (logical; default = FALSE) Passed to utils::read.table();
 #' indicates if utils::read.table() should check column names and replace
 #' syntactically invalid characters.
+#' @param verbose (logical; default = TRUE) Print status of reading traces 
+#' to screen
 #' @param ... (various) Additional arguments passed to utils::read.table().
 #'
 #' @return List of dataframes (of length 1 if only 1 log file provided).
@@ -78,6 +80,7 @@ readTrace <- function(paths,
                       delim = "\t",
                       burnin = 0.1,
                       check.names = FALSE,
+                      verbose = TRUE,
                       ...) {
   # enforce argument matching
 
@@ -138,8 +141,10 @@ readTrace <- function(paths,
   if (format == "simple") {
     output <- vector("list", num_paths)
     for (i in 1:num_paths) {
-      message(paste0(paste0("Reading in log file ", i), "\n", sep = ""))
-
+      if (verbose) {
+        message(paste0(paste0("Reading in log file ", i), "\n", sep = ""))
+      }
+      
       out <- utils::read.table(
         file = paths[i],
         header = TRUE,
