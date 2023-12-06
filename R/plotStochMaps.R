@@ -150,6 +150,7 @@ plotStochMaps <- function(tree,
     node_age_bars = FALSE,
     age_bars_color = "blue",
     age_bars_colored_by = NULL,
+    age_bars_width = 1,
     
     node_labels = NULL,
     node_labels_color = "black",
