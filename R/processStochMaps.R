@@ -9,7 +9,8 @@
 #' @param states (vector of character strings; no default) The character
 #' states.
 #' @param num_intervals (numeric; default 1001) The number of intervals
-#' to divide the tree in to.
+#' to divide the tree into.
+#' @param verbose (logical; default TRUE) Print status of processing on screen.
 #' 
 #' @param ... (various) Additional arguments passed to readTrace()
 #' 
@@ -44,6 +45,7 @@ processStochMaps <- function(tree,
                              simmap = NULL,
                              states,
                              num_intervals = 1000,
+                             verbose = TRUE,
                              ...) {
   
     # pull tree from list object if necessary
@@ -69,8 +71,8 @@ processStochMaps <- function(tree,
     if ( !is.null(paths) ) { # samples in files
         
         # read traces
-        samples <- readTrace(paths, ...)
-        
+        samples <- readTrace(paths, verbose = verbose, ...)
+
         # combine multiple samples together
         if ( length(samples) > 1 ) {
             samples <- combineTraces(samples)
@@ -83,7 +85,9 @@ processStochMaps <- function(tree,
         nsamples <- nrow(samples)
     
     } else if ( !is.null(simmap) ) { # samples in phytools format
-        
+      
+        message("Reformatting simmap objects")
+      
         # make the samples
         samples <- as.data.frame(do.call(rbind, lapply(simmap, function(map) {
             sapply(map$maps, function(edge) {
@@ -109,6 +113,8 @@ processStochMaps <- function(tree,
         stop("Please provide either a paths or simmap argument.")
     }
     
+    message("Processing stochastic maps")
+    
     # get the number of branches
     # including the root branch
     num_branches <- length(tree@phylo$edge.length) + 1
@@ -125,8 +131,11 @@ processStochMaps <- function(tree,
     
     # loop over branches
     dfs <- vector("list", num_branches)
+    
+    if (verbose) { pb <- txtProgressBar(min = 0, max = num_branches, initial = 0) }
+    
     for(i in 1:num_branches) {
-        
+      
         # get the branch indexes
         R_index   <- map$R[i]
         Rev_index <- as.character(map[R_index,2])
@@ -153,6 +162,7 @@ processStochMaps <- function(tree,
             sample_states <- sample[,1]
             sample_times  <- as.numeric(sample[,2])
             names(sample_times) <- sample_states
+            # sample_times <- rev(sample_times) # turn this on for plotting the output from (old) tensorphylo runs
             return(cumsum(sample_times))
         })
         
@@ -181,7 +191,10 @@ processStochMaps <- function(tree,
         # store
         dfs[[i]] <- this_df
         
+        if (verbose) { setTxtProgressBar(pb,i) }
+        
     }
+    if (verbose) { close(pb) }
 
     # combine the branches
     dfs <- do.call(rbind, dfs)

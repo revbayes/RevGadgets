@@ -10,7 +10,7 @@ test_that("plots stochastic maps", {
                           package="RevGadgets")
   plot_file <-
     system.file("extdata", 
-                "stoch_map_test_tmp/plotStochMaps_df.rds", 
+                "graphs/plotStochMaps_df.rds", 
                 package = "RevGadgets")
   
   

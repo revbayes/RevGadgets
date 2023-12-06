@@ -10,6 +10,7 @@ processStochMaps(
   simmap = NULL,
   states,
   num_intervals = 1000,
+  verbose = TRUE,
   ...
 )
 }
@@ -27,10 +28,38 @@ phytools format.}
 states.}
 
 \item{num_intervals}{(numeric; default 1001) The number of intervals
-to divide the tree in to.}
+to divide the tree into.}
+
+\item{verbose}{(logical; default TRUE) Print status of processing on screen.}
 
 \item{...}{(various) Additional arguments passed to readTrace()}
 }
 \description{
 processStochMaps
+}
+\examples{
+
+\donttest{
+
+# Standard stochastic mapping example
+
+# read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
+treefile <- system.file("extdata",
+                        "stoch_map_test_tmp/tree.nexus",
+                        package="RevGadgets")
+                        
+tree <- readTrees(treefile)[[1]][[1]]
+
+# process samples
+mapsfile <- system.file("extdata",
+                        "stoch_map_test_tmp/maps.log",
+                        package="RevGadgets")
+                        
+stoch_map_df <- processStochMaps(tree,
+                                 mapsfile, 
+                                 states = as.character(0:4), 
+                                 burnin = 0.1)
+
+}
+
 }

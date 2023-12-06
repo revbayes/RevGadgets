@@ -10,6 +10,7 @@ readTrace(
   delim = "\\t",
   burnin = 0.1,
   check.names = FALSE,
+  verbose = TRUE,
   ...
 )
 }
@@ -30,6 +31,9 @@ to  discard (if value provided is between 0 and 1) or number of generations
 \item{check.names}{(logical; default = FALSE) Passed to utils::read.table();
 indicates if utils::read.table() should check column names and replace
 syntactically invalid characters.}
+
+\item{verbose}{(logical; default = TRUE) Print status of reading traces 
+to screen}
 
 \item{...}{(various) Additional arguments passed to utils::read.table().}
 }
