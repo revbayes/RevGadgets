@@ -412,17 +412,35 @@
         summary = summary
       ))
   plotdata <- do.call(rbind, res)
-  plotdata$item <- factor(
-    plotdata$item,
-    levels = c(
-      "speciation rate",
-      "extinction rate",
-      "speciation time",
-      "extinction time",
-      "net-diversification rate",
-      "relative-extinction rate"
+  
+  if (sum(grepl("fossil", plotdata$item)) == 0) {
+    plotdata$item <- factor(
+      plotdata$item,
+      levels = c(
+        "speciation rate",
+        "extinction rate",
+        "speciation time",
+        "extinction time",
+        "net-diversification rate",
+        "relative-extinction rate"
+      )
     )
-  )
+  } else {
+    plotdata$item <- factor(
+      plotdata$item,
+      levels = c(
+        "speciation rate",
+        "extinction rate",
+        "fossilization rate",
+        "speciation time",
+        "extinction time",
+        "fossilization time",
+        "net-diversification rate",
+        "relative-extinction rate"
+      )
+    )
+  }
+
   return(plotdata)
 }
 
