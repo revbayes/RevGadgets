@@ -71,17 +71,22 @@
 #' # option: add a stratigraphic scale
 #' library(deeptime)
 #' library(ggplot2)
-#' q <- gggeo_scale(p, dat="periods", height=unit(1.3, "line"), abbrv=F, size=4.5, neg=T)
-#' r <- gggeo_scale(q, dat="epochs", height=unit(1.1, "line"), abbrv=F, size=3.5, neg=T, 
-#'                     skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene"))
-#' s <- gggeo_scale(r, dat="stages", height=unit(1, "line"), abbrv=T, size=2.5, neg=T)
+#' q <- p + coord_geo(pos="bottom", dat="periods", height=unit(1.3, "line"), size=4.5, abbrv=F, neg=T)
+#' q
+#' r <- p + coord_geo(pos=as.list(rep("bottom", 2)), dat=list("epochs", "periods"), 
+#'                    height=list(unit(1.1, "line"), unit(1.3, "line")), size=list(3.5,4.5), 
+#'                    abbrv=F, neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
+#' r
+#' s <- p + coord_geo(pos=as.list(rep("bottom", 3)), dat=list("stages", "epochs", "periods"), 
+#'                    height=list(unit(1, "line"), unit(1.1, "line"), unit(1.3, "line")), size=list(2.5,3.5,4.5), 
+#'                    abbrv=list(T,F,F), neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
 #' s
 #' }
 #' 
 #' @export
 #' @importFrom scales colour_ramp
 #' @importFrom tidyr pivot_longer
-#' @importFrom ggplot2 ggplot aes aes_ geom_line annotate scale_color_manual scale_x_continuous scale_y_continuous theme element_line element_rect element_blank ggtitle
+#' @importFrom ggplot2 ggplot aes aes_ geom_line geom_tile annotate scale_color_manual scale_x_continuous scale_y_continuous theme element_line element_rect element_blank ggtitle
 
 plotDiversityOBDP = function( Kt_mean,
                               xlab="Time",
@@ -144,12 +149,19 @@ plotDiversityOBDP = function( Kt_mean,
   
   p <- ggplot(Kt_mean_plot, aes_(x=~TimePoints, y=~NbTotalLin, z=~ProbabilityDensity))
   
+  dx <- stats::median(diff(sort(unique(Kt_mean_plot$TimePoints))), na.rm = TRUE)
+  if (!is.finite(dx) || dx <= 0) dx <- 1
+  
   ### Plot the number of hidden lineages : full distribution + aggregated expectation + credible interval
   N <- length(Kt_mean)-8       # maximum number of hidden lineages
   if (show_Hidden){
     if (show_densities){
-      p <- p + annotate(geom="raster", x=Kt_mean_plot$TimePoints, y=Kt_mean_plot$NbHiddenLin, interpolate = use_interpolate,
-                        fill = colour_ramp(c(colorRampPalette(palette_Hidden)(N)))(Kt_mean_plot$ProbabilityDensity))
+      hidden_cols <- colour_ramp(colorRampPalette(palette_Hidden)(N))(Kt_mean_plot$ProbabilityDensity)
+      p <- p + geom_tile(
+        data = Kt_mean_plot,
+        mapping = ggplot2::aes(x = TimePoints, y = NbHiddenLin, fill = hidden_cols),
+        width = dx, height = 1, inherit.aes = FALSE, show.legend = FALSE
+      ) + scale_fill_identity()
     }
     if (show_expectations){
       p <- p + geom_line(aes_(y=~aggregNbHiddenLin, color="c1"), linewidth=line_size)
@@ -164,8 +176,12 @@ plotDiversityOBDP = function( Kt_mean,
   ### Plot the total number lineages : full distribution + aggregated expectation + credible interval
   if (show_Total){
     if (show_densities){
-      p <- p + annotate(geom="raster", x=Kt_mean_plot$TimePoints, y=Kt_mean_plot$NbTotalLin, interpolate = use_interpolate,
-                        fill = colour_ramp(colorRampPalette(palette_Total)(N))(Kt_mean_plot$ProbabilityDensity))
+      total_cols <- colour_ramp(colorRampPalette(palette_Total)(N))(Kt_mean_plot$ProbabilityDensity)
+      p <- p + geom_tile(
+        data = Kt_mean_plot,
+        mapping = ggplot2::aes(x = TimePoints, y = NbTotalLin, fill = total_cols),
+        width = dx, height = 1, inherit.aes = FALSE, show.legend = FALSE
+      ) + scale_fill_identity()
       }
     if (show_expectations){
       p <- p + geom_line(aes_(y=~aggregNbTotalLin, color="c3"), linewidth=line_size)
