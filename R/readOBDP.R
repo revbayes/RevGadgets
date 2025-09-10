@@ -55,13 +55,19 @@
 #' library(ggplot2)
 #' q <- p + coord_geo(pos="bottom", dat="periods", height=unit(1.3, "line"), size=4.5, abbrv=F, neg=T)
 #' q
-#' r <- p + coord_geo(pos=as.list(rep("bottom", 2)), dat=list("epochs", "periods"), 
-#'                    height=list(unit(1.1, "line"), unit(1.3, "line")), size=list(3.5,4.5), 
-#'                    abbrv=F, neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
+#' r <- p + coord_geo(pos=as.list(rep("bottom", 2)), 
+#'                    dat=list("epochs", "periods"), 
+#'                    height=list(unit(1.1, "line"), unit(1.3, "line")), 
+#'                    size=list(3.5,4.5), 
+#'                    abbrv=F, neg=T, 
+#'                    skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
 #' r
-#' s <- p + coord_geo(pos=as.list(rep("bottom", 3)), dat=list("stages", "epochs", "periods"), 
-#'                    height=list(unit(1, "line"), unit(1.1, "line"), unit(1.3, "line")), size=list(2.5,3.5,4.5), 
-#'                    abbrv=list(T,F,F), neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
+#' s <- p + coord_geo(pos=as.list(rep("bottom", 3)), 
+#'                    dat=list("stages", "epochs", "periods"), 
+#'                    height=list(unit(1, "line"), unit(1.1, "line"), unit(1.3, "line")), 
+#'                    size=list(2.5,3.5,4.5), 
+#'                    abbrv=list(T,F,F), neg=T, 
+#'                    skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
 #' s
 #' }
 #' 

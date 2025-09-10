@@ -73,20 +73,27 @@
 #' library(ggplot2)
 #' q <- p + coord_geo(pos="bottom", dat="periods", height=unit(1.3, "line"), size=4.5, abbrv=F, neg=T)
 #' q
-#' r <- p + coord_geo(pos=as.list(rep("bottom", 2)), dat=list("epochs", "periods"), 
-#'                    height=list(unit(1.1, "line"), unit(1.3, "line")), size=list(3.5,4.5), 
-#'                    abbrv=F, neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
+#' r <- p + coord_geo(pos=as.list(rep("bottom", 2)), 
+#'                    dat=list("epochs", "periods"), 
+#'                    height=list(unit(1.1, "line"), unit(1.3, "line")), 
+#'                    size=list(3.5,4.5), 
+#'                    abbrv=F, neg=T, 
+#'                    skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
 #' r
-#' s <- p + coord_geo(pos=as.list(rep("bottom", 3)), dat=list("stages", "epochs", "periods"), 
-#'                    height=list(unit(1, "line"), unit(1.1, "line"), unit(1.3, "line")), size=list(2.5,3.5,4.5), 
-#'                    abbrv=list(T,F,F), neg=T, skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
+#' s <- p + coord_geo(pos=as.list(rep("bottom", 3)), 
+#'                    dat=list("stages", "epochs", "periods"), 
+#'                    height=list(unit(1, "line"), unit(1.1, "line"), unit(1.3, "line")), 
+#'                    size=list(2.5,3.5,4.5), 
+#'                    abbrv=list(T,F,F), neg=T, 
+#'                    skip=c("Paleocene", "Pliocene", "Pleistocene", "Holocene", "Quaternary"))
 #' s
 #' }
 #' 
 #' @export
 #' @importFrom scales colour_ramp
 #' @importFrom tidyr pivot_longer
-#' @importFrom ggplot2 ggplot aes aes_ geom_line geom_tile annotate scale_color_manual scale_x_continuous scale_y_continuous theme element_line element_rect element_blank ggtitle
+#' @importFrom ggplot2 ggplot aes geom_line geom_tile annotate scale_color_manual scale_x_continuous scale_y_continuous scale_fill_identity theme element_line element_rect element_blank ggtitle
+#' @importFrom rlang .data
 
 plotDiversityOBDP = function( Kt_mean,
                               xlab="Time",
@@ -147,7 +154,7 @@ plotDiversityOBDP = function( Kt_mean,
   ## Plot densities and LTTs
   cols    <- c( "c1" = col_Hidden, "c2" = col_LTT, "c3" = col_Total, "H.95%" = col_Hidden_interval, "T.95%" = col_Total_interval )
   
-  p <- ggplot(Kt_mean_plot, aes_(x=~TimePoints, y=~NbTotalLin, z=~ProbabilityDensity))
+  p <- ggplot(Kt_mean_plot, aes(x=.data$TimePoints, y=.data$NbTotalLin, z=.data$ProbabilityDensity))
   
   dx <- stats::median(diff(sort(unique(Kt_mean_plot$TimePoints))), na.rm = TRUE)
   if (!is.finite(dx) || dx <= 0) dx <- 1
@@ -159,15 +166,15 @@ plotDiversityOBDP = function( Kt_mean,
       hidden_cols <- colour_ramp(colorRampPalette(palette_Hidden)(N))(Kt_mean_plot$ProbabilityDensity)
       p <- p + geom_tile(
         data = Kt_mean_plot,
-        mapping = ggplot2::aes(x = TimePoints, y = NbHiddenLin, fill = hidden_cols),
+        mapping = aes(x = .data$TimePoints, y = .data$NbHiddenLin, fill = hidden_cols),
         width = dx, height = 1, inherit.aes = FALSE, show.legend = FALSE
-      ) + scale_fill_identity()
+      )
     }
     if (show_expectations){
-      p <- p + geom_line(aes_(y=~aggregNbHiddenLin, color="c1"), linewidth=line_size)
+      p <- p + geom_line(aes(y=.data$aggregNbHiddenLin, color="c1"), linewidth=line_size)
     }
     if (show_intervals){
-      p <- p + geom_line(aes_(y=~NbHiddenLin, color="H.95%"), alpha=0) +  # Fake plot for the legend
+      p <- p + geom_line(aes(y=.data$NbHiddenLin, color="H.95%"), alpha=0) +  # Fake plot for the legend
         annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbHiddenLin0.025, color=cols["H.95%"], linetype="twodash", linewidth=interval_line_size) +
         annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbHiddenLin0.975, color=cols["H.95%"], linetype="twodash", linewidth=interval_line_size)
     }
@@ -179,15 +186,15 @@ plotDiversityOBDP = function( Kt_mean,
       total_cols <- colour_ramp(colorRampPalette(palette_Total)(N))(Kt_mean_plot$ProbabilityDensity)
       p <- p + geom_tile(
         data = Kt_mean_plot,
-        mapping = ggplot2::aes(x = TimePoints, y = NbTotalLin, fill = total_cols),
+        mapping = aes(x = .data$TimePoints, y = .data$NbTotalLin, fill = total_cols),
         width = dx, height = 1, inherit.aes = FALSE, show.legend = FALSE
-      ) + scale_fill_identity()
+      )
       }
     if (show_expectations){
-      p <- p + geom_line(aes_(y=~aggregNbTotalLin, color="c3"), linewidth=line_size)
+      p <- p + geom_line(aes(y=.data$aggregNbTotalLin, color="c3"), linewidth=line_size)
     }
     if (show_intervals){
-      p <- p + geom_line(aes_(y=~NbTotalLin0.025, color="T.95%"), alpha=0) +  # Fake plot for the legend
+      p <- p + geom_line(aes(y=.data$NbTotalLin0.025, color="T.95%"), alpha=0) +  # Fake plot for the legend
         annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbTotalLin0.025, color=cols["T.95%"], linetype="twodash", linewidth=interval_line_size) +
         annotate(geom="line", x=Kt_mean$TimePoints, y=Kt_mean$NbTotalLin0.975, color=cols["T.95%"], linetype="twodash", linewidth=interval_line_size)
       }
@@ -195,8 +202,10 @@ plotDiversityOBDP = function( Kt_mean,
   
   ### Plot the number of observed lineages : mean
   if (show_LTT){
-    p <- p + geom_line(aes_(y=~NbObservedLin, color="c2"), linewidth=line_size)
+    p <- p + geom_line(aes(y=.data$NbObservedLin, color="c2"), linewidth=line_size)
   }
+  
+  p <- p + scale_fill_identity()
   
   ### Legend
   breaks <- c()
