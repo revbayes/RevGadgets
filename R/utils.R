@@ -248,33 +248,6 @@
   return(codes)
 }
 
-.computeInterval <- function(item, rates, probs, summary = "mean") {
-  interval_times <-
-    unlist(rates[["speciation time"]][1, grepl("interval_times",
-                                               names(rates$`speciation time`))])
-  # For some reason these are ordered differently than rate vectors
-  interval_times <-
-    sort(interval_times)
-
-  rate <- rates[[item]]
-  rate <- rate[, grep("[0-9]", colnames(rate))]
-
-  #mean_rate <- colMeans(rate)
-  summary_rate <- apply(rate, 2, summary)
-  quantiles <- apply(rate, 2,
-                     quantile,
-                     probs = probs)
-
-  df <- dplyr::tibble(.rows = length(summary_rate))
-  df["value"] <- summary_rate
-  df["lower"] <- quantiles[1, ]
-  df["upper"] <- quantiles[2, ]
-  df$time <- interval_times
-  df$item <- item
-
-  return(df)
-}
-
 .convertAndRound <- function(L) {
   #sometimes there will be NAs before forcing to convert
   # got to remove nas before doing this test!
@@ -345,7 +318,6 @@
 
 # from ggtree::ggpie (called by .nodepie())
 .ggpie <- function(data, y, fill, color, alpha=1, outline.color="transparent", outline.size=0) {
-  
   p <- ggplot2::ggplot(data, ggplot2::aes_(x=1, y=y, fill=fill)) +
     ggplot2::geom_bar(stat='identity', alpha=alpha, color=outline.color, linewidth=outline.size, show.legend = F) +
     ggplot2::coord_polar(theta='y') + ggtree::theme_inset()
@@ -401,48 +373,6 @@
                     node_names_op = node_names_op))
 }
 
-.makePlotData <- function(rates, probs, summary) {
-  rates <- .removeNull(rates)
-  res <-
-    lapply(names(rates), function(e)
-      .computeInterval(
-        e,
-        rates = rates,
-        probs = probs,
-        summary = summary
-      ))
-  plotdata <- do.call(rbind, res)
-  
-  if (sum(grepl("fossil", plotdata$item)) == 0) {
-    plotdata$item <- factor(
-      plotdata$item,
-      levels = c(
-        "speciation rate",
-        "extinction rate",
-        "speciation time",
-        "extinction time",
-        "net-diversification rate",
-        "relative-extinction rate"
-      )
-    )
-  } else {
-    plotdata$item <- factor(
-      plotdata$item,
-      levels = c(
-        "speciation rate",
-        "extinction rate",
-        "fossilization rate",
-        "speciation time",
-        "extinction time",
-        "fossilization time",
-        "net-diversification rate",
-        "relative-extinction rate"
-      )
-    )
-  }
-
-  return(plotdata)
-}
 
 .makeStates <- function(label_fn, color_fn) {
   # generate colors for ranges
@@ -549,12 +479,12 @@
   
   `%>%` <- dplyr::`%>%`
   
-  res <- path %>% 
-    readLines() %>%
+  lines <- readLines(path, warn = FALSE)
+  
+  res <- lines %>% 
     utils::tail(n = -1)
   
-  names <- path %>% 
-    readLines() %>%
+  names <- lines %>% 
     utils::head(n = 1) %>%
     strsplit("\t")
   
@@ -1082,7 +1012,8 @@ reorder_treedata <- function(tdObject, order = "postorder") {
     }
 
   }
-
   return(node_map[, 1:2])
-
+  
 }
+
+
