@@ -806,4 +806,59 @@ We recommend that plotting functions are tested by comparing a saved version of 
 
 When you push to GitHub, GitHub will automatically run a series of tests on the updated package. This include running our designed tests using `testthat`, but also includes checks of package  compatibility, appropriate documention, etc. This will ensure that any changes to the development branch do not break basic package functionality.
 
+## Troubleshooting Dependency Issues for GitHub Actions
+
+### The Problem: The tests work on my machine!
+
+A common and frustrating issue in package development is when your code and tests pass perfectly on your local machine but fail the checks on GitHub Actions. Typically, these failures occur during the `setup-r-dependencies` step and are often caused by package installation errors or version conflicts.
+
+This happens because the R environment on the Github Actions runner can be subtly different from our local development environment. This "environment drift" can be caused by:
+- Different operating systems
+- Different R versions
+- Minor differences in system libraries
+
+This can lead to a situation where the dependency solver (`pak`) installs a set of package versions on the integration check runner that is incompatible. 
+
+### The Solution: A Reproducible Lockfile
+
+The most robust solution is to create a `pkg.lock` file. This file is a "snapshot" of a complete, known-to-work set of all package dependencies. When this file is present the integration process will install the exact versions specified in the lockfile, rather than the "latest available" versions, making the build fully reproducible.
+
+However, to solve the integration test failures, the lockfile must be generated for the test environment, not your local one. The most reliable way to do this is with Docker.
+
+### Workflow for Generating a compatible lockfile
+
+If you encounter a dependency failure, follow these steps to generate a correct lockfile.
+
+1. Prerequisites
+   - Ensure [Docker](https://docs.docker.com/desktop/) is installed and running on your system
+
+2. Verify `DESCRIPTION` file
+   - Make sure your `DESCRIPTION` file is up-to-date and correctly lists all necessary package dependencies in the `Imports:` section.
+
+3. Delete the Old Lockfile
+   - If it exists, delete the file at `.github/pkg.lock` to ensure you are starting fresh.
+
+4. Generate the New Lockfile via Docker
+   - Open a terminal in the root directory of the `RevGadgets` project.
+   - Run the following command:
+
+    ```Bash
+    docker run --rm -it -v "$(pwd)":/work rocker/r-ver:latest \
+      R -e 'install.packages("pak, repos= "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"); setwd("/work"); pak::lockfile_create()'
+    ```
+
+   - Note for windows users: In Command Prompt, you may need to replace `$(pwd)` with `%cd%`. In PowerShell, `$(pwd)` should work. Alternatively, you can replace it with the full absolute path to your project folder.
+  
+  **What this command does:**
+   - Starts a temporary Docker container.
+   - Uses an official Docker image with the latest stable, release version of R on Linux, mimicking the primary Github Actions environment.
+   - Mounts your local project folder into the container, allowing the container to write the `pkg.lock` file back to your machine.
+   - Executes a short R command inside the container to install `pak` and run `pak::lockfile_create()`.
+    
+  Because this command runs inside the container, it generates a `pkg.lock` file that is tailored for the GitHub Actions environment, resolving the dependency conflicts.
+
+5. Commit the Changes
+   - Add and commit the newly generated `.github/pkg.lock` file (and any changes your made to `DESCRIPTION`) to your PR. The subsequent test run should now pass.
+
 If have any questions about these recommendations or are hesitant about pushing to the development branch, feel free to contact the developers for additional guidance.
+****

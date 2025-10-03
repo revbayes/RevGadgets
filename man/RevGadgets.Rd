@@ -38,6 +38,7 @@ Other contributors:
 \itemize{
   \item Nagashima Kengo [contributor]
   \item Schliep Klaus [contributor]
+  \item Basanta Khakurel [contributor]
 }
 
 }

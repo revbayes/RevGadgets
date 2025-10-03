@@ -12,9 +12,6 @@ on:
 
 name: R-CMD-check
 
-env:
-  R_BIOC_VERSION: 3.19
-
 permissions: read-all
 
 jobs:
