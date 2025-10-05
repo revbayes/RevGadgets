@@ -63,7 +63,7 @@ This is a growing list: please let us know if you want to contribute your own!
 - [Reading stochastic maps for use with phytools](https://gist.github.com/cmt2/f8f875461ae993e35f51f2b41877913c)
 - [Convert BioGeoBears output for plotting with RevGadgets](https://gist.github.com/cmt2/c2425575be47c1a574df02ebe4058d38)
 - [Convert standard phylo object for plotting with RevGadgets](https://gist.github.com/cmt2/c4af02165cc55a4588a34642f8da4030)
-- [Validating Bayesian model implementation using Simulation-Based Calibration](https://gist.github.com/basanta33/dc8c4bc3c21b5cd3727f82e20b30400b)
+- [Processing and plotting model validation analyses from RevBayes](https://gist.github.com/basanta33/dc8c4bc3c21b5cd3727f82e20b30400b)
 
 ### Contributing:
 
