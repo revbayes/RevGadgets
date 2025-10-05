@@ -1,15 +1,15 @@
-context("tests the SBC plotting function")
+context("tests the Validation results plotting function")
 
-test_that("plotSBC generates valid ggplot objects", {
+test_that("plotValidation generates valid ggplot objects", {
   # load the results to use as input
-  expected_file <- system.file("extdata", "sbc_results_expected.rds", package = "RevGadgets")
-  sbc_results <- readRDS(expected_file)
+  expected_file <- system.file("extdata", "validation_results_expected.rds", package = "RevGadgets")
+  validation_results <- readRDS(expected_file)
 
   # generate a plot for a single parameter
-  p_alpha <- plotSBC(sbc_results, parameter = "alpha")
+  p_alpha <- plotValidation(validation_results, parameter = "alpha")
 
   # generate a list of plots for all parameters
-  p_list <- plotSBC(sbc_results)
+  p_list <- plotValidation(validation_results)
 
   # the function should return a ggplot object
   expect_s3_class(p_alpha, "ggplot")
