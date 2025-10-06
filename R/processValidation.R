@@ -1,9 +1,9 @@
-#' Process Simulation-Based Calibration (SBC) Results
+#' Process RevBayes validation Results
 #'
 #' @description
 #' Reads and processes the output of a set of simulation replicates to assesss
 #' calibration. For each specified parameter, it calculates the coverage
-#' frequency across a range of Higest Posterior Density (HPD) interval widths.
+#' frequency across a range of Highest Posterior Density (HPD) interval widths.
 #'
 #'
 #' @param path (character; no default) The path to the main output directory which contains
@@ -29,7 +29,7 @@
 #' @examples
 #' \dontrun{
 #' # assuming simulation outputs are in "output_my_analysis"
-#' sbc_results <- processSBC(
+#' validation_results <- processValidation(
 #'   path = "output_my_analysis",
 #'   results_path = "results_my_analysis",
 #'   n_reps = 1000,
@@ -37,13 +37,13 @@
 #' )
 #'
 #' # The results for the 'alpha' parameter can be accessed as:
-#' alpha_results <- sbc_results$alpha
+#' alpha_results <- validation_results$alpha
 #' }
 #'
 #' @export
 #' @importFrom coda HPDinterval as.mcmc
 #' @importFrom utils txtProgressBar setTxtProgressBar
-processSBC <- function(
+processValidation <- function(
     path,
     results_path = NULL,
     parameters = NULL,
@@ -67,7 +67,7 @@ processSBC <- function(
     if (!file.exists(first_sim_file)) {
       stop("Cannot find output files. Checked for: ", first_sim_file)
     }
-    col_names <- colnames(read.table(first_sim_file, header = TRUE, sep = "\t", check.names = FALSE, nrow = 1))
+    col_names <- colnames(read.table(first_sim_file, header = TRUE, sep = "\t", check.names = FALSE, nrows = 1))
 
     parameters <- setdiff(col_names, c("Iteration", "Posterior", "Likelihood", "Prior", "branch_rates"))
   }
