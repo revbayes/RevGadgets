@@ -6,8 +6,9 @@
 #' stochastic map trace(s).
 #' @param simmap (multiphylo; none) A multiphylo object with simmaps in 
 #' phytools format.
-#' @param states (vector of character strings; no default) The character
-#' states.
+#' @param state_labels (character vector; NULL) Vector of labels for 
+#' states named with the current state labels in annotated tree file
+#' (as characters).
 #' @param num_intervals (numeric; default 1001) The number of intervals
 #' to divide the tree into.
 #' @param verbose (logical; default TRUE) Print status of processing on screen.
@@ -43,7 +44,7 @@
 processStochMaps <- function(tree,
                              paths = NULL,
                              simmap = NULL,
-                             states,
+                             state_labels,
                              num_intervals = 1000,
                              verbose = TRUE,
                              ...) {
@@ -62,7 +63,7 @@ processStochMaps <- function(tree,
     } 
 
     # compute the number of states
-    nstates <- length(states)
+    nstates <- length(state_labels)
     
     # create the index map
     map <- matchNodes(tree@phylo)
@@ -98,7 +99,7 @@ processStochMaps <- function(tree,
         
         # add a root edge
         root_edge_samples <- sapply(simmap, function(map) {
-            return(paste0("{", tail(names(map$maps[[1]]), n = 1), ",0}"))
+            return(paste0("{", utils::tail(names(map$maps[[1]]), n = 1), ",0}"))
         })
         samples <- cbind(samples, root_edge_samples)
         
@@ -168,16 +169,16 @@ processStochMaps <- function(tree,
         
         # get the state per interval
         if ( this_edge_length == 0 ) {
-            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), states)))
+            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), state_labels)))
         } else {
             branch_states_per_interval <- do.call(rbind, lapply(branch_samples, function(sample) {
-                match(names(sample)[findInterval(these_pts, sample) + 1], states)
+                match(names(sample)[findInterval(these_pts, sample) + 1], state_labels)
             }))
         }
         
         # compute probability of each state per interval
         branch_prob_per_state <- apply(branch_states_per_interval, 2, tabulate, nbins = nstates) / nsamples
-        rownames(branch_prob_per_state) <- states
+        rownames(branch_prob_per_state) <- state_labels
         
         # now do the vertical segments
         vert_prob_per_state <- t(branch_prob_per_state[,ncol(branch_prob_per_state), drop = FALSE])
@@ -206,6 +207,12 @@ processStochMaps <- function(tree,
     map$index  <- as.character(map$index)
     dfs <- dplyr::full_join(map,dfs, by = "index")
     dfs$index <- NULL
+   
+    if ( !is.null(names(state_labels)) ){
+      
+      colnames(dfs) <- c("node","bl","x0","x1","vert",names(state_labels))
+
+    }
     
     return(dfs)
     

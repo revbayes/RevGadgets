@@ -2,8 +2,10 @@
 #'
 #' @param tree (treedata object; none) Output of readTrees() function
 #' containing tree.
+#' 
 #' @param maps (dataframe; no default) Dataframe with processed maps,
 #' as in the output of processStochMaps()
+#' 
 #' @param colors (named character vector; no default) Named character vector
 #' where items are colors and names are the corresponding states.
 #' 
@@ -49,9 +51,7 @@
 #' @param line_width (numeric; 1) Change line width for branches
 #'
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed
-#' to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
-#' 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
-#' 'daylight', or 'ape'.
+#' to ggtree(). Options are 'rectangular', 'fan', 'circular', or 'inward_circular'.
 #' 
 #' @param label_sampled_ancs (logical; FALSE) Label any sampled ancestors?
 #' Will inherent tip labels aesthetics for size and color.
@@ -88,6 +88,7 @@
 #'               color_by = "MAP",
 #'               colors = "default",
 #'               tree_layout = "rectangular",
+#'               timeline= T,
 #'               tip_labels = FALSE)
 #'
 #' }
@@ -224,8 +225,7 @@ plotStochMaps <- function(tree,
     yend = dat_vert$y_parent,
     col = dat_vert$seg_col
   )
-  
-  # plot! 
+
   
   p + ggplot2::geom_segment(
     data = seg_horiz,
@@ -255,6 +255,7 @@ plotStochMaps <- function(tree,
     ggplot2::scale_color_manual(values = seg_col, 
                                 breaks = colors,
                                 name = "State",
-                                labels = names(colors))
+                                labels = names(colors),
+                                drop = FALSE)
     
 }
