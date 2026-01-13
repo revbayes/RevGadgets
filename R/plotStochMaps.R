@@ -170,92 +170,143 @@ plotStochMaps <- function(tree,
     ...
   )
 
-  if (colors[1] != "default") {
-    # error checking
-    if (is.null(names(colors))) 
-      {stop("colors must be a NAMED vector of colors where names correspond to the character states")}
-    states <- names(colors)
+  # get states
+  states <- colnames(maps)[-c(1:5)]
+  
+  # make colors per state
+  if (is.character(colors) && length(colors) == 1 && colors[1] == "default") {
+      colors_full <- colFun(length(states))
+      names(colors_full) <- states
+      colors <- colors_full
   } else {
-    states <- colnames(maps)[-c(1:5)]
-    colors <- colFun(length(states))
-    names(colors) <- states
+      # user provided overrides; must be named
+      if (is.null(names(colors))) {
+          stop("colors must be a NAMED vector of colors where names correspond to the character states")
+      }
+      
+      # start from defaults for *all* states, then override with user colors
+      colors_full <- colFun(length(states))
+      names(colors_full) <- states
+      
+      # only override matching names; ignore extras
+      keep <- intersect(names(colors), states)
+      colors_full[keep] <- colors[keep]
+      
+      colors <- colors_full
   }
   
   dat <- dplyr::left_join(maps, p$data, by = "node")
   
-  #set up colors 
+  # make segment colors
   if (color_by == "MAP") {
-    max <- apply(dat[, states], MARGIN = 1, which.max)
-    seg_col <- colors[unlist(max)]
-    dat$seg_col <- seg_col
-    names(seg_col) <- seg_col
+      
+      idx <- apply(dat[, states, drop = FALSE], 1, which.max)
+      dat$seg_state <- factor(states[idx], levels = states)
+      dat$seg_col   <- colors[as.character(dat$seg_state)]
+      
   } else if (color_by == "prob") {
-    rgbcols <- col2rgb(colors)
-    rgb_values_per_seg <- t(rgbcols %*% t(dat[,states]))
-    seg_col <- tolower(grDevices::rgb(red   = rgb_values_per_seg[ ,1],
-                                      green = rgb_values_per_seg[ ,2],
-                                      blue  = rgb_values_per_seg[ ,3],
-                                      maxColorValue = 255))
-    dat$seg_col <- seg_col
-    names(seg_col) <- seg_col
+      
+      rgbcols <- grDevices::col2rgb(colors)
+      rgb_values_per_seg <- t(rgbcols %*% t(dat[, states]))
+      dat$seg_col <- tolower(grDevices::rgb(
+          red   = rgb_values_per_seg[, 1],
+          green = rgb_values_per_seg[, 2],
+          blue  = rgb_values_per_seg[, 3],
+          maxColorValue = 255
+      ))
+      
+  } else {
+      stop("color_by must be either 'MAP' or 'prob'")
   }
-
-  # horizontal segments
-  dat_horiz <- dat[dat$vert == FALSE,]
   
+  # horizontal segments
+  dat_horiz <- dat[dat$vert == FALSE, ]
   seg_horiz <- data.frame(
-    x    = dat_horiz$x - dat_horiz$x0,
-    xend = dat_horiz$x - dat_horiz$x1,
-    y    = dat_horiz$y,
-    yend = dat_horiz$y,
-    col  = dat_horiz$seg_col
+      x    = dat_horiz$x - dat_horiz$x0,
+      xend = dat_horiz$x - dat_horiz$x1,
+      y    = dat_horiz$y,
+      yend = dat_horiz$y,
+      state = if (color_by == "MAP") dat_horiz$seg_state else NA,
+      col  = dat_horiz$seg_col
   )
   
-  #vertical segments
-  dat_vert <- dat[dat$vert == TRUE,]
-  
-  m <- match(x = dat_vert$parent, dat_vert$node)
+  # vertical segments
+  dat_vert <- dat[dat$vert == TRUE, ]
+  m <- match(dat_vert$parent, dat_vert$node)
   dat_vert$y_parent <- dat_vert[m, "y"]
   dat_vert$x_parent <- dat_vert[m, "x"]
   
   seg_vert <- data.frame(
-    x = dat_vert$x_parent,
-    xend = dat_vert$x_parent,
-    y = dat_vert$y,
-    yend = dat_vert$y_parent,
-    col = dat_vert$seg_col
+      x = dat_vert$x_parent,
+      xend = dat_vert$x_parent,
+      y = dat_vert$y,
+      yend = dat_vert$y_parent,
+      state = if (color_by == "MAP") dat_vert$seg_state else NA,
+      col = dat_vert$seg_col
   )
-
   
-  p + ggplot2::geom_segment(
-    data = seg_horiz,
-    ggplot2::aes(
-      x = x,
-      y = y,
-      xend = xend,
-      yend = yend,
-      color = col
-    ),
-    lineend = "square",
-    size = line_width,
-  ) +
-    ggplot2::geom_segment(
-      data = seg_vert,
-      ggplot2::aes(
-        x = x,
-        y = y,
-        xend = xend,
-        yend = yend,
-        color = col
-      ),
-      lineend = "square",
-      size = line_width, 
+  if (color_by == "MAP") {
 
-    ) +
-    ggplot2::scale_color_manual(values = seg_col, 
-                                breaks = colors,
-                                name = "State",
-                                labels = names(colors),
-                                drop = FALSE)
-    
+      legend_df <- data.frame(
+          state = factor(states, levels = states),
+          x = 0,
+          y = 0,
+          xend = 1,
+          yend = 0
+      )
+
+      p <- p +
+              ggplot2::geom_segment(
+                  data = seg_horiz,
+                  ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
+                  lineend = "square",
+                  linewidth = line_width
+              ) +
+              ggplot2::geom_segment(
+                  data = seg_vert,
+                  ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
+                  lineend = "square",
+                  linewidth = line_width
+              ) +
+              ggplot2::geom_segment(
+                  data = legend_df,
+                  ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
+                  inherit.aes = FALSE,
+                  alpha = 0,
+                  linewidth = line_width,
+                  lineend = "square"
+              ) +
+              ggplot2::scale_color_manual(
+                  values = colors,
+                  limits = states,
+                  breaks = states,
+                  drop = FALSE,
+                  name = "State"
+              ) +
+              ggplot2::guides(
+                  color = ggplot2::guide_legend(
+                      override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
+                  )
+              )
+      
+  } else {
+      
+      p +
+          ggplot2::geom_segment(
+              data = seg_horiz,
+              ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = col),
+              lineend = "square",
+              linewidth = line_width
+          ) +
+          ggplot2::geom_segment(
+              data = seg_vert,
+              ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = col),
+              lineend = "square",
+              linewidth = line_width
+          ) +
+          ggplot2::scale_color_identity()
+  }
+  
+  return(p)
+
 }
