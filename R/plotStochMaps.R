@@ -127,6 +127,12 @@ plotStochMaps <- function(tree,
       tree <- tree[[1]]
     } else {stop("tree should contain only one tree object")}
   } 
+
+  # error checking
+  if (color_by == "prob" & length(colors) > 2) {
+    warning("color_by = \"prob\" is only recommended for 2 states, 
+            colors may be muddy with > 2 states.")
+  }
   
   p <-  plotTreeFull(
     tree = list(list(tree)),
@@ -214,6 +220,8 @@ plotStochMaps <- function(tree,
           blue  = rgb_values_per_seg[, 3],
           maxColorValue = 255
       ))
+      idx <- apply(dat[, states, drop = FALSE], 1, which.max)
+      dat$seg_state <- factor(states[idx], levels = states)
       
   } else {
       stop("color_by must be either 'MAP' or 'prob'")
@@ -247,14 +255,14 @@ plotStochMaps <- function(tree,
   
   if (color_by == "MAP") {
 
+      states = factor(sort(states), levels = sort(states), ordered = T)
       legend_df <- data.frame(
-          state = factor(states, levels = states),
+          state = states,
           x = 0,
           y = 0,
           xend = 1,
           yend = 0
       )
-
       p <- p +
               ggplot2::geom_segment(
                   data = seg_horiz,
@@ -290,8 +298,8 @@ plotStochMaps <- function(tree,
               )
       
   } else {
-      
-      p +
+
+    p <- p +
           ggplot2::geom_segment(
               data = seg_horiz,
               ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = col),
@@ -304,7 +312,13 @@ plotStochMaps <- function(tree,
               lineend = "square",
               linewidth = line_width
           ) +
-          ggplot2::scale_color_identity()
+          ggplot2::scale_color_identity() +
+      ggplot2::guides(
+        color = ggplot2::guide_legend(
+          override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
+        )
+      )
+
   }
   
   return(p)
