@@ -216,8 +216,6 @@ processStochMaps <- function(tree,
     dfs <- dplyr::full_join(map,dfs, by = "index")
     dfs$index <- NULL
    
-    #recover()
-    
     if ( length(unique(names(state_labels))) !=  length(names(state_labels)) ) {
       
       cols <- unname(state_labels)
