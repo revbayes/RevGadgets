@@ -1037,7 +1037,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
                              label_sampled_ancs = FALSE,
                              ...) {
   
-  legend_labels_order <- names(colors)
+  #legend_labels_order <- names(colors)
   # get states
   states <- colnames(maps)[-c(1:5)]
   legend_orders <- names(colors)
@@ -1047,20 +1047,20 @@ reorder_treedata <- function(tdObject, order = "postorder") {
     names(colors_full) <- states
     colors <- colors_full
   } else {
-    # user provided overrides; must be named
-    if (is.null(names(colors))) {
-      stop("colors must be a NAMED vector of colors where names correspond to the character states")
-    }
-    
-    # start from defaults for *all* states, then override with user colors
-    colors_full <- colFun(length(states))
-    names(colors_full) <- states
-    
-    # only override matching names; ignore extras
-    keep <- intersect(names(colors), states)
-    colors_full[keep] <- colors[keep]
-    
-    colors <- colors_full
+#    # user provided colors; must be named
+     if (is.null(names(colors))) {
+       stop("colors must be a NAMED vector of colors where names correspond to the character states")
+     }
+#    
+#    # start from defaults for *all* states, then override with user colors
+#    colors_full <- colFun(length(states))
+#    names(colors_full) <- states
+#    
+#    # only override matching names; ignore extras
+#    keep <- intersect(names(colors), states)
+#    colors_full[keep] <- colors[keep]
+#    
+#    colors <- colors_full
   }
   
   dat <- dplyr::left_join(maps, p$data, by = "node")
@@ -1097,8 +1097,8 @@ reorder_treedata <- function(tdObject, order = "postorder") {
   )
 
   # inherits order from original color vector
-  states = factor(legend_labels_order, 
-                  levels = legend_labels_order, 
+  states = factor(names(colors), 
+                  levels = names(colors), 
                   ordered = T)
   
   legend_df <- data.frame(
