@@ -115,212 +115,352 @@ plotStochMaps <- function(tree,
                           label_sampled_ancs = FALSE,
                           ...) {
 
-  # pull tree from list object if necessary
-  if (inherits(tree,"list")) {
-    if (length(tree) == 1){
-      tree <- tree[[1]]
-    } else {stop("tree should contain only one tree object")}
-  }
-  
-  if (inherits(tree,"list")) {
-    if (length(tree) == 1){
-      tree <- tree[[1]]
-    } else {stop("tree should contain only one tree object")}
-  } 
+    # pull tree from list object if necessary
+    if (inherits(tree,"list")) {
+        if (length(tree) == 1){
+            tree <- tree[[1]]
+        } else {
+            stop("tree should contain only one tree object")
+        }
+    }
 
-  # error checking
-  if (color_by == "prob" & length(colors) > 2) {
-    warning("color_by = \"prob\" is only recommended for 2 states, 
-            colors may be muddy with > 2 states.")
-  }
-  
-  p <-  plotTreeFull(
-    tree = list(list(tree)),
-    tree_layout = tree_layout,
-    line_width = line_width,
+    # we do this twice because sometimes the tree is doubly nested (inside
+    # of two lists)    
+    if (inherits(tree,"list")) {
+        if (length(tree) == 1){
+            tree <- tree[[1]]
+        } else {
+            stop("tree should contain only one tree object")
+        }
+    }
     
-    tip_labels = tip_labels,
-    tip_labels_italics = tip_labels_italics,
-    tip_labels_formatted = tip_labels_formatted,
-    tip_labels_remove_underscore = tip_labels_remove_underscore,
-    tip_labels_color = tip_labels_color,
-    tip_labels_size = tip_labels_size,
-    tip_labels_offset = tip_labels_offset,
+    # plot the base tree
+    p <-  plotTreeFull(
+        tree = list(list(tree)),
+        tree_layout = tree_layout,
+        line_width = line_width,
+        
+        tip_labels = tip_labels,
+        tip_labels_italics = tip_labels_italics,
+        tip_labels_formatted = tip_labels_formatted,
+        tip_labels_remove_underscore = tip_labels_remove_underscore,
+        tip_labels_color = tip_labels_color,
+        tip_labels_size = tip_labels_size,
+        tip_labels_offset = tip_labels_offset,
+        
+        timeline = timeline,
+        geo_units = geo_units,
+        geo = timeline,
+        time_bars = timeline,
+        
+        label_sampled_ancs = label_sampled_ancs,
+        
+        node_age_bars = FALSE,
+        age_bars_color = "blue",
+        age_bars_colored_by = NULL,
+        
+        node_labels = NULL,
+        node_labels_color = "black",
+        node_labels_size = 3,
+        node_labels_offset = 0,
+        
+        node_pp = FALSE,
+        node_pp_shape = 16,
+        node_pp_color = "black",
+        node_pp_size = "variable",
+        
+        branch_color = "black",
+        color_branch_by = NULL,
+        
+        tip_age_bars = FALSE,
+        lineend = "square",
+        ...
+    )
     
-    timeline = timeline,
-    geo_units = geo_units,
-    geo = timeline,
-    time_bars = timeline,
-    
-    label_sampled_ancs = label_sampled_ancs,
-    
-    node_age_bars = FALSE,
-    age_bars_color = "blue",
-    age_bars_colored_by = NULL,
-    
-    node_labels = NULL,
-    node_labels_color = "black",
-    node_labels_size = 3,
-    node_labels_offset = 0,
-    
-    node_pp = FALSE,
-    node_pp_shape = 16,
-    node_pp_color = "black",
-    node_pp_size = "variable",
-    
-    branch_color = "black",
-    color_branch_by = NULL,
-    
-    tip_age_bars = FALSE,
-    lineend = "square",
-    ...
-  )
-
-  # get states
-  states <- colnames(maps)[-c(1:5)]
-  
-  # make colors per state
-  if (is.character(colors) && length(colors) == 1 && colors[1] == "default") {
-      colors_full <- colFun(length(states))
-      names(colors_full) <- states
-      colors <- colors_full
-  } else {
-      # user provided overrides; must be named
-      if (is.null(names(colors))) {
-          stop("colors must be a NAMED vector of colors where names correspond to the character states")
-      }
-      
-      # start from defaults for *all* states, then override with user colors
-      colors_full <- colFun(length(states))
-      names(colors_full) <- states
-      
-      # only override matching names; ignore extras
-      keep <- intersect(names(colors), states)
-      colors_full[keep] <- colors[keep]
-      
-      colors <- colors_full
-  }
-  
-  dat <- dplyr::left_join(maps, p$data, by = "node")
-  
-  # make segment colors
-  if (color_by == "MAP") {
-      
-      idx <- apply(dat[, states, drop = FALSE], 1, which.max)
-      dat$seg_state <- factor(states[idx], levels = states)
-      dat$seg_col   <- colors[as.character(dat$seg_state)]
-      
-  } else if (color_by == "prob") {
-      
-      rgbcols <- grDevices::col2rgb(colors)
-      rgb_values_per_seg <- t(rgbcols %*% t(dat[, states]))
-      dat$seg_col <- tolower(grDevices::rgb(
-          red   = rgb_values_per_seg[, 1],
-          green = rgb_values_per_seg[, 2],
-          blue  = rgb_values_per_seg[, 3],
-          maxColorValue = 255
-      ))
-      idx <- apply(dat[, states, drop = FALSE], 1, which.max)
-      dat$seg_state <- factor(states[idx], levels = states)
-      
-  } else {
+    # plot the colors on branches
+    if (color_by == "MAP") {
+      p <- plotStochMapsMAP(tree,
+                            p,
+                            maps,
+                            colors,
+                            tree_layout,
+                            line_width,
+                            tip_labels,
+                            tip_labels_italics,
+                            tip_labels_formatted,
+                            tip_labels_remove_underscore,
+                            tip_labels_color,
+                            tip_labels_size,
+                            tip_labels_offset,
+                            timeline,
+                            geo_units,
+                            geo,
+                            time_bars,
+                            label_sampled_ancs,
+                            ...)
+    } else if (color_by == "prob") {
+      p <- plotStochMapsProbs(tree,
+                              p,
+                              maps,
+                              colors,
+                              tree_layout,
+                              line_width,
+                              tip_labels,
+                              tip_labels_italics,
+                              tip_labels_formatted,
+                              tip_labels_remove_underscore,
+                              tip_labels_color,
+                              tip_labels_size,
+                              tip_labels_offset,
+                              timeline,
+                              geo_units,
+                              geo,
+                              time_bars,
+                              label_sampled_ancs,
+                              ...)
+    } else {
       stop("color_by must be either 'MAP' or 'prob'")
-  }
-  
-  # horizontal segments
-  dat_horiz <- dat[dat$vert == FALSE, ]
-  seg_horiz <- data.frame(
-      x    = dat_horiz$x - dat_horiz$x0,
-      xend = dat_horiz$x - dat_horiz$x1,
-      y    = dat_horiz$y,
-      yend = dat_horiz$y,
-      state = if (color_by == "MAP") dat_horiz$seg_state else NA,
-      col  = dat_horiz$seg_col
-  )
-  
-  # vertical segments
-  dat_vert <- dat[dat$vert == TRUE, ]
-  m <- match(dat_vert$parent, dat_vert$node)
-  dat_vert$y_parent <- dat_vert[m, "y"]
-  dat_vert$x_parent <- dat_vert[m, "x"]
-  
-  seg_vert <- data.frame(
-      x = dat_vert$x_parent,
-      xend = dat_vert$x_parent,
-      y = dat_vert$y,
-      yend = dat_vert$y_parent,
-      state = if (color_by == "MAP") dat_vert$seg_state else NA,
-      col = dat_vert$seg_col
-  )
-  
-  if (color_by == "MAP") {
+    }
 
-      states = factor(sort(states), levels = sort(states), ordered = T)
-      legend_df <- data.frame(
-          state = states,
-          x = 0,
-          y = 0,
-          xend = 1,
-          yend = 0
-      )
-      p <- p +
-              ggplot2::geom_segment(
-                  data = seg_horiz,
-                  ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
-                  lineend = "square",
-                  linewidth = line_width
-              ) +
-              ggplot2::geom_segment(
-                  data = seg_vert,
-                  ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
-                  lineend = "square",
-                  linewidth = line_width
-              ) +
-              ggplot2::geom_segment(
-                  data = legend_df,
-                  ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
-                  inherit.aes = FALSE,
-                  alpha = 0,
-                  linewidth = line_width,
-                  lineend = "square"
-              ) +
-              ggplot2::scale_color_manual(
-                  values = colors,
-                  limits = states,
-                  breaks = states,
-                  drop = FALSE,
-                  name = "State"
-              ) +
-              ggplot2::guides(
-                  color = ggplot2::guide_legend(
-                      override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
-                  )
-              )
-      
-  } else {
-
-    p <- p +
-          ggplot2::geom_segment(
-              data = seg_horiz,
-              ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = col),
-              lineend = "square",
-              linewidth = line_width
-          ) +
-          ggplot2::geom_segment(
-              data = seg_vert,
-              ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = col),
-              lineend = "square",
-              linewidth = line_width
-          ) +
-          ggplot2::scale_color_identity() +
-      ggplot2::guides(
-        color = ggplot2::guide_legend(
-          override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
-        )
-      )
-
-  }
-  
-  return(p)
-
+    return(p)
+    
 }
+
+plotStochMapsMAP <- function(tree,
+                             p,
+                             maps,
+                             colors = "default",
+                             tree_layout = "rectangular",
+                             line_width = 1,
+                             tip_labels = TRUE,
+                             tip_labels_italics = FALSE,
+                             tip_labels_formatted = FALSE,
+                             tip_labels_remove_underscore = TRUE,
+                             tip_labels_color = "black",
+                             tip_labels_size = 3,
+                             tip_labels_offset = 0,
+                             timeline = FALSE,
+                             geo_units = list("epochs", "periods"),
+                             geo = timeline,
+                             time_bars = timeline,
+                             label_sampled_ancs = FALSE,
+                             ...) {
+    
+    
+    # get states
+    states <- colnames(maps)[-c(1:5)]
+    
+    # make colors per state
+    if (is.character(colors) && length(colors) == 1 && colors[1] == "default") {
+        colors_full <- colFun(length(states))
+        names(colors_full) <- states
+        colors <- colors_full
+    } else {
+        # user provided overrides; must be named
+        if (is.null(names(colors))) {
+            stop("colors must be a NAMED vector of colors where names correspond to the character states")
+        }
+        
+        # start from defaults for *all* states, then override with user colors
+        colors_full <- colFun(length(states))
+        names(colors_full) <- states
+        
+        # only override matching names; ignore extras
+        keep <- intersect(names(colors), states)
+        colors_full[keep] <- colors[keep]
+        
+        colors <- colors_full
+    }
+    
+    dat <- dplyr::left_join(maps, p$data, by = "node")
+    
+    # make segment colors
+    idx <- apply(dat[, states, drop = FALSE], 1, which.max)
+    dat$seg_state <- factor(states[idx], levels = states)
+    dat$seg_col   <- colors[as.character(dat$seg_state)]
+    
+    # horizontal segments
+    dat_horiz <- dat[dat$vert == FALSE, ]
+    seg_horiz <- data.frame(
+        x    = dat_horiz$x - dat_horiz$x0,
+        xend = dat_horiz$x - dat_horiz$x1,
+        y    = dat_horiz$y,
+        yend = dat_horiz$y,
+        state = dat_horiz$seg_state,
+        col  = dat_horiz$seg_col
+    )
+    
+    # vertical segments
+    dat_vert <- dat[dat$vert == TRUE, ]
+    m <- match(dat_vert$parent, dat_vert$node)
+    dat_vert$y_parent <- dat_vert[m, "y"]
+    dat_vert$x_parent <- dat_vert[m, "x"]
+    
+    seg_vert <- data.frame(
+        x = dat_vert$x_parent,
+        xend = dat_vert$x_parent,
+        y = dat_vert$y,
+        yend = dat_vert$y_parent,
+        state = dat_vert$seg_state,
+        col = dat_vert$seg_col
+    )
+    
+    states = factor(sort(states), levels = sort(states), ordered = T)
+    legend_df <- data.frame(
+        state = states,
+        x = 0,
+        y = 0,
+        xend = 1,
+        yend = 0
+    )
+    
+    p <- p +
+        ggplot2::geom_segment(
+            data = seg_horiz,
+            ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
+            lineend = "square",
+            linewidth = line_width
+        ) +
+        ggplot2::geom_segment(
+            data = seg_vert,
+            ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
+            lineend = "square",
+            linewidth = line_width
+        ) +
+        ggplot2::geom_segment(
+            data = legend_df,
+            ggplot2::aes(x = x, y = y, xend = xend, yend = yend, color = state),
+            inherit.aes = FALSE,
+            alpha = 0,
+            linewidth = line_width,
+            lineend = "square"
+        ) +
+        ggplot2::scale_color_manual(
+            values = colors,
+            limits = states,
+            breaks = states,
+            drop = FALSE,
+            name = "State"
+        ) +
+        ggplot2::guides(
+            color = ggplot2::guide_legend(
+                override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
+            )
+        )
+
+    return(p)
+    
+}
+
+plotStochMapsProbs <- function(tree,
+                               p,
+                               maps,
+                               colors = "default",
+                               tree_layout = "rectangular",
+                               line_width = 1,
+                               tip_labels = TRUE,
+                               tip_labels_italics = FALSE,
+                               tip_labels_formatted = FALSE,
+                               tip_labels_remove_underscore = TRUE,
+                               tip_labels_color = "black",
+                               tip_labels_size = 3,
+                               tip_labels_offset = 0,
+                               timeline = FALSE,
+                               geo_units = list("epochs", "periods"),
+                               geo = timeline,
+                               time_bars = timeline,
+                               label_sampled_ancs = FALSE,
+                               ...) {
+    
+    # get colors
+    if (colors[1] != "default") {
+        # error checking
+        if (is.null(names(colors))) 
+        {stop("colors must be a NAMED vector of colors where names correspond to the character states")}
+        states <- names(colors)
+    } else {
+        states <- colnames(maps)[-c(1:5)]
+        colors <- colFun(length(states))
+        names(colors) <- states
+    }
+    
+    # error checking
+    if (length(colors) > 2) {
+        warning("color_by = \"prob\" is only recommended for 2 states, 
+                colors may be muddy with > 2 states.")
+    }
+    
+    dat <- dplyr::left_join(maps, p$data, by = "node")
+    
+    #set up colors 
+    rgbcols <- col2rgb(colors)
+    rgb_values_per_seg <- t(rgbcols %*% t(dat[,states]))
+    seg_col <- tolower(grDevices::rgb(red   = rgb_values_per_seg[ ,1],
+                                      green = rgb_values_per_seg[ ,2],
+                                      blue  = rgb_values_per_seg[ ,3],
+                                      maxColorValue = 255))
+    dat$seg_col <- seg_col
+    names(seg_col) <- seg_col
+
+    
+    # horizontal segments
+    dat_horiz <- dat[dat$vert == FALSE,]
+    
+    seg_horiz <- data.frame(
+        x    = dat_horiz$x - dat_horiz$x0,
+        xend = dat_horiz$x - dat_horiz$x1,
+        y    = dat_horiz$y,
+        yend = dat_horiz$y,
+        col  = dat_horiz$seg_col
+    )
+    
+    #vertical segments
+    dat_vert <- dat[dat$vert == TRUE,]
+    
+    m <- match(x = dat_vert$parent, dat_vert$node)
+    dat_vert$y_parent <- dat_vert[m, "y"]
+    dat_vert$x_parent <- dat_vert[m, "x"]
+    
+    seg_vert <- data.frame(
+        x = dat_vert$x_parent,
+        xend = dat_vert$x_parent,
+        y = dat_vert$y,
+        yend = dat_vert$y_parent,
+        col = dat_vert$seg_col
+    )
+    
+    # plot! 
+    p <- p + ggplot2::geom_segment(
+        data = seg_horiz,
+        ggplot2::aes(
+            x = x,
+            y = y,
+            xend = xend,
+            yend = yend,
+            color = col
+        ),
+        lineend = "square",
+        size = line_width,
+    ) +
+        ggplot2::geom_segment(
+            data = seg_vert,
+            ggplot2::aes(
+                x = x,
+                y = y,
+                xend = xend,
+                yend = yend,
+                color = col
+            ),
+            lineend = "square",
+            size = line_width, 
+            
+        ) +
+        ggplot2::scale_color_manual(values = seg_col, 
+                                    breaks = colors,
+                                    name = "State",
+                                    labels = names(colors))
+    
+    return(p)
+    
+}
+
