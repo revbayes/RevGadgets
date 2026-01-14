@@ -6,9 +6,11 @@
 #' stochastic map trace(s).
 #' @param simmap (multiphylo; none) A multiphylo object with simmaps in 
 #' phytools format.
-#' @param state_labels (character vector; NULL) Vector of labels for 
+#' @param state_labels (named character vector; NULL) Vector of new labels for 
 #' states named with the current state labels in annotated tree file
-#' (as characters).
+#' (as characters). If unnamed, state labels will be kept the same as in annotated
+#' tree file. If the names are duplicated, then those columns will be combined (summed). 
+#' 
 #' @param num_intervals (numeric; default 1001) The number of intervals
 #' to divide the tree into.
 #' @param verbose (logical; default TRUE) Print status of processing on screen.
@@ -208,11 +210,25 @@ processStochMaps <- function(tree,
     dfs <- dplyr::full_join(map,dfs, by = "index")
     dfs$index <- NULL
    
-    if ( !is.null(names(state_labels)) ){
+    #recover()
+    
+    if ( length(unique(names(state_labels))) !=  length(names(state_labels)) ) {
+      
+      cols <- unname(state_labels)
+      dfs[c("no", "yes")] <- sapply(
+        split(cols, names(state_labels)),
+        function(x) rowSums(dfs[x])
+      )
+      
+      # optionally drop the original columns
+      dfs[cols] <- NULL
+      
+    } else if ( !is.null(names(state_labels)) ){
       
       colnames(dfs) <- c("node","bl","x0","x1","vert",names(state_labels))
 
     }
+    
     
     return(dfs)
     
