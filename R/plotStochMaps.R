@@ -7,7 +7,8 @@
 #' as in the output of processStochMaps()
 #' 
 #' @param colors (named character vector; no default) Named character vector
-#' where items are colors and names are the corresponding states.
+#' where items are colors and names are the corresponding states. The order the 
+#' vector will determine the order of the legend.
 #' 
 #' @param color_by (character string; "prob") How to color the branches. 
 #' Options are "MAP" for assigning color by the MAP state, or "prob" for 
@@ -64,32 +65,70 @@
 #'
 #' \donttest{
 #'
-#' # Standard stochastic mapping example
+#' # switch data source to download files from website once they are up. 
 #' 
-#' # read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
-#' treefile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/tree.nexus",
-#'                         package="RevGadgets")
-#'                         
-#' tree <- readTrees(treefile)
+#' tree <- readTrees("~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_ase_hrm.tree")
+#' maps_url <- "~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_hrm_stoch_char_map.log"
 #' 
-#' # process samples
-#' mapsfile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/maps.log",
-#'                         package="RevGadgets")
-#'                         
+#' 
+#' # default, don't rename states
 #' stoch_map_df <- processStochMaps(tree,
-#'                                  mapsfile, 
-#'                                  states = as.character(0:4), 
+#'                                  maps_url, 
+#'                                  state_labels = as.character(c(0:3)), 
 #'                                  burnin = 0.1)
+#' # rename states 
+#' stoch_map_df_named <- processStochMaps(tree,
+#'                                        maps_url, 
+#'                                        state_labels = c("no - slow" = "0", "yes - slow" = "1",
+#'                                                         "no - fast" = "2", "yes - fast" = "3"), 
+#'                                        burnin = 0.1)
 #' 
+#' # rename and combine states
+#' stoch_map_df_combined <- processStochMaps(tree, 
+#'                                           maps_url, 
+#'                                           state_labels = c("no" = "0", "yes" = "1",
+#'                                                            "no" = "2", "yes" = "3"), 
+#'                                           burnin = 0.1)
+#'
+#' 
+#' # plot by MAP with default colors
 #' plotStochMaps(tree = tree,
 #'               maps = stoch_map_df,
 #'               color_by = "MAP",
 #'               colors = "default",
-#'               tree_layout = "rectangular",
-#'               timeline= T,
-#'               tip_labels = FALSE)
+#'               tip_labels = F) 
+#' 
+#' # plot by map but with custom colors and labels, order matters (HOW IS IT ORDERED)
+#' 
+#' clrs <- c("no - slow" = "#a6cee3",
+#'           "no - fast" = "#1f78b4",
+#'           "yes - slow" = "#b2df8a",
+#'           "yes - fast" = "#33a02c")
+#' 
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df_named,
+#'               color_by = "MAP",
+#'               colors = clrs,
+#'               tip_labels = F) 
+#' 
+#' # plot by probability, only two states shown
+#' 
+#' # default
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df_combined,
+#'               color_by = "prob",
+#'               colors = "default,
+#'               tip_labels = F)  
+#'
+#' # custom colors               
+#' clrs <- clrs <- c("no" = "#a6cee3",
+#'                   "yes" = "#33a02c")
+#' 
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df_combined,
+#'               color_by = "prob",
+#'               colors = clrs,
+#'               tip_labels = F) 
 #'
 #' }
 #'

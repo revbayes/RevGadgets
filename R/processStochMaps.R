@@ -20,25 +20,31 @@
 #' @examples
 #'
 #' \donttest{
-#'
-#' # Standard stochastic mapping example
 #' 
-#' # read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
-#' treefile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/tree.nexus",
-#'                         package="RevGadgets")
-#'                         
-#' tree <- readTrees(treefile)[[1]][[1]]
+#' # switch data source to download files from website once they are up. 
 #' 
-#' # process samples
-#' mapsfile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/maps.log",
-#'                         package="RevGadgets")
-#'                         
+#' tree <- readTrees("~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_ase_hrm.tree")
+#' maps_url <- "~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_hrm_stoch_char_map.log"
+#' 
+#' 
+#' # default, don't rename states
 #' stoch_map_df <- processStochMaps(tree,
-#'                                  mapsfile, 
-#'                                  states = as.character(0:4), 
+#'                                  maps_url, 
+#'                                  state_labels = as.character(c(0:3)), 
 #'                                  burnin = 0.1)
+#' # rename states 
+#' stoch_map_df_named <- processStochMaps(tree,
+#'                                        maps_url, 
+#'                                        state_labels = c("no - slow" = "0", "yes - slow" = "1",
+#'                                                         "no - fast" = "2", "yes - fast" = "3"), 
+#'                                        burnin = 0.1)
+#' 
+#' # rename and combine states
+#' stoch_map_df_combined <- processStochMaps(tree, 
+#'                                           maps_url, 
+#'                                           state_labels = c("no" = "0", "yes" = "1",
+#'                                                            "no" = "2", "yes" = "3"), 
+#'                                           burnin = 0.1)
 #'
 #' }
 #' 

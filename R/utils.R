@@ -491,13 +491,7 @@
 
 
 .parseTreeString <- function(string) {
-  # recover()
   text <- sub("[^(]*", "", string)
-  # stats <- treeio:::read.stats_beast_internal( "", text )
-
-  # stats <- .read.stats_revbayes_internal("", text)
-  # tree <- ape::read.tree(text = text)
-  # obj <- .beast("", text, stats, tree)
 
   obj <- treeio::read.beast.newick(textConnection(text))
 
@@ -1043,10 +1037,10 @@ reorder_treedata <- function(tdObject, order = "postorder") {
                              label_sampled_ancs = FALSE,
                              ...) {
   
-  
+  legend_labels_order <- names(colors)
   # get states
   states <- colnames(maps)[-c(1:5)]
-  
+  legend_orders <- names(colors)
   # make colors per state
   if (is.character(colors) && length(colors) == 1 && colors[1] == "default") {
     colors_full <- colFun(length(states))
@@ -1101,8 +1095,12 @@ reorder_treedata <- function(tdObject, order = "postorder") {
     state = dat_vert$seg_state,
     col = dat_vert$seg_col
   )
+
+  # inherits order from original color vector
+  states = factor(legend_labels_order, 
+                  levels = legend_labels_order, 
+                  ordered = T)
   
-  states = factor(sort(states), levels = sort(states), ordered = T)
   legend_df <- data.frame(
     state = states,
     x = 0,
@@ -1184,7 +1182,8 @@ reorder_treedata <- function(tdObject, order = "postorder") {
   # error checking
   if (length(colors) > 2) {
     warning("color_by = \"prob\" is only recommended for 2 states, 
-                colors may be muddy with > 2 states.")
+             colors may be muddy with > 2 states and no legend
+             will be provided.")
   }
   
   dat <- dplyr::left_join(maps, p$data, by = "node")
@@ -1225,7 +1224,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
     yend = dat_vert$y_parent,
     col = dat_vert$seg_col
   )
-  
+
   # plot! 
   p <- p + ggplot2::geom_segment(
     data = seg_horiz,
@@ -1255,7 +1254,13 @@ reorder_treedata <- function(tdObject, order = "postorder") {
     ggplot2::scale_color_manual(values = seg_col, 
                                 breaks = colors,
                                 name = "State",
-                                labels = names(colors))
+                                labels = names(colors),
+                                drop = FALSE) +
+    ggplot2::guides(
+      color = ggplot2::guide_legend(
+        override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
+      )
+    )
   
   return(p)
   
