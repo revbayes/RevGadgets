@@ -15,7 +15,7 @@ test_that("processes stochastic map logs", {
   
   stoch_map_df <- processStochMaps(tree,
                                    mapsfile, 
-                                   states = as.character(0:4), 
+                                   state_labels = as.character(0:4), 
                                    burnin = 0.9)
   # test file format
   expect_equal(class(stoch_map_df), "data.frame")
