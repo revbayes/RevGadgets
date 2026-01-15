@@ -9,7 +9,8 @@
 #' @param state_labels (named character vector; NULL) Vector of new labels for 
 #' states named with the current state labels in annotated tree file
 #' (as characters). If unnamed, state labels will be kept the same as in annotated
-#' tree file. If the names are duplicated, then those columns will be combined (summed). 
+#' tree file. If any names are duplicated, then those columns with duplicated
+#' names will be combined (summed). 
 #' 
 #' @param num_intervals (numeric; default 1001) The number of intervals
 #' to divide the tree into.
@@ -21,7 +22,7 @@
 #'
 #' \donttest{
 #' 
-#' # switch data source to download files from website once they are up. 
+#' # OJO OJO switch data source to download files from website once they are up. 
 #' 
 #' tree <- readTrees("~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_ase_hrm.tree")
 #' maps_url <- "~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_hrm_stoch_char_map.log"
