@@ -1166,7 +1166,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
                                time_bars = timeline,
                                label_sampled_ancs = FALSE,
                                ...) {
-  
+
   # get colors
   if (colors[1] != "default") {
     # error checking
@@ -1182,8 +1182,7 @@ reorder_treedata <- function(tdObject, order = "postorder") {
   # error checking
   if (length(colors) > 2) {
     warning("color_by = \"prob\" is only recommended for 2 states, 
-             colors may be muddy with > 2 states and no legend
-             will be provided.")
+             colors may be muddy with > 2 states.")
   }
   
   dat <- dplyr::left_join(maps, p$data, by = "node")
@@ -1225,40 +1224,69 @@ reorder_treedata <- function(tdObject, order = "postorder") {
     col = dat_vert$seg_col
   )
 
-  # plot! 
-  p <- p + ggplot2::geom_segment(
-    data = seg_horiz,
-    ggplot2::aes(
-      x = x,
-      y = y,
-      xend = xend,
-      yend = yend,
-      color = col
-    ),
-    lineend = "square",
-    size = line_width,
-  ) +
+  
+  
+  p <- p +
+    ggplot2::geom_segment(
+      data = seg_horiz,
+      ggplot2::aes(
+        x = x,
+        y = y,
+        xend = xend,
+        yend = yend
+      ),
+      color = I(seg_horiz$col),
+      lineend = "square",
+      linewidth = line_width
+    ) +
     ggplot2::geom_segment(
       data = seg_vert,
       ggplot2::aes(
         x = x,
         y = y,
         xend = xend,
-        yend = yend,
-        color = col
+        yend = yend
       ),
+      color = I(seg_vert$col),
       lineend = "square",
-      size = line_width, 
-      
+      linewidth = line_width
+    )
+  
+  ## ---- DUMMY LEGEND ----
+  legend_df <- data.frame(
+    state = factor(states, levels = states),
+    x = 0,
+    y = seq_along(states),
+    xend = 1,
+    yend = seq_along(states)
+  )
+  
+  p <- p +
+    ggplot2::geom_segment(
+      data = legend_df,
+      ggplot2::aes(
+        x = x,
+        y = y,
+        xend = xend,
+        yend = yend,
+        color = state
+      ),
+      inherit.aes = FALSE,
+      linewidth = line_width,
+      lineend = "square",
+      alpha = 0
     ) +
-    ggplot2::scale_color_manual(values = seg_col, 
-                                breaks = colors,
-                                name = "State",
-                                labels = names(colors),
-                                drop = FALSE) +
+    ggplot2::scale_color_manual(
+      values = colors,
+      name = "State"
+    ) +
     ggplot2::guides(
       color = ggplot2::guide_legend(
-        override.aes = list(alpha = 1, linewidth = line_width, lineend = "square")
+        override.aes = list(
+          alpha = 1,
+          linewidth = line_width,
+          lineend = "square"
+        )
       )
     )
   
