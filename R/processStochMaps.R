@@ -22,31 +22,47 @@
 #'
 #' \donttest{
 #' 
-#' # OJO OJO switch data source to download files from website once they are up. 
+#' # download the example dataset to working directory
 #' 
-#' tree <- readTrees("~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_ase_hrm.tree")
-#' maps_url <- "~/Downloads/revbayes_morph_ase_scm_hrm/output/solitariness_hrm_stoch_char_map.log"
+#' tree_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
+#' tree_dest_path <- "solitariness_ase_hrm.tree"
+#' download.file(tree_url, tree_dest_path)
 #' 
+#' maps_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
+#' maps_dest_path <- "solitariness_hrm_stoch_char_map.log"
+#' download.file(maps_url, maps_dest_path)
 #' 
+#' # to run on your own data, change these to the paths to your data files
+#' tree_file <- tree_dest_path
+#' maps_file <- maps_dest_path
+#' 
+#' # read in tree
+#' tree <- readTrees(tree_file)
+#'
 #' # default, don't rename states
 #' stoch_map_df <- processStochMaps(tree,
-#'                                  maps_url, 
+#'                                  maps_file, 
 #'                                  state_labels = as.character(c(0:3)), 
 #'                                  burnin = 0.1)
 #' # rename states 
 #' stoch_map_df_named <- processStochMaps(tree,
-#'                                        maps_url, 
+#'                                        maps_file, 
 #'                                        state_labels = c("no - slow" = "0", "yes - slow" = "1",
 #'                                                         "no - fast" = "2", "yes - fast" = "3"), 
 #'                                        burnin = 0.1)
 #' 
 #' # rename and combine states
 #' stoch_map_df_combined <- processStochMaps(tree, 
-#'                                           maps_url, 
+#'                                           maps_file, 
 #'                                           state_labels = c("no" = "0", "yes" = "1",
 #'                                                            "no" = "2", "yes" = "3"), 
 #'                                           burnin = 0.1)
 #'
+#' # remove files
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(tree_dest_path, maps_dest_path)
+#' 
 #' }
 #' 
 #' @export
