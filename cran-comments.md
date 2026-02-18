@@ -1,12 +1,6 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Changed the URLs in README.md to the appropriate repository (to revbayes/revgadgets from cmt2/revgadgets)
-* Changed the name of news.md to NEWS.md 
-* Please note that "phylogenetic" in DESCRIPTION is not mispelled 
-
 ## Release summary
-This is a new submission to CRAN. Package was archived on CRAN as 'coercion to logical' errors were not corrected in time. 
+This is a patch release to adjust tests that were failing on development R after
+changes to the scales package. 
 
 ## Test environments
 Tested via GitHub actions on the following platforms (and R versions):
@@ -16,19 +10,15 @@ Tested via GitHub actions on the following platforms (and R versions):
 * ubuntu-latest (release R)
 * ubuntu-latest (devel R)
 
-Tested locally on OS X v. 11.6, R v. 4.2.2
+Tested locally on OS X v. 13.3, R v. 4.3.1
 
 ## R CMD check results 
-There were no ERRORs or WARNINGs. 
 
-There was one NOTE:
+0 errors | 0 warnings | 0 notes
 
-* checking CRAN incoming feasibility ... NOTE
-  Maintainer: ‘Carrie Tribble <ctribble09@gmail.com>’
+## revdepcheck results
 
-  New submission
+We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
-This is a new submission to CRAN.
-
-## Downstream dependencies
-There are currently no downstream dependencies for this package. 
+ * We saw 0 new problems
+ * We failed to check 0 packages

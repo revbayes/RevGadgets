@@ -168,115 +168,115 @@ plotStochMaps <- function(tree,
                           time_bars = timeline,
                           label_sampled_ancs = FALSE,
                           ...) {
-
-    # pull tree from list object if necessary
-    if (inherits(tree,"list")) {
-        if (length(tree) == 1){
-            tree <- tree[[1]]
-        } else {
-            stop("tree should contain only one tree object")
-        }
-    }
-
-    # we do this twice because sometimes the tree is doubly nested (inside
-    # of two lists)    
-    if (inherits(tree,"list")) {
-        if (length(tree) == 1){
-            tree <- tree[[1]]
-        } else {
-            stop("tree should contain only one tree object")
-        }
-    }
-    
-    # plot the base tree
-    p <-  plotTreeFull(
-        tree = list(list(tree)),
-        tree_layout = tree_layout,
-        line_width = line_width,
-        
-        tip_labels = tip_labels,
-        tip_labels_italics = tip_labels_italics,
-        tip_labels_formatted = tip_labels_formatted,
-        tip_labels_remove_underscore = tip_labels_remove_underscore,
-        tip_labels_color = tip_labels_color,
-        tip_labels_size = tip_labels_size,
-        tip_labels_offset = tip_labels_offset,
-        
-        timeline = timeline,
-        geo_units = geo_units,
-        geo = timeline,
-        time_bars = timeline,
-        
-        label_sampled_ancs = label_sampled_ancs,
-        
-        node_age_bars = FALSE,
-        age_bars_color = "blue",
-        age_bars_colored_by = NULL,
-        
-        node_labels = NULL,
-        node_labels_color = "black",
-        node_labels_size = 3,
-        node_labels_offset = 0,
-        
-        node_pp = FALSE,
-        node_pp_shape = 16,
-        node_pp_color = "black",
-        node_pp_size = "variable",
-        
-        branch_color = "black",
-        color_branch_by = NULL,
-        
-        tip_age_bars = FALSE,
-        lineend = "square",
-        ...
-    )
-    
-    # plot the colors on branches
-    if (color_by == "MAP") {
-      p <- .plotStochMapsMAP(tree,
-                            p,
-                            maps,
-                            colors,
-                            tree_layout,
-                            line_width,
-                            tip_labels,
-                            tip_labels_italics,
-                            tip_labels_formatted,
-                            tip_labels_remove_underscore,
-                            tip_labels_color,
-                            tip_labels_size,
-                            tip_labels_offset,
-                            timeline,
-                            geo_units,
-                            geo,
-                            time_bars,
-                            label_sampled_ancs,
-                            ...)
-    } else if (color_by == "prob") {
-      p <- .plotStochMapsProbs(tree,
-                              p,
-                              maps,
-                              colors,
-                              tree_layout,
-                              line_width,
-                              tip_labels,
-                              tip_labels_italics,
-                              tip_labels_formatted,
-                              tip_labels_remove_underscore,
-                              tip_labels_color,
-                              tip_labels_size,
-                              tip_labels_offset,
-                              timeline,
-                              geo_units,
-                              geo,
-                              time_bars,
-                              label_sampled_ancs,
-                              ...)
+  # pull tree from list object if necessary
+  if (inherits(tree,"list")) {
+    if (length(tree) == 1){
+      tree <- tree[[1]]
     } else {
-      stop("color_by must be either 'MAP' or 'prob'")
+      stop("tree should contain only one tree object")
     }
-
-    return(p)
+  }
+  
+  # we do this twice because sometimes the tree is doubly nested (inside
+  # of two lists)    
+  if (inherits(tree,"list")) {
+    if (length(tree) == 1){
+      tree <- tree[[1]]
+    } else {
+      stop("tree should contain only one tree object")
+    }
+  }
+  
+  # plot the base tree
+  p <-  plotTreeFull(
+    tree = list(list(tree)),
+    tree_layout = tree_layout,
+    line_width = line_width,
+    
+    tip_labels = tip_labels,
+    tip_labels_italics = tip_labels_italics,
+    tip_labels_formatted = tip_labels_formatted,
+    tip_labels_remove_underscore = tip_labels_remove_underscore,
+    tip_labels_color = tip_labels_color,
+    tip_labels_size = tip_labels_size,
+    tip_labels_offset = tip_labels_offset,
+    
+    timeline = timeline,
+    geo_units = geo_units,
+    geo = timeline,
+    time_bars = timeline,
+    
+    label_sampled_ancs = label_sampled_ancs,
+    
+    node_age_bars = FALSE,
+    age_bars_color = "blue",
+    age_bars_colored_by = NULL,
+    age_bars_width = 1,
+    
+    node_labels = NULL,
+    node_labels_color = "black",
+    node_labels_size = 3,
+    node_labels_offset = 0,
+    
+    node_pp = FALSE,
+    node_pp_shape = 16,
+    node_pp_color = "black",
+    node_pp_size = "variable",
+    
+    branch_color = "black",
+    color_branch_by = NULL,
+    
+    tip_age_bars = FALSE,
+    lineend = "square",
+    ...
+  )
+  
+  # plot the colors on branches
+  if (color_by == "MAP") {
+    p <- .plotStochMapsMAP(tree,
+                           p,
+                           maps,
+                           colors,
+                           tree_layout,
+                           line_width,
+                           tip_labels,
+                           tip_labels_italics,
+                           tip_labels_formatted,
+                           tip_labels_remove_underscore,
+                           tip_labels_color,
+                           tip_labels_size,
+                           tip_labels_offset,
+                           timeline,
+                           geo_units,
+                           geo,
+                           time_bars,
+                           label_sampled_ancs,
+                           ...)
+  } else if (color_by == "prob") {
+    p <- .plotStochMapsProbs(tree,
+                             p,
+                             maps,
+                             colors,
+                             tree_layout,
+                             line_width,
+                             tip_labels,
+                             tip_labels_italics,
+                             tip_labels_formatted,
+                             tip_labels_remove_underscore,
+                             tip_labels_color,
+                             tip_labels_size,
+                             tip_labels_offset,
+                             timeline,
+                             geo_units,
+                             geo,
+                             time_bars,
+                             label_sampled_ancs,
+                             ...)
+  } else {
+    stop("color_by must be either 'MAP' or 'prob'")
+  }
+  
+  return(p)
     
 }
 

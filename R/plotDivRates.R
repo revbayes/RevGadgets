@@ -95,8 +95,8 @@ plotDivRates <- function(rates, facet = TRUE){
   message("Using default time units in x-axis label: Age (Ma)")
   rates_to_plot <- unique(rates$item)[grep("rate", unique(rates$item))]
   `%>%` <- dplyr::`%>%`
-
-    p <- rates %>%
+  
+  p <- rates %>%
     subset(grepl("rate", item)) %>%
     ggplot2::ggplot(ggplot2::aes(time, value, color = item))  +
     ggplot2::geom_step(ggplot2::aes(time, value),
@@ -119,15 +119,15 @@ plotDivRates <- function(rates, facet = TRUE){
                    strip.background = ggplot2::element_blank()) +
     ggplot2::scale_color_manual(values = colFun(length(rates_to_plot))) +
     ggplot2::scale_fill_manual(values = colFun(length(rates_to_plot)))
-
-    if (facet){
-      p <- p +
-        ggplot2::facet_wrap(dplyr::vars(item),
-                            scales = "free_y",
-                            labeller =
-                              ggplot2::labeller(item = .titleFormatLabeller))
-    }
-
-
+  
+  if (facet){
+    p <- p +
+      ggplot2::facet_wrap(dplyr::vars(item),
+                          scales = "free_y",
+                          labeller =
+                            ggplot2::labeller(item = .titleFormatLabeller))
+  }
+  
+  
   return(p)
 }

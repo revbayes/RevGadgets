@@ -13,7 +13,7 @@ test_that("compare processed output from documentation example", {
   t <- processPostPredStats(path_sim = file_sim,
                             path_emp = file_emp)
 
-  plots <- plotPostPredStats(data = t)
+  plots <- plotPostPredStats(data = t, old.coords = TRUE)
   plot_new <- plots[[1]]
   plot_orig <- readRDS(file = file_old_plot)
 

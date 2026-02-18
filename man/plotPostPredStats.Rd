@@ -4,7 +4,15 @@
 \alias{plotPostPredStats}
 \title{plot Posterior Predictive Statistics}
 \usage{
-plotPostPredStats(data, prob = c(0.9, 0.95), col = NULL, side = "both")
+plotPostPredStats(
+  data,
+  prob = c(0.9, 0.95),
+  col = NULL,
+  side = "both",
+  type = "strict",
+  PPES = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{(list of data frames; no default) A list of data frames
@@ -17,8 +25,18 @@ posterior-predictive intervals to shade.}
 \item{col}{(vector of colors; default NULL) The colors for each quantile.
 Defaults to blue and red.}
 
-\item{side}{(character; default "both") Whether the intervals are on "both"
-sides, the "left" side, or the "right" side of the distribution.}
+\item{side}{(character; default "both") Whether the plotted/colored 
+intervals are on "both" sides, the "left" side, or the "right" 
+side of the distribution.}
+
+\item{type}{(character; default "strict") Whether equal values are
+considered as less extreme as the observed data ("strict") or half of the
+equal values are considered to be higher and half to be lower ("midpoint")}
+
+\item{PPES}{(boolean; default FALSE) Whether we provide the posterior
+predictive effect size (PPES).}
+
+\item{...}{Additional arguments are passed to stats::density().}
 }
 \value{
 A list of ggplot objects, where each plot contains a density
@@ -36,9 +54,9 @@ Assessing Phylogenetic Reliability Using RevBayes and P3
 Model adequacy testing using posterior prediction (Data Version).
 
 Each plot shows the rejection region for the provided quantiles,
-as well as a p-value for the observed statistic. If side="left" (/"right"),
+as well as a p-value for the observed statistic. If side="left" (or "right"),
 then the p-value is the fraction of simulated statistics that are less than
-(/greater than) or equal to the observed statistic. If side="both", then
+( or greater than) or equal to the observed statistic. If side="both", then
 the p-value is calculated by first fitting a KDE to the samples, then
 computing the fraction of simulated statistics with density lower than the
 density of he observed statistic; in this sense, the "both" option computes

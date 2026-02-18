@@ -36,6 +36,8 @@
 #' colors, low and high values for a gradient. Colors must be either
 #' R valid color names or valid hex codes.
 #'
+#' @param age_bars_width (numeric; 1.5) Change line width for age bars
+#' 
 #' @param node_labels (character; NULL) Plot text labels at nodes, specified by
 #' the name of the corresponding column in the tidytree object. If NULL, no
 #' text is plotted.
@@ -158,7 +160,8 @@ plotTree <- function(tree,
                      node_age_bars = FALSE,
                      age_bars_color = "blue",
                      age_bars_colored_by = NULL,
-
+                     age_bars_width = 1.5,
+                     
                      node_labels = NULL,
                      node_labels_color = "black",
                      node_labels_size = 3,
@@ -195,6 +198,7 @@ plotTree <- function(tree,
                node_age_bars = node_age_bars,
                age_bars_color = age_bars_color,
                age_bars_colored_by = age_bars_colored_by,
+               age_bars_width = age_bars_width,
 
                node_labels = node_labels,
                node_labels_color = node_labels_color,
