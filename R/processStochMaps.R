@@ -6,8 +6,12 @@
 #' stochastic map trace(s).
 #' @param simmap (multiphylo; none) A multiphylo object with simmaps in 
 #' phytools format.
-#' @param states (vector of character strings; no default) The character
-#' states.
+#' @param state_labels (named character vector; NULL) Vector of new labels for 
+#' states named with the current state labels in annotated tree file
+#' (as characters). If unnamed, state labels will be kept the same as in annotated
+#' tree file. If any names are duplicated, then those columns with duplicated
+#' names will be combined (summed). 
+#' 
 #' @param num_intervals (numeric; default 1001) The number of intervals
 #' to divide the tree into.
 #' @param verbose (logical; default TRUE) Print status of processing on screen.
@@ -17,33 +21,55 @@
 #' @examples
 #'
 #' \donttest{
+#' 
+#' # download the example dataset to working directory
+#' 
+#' tree_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
+#' tree_dest_path <- "solitariness_ase_hrm.tree"
+#' download.file(tree_url, tree_dest_path)
+#' 
+#' maps_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
+#' maps_dest_path <- "solitariness_hrm_stoch_char_map.log"
+#' download.file(maps_url, maps_dest_path)
+#' 
+#' # to run on your own data, change these to the paths to your data files
+#' tree_file <- tree_dest_path
+#' maps_file <- maps_dest_path
+#' 
+#' # read in tree
+#' tree <- readTrees(tree_file)
 #'
-#' # Standard stochastic mapping example
-#' 
-#' # read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
-#' treefile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/tree.nexus",
-#'                         package="RevGadgets")
-#'                         
-#' tree <- readTrees(treefile)[[1]][[1]]
-#' 
-#' # process samples
-#' mapsfile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/maps.log",
-#'                         package="RevGadgets")
-#'                         
+#' # default, don't rename states
 #' stoch_map_df <- processStochMaps(tree,
-#'                                  mapsfile, 
-#'                                  states = as.character(0:4), 
+#'                                  maps_file, 
+#'                                  state_labels = as.character(c(0:3)), 
 #'                                  burnin = 0.1)
+#' # rename states 
+#' stoch_map_df_named <- processStochMaps(tree,
+#'                                        maps_file, 
+#'                                        state_labels = c("no - slow" = "0", "yes - slow" = "1",
+#'                                                         "no - fast" = "2", "yes - fast" = "3"), 
+#'                                        burnin = 0.1)
+#' 
+#' # rename and combine states
+#' stoch_map_df_combined <- processStochMaps(tree, 
+#'                                           maps_file, 
+#'                                           state_labels = c("no" = "0", "yes" = "1",
+#'                                                            "no" = "2", "yes" = "3"), 
+#'                                           burnin = 0.1)
 #'
+#' # remove files
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(tree_dest_path, maps_dest_path)
+#' 
 #' }
 #' 
 #' @export
 processStochMaps <- function(tree,
                              paths = NULL,
                              simmap = NULL,
-                             states,
+                             state_labels,
                              num_intervals = 1000,
                              verbose = TRUE,
                              ...) {
@@ -62,7 +88,7 @@ processStochMaps <- function(tree,
     } 
 
     # compute the number of states
-    nstates <- length(states)
+    nstates <- length(state_labels)
     
     # create the index map
     map <- matchNodes(tree@phylo)
@@ -98,7 +124,7 @@ processStochMaps <- function(tree,
         
         # add a root edge
         root_edge_samples <- sapply(simmap, function(map) {
-            paste0("{", grDevices::rgb(names(map$maps[[1]]), n = 1), ",0}")
+            return(paste0("{", utils::tail(names(map$maps[[1]]), n = 1), ",0}"))
         })
         samples <- cbind(samples, root_edge_samples)
         
@@ -168,16 +194,16 @@ processStochMaps <- function(tree,
         
         # get the state per interval
         if ( this_edge_length == 0 ) {
-            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), states)))
+            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), state_labels)))
         } else {
             branch_states_per_interval <- do.call(rbind, lapply(branch_samples, function(sample) {
-                match(names(sample)[findInterval(these_pts, sample) + 1], states)
+                match(names(sample)[findInterval(these_pts, sample) + 1], state_labels)
             }))
         }
         
         # compute probability of each state per interval
         branch_prob_per_state <- apply(branch_states_per_interval, 2, tabulate, nbins = nstates) / nsamples
-        rownames(branch_prob_per_state) <- states
+        rownames(branch_prob_per_state) <- state_labels
         
         # now do the vertical segments
         vert_prob_per_state <- t(branch_prob_per_state[,ncol(branch_prob_per_state), drop = FALSE])
@@ -206,6 +232,24 @@ processStochMaps <- function(tree,
     map$index  <- as.character(map$index)
     dfs <- dplyr::full_join(map,dfs, by = "index")
     dfs$index <- NULL
+   
+    if ( length(unique(names(state_labels))) !=  length(names(state_labels)) ) {
+      
+      cols <- unname(state_labels)
+      dfs[c("no", "yes")] <- sapply(
+        split(cols, names(state_labels)),
+        function(x) rowSums(dfs[x])
+      )
+      
+      # optionally drop the original columns
+      dfs[cols] <- NULL
+      
+    } else if ( !is.null(names(state_labels)) ){
+      
+      colnames(dfs) <- c("node","bl","x0","x1","vert",names(state_labels))
+
+    }
+    
     
     return(dfs)
     

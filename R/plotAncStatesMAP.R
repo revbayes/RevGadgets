@@ -119,11 +119,17 @@
 #'
 #' # have states vary by color and indicate state pp with size (default)
 #' plotAncStatesMAP(t = example)
+#' 
+#' # have states vary by a custom color palette and indicate state pp with size (default)
+#' # note that you must use the new state labels specified in your processAncStates call.
+#' plotAncStatesMAP(t = example, node_color = c("Awesome" = "red", 
+#'                                              "Beautiful" = "green", 
+#'                                              "Cool!" = "black"))
 #'
 #' # have states vary by color and indicate state pp with size ,
 #' # and add a timeline
 #' plotAncStatesMAP(t = example, timeline = TRUE)
-#'
+#' 
 #' # have states vary by color and symbol, label nodes with pp of states
 #' plotAncStatesMAP(t = example,  node_shape_as = "state",
 #'                  node_size = 4, node_shape = c(15, 17,20),

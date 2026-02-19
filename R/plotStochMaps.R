@@ -2,10 +2,13 @@
 #'
 #' @param tree (treedata object; none) Output of readTrees() function
 #' containing tree.
+#' 
 #' @param maps (dataframe; no default) Dataframe with processed maps,
 #' as in the output of processStochMaps()
+#' 
 #' @param colors (named character vector; no default) Named character vector
-#' where items are colors and names are the corresponding states.
+#' where items are colors and names are the corresponding states. The order the 
+#' vector will determine the order of the legend.
 #' 
 #' @param color_by (character string; "prob") How to color the branches. 
 #' Options are "MAP" for assigning color by the MAP state, or "prob" for 
@@ -49,9 +52,7 @@
 #' @param line_width (numeric; 1) Change line width for branches
 #'
 #' @param tree_layout (character; "rectangular") Tree shape layout, passed
-#' to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
-#' 'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
-#' 'daylight', or 'ape'.
+#' to ggtree(). Options are 'rectangular', 'fan', 'circular', or 'inward_circular'.
 #' 
 #' @param label_sampled_ancs (logical; FALSE) Label any sampled ancestors?
 #' Will inherent tip labels aesthetics for size and color.
@@ -64,31 +65,85 @@
 #'
 #' \donttest{
 #'
-#' # Standard stochastic mapping example
+#' # download the example dataset to working directory
 #' 
-#' # read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
-#' treefile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/tree.nexus",
-#'                         package="RevGadgets")
-#'                         
-#' tree <- readTrees(treefile)[[1]][[1]]
+#' tree_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
+#' tree_dest_path <- "solitariness_ase_hrm.tree"
+#' download.file(tree_url, tree_dest_path)
 #' 
-#' # process samples
-#' mapsfile <- system.file("extdata",
-#'                         "stoch_map_test_tmp/maps.log",
-#'                         package="RevGadgets")
-#'                         
+#' maps_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
+#' maps_dest_path <- "solitariness_hrm_stoch_char_map.log"
+#' download.file(maps_url, maps_dest_path)
+#' 
+#' # to run on your own data, change these to the paths to your data files
+#' tree_file <- tree_dest_path
+#' maps_file <- maps_dest_path
+#' 
+#' # read in tree
+#' tree <- readTrees(tree_file)
+#'
+#' # default, don't rename states
 #' stoch_map_df <- processStochMaps(tree,
-#'                                  mapsfile, 
-#'                                  states = as.character(0:4), 
+#'                                  maps_file, 
+#'                                  state_labels = as.character(c(0:3)), 
 #'                                  burnin = 0.1)
+#' # rename states 
+#' stoch_map_df_named <- processStochMaps(tree,
+#'                                        maps_file, 
+#'                                        state_labels = c("no - slow" = "0", "yes - slow" = "1",
+#'                                                         "no - fast" = "2", "yes - fast" = "3"), 
+#'                                        burnin = 0.1)
 #' 
+#' # rename and combine states
+#' stoch_map_df_combined <- processStochMaps(tree, 
+#'                                           maps_file, 
+#'                                           state_labels = c("no" = "0", "yes" = "1",
+#'                                                            "no" = "2", "yes" = "3"), 
+#'                                           burnin = 0.1)
+#' 
+#' # plot by MAP with default colors
 #' plotStochMaps(tree = tree,
 #'               maps = stoch_map_df,
 #'               color_by = "MAP",
 #'               colors = "default",
-#'               tree_layout = "rectangular",
-#'               tip_labels = FALSE)
+#'               tip_labels = F) 
+#' 
+#' # plot by map but with custom colors and labels, order matters (HOW IS IT ORDERED)
+#' 
+#' clrs <- c("no - slow" = "#a6cee3",
+#'           "no - fast" = "#1f78b4",
+#'           "yes - slow" = "#b2df8a",
+#'           "yes - fast" = "#33a02c")
+#' 
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df_named,
+#'               color_by = "MAP",
+#'               colors = clrs,
+#'               tip_labels = F) 
+#' 
+#' # plot by probability, only two states shown
+#' 
+#' # default
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df_combined,
+#'               color_by = "prob",
+#'               colors = "default",
+#'               tip_labels = F)  
+#'
+#' # custom colors               
+#' clrs <- clrs <- c("no" = "#a6cee3",
+#'                   "yes" = "#33a02c")
+#' 
+#' plotStochMaps(tree = tree,
+#'               maps = stoch_map_df_combined,
+#'               color_by = "prob",
+#'               colors = clrs,
+#'               tip_labels = F) 
+#'
+#' # remove files
+#' # WARNING: only run for example dataset!
+#' # otherwise you might delete your data!
+#' file.remove(tree_dest_path, maps_dest_path)
 #'
 #' }
 #'
@@ -113,20 +168,26 @@ plotStochMaps <- function(tree,
                           time_bars = timeline,
                           label_sampled_ancs = FALSE,
                           ...) {
-  
   # pull tree from list object if necessary
   if (inherits(tree,"list")) {
     if (length(tree) == 1){
       tree <- tree[[1]]
-    } else {stop("tree should contain only one tree object")}
+    } else {
+      stop("tree should contain only one tree object")
+    }
   }
   
+  # we do this twice because sometimes the tree is doubly nested (inside
+  # of two lists)    
   if (inherits(tree,"list")) {
     if (length(tree) == 1){
       tree <- tree[[1]]
-    } else {stop("tree should contain only one tree object")}
-  } 
+    } else {
+      stop("tree should contain only one tree object")
+    }
+  }
   
+  # plot the base tree
   p <-  plotTreeFull(
     tree = list(list(tree)),
     tree_layout = tree_layout,
@@ -169,90 +230,55 @@ plotStochMaps <- function(tree,
     lineend = "square",
     ...
   )
-
-  if (colors[1] != "default") {
-    states <- names(colors)
-  } else {
-    states <- colnames(maps)[-c(1:5)]
-    colors <- colFun(length(states))
-    names(colors) <- states
-  }
   
-  dat <- dplyr::left_join(maps, p$data, by = "node")
-  
-  #set up colors 
+  # plot the colors on branches
   if (color_by == "MAP") {
-    max <- apply(dat[, states], MARGIN = 1, which.max)
-    seg_col <- colors[unlist(max)]
-    dat$seg_col <- seg_col
-    names(seg_col) <- seg_col
+    p <- .plotStochMapsMAP(tree,
+                           p,
+                           maps,
+                           colors,
+                           tree_layout,
+                           line_width,
+                           tip_labels,
+                           tip_labels_italics,
+                           tip_labels_formatted,
+                           tip_labels_remove_underscore,
+                           tip_labels_color,
+                           tip_labels_size,
+                           tip_labels_offset,
+                           timeline,
+                           geo_units,
+                           geo,
+                           time_bars,
+                           label_sampled_ancs,
+                           ...)
   } else if (color_by == "prob") {
-    rgbcols <- col2rgb(colors)
-    rgb_values_per_seg <- t(rgbcols %*% t(dat[,states]))
-    seg_col <- tolower(grDevices::rgb(red   = rgb_values_per_seg[ ,1],
-                                      green = rgb_values_per_seg[ ,2],
-                                      blue  = rgb_values_per_seg[ ,3],
-                                      maxColorValue = 255))
-    dat$seg_col <- seg_col
-    names(seg_col) <- seg_col
+    p <- .plotStochMapsProbs(tree,
+                             p,
+                             maps,
+                             colors,
+                             tree_layout,
+                             line_width,
+                             tip_labels,
+                             tip_labels_italics,
+                             tip_labels_formatted,
+                             tip_labels_remove_underscore,
+                             tip_labels_color,
+                             tip_labels_size,
+                             tip_labels_offset,
+                             timeline,
+                             geo_units,
+                             geo,
+                             time_bars,
+                             label_sampled_ancs,
+                             ...)
+  } else {
+    stop("color_by must be either 'MAP' or 'prob'")
   }
-
-  # horizontal segments
-  dat_horiz <- dat[dat$vert == FALSE,]
   
-  seg_horiz <- data.frame(
-    x    = dat_horiz$x - dat_horiz$x0,
-    xend = dat_horiz$x - dat_horiz$x1,
-    y    = dat_horiz$y,
-    yend = dat_horiz$y,
-    col  = dat_horiz$seg_col
-  )
-  
-  #vertical segments
-  dat_vert <- dat[dat$vert == TRUE,]
-  
-  m <- match(x = dat_vert$parent, dat_vert$node)
-  dat_vert$y_parent <- dat_vert[m, "y"]
-  dat_vert$x_parent <- dat_vert[m, "x"]
-  
-  seg_vert <- data.frame(
-    x = dat_vert$x_parent,
-    xend = dat_vert$x_parent,
-    y = dat_vert$y,
-    yend = dat_vert$y_parent,
-    col = dat_vert$seg_col
-  )
-  
-  # plot! 
-  
-  p + ggplot2::geom_segment(
-    data = seg_horiz,
-    ggplot2::aes(
-      x = x,
-      y = y,
-      xend = xend,
-      yend = yend,
-      color = col
-    ),
-    lineend = "square",
-    size = line_width,
-  ) +
-    ggplot2::geom_segment(
-      data = seg_vert,
-      ggplot2::aes(
-        x = x,
-        y = y,
-        xend = xend,
-        yend = yend,
-        color = col
-      ),
-      lineend = "square",
-      size = line_width, 
-
-    ) +
-    ggplot2::scale_color_manual(values = seg_col, 
-                                breaks = colors,
-                                name = "State",
-                                labels = names(colors))
+  return(p)
     
 }
+
+
+

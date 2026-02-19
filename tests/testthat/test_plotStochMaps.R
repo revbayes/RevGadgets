@@ -18,7 +18,7 @@ test_that("plots stochastic maps", {
   tree <- readTrees(treefile)[[1]][[1]]
   stoch_map_df <- processStochMaps(tree,
                                    mapsfile, 
-                                   states = as.character(0:4), 
+                                   state_labels = as.character(0:4), 
                                    burnin = 0.9)
   
   # new plot 
