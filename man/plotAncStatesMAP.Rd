@@ -191,6 +191,12 @@ example <- processAncStates(file,
 # have states vary by color and indicate state pp with size (default)
 plotAncStatesMAP(t = example)
 
+# have states vary by a custom color palette and indicate state pp with size (default)
+# note that you must use the new state labels specified in your processAncStates call.
+plotAncStatesMAP(t = example, node_color = c("Awesome" = "red", 
+                                             "Beautiful" = "green", 
+                                             "Cool!" = "black"))
+
 # have states vary by color and indicate state pp with size ,
 # and add a timeline
 plotAncStatesMAP(t = example, timeline = TRUE)

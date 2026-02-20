@@ -24,11 +24,13 @@
 #' 
 #' # download the example dataset to working directory
 #' 
-#' tree_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
+#' tree_url <- 
+#' "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
 #' tree_dest_path <- "solitariness_ase_hrm.tree"
 #' download.file(tree_url, tree_dest_path)
 #' 
-#' maps_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
+#' maps_url <- 
+#' "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
 #' maps_dest_path <- "solitariness_hrm_stoch_char_map.log"
 #' download.file(maps_url, maps_dest_path)
 #' 

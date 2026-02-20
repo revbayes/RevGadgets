@@ -157,6 +157,12 @@ example <- processAncStates(file,
 # plot (this may take a while)
 plotAncStatesPie(t = example)
 
+# plot with custom color palette
+# note that you must use the new state labels specified in your processAncStates call
+plotAncStatesPie(t = example, pie_color = c("Awesome" = "red", 
+                                            "Beautiful" = "green", 
+                                            "Cool!" = "black"))
+
 # DEC Biogeographic range evolution example (with timeline)
 
 # process file

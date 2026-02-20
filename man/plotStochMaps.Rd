@@ -34,7 +34,8 @@ containing tree.}
 as in the output of processStochMaps()}
 
 \item{colors}{(named character vector; no default) Named character vector
-where items are colors and names are the corresponding states.}
+where items are colors and names are the corresponding states. The order the 
+vector will determine the order of the legend.}
 
 \item{color_by}{(character string; "prob") How to color the branches. 
 Options are "MAP" for assigning color by the MAP state, or "prob" for 
@@ -42,9 +43,7 @@ assigning color as the weighted average of states based on the posterior
 probabilities.}
 
 \item{tree_layout}{(character; "rectangular") Tree shape layout, passed
-to ggtree(). Options are 'rectangular', 'cladogram', 'slanted', 'ellipse',
-'roundrect', 'fan', 'circular', 'inward_circular', 'radial', 'equal_angle',
-'daylight', or 'ape'.}
+to ggtree(). Options are 'rectangular', 'fan', 'circular', or 'inward_circular'.}
 
 \item{line_width}{(numeric; 1) Change line width for branches}
 
@@ -97,31 +96,87 @@ plotStochMaps
 
 \donttest{
 
-# Standard stochastic mapping example
+# download the example dataset to working directory
 
-# read a tree (REPLACE WITH DOWNLOADING EXAMPLE BEFORE PUBLISHING)
-treefile <- system.file("extdata",
-                        "stoch_map_test_tmp/tree.nexus",
-                        package="RevGadgets")
-                        
-tree <- readTrees(treefile)[[1]][[1]]
+tree_url <- 
+"https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
+tree_dest_path <- "solitariness_ase_hrm.tree"
+download.file(tree_url, tree_dest_path)
 
-# process samples
-mapsfile <- system.file("extdata",
-                        "stoch_map_test_tmp/maps.log",
-                        package="RevGadgets")
-                        
+maps_url <- 
+"https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
+maps_dest_path <- "solitariness_hrm_stoch_char_map.log"
+download.file(maps_url, maps_dest_path)
+
+# to run on your own data, change these to the paths to your data files
+tree_file <- tree_dest_path
+maps_file <- maps_dest_path
+
+# read in tree
+tree <- readTrees(tree_file)
+
+# default, don't rename states
 stoch_map_df <- processStochMaps(tree,
-                                 mapsfile, 
-                                 states = as.character(0:4), 
+                                 maps_file, 
+                                 state_labels = as.character(c(0:3)), 
                                  burnin = 0.1)
+# rename states 
+stoch_map_df_named <- processStochMaps(tree,
+                                       maps_file, 
+                                       state_labels = c("no - slow" = "0", "yes - slow" = "1",
+                                                        "no - fast" = "2", "yes - fast" = "3"), 
+                                       burnin = 0.1)
 
+# rename and combine states
+stoch_map_df_combined <- processStochMaps(tree, 
+                                          maps_file, 
+                                          state_labels = c("no" = "0", "yes" = "1",
+                                                           "no" = "2", "yes" = "3"), 
+                                          burnin = 0.1)
+
+# plot by MAP with default colors
 plotStochMaps(tree = tree,
               maps = stoch_map_df,
               color_by = "MAP",
               colors = "default",
-              tree_layout = "rectangular",
-              tip_labels = FALSE)
+              tip_labels = FALSE) 
+
+# plot by map but with custom colors and labels, order matters (HOW IS IT ORDERED)
+
+clrs <- c("no - slow" = "#a6cee3",
+          "no - fast" = "#1f78b4",
+          "yes - slow" = "#b2df8a",
+          "yes - fast" = "#33a02c")
+
+plotStochMaps(tree = tree,
+              maps = stoch_map_df_named,
+              color_by = "MAP",
+              colors = clrs,
+              tip_labels = FALSE) 
+
+# plot by probability, only two states shown
+
+# default
+plotStochMaps(tree = tree,
+              maps = stoch_map_df_combined,
+              color_by = "prob",
+              colors = "default",
+              tip_labels = FALSE)  
+
+# custom colors               
+clrs <- clrs <- c("no" = "#a6cee3",
+                  "yes" = "#33a02c")
+
+plotStochMaps(tree = tree,
+              maps = stoch_map_df_combined,
+              color_by = "prob",
+              colors = clrs,
+              tip_labels = FALSE) 
+
+# remove files
+# WARNING: only run for example dataset!
+# otherwise you might delete your data!
+file.remove(tree_dest_path, maps_dest_path)
 
 }
 

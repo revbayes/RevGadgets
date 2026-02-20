@@ -67,11 +67,13 @@
 #'
 #' # download the example dataset to working directory
 #' 
-#' tree_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
+#' tree_url <- 
+#' "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_ase_hrm.tree"
 #' tree_dest_path <- "solitariness_ase_hrm.tree"
 #' download.file(tree_url, tree_dest_path)
 #' 
-#' maps_url <- "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
+#' maps_url <- 
+#' "https://revbayes.github.io/tutorials/morph_ase/data/solitariness_hrm_stoch_char_map.log"
 #' maps_dest_path <- "solitariness_hrm_stoch_char_map.log"
 #' download.file(maps_url, maps_dest_path)
 #' 
@@ -106,7 +108,7 @@
 #'               maps = stoch_map_df,
 #'               color_by = "MAP",
 #'               colors = "default",
-#'               tip_labels = F) 
+#'               tip_labels = FALSE) 
 #' 
 #' # plot by map but with custom colors and labels, order matters (HOW IS IT ORDERED)
 #' 
@@ -119,7 +121,7 @@
 #'               maps = stoch_map_df_named,
 #'               color_by = "MAP",
 #'               colors = clrs,
-#'               tip_labels = F) 
+#'               tip_labels = FALSE) 
 #' 
 #' # plot by probability, only two states shown
 #' 
@@ -128,7 +130,7 @@
 #'               maps = stoch_map_df_combined,
 #'               color_by = "prob",
 #'               colors = "default",
-#'               tip_labels = F)  
+#'               tip_labels = FALSE)  
 #'
 #' # custom colors               
 #' clrs <- clrs <- c("no" = "#a6cee3",
@@ -138,7 +140,7 @@
 #'               maps = stoch_map_df_combined,
 #'               color_by = "prob",
 #'               colors = clrs,
-#'               tip_labels = F) 
+#'               tip_labels = FALSE) 
 #'
 #' # remove files
 #' # WARNING: only run for example dataset!
