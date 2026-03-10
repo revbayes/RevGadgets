@@ -49,15 +49,15 @@
 #' # rename states 
 #' stoch_map_df_named <- processStochMaps(tree,
 #'                                        maps_file, 
-#'                                        state_labels = c("no - slow" = "0", "yes - slow" = "1",
-#'                                                         "no - fast" = "2", "yes - fast" = "3"), 
+#'                                        state_labels = c("0" = "no - slow", "1" = "yes - slow",
+#'                                                         "2" = "no - fast", "3" = "yes - fast"), 
 #'                                        burnin = 0.1)
 #' 
 #' # rename and combine states
 #' stoch_map_df_combined <- processStochMaps(tree, 
 #'                                           maps_file, 
-#'                                           state_labels = c("no" = "0", "yes" = "1",
-#'                                                            "no" = "2", "yes" = "3"), 
+#'                                           state_labels = c("0" = "no", "1" = "yes",
+#'                                                            "2" = "no", "3" = "yes"), 
 #'                                           burnin = 0.1)
 #'
 #' # remove files
@@ -89,8 +89,17 @@ processStochMaps <- function(tree,
       } else {stop("tree should contain only one tree object")}
     } 
 
+    # split state_labels into vectors of old and new names
+    if (is.null(names(state_labels))) {
+      new_names <- state_labels
+      old_names <- state_labels
+    } else {
+      new_names <- unname(state_labels)
+      old_names <- names(state_labels)
+    } 
+
     # compute the number of states
-    nstates <- length(state_labels)
+    nstates <- length(old_names)
     
     # create the index map
     map <- matchNodes(tree@phylo)
@@ -190,22 +199,21 @@ processStochMaps <- function(tree,
             sample_states <- sample[,1]
             sample_times  <- as.numeric(sample[,2])
             names(sample_times) <- sample_states
-            # sample_times <- rev(sample_times) # turn this on for plotting the output from (old) tensorphylo runs
             return(cumsum(sample_times))
         })
         
         # get the state per interval
         if ( this_edge_length == 0 ) {
-            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), state_labels)))
+            branch_states_per_interval <- t(t(match(names(unlist(branch_samples)), old_names)))
         } else {
             branch_states_per_interval <- do.call(rbind, lapply(branch_samples, function(sample) {
-                match(names(sample)[findInterval(these_pts, sample) + 1], state_labels)
+                match(names(sample)[findInterval(these_pts, sample) + 1], old_names)
             }))
         }
         
         # compute probability of each state per interval
         branch_prob_per_state <- apply(branch_states_per_interval, 2, tabulate, nbins = nstates) / nsamples
-        rownames(branch_prob_per_state) <- state_labels
+        rownames(branch_prob_per_state) <- old_names
         
         # now do the vertical segments
         vert_prob_per_state <- t(branch_prob_per_state[,ncol(branch_prob_per_state), drop = FALSE])
@@ -234,21 +242,21 @@ processStochMaps <- function(tree,
     map$index  <- as.character(map$index)
     dfs <- dplyr::full_join(map,dfs, by = "index")
     dfs$index <- NULL
-   
-    if ( length(unique(names(state_labels))) !=  length(names(state_labels)) ) {
+  
+    if ( length(unique(new_names)) !=  length(new_names) ) {
       
-      cols <- unname(state_labels)
-      dfs[c("no", "yes")] <- sapply(
-        split(cols, names(state_labels)),
+      cols <- old_names
+      dfs[unique(new_names)] <- sapply(
+        split(cols, new_names),
         function(x) rowSums(dfs[x])
       )
       
       # optionally drop the original columns
       dfs[cols] <- NULL
       
-    } else if ( !is.null(names(state_labels)) ){
+    } else {
       
-      colnames(dfs) <- c("node","bl","x0","x1","vert",names(state_labels))
+      colnames(dfs) <- c("node","bl","x0","x1","vert", new_names)
 
     }
     

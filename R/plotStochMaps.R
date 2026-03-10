@@ -110,7 +110,7 @@
 #'               colors = "default",
 #'               tip_labels = FALSE) 
 #' 
-#' # plot by map but with custom colors and labels, order matters (HOW IS IT ORDERED)
+#' # plot by map but with custom colors and labels, order matters
 #' 
 #' clrs <- c("no - slow" = "#a6cee3",
 #'           "no - fast" = "#1f78b4",
