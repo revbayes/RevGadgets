@@ -99,8 +99,8 @@
 #' # rename and combine states
 #' stoch_map_df_combined <- processStochMaps(tree, 
 #'                                           maps_file, 
-#'                                           state_labels = c("no" = "0", "yes" = "1",
-#'                                                            "no" = "2", "yes" = "3"), 
+#'                                           state_labels = c("0" = "no", "1" = "yes",
+#'                                                            "2" = "no", "3" = "yes"), 
 #'                                           burnin = 0.1)
 #' 
 #' # plot by MAP with default colors

@@ -71,15 +71,15 @@ stoch_map_df <- processStochMaps(tree,
 # rename states 
 stoch_map_df_named <- processStochMaps(tree,
                                        maps_file, 
-                                       state_labels = c("no - slow" = "0", "yes - slow" = "1",
-                                                        "no - fast" = "2", "yes - fast" = "3"), 
+                                       state_labels = c("0" = "no - slow", "1" = "yes - slow",
+                                                        "2" = "no - fast", "3" = "yes - fast"), 
                                        burnin = 0.1)
 
 # rename and combine states
 stoch_map_df_combined <- processStochMaps(tree, 
                                           maps_file, 
-                                          state_labels = c("no" = "0", "yes" = "1",
-                                                           "no" = "2", "yes" = "3"), 
+                                          state_labels = c("0" = "no", "1" = "yes",
+                                                           "2" = "no", "3" = "yes"), 
                                           burnin = 0.1)
 
 # remove files

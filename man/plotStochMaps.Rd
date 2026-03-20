@@ -130,8 +130,8 @@ stoch_map_df_named <- processStochMaps(tree,
 # rename and combine states
 stoch_map_df_combined <- processStochMaps(tree, 
                                           maps_file, 
-                                          state_labels = c("no" = "0", "yes" = "1",
-                                                           "no" = "2", "yes" = "3"), 
+                                          state_labels = c("0" = "no", "1" = "yes",
+                                                           "2" = "no", "3" = "yes"), 
                                           burnin = 0.1)
 
 # plot by MAP with default colors
@@ -141,7 +141,7 @@ plotStochMaps(tree = tree,
               colors = "default",
               tip_labels = FALSE) 
 
-# plot by map but with custom colors and labels, order matters (HOW IS IT ORDERED)
+# plot by map but with custom colors and labels, order matters
 
 clrs <- c("no - slow" = "#a6cee3",
           "no - fast" = "#1f78b4",
